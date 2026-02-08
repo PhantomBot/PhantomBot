@@ -25,9 +25,15 @@ $(function () {
         videoEl = document.getElementById('alertVideo'),
         SILENT_WAV =
             'data:audio/wav;base64,' +
-            'UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            'UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        PLAYBACK_TYPE = {
+            NONE: 0,
+            AUDIO: 1,
+            VIDEO: 2,
+            GIF: 4,
+        };
 
-    let isPlaying = false,
+    let playingMask = PLAYBACK_TYPE.NONE,
         audioUnlocked = false,
         unlocking = false,
         queue = [],
@@ -67,6 +73,40 @@ $(function () {
     const PROVIDER_FFZ = 'ffz';
     const PROVIDER_BTTV = 'bttv';
     const PROVIDER_SEVENTV = 'sevenTv';
+
+    /**
+     * Set the bit for the given playback type to indicate it's playing.
+     * @param {*} bit Playback type bit to set
+     */
+    function setPlayingBit(bit) {
+        playingMask |= bit;
+    }
+
+    /**
+     * Clear the bit for the given playback type to indicate it's no longer playing.
+     * @param {*} bit Playback type bit to clear
+     */
+    function clearPlayingBit(bit) {
+        playingMask &= ~bit;
+    }
+
+    /**
+     * Check if the given bit is set, indicating that type is currently playing.
+     * @param {*} bit 
+     * @returns true if type is currently playing, false otherwise
+     */
+    function isPlayingBit(bit) {
+        return (playingMask & bit) === bit;
+    }
+
+    /**
+     * Check if any media is currently playing.
+     * @returns true if any media is currently playing, false otherwise
+     */
+    function isPlayingAny() {
+        return playingMask !== 0;
+    }
+
 
     //Copied from https://davidwalsh.name/detect-supported-audio-formats-javascript
     function populateSupportedAudioTypes() {
@@ -241,7 +281,7 @@ $(function () {
         if (audioUnlocked || unlocking) return;
 
         unlocking = true;
-        isPlaying = true;
+        setPlayingBit(PLAYBACK_TYPE.AUDIO);
         
         if (!audioEl.src) audioEl.src = SILENT_WAV;
         audioEl.muted = true;
@@ -260,15 +300,14 @@ $(function () {
             });
         
         printDebug('Audio autoplay allowed. No user interaction needed');
-        stopMedia(true, false, false);
+        stopMedia();
         audioEl.muted = false;
         audioUnlocked = true;
         unlocking = false;  
     }
 
-    async function playElement(element, isVideo) {
+    async function playElement(element) {
         printDebug('Playing ' + element.src);
-        isVideo = isVideo ? isVideo : false;
         element.muted = false;
         try {
             element.currentTime = 0;
@@ -278,20 +317,18 @@ $(function () {
         element.play().catch((e) => {
             printDebug('Error: Failed to play ' + element.src, true);
             printDebug(e, true);
-            if (isVideo) {
-                stopMedia(false, true, false);
-            } else {
-                stopMedia(true, false, true);
-            }
+            stopMedia();
         });
     }
 
     async function playAudio() {
-        playElement(audioEl, false);
+        setPlayingBit(PLAYBACK_TYPE.AUDIO);
+        playElement(audioEl);
     }
 
     async function playVideo() {
-        playElement(videoEl, true);
+        setPlayingBit(PLAYBACK_TYPE.VIDEO);
+        playElement(videoEl);
     }
 
     /**
@@ -328,7 +365,7 @@ $(function () {
                         isPlayed = true;
                         printDebug('Processing event: ' + JSON.stringify(event));
                         handleStopMedia(event);
-                    } else if (ignoreIsPlaying || isPlaying === false) {
+                    } else if (ignoreIsPlaying || !isPlayingAny()) {
                         isPlayed = true;
                         // sleep a bit to reduce the overlap
                         await sleep(100);
@@ -337,7 +374,6 @@ $(function () {
                             clearTimeout(playTimeout);
                         }
                         // called method is responsible to reset this
-                        isPlaying = true;
                         if (event.type === 'playVideoClip'
                                     && getOptionSetting(CONF_ENABLE_VIDEO_CLIPS, 'true') === 'true') {
                             handleVideoClip(event);
@@ -349,7 +385,6 @@ $(function () {
                             handleAudioHook(event);
                         } else {
                             printDebug('Received message and don\'t know what to do about it: ' + event);
-                            isPlaying = false;
                         }
                     }
                 } finally {
@@ -428,12 +463,13 @@ $(function () {
         if (gifText) {
             addAlertText(gifText, gifCss);
         }
+        setPlayingBit(PLAYBACK_TYPE.GIF);
 
         gifDuration = gifDuration === null ? 3000 : gifDuration
         gifDuration -= fadeTime;
         playTimeout = setTimeout(() => {
             printDebug('Audio complete (duration), after: ' + (gifDuration/1000) + ' seconds');
-            stopMedia(false, false, true);
+            stopMedia();
         }, gifDuration);
         
 
@@ -442,12 +478,6 @@ $(function () {
 
         audioEl.volume = gifVolume
         audioEl.src = audioUrl;
-        clearTimeout(playTimeout);
-        playTimeout = setTimeout(() => {
-            printDebug('Audio complete (duration), after: ' + (gifDuration/1000) + ' seconds');
-            stopMedia(true, false, true);
-        }, gifDuration);
-
         playAudio();
     }
     
@@ -472,21 +502,21 @@ $(function () {
         });
     }
 
-    async function stopMedia(stopAudio, stopVideo, stopGif) {
-        if (!isPlaying) {
+    async function stopMedia() {
+        if (!isPlayingAny()) {
             return;
         }
 
         let shouldSleep = false;
  
-        printDebug('Stopping media: (Audio: ' + stopAudio + ') (Video: ' + stopVideo + ') (Gif: ' + stopGif + ')');
+        printDebug('Stopping media: (Audio: ' + isPlayingBit(PLAYBACK_TYPE.AUDIO) + ') (Video: ' + isPlayingBit(PLAYBACK_TYPE.VIDEO) + ') (Gif: ' + isPlayingBit(PLAYBACK_TYPE.GIF) + ')');
 
         if ($('#alert-text').children().length > 0) {
             removeAlertText();
             shouldSleep = true;
         }
 
-        if (stopGif) {
+        if (isPlayingBit(PLAYBACK_TYPE.GIF)) {
             try {
                 if (imgEl.classList.contains('fade-in')) {
                     imgEl.classList.remove('fade-in');
@@ -499,12 +529,13 @@ $(function () {
                 }
                 imgEl.removeAttribute('src');
                 imgEl.removeAttribute('style')
+                clearPlayingBit(PLAYBACK_TYPE.GIF);
             } catch (e) {
               console.warn('Error: gif stop failed:' + e, true);
             }
         }
         
-        if (stopAudio) {
+        if (isPlayingBit(PLAYBACK_TYPE.AUDIO)) {
             try {
                 if (!audioEl.paused) {
                     audioEl.pause();
@@ -512,12 +543,13 @@ $(function () {
                 audioEl.removeAttribute('src');
                 audioEl.load();
                 audioEl.volume = 1;
+                clearPlayingBit(PLAYBACK_TYPE.AUDIO);
             } catch (e) {
                 printDebug('Error: audio stop failed:' + e, true);
             }
         }
         
-        if (stopVideo) {
+        if (isPlayingBit(PLAYBACK_TYPE.VIDEO)) {
             try {
                 if (videoEl.classList.contains('fade-in')) {
                     videoEl.classList.remove('fade-in');
@@ -534,27 +566,45 @@ $(function () {
                 videoEl.removeAttribute('style')
                 videoEl.load();
                 videoEl.volume = 1;
+                clearPlayingBit(PLAYBACK_TYPE.VIDEO);
             } catch (e) {
               console.warn('Error: video stop failed:' + e, true);
             }
         }
-        
-        clearTimeout(playTimeout);
-        isPlaying = false;
+
+        //Remove timeout only if there is no more media playing
+        if (!isPlayingAny()) {
+            clearTimeout(playTimeout);
+        }
     }
 
     function handleStopMedia(json) {
-        let stopVideo,
-            stopAudio;
-
         if (json.stopMedia === 'all') {
             stopVideo = stopAudio = true;
+            stopMedia();
         } else {
-            stopVideo = json.stopMedia.indexOf('video') >= 0;
-            stopAudio = json.stopMedia.indexOf('audio') >= 0;
+            let clearMask = PLAYBACK_TYPE.NONE;
+
+            if (json.stopMedia.indexOf('video') >= 0) {
+                clearMask |= PLAYBACK_TYPE.VIDEO;
+                clearPlayingBit(PLAYBACK_TYPE.VIDEO);
+            }
+            if (son.stopMedia.indexOf('audio') >= 0) {
+                clearMask |= PLAYBACK_TYPE.AUDIO;
+                clearPlayingBit(PLAYBACK_TYPE.AUDIO)
+            }
+
+            //Temporarily fool stopMedia()
+            let tempPlaybackMask = playingMask,
+                tempTimeout = playTimeout;
+            playingMask = clearMask;
+            stopMedia();
+            playingMask = tempPlaybackMask;
+            playTimeout = tempTimeout;
+            if (!isPlayingAny()) {
+                clearTimeout(playTimeout);
+            }
         }
-        
-        stopMedia(stopAudio, stopVideo, stopAudio);
     }
 
     /*
@@ -579,7 +629,6 @@ $(function () {
         }
 
         // Play the audio.
-        printDebug('Playing audio');
         playAudio();
     }
 
@@ -770,7 +819,7 @@ $(function () {
         if (duration != null && duration > 0) {
             setTimeout(() => {
                 printDebug('Video complete (duration), after: ' + (duration/1000) + ' seconds');
-                stopMedia(false, true, false);
+                stopMedia();
             }, duration);
         }
 
@@ -788,7 +837,6 @@ $(function () {
             switch (element.elementType) {
                 case 'clip':
                     if (getOptionSetting(CONF_ENABLE_VIDEO_CLIPS, 'true') === 'true') {
-                        isPlaying = true;
                         await handleVideoClip(element);
                     }
                     break;
@@ -878,10 +926,10 @@ $(function () {
     setInterval(handleQueue, 5e2);
     audioEl.onended = () => { 
         printDebug('Audio complete (fully played), after: ' + audioEl.duration + ' seconds');
-        stopMedia(true, false, false); 
+        stopMedia();
     };
     videoEl.onended = () => {
         printDebug('Video complete (fully played), after: ' + videoEl.duration + ' seconds');
-        stopMedia(false, true, false);
+        stopMedia();
     };
 });
