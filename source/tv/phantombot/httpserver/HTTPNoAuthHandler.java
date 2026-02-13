@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -183,7 +184,12 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 } else {
                     com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                             + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
-                    HttpServerPageHandler.sendFile(ctx, req, p);
+                    Map<CharSequence, Object> headers = Collections.emptyMap();
+                    String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+                    if (origin != null && !origin.isBlank()) {
+                        headers = Map.of(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                    }
+                    HttpServerPageHandler.sendFile(ctx, req, p, headers);
                 }
             }
         } catch (IOException ex) {
@@ -240,7 +246,12 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                     + HttpServerPageHandler.detectContentType("html") + ")");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), "html"));
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), "html");
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            if (origin != null && !origin.isBlank()) {
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            }
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
         } catch (NumberFormatException | IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
