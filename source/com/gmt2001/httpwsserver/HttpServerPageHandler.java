@@ -55,6 +55,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -400,6 +401,25 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * </ul>
      */
     public static void sendFile(ChannelHandlerContext ctx, FullHttpRequest req, Path path) throws IOException {
+        sendFile(ctx, req, path, Collections.emptyMap());
+    }
+
+    /**
+     * Sends a static file, supporting range requests, conditional requests, zero‑copy transfers, and optional compression.
+     * 
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param path The {@link Path} of the file to be served
+     * @param headers Extra headers to include in the response
+     * @throws IOException if the file cannot be opened or read
+     * @implNote
+     * <ul>
+     *   <li>Zero‑copy transfer uses {@link DefaultFileRegion} and requires no SSL handler in the pipeline.</li>
+     *   <li>Chunked transfer uses {@link HttpChunkedInput} and {@link ChunkedFile}.</li>
+     *   <li>Compression is only applied to text‑like content when the client supports it and the request is not ranged.</li>
+     * </ul>
+     */
+    public static void sendFile(ChannelHandlerContext ctx, FullHttpRequest req, Path path, Map<CharSequence, Object> headers) throws IOException {
         File file = path.toFile();
         long fileLength = file.length();
         boolean keepAlive = HttpUtil.isKeepAlive(req);
@@ -430,7 +450,9 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         response.headers().set(HttpHeaderNames.ACCEPT_RANGES, "bytes");
         response.headers().set(HttpHeaderNames.VARY, "Accept-Encoding");
         response.headers().set(HttpHeaderNames.CONNECTION, keepAlive ? HttpHeaderValues.KEEP_ALIVE : HttpHeaderValues.CLOSE);
-
+        for (Map.Entry<CharSequence, Object> entry : headers.entrySet()) {
+            response.headers().set(entry.getKey(), entry.getValue());
+        }
 
         //Cache matches send HTTP 304
         if (checkIfClientCacheMatches(req, response, file)) {  
