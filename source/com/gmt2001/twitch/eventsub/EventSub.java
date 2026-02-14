@@ -473,6 +473,12 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
             com.gmt2001.Console.out.println("Reconnecting to EventSub in " + Duration.ofMillis(this.backoff.GetNextInterval()).toString());
             this.reconnecting = false;
             this.backoff.BackoffOnceAsync(() -> {
+                ExecutorService.schedule(() -> {
+                    if (this.client == null || !this.client.connected() || this.session_id == null) {
+                        com.gmt2001.Console.warn.println("Failed to connect to EventSub, reconnecting...");
+                        this.reconnect();
+                    }
+                }, 15, TimeUnit.SECONDS); 
                 this.connect();
             });
         }
