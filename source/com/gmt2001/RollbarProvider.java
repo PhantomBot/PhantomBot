@@ -205,6 +205,37 @@ public final class RollbarProvider implements AutoCloseable {
                                 if (error.getClass().equals(java.time.zone.ZoneRulesException.class)) {
                                     return true;
                                 }
+                                
+                                if (error.getClass().equals(io.netty.handler.codec.http.InvalidLineSeparatorException.class)) {
+                                    return true;
+                                }
+                                
+                                if (error.getClass().equals(reactor.core.Exceptions.class) && reactor.core.Exceptions.isRetryExhausted(error)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(io.netty.handler.ssl.SslHandshakeTimeoutException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.ArrayIndexOutOfBoundsException.class)
+                                        && error.getStackTrace()[0].getClassName().equals(org.mozilla.javascript.NativeArray.class.getName())) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.NullPointerException.class)
+                                        && error.getStackTrace()[0].getClassName().equals(org.mozilla.javascript.EmbeddedSlotMap.class.getName())) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(org.jooq.exception.DataAccessException.class) && (error.getMessage().contains("Socket error"))) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.IllegalArgumentException.class) 
+                                    && error.getStackTrace()[0].getClassName().equals(tv.phantombot.twitch.api.Helix.class.getName())) {
+                                        return true;
+                                    }
 
                                 if (error.getClass().equals(discord4j.rest.http.client.ClientException.class)
                                     && error.getMessage().matches(".*(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found).*")) {
@@ -220,6 +251,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getMessage().contains("setAutoCommit")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("The database has been closed")) {
                                     return true;
                                 }
 
@@ -240,6 +275,14 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getMessage().startsWith("opening db")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("File corrupted while reading record")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().startsWith("io.netty.handler.ssl.SslHandshakeTimeoutException")) {
                                     return true;
                                 }
 
@@ -356,6 +399,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getMessage().contains("Keystore was tampered with, or password was incorrect")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Keystore password was incorrect")) {
                                     return true;
                                 }
 
