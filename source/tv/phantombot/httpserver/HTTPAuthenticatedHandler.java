@@ -370,6 +370,20 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
     private void putIrc(ChannelHandlerContext ctx, FullHttpRequest req) {
         String user = req.headers().get("user");
         String msg = req.headers().get("message");
+        String body = req.content().toString(Charset.forName("UTF-8"));
+        if (body.length() > 0 && body.startsWith("{") && body.endsWith("}")) {
+            try {
+                JSONObject jso = new JSONObject(body);
+                if (jso.has("user")) {
+                    user = jso.getString("user");
+                }
+                if (jso.has("message")) {
+                    msg = jso.getString("message");
+                }
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
 
         if (user == null || msg == null || user.isBlank() || msg.isBlank()) {
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
@@ -379,6 +393,9 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         if (msg.charAt(0) == '!') {
             PhantomBot.instance().handleCommand(user, msg.substring(1));
         } else if (PhantomBot.instance().getSession() != null) {
+            if (msg.startsWith("\\!")) {
+                msg = msg.substring(1);
+            }
             PhantomBot.instance().getSession().say(msg);
         } else {
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SERVICE_UNAVAILABLE));
