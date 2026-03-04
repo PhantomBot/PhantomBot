@@ -150,6 +150,22 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### discordsay
+
+Defined in script: _./javascript-source/core/transformers/basic.js_
+
+**Formulas:**
+
+- `(discordsay discordchannel:str message:str)` - send the given message to the specified Discord channel, including when triggering from Twitch chat
+
+**Labels:** twitch discord commandevent commands
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 #### echo
 
 Defined in script: _./javascript-source/core/transformers/basic.js_
@@ -268,6 +284,22 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### twitchsay
+
+Defined in script: _./javascript-source/core/transformers/basic.js_
+
+**Formulas:**
+
+- `(twitchsay message:str)` - send the given message to Twitch chat, including when triggering from Discord
+
+**Labels:** twitch discord commandevent commands
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
@@ -1001,6 +1033,56 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### discordcommand
+
+Defined in script: _./javascript-source/core/transformers/commands.js_
+
+**Formulas:**
+
+- `(discordcommand discordchannel:str name:str)` - explicitly execute a command on Discord, including when triggering from Twitch chat, with given name and pass no args, with the specified channel in the context
+- `(discordcommand discordchannel:str name:str args:str)` - explicitly execute a command on Discord, including when triggering from Twitch chat, with given name and pass args, with the specified channel in the context
+
+**Labels:** twitch discord commandevent commands
+
+
+_NOTE: The parameter `discordchannel` can be either the channel ID or the channel name_
+
+_NOTE: If this command tag is executed from Twitch chat, the sender must have already performed `!account link`_
+
+_on Discord for a sender to be defined in the command event and any Discord administrator permissions to apply;_
+
+_Otherwise, the command executes with a `null` sender_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### twitchcommand
+
+Defined in script: _./javascript-source/core/transformers/commands.js_
+
+**Formulas:**
+
+- `(twitchcommand name:str)` - explicitly execute a command on Twitch chat, including when triggering from Discord, with given name and pass no args
+- `(twitchcommand name:str args:str)` - explicitly execute a command on Twitch chat, including when triggering from Discord, with given name and pass args
+
+**Labels:** twitch discord commandevent commands
+
+
+_NOTE: If this command tag is executed from Discord, the sender must have already performed `!account link`_
+
+_on Discord for a sender to be defined in the command event and any Twitch chat permissions to apply;_
+
+_Otherwise, the command executes with a blank sender_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### customapi
 #### customapi
 
@@ -1099,6 +1181,22 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 &nbsp;
 
 ### discord
+#### channelid
+
+Defined in script: _./javascript-source/core/transformers/discord.js_
+
+**Formulas:**
+
+- `(channelid)` - returns the Discord channel ID from which the command was sent
+
+**Labels:** discord commandevent commands
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 #### cleardiscordactivity
 
 Defined in script: _./javascript-source/core/transformers/discord.js_
