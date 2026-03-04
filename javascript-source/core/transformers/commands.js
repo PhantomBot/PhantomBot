@@ -157,6 +157,55 @@
     }
 
     /*
+     * @transformer discordcommand
+     * @formula (discordcommand discordchannel:str name:str) explicitly execute a command on Discord, including when triggering from Twitch chat, with given name and pass no args, with the specified channel in the context
+     * @formula (discordcommand discordchannel:str name:str args:str) explicitly execute a command on Discord, including when triggering from Twitch chat, with given name and pass args, with the specified channel in the context
+     * @labels twitch discord commandevent commands
+     * @notes The parameter `discordchannel` can be either the channel ID or the channel name
+     * @notes If this command tag is executed from Twitch chat, the sender must have already performed `!account link`
+     * on Discord for a sender to be defined in the command event and any Discord administrator permissions to apply;
+     * Otherwise, the command executes with a `null` sender
+     */
+    function discordcommand(args) {
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        if (pargs !== null && pargs.length > 1) {
+            let channel = $.discordAPI.getChannel(pargs[0]);
+            let cmd = pargs[1];
+            let argStr = '';
+
+            if (pargs.length > 2) {
+                argStr = pargs[2];
+            }
+
+            if (channel !== null) {
+                let user = null;
+                let isAdmin = false;
+                let message = null;
+                if (args.platform === 'discord') {
+                    user = args.event.getDiscordUser();
+                    isAdmin = args.event.isAdmin();
+                    message = args.event.getDiscordMessage();
+                } else {
+                    user = $.discord.twitchToDiscord(args.event.getSender());
+                    if (user !== null) {
+                        user = $.discord.getUserById(user);
+                        if (user !== null) {
+                            isAdmin = $.discordAPI.isAdministrator(user);
+                        }
+                    }
+                }
+                Packages.tv.phantombot.event.EventBus.instance()
+                    .postAsync(new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(
+                        user, channel, message, cmd, argStr, isAdmin));
+            }
+        }
+
+        return {
+            result: ''
+        };
+    }
+
+    /*
      * @formula help
      * @formula (help message:str) if no arguments are provided to the command, outputs the provided message and then cancels the command
      * @labels twitch discord commandevent commands
@@ -173,12 +222,56 @@
         }
     }
 
+    /*
+     * @transformer twitchcommand
+     * @formula (twitchcommand name:str) explicitly execute a command on Twitch chat, including when triggering from Discord, with given name and pass no args
+     * @formula (twitchcommand name:str args:str) explicitly execute a command on Twitch chat, including when triggering from Discord, with given name and pass args
+     * @labels twitch discord commandevent commands
+     * @notes If this command tag is executed from Discord, the sender must have already performed `!account link`
+     * on Discord for a sender to be defined in the command event and any Twitch chat permissions to apply;
+     * Otherwise, the command executes with a blank sender
+     */
+    function twitchcommand(args) {
+        let cmd;
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        if (pargs !== null) {
+            cmd = pargs[0];
+            let argStr = '';
+
+            if (pargs.length > 1) {
+                argStr = pargs[1];
+            }
+
+            let sender = '';
+            let tags = null;
+            if (args.platform === 'discord') {
+                sender = $.discord.resolveTwitchName(args.event.getSenderId());
+                if (sender === null) {
+                    sender = '';
+                }
+            } else {
+                sender = args.event.getSender();
+                tags = args.event.getTags();
+            }
+            
+            Packages.tv.phantombot.event.EventBus.instance()
+                .postAsync(new Packages.tv.phantombot.event.command.CommandEvent(
+                    sender, cmd, argStr, tags));
+        }
+
+        return {
+            result: ''
+        };
+    }
+
     let transformers = [
         new $.transformers.transformer('command', ['twitch', 'discord', 'commandevent', 'commands'], command),
         new $.transformers.transformer('commandslist', ['twitch', 'commandevent', 'commands'], commandslist),
         new $.transformers.transformer('count', ['twitch', 'discord', 'noevent', 'commandevent', 'commands'], count),
         new $.transformers.transformer('delaycommand', ['twitch', 'discord', 'commandevent', 'commands'], delaycommand),
-        new $.transformers.transformer('help', ['twitch', 'discord', 'commandevent', 'commands'], help)
+        new $.transformers.transformer('discordcommand', ['twitch', 'discord', 'commandevent', 'commands'], discordcommand),
+        new $.transformers.transformer('help', ['twitch', 'discord', 'commandevent', 'commands'], help),
+        new $.transformers.transformer('twitchcommand', ['twitch', 'discord', 'commandevent', 'commands'], twitchcommand)
     ];
 
     $.transformers.addTransformers(transformers);
