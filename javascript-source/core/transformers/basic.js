@@ -128,6 +128,27 @@
     }
 
     /*
+     * @transformer discordsay
+     * @formula (discordsay discordchannel:str message:str) send the given message to the specified Discord channel, including when triggering from Twitch chat
+     * @labels twitch discord commandevent commands
+     */
+    function discordsay(args) {
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        if (pargs !== null && pargs.length > 1) {
+            let channel = $.discordAPI.getChannel(pargs[0]);
+            let argStr = pargs[1];
+
+            if (channel !== null) {
+                $.discord.say(channel, argStr);
+            }
+        }
+
+        return {
+            result: ''
+        };
+    }
+
+    /*
      * @transformer echo
      * @formula (echo) all arguments passed to the command
      * @formula (echo!) all arguments passed to the command, with trailing escape characters stripped
@@ -217,13 +238,28 @@
         }
     }
 
+    /*
+     * @transformer twitchsay
+     * @formula (twitchsay message:str) send the given message to Twitch chat, including when triggering from Discord
+     * @labels twitch discord commandevent commands
+     */
+    function twitchsay(args) {
+        $.say(args.args);
+
+        return {
+            result: ''
+        };
+    }
+
     let transformers = [
         new $.transformers.transformer('#', ['twitch', 'discord', 'noevent', 'basic'], randomInt),
         new $.transformers.transformer('delaysay', ['twitch', 'discord', 'commandevent', 'basic'], delaysay),
+new $.transformers.transformer('discordsay', ['twitch', 'discord', 'commandevent', 'basic'], discordsay),
         new $.transformers.transformer('echo', ['twitch', 'discord', 'commandevent', 'basic'], echo),
         new $.transformers.transformer('random', ['twitch', 'discord', 'noevent', 'basic'], random),
         new $.transformers.transformer('randomrank', ['twitch', 'noevent', 'basic'], randomrank),
-        new $.transformers.transformer('repeat', ['twitch', 'discord', 'noevent', 'basic'], repeat)
+        new $.transformers.transformer('repeat', ['twitch', 'discord', 'noevent', 'basic'], repeat),
+        new $.transformers.transformer('twitchsay', ['twitch', 'discord', 'commandevent', 'basic'], twitchsay)
     ];
 
     for (let i = 1; i <= 9; i++) {
