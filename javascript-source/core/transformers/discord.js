@@ -17,6 +17,17 @@
 
 (function () {
     /*
+     * @transformer channelid
+     * @formula (channelid) returns the Discord channel ID from which the command was sent
+     * @labels discord commandevent commands
+     */
+    function channelid(args) {
+        return {
+            result: args.event.getChannelId()
+        };
+    }
+
+    /*
      * @transformer cleardiscordactivity
      * @formula (cleardiscordactivity) removes the bots current activity in Discord, setting it to just plain Online
      * @labels twitch discord noevent presence
@@ -186,6 +197,7 @@
     }
 
     let transformers = [
+        new $.transformers.transformer('channelid', ['discord', 'commandevent', 'commands'], channelid),
         new $.transformers.transformer('cleardiscordactivity', ['twitch', 'discord', 'noevent', 'presence'], cleardiscordactivity),
         new $.transformers.transformer('removerole', ['discord', 'noevent', 'roles'], removerole),
         new $.transformers.transformer('setdiscordcompeting', ['twitch', 'discord', 'noevent', 'presence'], setdiscordcompeting),

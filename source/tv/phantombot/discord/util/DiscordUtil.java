@@ -1268,7 +1268,7 @@ public class DiscordUtil {
             throw new IllegalArgumentException("message object was null");
         }
 
-        com.gmt2001.Console.debug.println("Deleteing Discord message: " + message.getId().asString());
+        com.gmt2001.Console.debug.println("Deleting Discord message: " + message.getId().asString());
 
         message.delete().doOnError(e -> {
             if (e instanceof ClientException ce) {
