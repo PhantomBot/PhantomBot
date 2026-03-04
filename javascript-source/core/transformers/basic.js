@@ -254,7 +254,7 @@
     let transformers = [
         new $.transformers.transformer('#', ['twitch', 'discord', 'noevent', 'basic'], randomInt),
         new $.transformers.transformer('delaysay', ['twitch', 'discord', 'commandevent', 'basic'], delaysay),
-new $.transformers.transformer('discordsay', ['twitch', 'discord', 'commandevent', 'basic'], discordsay),
+        new $.transformers.transformer('discordsay', ['twitch', 'discord', 'commandevent', 'basic'], discordsay),
         new $.transformers.transformer('echo', ['twitch', 'discord', 'commandevent', 'basic'], echo),
         new $.transformers.transformer('random', ['twitch', 'discord', 'noevent', 'basic'], random),
         new $.transformers.transformer('randomrank', ['twitch', 'noevent', 'basic'], randomrank),
