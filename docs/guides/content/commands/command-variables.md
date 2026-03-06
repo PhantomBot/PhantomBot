@@ -94,11 +94,16 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 **Formulas:**
 
 - `(n:int)` - the n-th argument (escaped by default)
+- `(n:int>)` - all argument text starting at the n-th argument
 - `(n:int!)` - the n-th argument, with trailing escape characters stripped (escaped by default)
 - `(n:int=tag:str)` - the n-th argument, if given, else another tag to replace this one
+- `(n:int>=tag:str)` - all argument text starting at the n-th argument, if given, else another tag to replace this one
 - `(n:int!=tag:str)` - the n-th argument, if given, with trailing escape characters stripped, else another tag to replace this one
+- `(n:int>!=tag:str)` - all argument text starting at the n-th argument, if given, with trailing escape characters stripped, else another tag to replace this one
 - `(n:int|default:str)` - the n-th argument, if given, else a provided default value
+- `(n:int>|default:str)` - all argument text starting at the n-th argument, if given, else a provided default value
 - `(n:int!|default:str)` - the n-th argument, if given, with trailing escape characters stripped, else a provided default value
+- `(n:int>!|default:str)` - all argument text starting at the n-th argument, if given, with trailing escape characters stripped, else a provided default value
 
 **Labels:** twitch discord commandevent basic
 
@@ -126,6 +131,13 @@ User: !hug OtherUser
 Bot: User hugs OtherUser!
 User: !hug
 Bot: User hugs themself!
+```
+
+**Example:**
+```text
+Caster: !addcom !hit (sender) hits (1) with (2>).
+User: !hit OtherUser some rocks
+Bot: User hits OtherUser with some rocks.
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
