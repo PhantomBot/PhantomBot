@@ -19,7 +19,7 @@
 
 (function () {
     let transformers = {},
-            tagPattern = Packages.java.util.regex.Pattern.compile("(?:[^\\\\]|^)(\\(([^\\\\\\s\\|!=()]*)([!]?[\\s!=\\|])?((?:\\\\\\(|\\\\\\)|[^()])*)?(?<!\\\\)\\))"),
+            tagPattern = Packages.java.util.regex.Pattern.compile("(?:[^\\\\]|^)(\\(([^\\\\\\s\\|!=()]*)([>]?[!]?[\\s!=\\|>])?((?:\\\\\\(|\\\\\\)|[^()])*)?(?<!\\\\)\\))"),
             _lock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             debugon = false;
 
@@ -37,7 +37,7 @@
      * param {object} args - a js object that may contain any of the following params
      *
      *
-     * param {jsString} args.argsep - any seperator between the tag name and the tag args. Valid values (RegEx): /[\s=\|]/
+     * param {jsString} args.argsep - any separator between the tag name and the tag args. Valid values (RegEx): /[>]?[!]?[\s!=\|>]/
      * * Example: (mytag|arg1 arg2 arg3) - argsep = '|'
      *
      * param {jsString} args.args - any arguments provided in the tag itself
