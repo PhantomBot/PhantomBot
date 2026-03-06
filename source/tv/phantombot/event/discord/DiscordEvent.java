@@ -124,7 +124,7 @@ public abstract class DiscordEvent extends Event {
      * @return {@link #getUsername()} converted to lowercase
      */
     public String getSender() {
-        return this.getUsername().toLowerCase();
+        return this.getUsername() == null ? null : this.getUsername().toLowerCase();
     }
 
     /**
