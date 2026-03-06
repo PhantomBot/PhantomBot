@@ -46,11 +46,16 @@
     /*
      * @transformer buildArgs
      * @formula (n:int) the n-th argument (escaped by default)
+     * @formula (n:int>) all argument text starting at the n-th argument
      * @formula (n:int!) the n-th argument, with trailing escape characters stripped (escaped by default)
      * @formula (n:int=tag:str) the n-th argument, if given, else another tag to replace this one
+     * @formula (n:int>=tag:str) all argument text starting at the n-th argument, if given, else another tag to replace this one
      * @formula (n:int!=tag:str) the n-th argument, if given, with trailing escape characters stripped, else another tag to replace this one
+     * @formula (n:int>!=tag:str) all argument text starting at the n-th argument, if given, with trailing escape characters stripped, else another tag to replace this one
      * @formula (n:int|default:str) the n-th argument, if given, else a provided default value
+     * @formula (n:int>|default:str) all argument text starting at the n-th argument, if given, else a provided default value
      * @formula (n:int!|default:str) the n-th argument, if given, with trailing escape characters stripped, else a provided default value
+     * @formula (n:int>!|default:str) all argument text starting at the n-th argument, if given, with trailing escape characters stripped, else a provided default value
      * @labels twitch discord commandevent basic
      * @example Caster: !addcom !love (sender) loves (1).
      * User: !love monkeys
@@ -65,12 +70,19 @@
      * Bot: User hugs OtherUser!
      * User: !hug
      * Bot: User hugs themself!
+     * @example Caster: !addcom !hit (sender) hits (1) with (2>).
+     * User: !hit OtherUser some rocks
+     * Bot: User hits OtherUser with some rocks.
      * @raw sometimes
      * @cached
      */
     function buildArgs(n) {
         return function (args) {
             let arg = args.event.getArgs()[n - 1];
+            if (args.argsep.startsWith('>')) {
+                args.argsep = args.argsep.substring(1);
+                arg = $.parseArgs(args.event.getArguments(), ' ', n, true);
+            }
             if (!args.args) {
                 return {result: arg !== undefined ? (args.argsep === '!' ? $.transformers.stripTrailingEscape(arg) : arg) : ''};
             } else {
