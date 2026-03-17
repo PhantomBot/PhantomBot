@@ -314,7 +314,7 @@ public final class TwitchCache implements Listener {
                             this.nextLogoCheck = Instant.now().plus(1, ChronoUnit.HOURS);
                             HttpClientResponse headResponse = HttpClient.head(URIUtil.create(data.getString("profile_image_url")));
 
-                            if (headResponse.isSuccess()) {
+                            if (headResponse.isSuccess() && headResponse.responseHeaders().get("last-modified") != null) {
                                 ZonedDateTime lastModified = ZonedDateTime.parse(headResponse.responseHeaders().get("last-modified"), DateTimeFormatter.RFC_1123_DATE_TIME);
 
                                 if (lastModified.isAfter(this.latestLogo) || !oldLogoLink.equals(data.getString("profile_image_url"))) {
