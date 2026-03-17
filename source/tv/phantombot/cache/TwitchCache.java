@@ -90,8 +90,6 @@ public final class TwitchCache implements Listener {
     private Instant offlineDelay = null;
     private Instant offlineTimeout = Instant.MIN;
     private ZonedDateTime latestClip = null;
-    private ZonedDateTime latestLogo = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault());
-    private Instant nextLogoCheck = Instant.EPOCH;
     private boolean isAffiliate = false;
     private boolean isPartner = false;
     private ScheduledFuture<?> streamUpdate;
@@ -135,6 +133,7 @@ public final class TwitchCache implements Listener {
             if (streamTitlen != null) {
                 this.streamTitle = streamTitlen;
             }
+            this.updateIconAndPartner();
             this.syncStreamStatus(true);
             this.streamUpdate = ExecutorService.scheduleAtFixedRate(() -> {
                 com.gmt2001.Console.debug.println("TwitchCache::updateCache");
@@ -228,6 +227,40 @@ public final class TwitchCache implements Listener {
     }
 
     /**
+     * Updates the profile icon for the panel and partner status
+     */
+    private void updateIconAndPartner() {
+        Helix.instance().getUsersAsync(List.of(ViewerCache.instance().broadcaster().id()), null)
+            .doOnSuccess(jso -> {
+                if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
+                    if (jso.getJSONArray("data").length() > 0) {
+                        JSONObject data = jso.getJSONArray("data").getJSONObject(0);
+
+                        String oldLogoLink = this.logoLink;
+                        this.logoLink = data.getString("profile_image_url");
+                        this.setAffiliatePartner(data.getString("broadcaster_type").equals("affiliate"), data.getString("broadcaster_type").equals("partner"));
+
+                        if (!oldLogoLink.equals(data.getString("profile_image_url"))) {
+                            HttpClientResponse logoResponse = HttpClient.get(URIUtil.create(data.getString("profile_image_url")));
+
+                            if (logoResponse.isSuccess()) {
+                                Path logoPath = Paths.get("./web/panel/img/logo.jpeg");
+
+                                try {
+                                    Files.createDirectories(logoPath.getParent());
+
+                                    Files.write(logoPath, logoResponse.rawResponseBody(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+                                } catch (IOException ex) {
+                                    com.gmt2001.Console.err.printStackTrace(ex);
+                                }
+                            }
+                        }
+                    }
+                }
+            }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
+    }
+
+    /**
      * Polls the Twitch API and updates the database cache with information. This method also sends events when appropriate.
      */
     /**
@@ -297,46 +330,6 @@ public final class TwitchCache implements Listener {
                 if (!PhantomBot.twitchCacheReady) {
                     com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
                     PhantomBot.instance().setTwitchCacheReady(true);
-                }
-            }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
-
-        Helix.instance().getUsersAsync(List.of(ViewerCache.instance().broadcaster().id()), null)
-            .doOnSuccess(jso -> {
-                if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
-                    if (jso.getJSONArray("data").length() > 0) {
-                        JSONObject data = jso.getJSONArray("data").getJSONObject(0);
-
-                        String oldLogoLink = this.logoLink;
-                        this.logoLink = data.getString("profile_image_url");
-                        this.setAffiliatePartner(data.getString("broadcaster_type").equals("affiliate"), data.getString("broadcaster_type").equals("partner"));
-
-                        if (Instant.now().isAfter(this.nextLogoCheck)) {
-                            this.nextLogoCheck = Instant.now().plus(1, ChronoUnit.HOURS);
-                            HttpClientResponse headResponse = HttpClient.head(URIUtil.create(data.getString("profile_image_url")));
-
-                            if (headResponse.isSuccess() && headResponse.responseHeaders().get("last-modified") != null) {
-                                ZonedDateTime lastModified = ZonedDateTime.parse(headResponse.responseHeaders().get("last-modified"), DateTimeFormatter.RFC_1123_DATE_TIME);
-
-                                if (lastModified.isAfter(this.latestLogo) || !oldLogoLink.equals(data.getString("profile_image_url"))) {
-                                    HttpClientResponse logoResponse = HttpClient.get(URIUtil.create(data.getString("profile_image_url")));
-
-                                    if (logoResponse.isSuccess()) {
-                                        Path logoPath = Paths.get("./web/panel/img/logo.jpeg");
-
-                                        try {
-                                            Files.createDirectories(logoPath.getParent());
-
-                                            Files.write(logoPath, logoResponse.rawResponseBody(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                                            this.latestLogo = lastModified;
-                                        } catch (IOException ex) {
-                                            com.gmt2001.Console.err.printStackTrace(ex);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
 
