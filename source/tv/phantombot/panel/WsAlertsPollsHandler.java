@@ -136,6 +136,51 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
         }
     }
 
+    public void alertText(String alertText) {
+        try {
+            com.gmt2001.Console.debug.println("alertText: " + alertText);
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object()
+                    .key("text").value(alertText);
+
+            jsonObject.endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    public void alertText(String alertText, String alertCSS) {
+        try {
+            com.gmt2001.Console.debug.println("alertText: " + alertText);
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object()
+                    .key("text").value(alertText)
+                    .key("css").value(alertCSS);
+
+            jsonObject.endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    public void alertText(String alertText, String alertCSS, float alertDuration) {
+        try {
+            com.gmt2001.Console.debug.println("alertText: " + alertText);
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object()
+                    .key("text").value(alertText)
+                    .key("css").value(alertCSS)
+                    .key("duration").value(alertDuration);
+
+            jsonObject.endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
     public void stopMedia(){
         stopMedia("all");
     }
