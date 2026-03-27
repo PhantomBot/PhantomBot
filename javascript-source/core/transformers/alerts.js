@@ -21,8 +21,8 @@
      * @formula (alert fileName:str) sends a GIF/video alert to the alerts overlay, fading out after 3 seconds
      * @formula (alert fileName:str, durationSeconds:int) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with the audio volume set to 0.8
      * @formula (alert fileName:str, durationSeconds:int, volume:float) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0
-     * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
-     * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text, message:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
+     * @formula (alert fileName:str, durationSeconds:int, volume:float, css:str) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
+     * @formula (alert fileName:str, durationSeconds:int, volume:float, css:str, message:str) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
      * @labels twitch discord noevent alerts
      * @notes this tag uses the _config/gif-alerts_ folder
      * @notes if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume
@@ -35,6 +35,61 @@
             $.alertspollssocket.alertImage(match[1]);
             return {result: '', cache: false};
         }
+    }
+    /*
+     * @transformer alerttext
+     * @formula (alerttext message:str) sends a text alert to the alerts overlay, fading out after 3 seconds
+     * @formula (alerttext -d duration:float, message:str) sends a text alert to the alerts overlay, fading out after duration seconds
+     * @formula (alerttext -c css:str, message:str) sends a text alert with the specified CSS to the alerts overlay, fading out after 3 seconds
+     * @formula (alerttext -d duration:float, -c css:str, message:str) sends a text alert with the specified CSS to the alerts overlay, fading out after duration seconds
+     * @labels twitch discord noevent alerts
+     */
+    function alert(args) {
+        let alertText = args.args;
+        let alertCSS = null;
+        let alertDuration = null;
+
+        if (alertText.includes(',')) {
+            if (alertText.trim().substring(0, 2) === '-d') {
+                alertDuration = parseInt(alertText.substring(2, alertText.indexOf(',')).trim());
+                if (isNaN(alertDuration)) {
+                    alertDuration = null;
+                }
+                alertText = alertText.substring(alertText.indexOf(',') + 1);
+            }
+            if (alertText.trim().substring(0, 2) === '-c') {
+                alertCSS = alertText.substring(2, alertText.indexOf(',')).trim();
+                alertText = alertText.substring(alertText.indexOf(',') + 1);
+            }
+        }
+
+        if (alertText.includes(',')) {
+            if (alertText.trim().substring(0, 2) === '-d') {
+                alertDuration = parseInt(alertText.substring(2, alertText.indexOf(',')).trim());
+                if (isNaN(alertDuration)) {
+                    alertDuration = null;
+                }
+                alertText = alertText.substring(alertText.indexOf(',') + 1);
+            }
+            if (alertText.trim().substring(0, 2) === '-c') {
+                alertCSS = alertText.substring(2, alertText.indexOf(',')).trim();
+                alertText = alertText.substring(alertText.indexOf(',') + 1);
+            }
+        }
+
+        if (alertText.trim().length > 0) {
+            if (alertDuration !== null && alertCSS !== null) {
+                $.alertspollssocket.alertText(alertText, alertCSS, alertDuration);
+            } else if (alertDuration !== null) {
+                $.alertspollssocket.alertText(alertText, alertDuration);
+            } else if (alertCSS !== null) {
+                $.alertspollssocket.alertText(alertText, alertCSS);
+            } else {
+                $.alertspollssocket.alertText(alertText);
+            }
+        }
+        
+        return {result: '', cache: false};
     }
 
     /*

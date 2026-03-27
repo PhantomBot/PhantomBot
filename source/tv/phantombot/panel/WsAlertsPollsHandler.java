@@ -165,6 +165,21 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
         }
     }
 
+    public void alertText(String alertText, float alertDuration) {
+        try {
+            com.gmt2001.Console.debug.println("alertText: " + alertText);
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object()
+                    .key("text").value(alertText)
+                    .key("duration").value(alertDuration);
+
+            jsonObject.endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
     public void alertText(String alertText, String alertCSS, float alertDuration) {
         try {
             com.gmt2001.Console.debug.println("alertText: " + alertText);
