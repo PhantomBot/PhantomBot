@@ -31,6 +31,7 @@ $(function () {
             AUDIO: 1,
             VIDEO: 2,
             GIF: 4,
+            TEXT: 8
         };
 
     let playingMask = PLAYBACK_TYPE.NONE,
@@ -363,6 +364,10 @@ $(function () {
                         isPlayed = true;
                         printDebug('Processing event: ' + JSON.stringify(event));
                         handleMacro(event);
+                    } else if (event.text !== undefined) {
+                        isPlayed = true;
+                        printDebug('Processing event: ' + JSON.stringify(event));
+                        handleText(event);
                     } else if (event.stopMedia !== undefined) {
                         isPlayed = true;
                         printDebug('Processing event: ' + JSON.stringify(event));
@@ -487,11 +492,27 @@ $(function () {
         audioEl.src = audioUrl;
         playAudio();
     }
+
+    function handleText(event) {
+        addAlertText(event.text, event.css);
+        let duration = 3000;
+        if (event.duration) {
+            let newDuration = parseInt(event.duration);
+            if (!isNaN(newDuration)) {
+                duration = newDuration * 1000;
+            }
+        }
+        playTimeout = setTimeout(() => {
+            printDebug('Text complete (duration), after: ' + (duration/1000) + ' seconds');
+            stopAllPlayingMedia();
+        }, duration);
+    }
     
-    async function addAlertText(alertText, alertCSS) {
+    function addAlertText(alertText, alertCSS) {
         if (!alertText) {
             return;
         }
+        setPlayingBit(PLAYBACK_TYPE.TEXT);
 
         // p object to hold custom gif alert text and style
         let textObj = $('<p/>', {
@@ -501,12 +522,13 @@ $(function () {
         $('#alert-text').append(textObj).fadeIn(fadeTime);
     }
 
-    async function removeAlertText() {
+    function removeAlertText() {
         $('#alert-text').fadeOut((fadeTime - 10), function () { //Remove the text with a fade out slight earlier than the video/gif to prevent a jump during removal.
             let t = $(this);
             // Remove the p tag
             t.find('p').remove();
         });
+        clearPlayingBit(PLAYBACK_TYPE.TEXT);
     }
 
     /**
@@ -582,6 +604,15 @@ $(function () {
         checkAndClearPlayTimeout();
     }
 
+    async function stopText() {
+        if (!isPlayingBit(PLAYBACK_TYPE.TEXT)) {
+            return;
+        }
+
+        removeAlertText();
+        await sleep(fadeTime);
+    }
+
     /**
      * Stops the video playback if it's currently playing.
      */
@@ -633,11 +664,12 @@ $(function () {
             return;
         }
  
-        printDebug('Stopping media: (Audio: ' + isPlayingBit(PLAYBACK_TYPE.AUDIO) + ') (Video: ' + isPlayingBit(PLAYBACK_TYPE.VIDEO) + ') (Gif: ' + isPlayingBit(PLAYBACK_TYPE.GIF) + ')');
+        printDebug('Stopping media: (Audio: ' + isPlayingBit(PLAYBACK_TYPE.AUDIO) + ') (Video: ' + isPlayingBit(PLAYBACK_TYPE.VIDEO) + ') (Gif: ' + isPlayingBit(PLAYBACK_TYPE.GIF) + ') (Text: ' + isPlayingBit(PLAYBACK_TYPE.TEXT) + ')');
 
         await stopGIF(); // wait for the gif to disappear before stopping audio
         stopAudio();
         stopVideo();
+        await stopText();
     }
 
     async function handleStopMedia(json) {
@@ -656,6 +688,10 @@ $(function () {
 
         if (json.stopMedia.indexOf('audio') >= 0) {
             stopAudio();
+        } 
+
+        if (json.stopMedia.indexOf('text') >= 0) {
+            await stopText();
         }    
     }
 
@@ -890,7 +926,7 @@ $(function () {
             switch (element.elementType) {
                 case 'clip':
                     if (getOptionSetting(CONF_ENABLE_VIDEO_CLIPS, 'true') === 'true') {
-                        await handleVideoClip(element);
+                        handleVideoClip(element);
                     }
                     break;
                 case 'emote':
@@ -900,9 +936,12 @@ $(function () {
                 case 'pause':
                     await sleep(element.duration);
                     break;
+                case 'text':
+                    handleText(element);
+                    break;
                 case 'sound':
                     if (getOptionSetting('enableAudioHooks', getOptionSetting('allow-audio-hooks', 'false')) === 'true') {
-                        await handleAudioHook({audio_panel_hook: element.filename, duration: element.duration});
+                        handleAudioHook({audio_panel_hook: element.filename, duration: element.duration});
                     }
                     break;
             }
