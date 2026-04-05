@@ -1,0 +1,103 @@
+name: Cache Clear
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Dry Run'
+        default: false
+        type: boolean
+      keys:
+        description: 'Keys (awk regex)'
+        type: string
+      refs:
+        description: 'Refs (awk regex)'
+        type: string
+      created-start:
+        description: 'Created At (Start; ISO8601)'
+        type: string
+        default: '1970-01-01T00:00:00.00000Z'
+      created-end:
+        description: 'Created At (End; ISO8601)'
+        type: string
+        default: '2099-01-01T00:00:00.00000Z'
+      created-op:
+        description: 'Enable Created At Filter'
+        type: boolean
+        default: false
+      accessed-start:
+        description: 'Last Accessed At (Start; ISO8601)'
+        type: string
+        default: '1970-01-01T00:00:00.00000Z'
+      accessed-end:
+        description: 'Last Accessed At (End; ISO8601)'
+        type: string
+        default: '2099-01-01T00:00:00.00000Z'
+      accessed-op:
+        description: 'Enable Last Accessed At Filter'
+        type: boolean
+        default: false
+
+jobs:
+  cache-control:
+    name: Cache Clear
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v6
+    - name: Execute Actions
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.event.repository.full_name }}
+        DRY_RUN: ${{ github.event.inputs.dry-run }}
+        KEYS: ${{ github.event.inputs.keys }}
+        REFS: ${{ github.event.inputs.refs }}
+        CREATED_START: ${{ github.event.inputs.created-start }}
+        CREATED_END: ${{ github.event.inputs.created-end }}
+        CREATED_OP: ${{ github.event.inputs.created-op }}
+        ACCESSED_START: ${{ github.event.inputs.accessed-start }}
+        ACCESSED_END: ${{ github.event.inputs.accessed-end }}
+        ACCESSED_OP: ${{ github.event.inputs.accessed-op }}
+      run: |
+        echo "::group::Get Cache List"
+        cache_list=$(gh cache list --limit 9999 --json id,key,ref,createdAt,lastAccessedAt -q '.[] | [.id, .key, .ref, .createdAt, .lastAccessedAt] | @tsv')
+        echo "$cache_list"
+        echo "::endgroup::"
+        if [ ! -z "$KEYS" ]; then
+          echo "::group::Filter by Keys"
+          cache_list=$(echo "$cache_list" | awk -v tgt="$KEYS" '$2 ~ tgt')
+          echo "$cache_list"
+          echo "::endgroup::"
+        fi
+        if [ ! -z "$REFS" ]; then
+          echo "::group::Filter by Refs"
+          cache_list=$(echo "$cache_list" | awk -v tgt="$REFS" '$3 ~ tgt')
+          echo "$cache_list"
+          echo "::endgroup::"
+        fi
+        if [ "$CREATED_OP" = "true" ]; then
+          echo "::group::Filter by Created At range"
+          cache_list=$(echo "$cache_list" | awk -v start="$CREATED_START" -v end="$CREATED_END" '$4 >= start && $4 <= end')
+          echo "$cache_list"
+          echo "::endgroup::"
+        fi
+        if [ "$ACCESSED_OP" = "true" ]; then
+          echo "::group::Filter by Last Accessed At range"
+          cache_list=$(echo "$cache_list" | awk -v start="$ACCESSED_START" -v end="$ACCESSED_END" '$5 >= start && $5 <= end')
+          echo "$cache_list"
+          echo "::endgroup::"
+        fi
+        if [ "$DRY_RUN" = "true" ]; then
+          echo "::group::Dry Run"
+          echo "Would have deleted:"
+          echo "$cache_list"
+          echo "::endgroup::"
+        else
+          echo "::group::Delete Cache"
+          cache_ids=$(echo "$cache_list" | awk '{ print $1 }')
+          for id in $cache_ids; do
+            echo "$cache_list" | awk -v tgt="$id" '$1 == tgt'
+            gh cache delete $id
+          done
+          echo "::endgroup::"
+        fi
