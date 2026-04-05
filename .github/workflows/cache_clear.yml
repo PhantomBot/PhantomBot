@@ -60,7 +60,7 @@ jobs:
         ACCESSED_OP: ${{ github.event.inputs.accessed-op }}
       run: |
         echo "::group::Get Cache List"
-        cache_list=$(gh cache list --json id,key,ref,createdAt,lastAccessedAt -q '.[] | [.id, .key, .ref, .createdAt, .lastAccessedAt] | @tsv')
+        cache_list=$(gh cache list --limit 9999 --json id,key,ref,createdAt,lastAccessedAt -q '.[] | [.id, .key, .ref, .createdAt, .lastAccessedAt] | @tsv')
         echo "$cache_list"
         echo "::endgroup::"
         if [ ! -z "$KEYS" ]; then
