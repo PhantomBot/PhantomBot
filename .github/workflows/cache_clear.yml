@@ -95,7 +95,7 @@ jobs:
         else
           echo "::group::Delete Cache"
           cache_ids=$(echo "$cache_list" | awk '{ print $1 }')
-          for id in "$cache_ids"; do
+          for id in $cache_ids; do
             echo "$cache_list" | awk -v tgt="$id" '$1 == tgt'
             gh cache delete $id
           done
