@@ -238,7 +238,7 @@
     function isMod(username, tags) {
         $.consoleDebug('');
         if (checkTags(tags)) {
-            if ($.strlen(tags.getOrDefault('user-type', '')) > 0 || tags.getOrDefault('mod', '0').equals('1')) {
+            if (($.strlen(tags.getOrDefault('user-type', '')) > 0 && !tags.getOrDefault('user-type', '').equals('staff')) || tags.getOrDefault('mod', '0').equals('1')) {
                 return true;
             }
         }
