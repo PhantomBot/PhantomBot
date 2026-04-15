@@ -436,7 +436,7 @@
         var reactionEvent = event.getEvent(),
                 reactionUser = event.getSenderId();
 
-        if (event.getReactionEmoji().asUnicodeEmoji().equals(Packages.discord4j.core.object.reaction.ReactionEmoji.unicode('❌'))) {
+        if (event.getReactionEmoji().asUnicodeEmoji().equals(Packages.discord4j.core.object.emoji.Emoji.unicode('❌'))) {
             var messageID = reactionEvent.getMessage().block().getId().asString(),
                     messageInArray = messageDeleteArray[messageID];
             if (messageInArray !== undefined) {

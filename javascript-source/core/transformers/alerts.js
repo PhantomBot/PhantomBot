@@ -44,7 +44,7 @@
      * @formula (alerttext -d duration:float, -c css:str, message:str) sends a text alert with the specified CSS to the alerts overlay, fading out after duration seconds
      * @labels twitch discord noevent alerts
      */
-    function alert(args) {
+    function alerttext(args) {
         let alertText = args.args;
         let alertCSS = null;
         let alertDuration = null;
@@ -120,6 +120,7 @@
 
     let transformers = [
         new $.transformers.transformer('alert', ['twitch', 'discord', 'noevent', 'alerts'], alert),
+        new $.transformers.transformer('alerttext', ['twitch', 'discord', 'noevent', 'alerts'], alerttext),
         new $.transformers.transformer('playsound', ['twitch', 'discord', 'noevent', 'alerts'], playsound)
     ];
 
