@@ -119,7 +119,7 @@
     }
 
     let transformers = [
-        new $.transformers.transformer('alert', ['twitch', 'discord', 'noevent', 'alerts'], alerttext),
+        new $.transformers.transformer('alert', ['twitch', 'discord', 'noevent', 'alerts'], alert),
         new $.transformers.transformer('alerttext', ['twitch', 'discord', 'noevent', 'alerts'], alerttext),
         new $.transformers.transformer('playsound', ['twitch', 'discord', 'noevent', 'alerts'], playsound)
     ];
