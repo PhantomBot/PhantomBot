@@ -33,6 +33,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 import com.gmt2001.PathValidator;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.util.concurrent.ExecutorService;
@@ -1559,6 +1561,11 @@ public class DiscordUtil {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
 
+            return null;
+        }
+
+        @Override
+        public @Nullable String description() {
             return null;
         }
     }
