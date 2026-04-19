@@ -521,6 +521,9 @@ $(function () {
         }).html(alertText);
         // Append the custom text object to the page
         $('#alert-text').append(textObj).fadeIn(fadeTime);
+        const textHeight = $('#text-alert-container')[0].offsetHeight;
+        videoEl.style.maxHeight = 'calc(100vh - ' + textHeight + 'px)';
+        imgEl.style.maxHeight = 'calc(100vh - ' + textHeight + 'px)';
     }
 
     function removeAlertText() {
@@ -529,6 +532,8 @@ $(function () {
             // Remove the p tag
             t.find('p').remove();
         });
+        videoEl.style.removeProperty('max-height');
+        imgEl.style.removeProperty('max-height');
         clearPlayingBit(PLAYBACK_TYPE.TEXT);
     }
 
