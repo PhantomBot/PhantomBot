@@ -20,9 +20,9 @@ $(function () {
     const webSocket = getWebSocket(),
         queryMap = getQueryMap(),
         isDebug = getOptionSetting('enableDebug', localStorage.getItem('phantombot_alerts_debug') === 'true'),
-        imgEl = document.getElementById('alert'),
-        audioEl = document.getElementById('alertAudio'),
-        videoEl = document.getElementById('alertVideo'),
+        imgEl = document.getElementById('alert-image'),
+        audioEl = document.getElementById('alert-audio'),
+        videoEl = document.getElementById('alert-video'),
         SILENT_WAV =
             'data:audio/wav;base64,' +
             'UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
@@ -291,9 +291,9 @@ $(function () {
         await audioEl.play().catch(function (err) {
                 if (String(err.name) === 'NotAllowedError' || String(err).includes('NotAllowedError')) {
                     printDebug('Audio autoplay not allowed. User must interact!', true);
-                    $('.main-alert').append($('<button/>', {
+                    $('#alerts-container').append($('<button/>', {
                             'html': 'Click me to activate audio hooks.',
-                            'style': 'top: 50%; position: absolute; font-size: 30px; font-weight: 30; cursor: pointer;'
+                            'id': 'browser-interaction-button'
                         }).on('click', async function () {
                             $(this).remove();
                         }));
@@ -467,6 +467,7 @@ $(function () {
 
         imgEl.setAttribute('style', gifCss);
         imgEl.src = gifUrl;
+        imgEl.style.display = "block";
         imgEl.className = 'fade-in';
         if (gifText) {
             addAlertText(gifText, gifCss);
@@ -595,7 +596,8 @@ $(function () {
             }
 
             imgEl.removeAttribute('src');
-            imgEl.removeAttribute('style')
+            imgEl.removeAttribute('style');
+            imgEl.style.display = "none";
             clearPlayingBit(PLAYBACK_TYPE.GIF);
         } catch (e) {
             console.warn('Error: gif stop failed:' + e, true);
@@ -648,6 +650,7 @@ $(function () {
             videoEl.removeAttribute('style')
             videoEl.load();
             videoEl.volume = 1;
+            videoEl.style.display = "none";
             clearPlayingBit(PLAYBACK_TYPE.VIDEO);
         } catch (e) {
             console.warn('Error: video stop failed:' + e, true);
@@ -789,7 +792,7 @@ $(function () {
         await emote.decode();
         printDebug('Animating emote');
 
-        emote = document.getElementById('main-emotes').appendChild(emote);
+        emote = document.getElementById('emotes-container').appendChild(emote);
         if (animationName === 'flyUp') {
             emoteFlyingUp(emote);
         } else {
@@ -800,7 +803,7 @@ $(function () {
     function emoteAnimated(emote, animationName, duration) {
         emote.style.top = getRandomInt(-5, 95) + 'vh';
         emote.style.left = getRandomInt(-5, 95) + 'vw';
-        emote.classList.add('animatedEmote');
+        emote.classList.add('animated-emote');
         emote.classList.add('animate__animated');
         emote.classList.add('animate__' + animationName);
         emote.classList.add('animate__infinite');
@@ -888,6 +891,7 @@ $(function () {
         videoEl.volume = volume;
         videoEl.muted = false;
         videoEl.src = defaultPath + encodeURIComponent(filename);
+        videoEl.style.display = "block";
         
         if (fullscreen) {
             videoEl.className = 'fullscreen';
@@ -1012,7 +1016,7 @@ $(function () {
     };
 
     fadeTime = getOptionSetting(CONF_FADE_DURTAION, 3e2);
-    document.querySelector(':root').style.setProperty('--fadeTime', fadeTime + 'ms');
+    document.querySelector(':root').style.setProperty('--fade-time', fadeTime + 'ms');
 
     // Handle processing the queue.
     setInterval(handleQueue, 5e2);
