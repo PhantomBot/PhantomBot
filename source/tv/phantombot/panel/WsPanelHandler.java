@@ -17,6 +17,7 @@
 package tv.phantombot.panel;
 
 import com.gmt2001.TestData;
+import com.gmt2001.datastore.KeyValue;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
@@ -707,10 +708,9 @@ public class WsPanelHandler implements WsFrameHandler {
 
         jsonObject.object().key("query_id").value(uniqueID).key("results").array();
 
-        String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
-        for (String dbKey : dbKeys) {
-            String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
-            jsonObject.object().key("table").value(table).key("key").value(dbKey).key("value").value(value).endObject();
+        KeyValue[] rows = PhantomBot.instance().getDataStore().GetKeyValueList(table, "");
+        for (KeyValue row : rows) {
+            jsonObject.object().key("table").value(table).key("key").value(row.getKey()).key("value").value(row.getValue()).endObject();
         }
 
         jsonObject.endArray().endObject();
