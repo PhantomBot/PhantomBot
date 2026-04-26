@@ -28,8 +28,8 @@ Defined in script: _./javascript-source/core/transformers/alerts.js_
 - `(alert fileName:str)` - sends a GIF/video alert to the alerts overlay, fading out after 3 seconds
 - `(alert fileName:str, durationSeconds:int)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with the audio volume set to 0.8
 - `(alert fileName:str, durationSeconds:int, volume:float)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0
-- `(alert fileName:str, durationSeconds:int, volume:float, css:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
-- `(alert fileName:str, durationSeconds:int, volume:float, css:text, message:text)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
+- `(alert fileName:str, durationSeconds:int, volume:float, css:str)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
+- `(alert fileName:str, durationSeconds:int, volume:float, css:str, message:str)` - sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
 
 **Labels:** twitch discord noevent alerts
 
@@ -48,6 +48,25 @@ Caster: !addcom !banana (alert banana.gif)
 ```text
 Caster: !addcom !bananatext (alert banana.gif, 5, 0.6, font-size:42px;color:#FF00FF, Ring Ring Ring Ring...Banana Phone!)
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### alerttext
+
+Defined in script: _./javascript-source/core/transformers/alerts.js_
+
+**Formulas:**
+
+- `(alerttext message:str)` - sends a text alert to the alerts overlay, fading out after 3 seconds
+- `(alerttext -d duration:float, message:str)` - sends a text alert to the alerts overlay, fading out after duration seconds
+- `(alerttext -c css:str, message:str)` - sends a text alert with the specified CSS to the alerts overlay, fading out after 3 seconds
+- `(alerttext -d duration:float, -c css:str, message:str)` - sends a text alert with the specified CSS to the alerts overlay, fading out after duration seconds
+
+**Labels:** twitch discord noevent alerts
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
