@@ -47,6 +47,8 @@ public class DonationsCache implements Listener {
 
     private ScheduledFuture<?> updateFuture = null;
     private boolean firstUpdate = true;
+    private int lastId = PhantomBot.instance().getDataStore().GetInteger("settings", "", "DonationsCache_lastId");
+    private long lastTimestamp = 0;
 
     private DonationsCache() {
         this.updateFuture = ExecutorService.scheduleAtFixedRate(this::run, 20, 30, TimeUnit.SECONDS);
@@ -64,13 +66,11 @@ public class DonationsCache implements Listener {
     }
 
     private void updateCache() throws Exception {
-        JSONObject jsonResult;
+        JSONObject jsonResult = StreamLabsAPI.instance().GetDonations(this.lastId);
         JSONArray donations = null;
-        int lastId = PhantomBot.instance().getDataStore().GetInteger("settings", "", "DonationsCache_lastId");
+        boolean hasChanged = false;
 
         com.gmt2001.Console.debug.println("DonationsCache::updateCache");
-
-        jsonResult = StreamLabsAPI.instance().GetDonations(lastId);
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {
@@ -84,11 +84,17 @@ public class DonationsCache implements Listener {
         if (donations != null) {
             for (int i = 0; i < donations.length(); i++) {
                 int donationId = Integer.parseInt(donations.getJSONObject(i).get("donation_id").toString());
-                if (donationId > lastId) {
-                    lastId = donationId;
-                    if (!PhantomBot.instance().getDataStore().exists("donations", donations.getJSONObject(i).get("donation_id").toString())) {
-                        EventBus.instance().postAsync(new StreamLabsDonationEvent(donations.getJSONObject(i)));
-                    }
+                long donationTimestamp = Long.parseLong(donations.getJSONObject(i).get("created_at").toString());
+
+                if (donationTimestamp > this.lastTimestamp //most recent
+                    || (donationTimestamp == this.lastTimestamp && donationId > this.lastId)) { //unix epoch in seconds, could have multiple donations with same timestamp, use highest ID
+                    this.lastId = donationId;
+                    this.lastTimestamp = donationTimestamp;
+                    hasChanged = true;
+                }
+
+                if (!PhantomBot.instance().getDataStore().exists("donations", String.valueOf(donationId))) {
+                    EventBus.instance().postAsync(new StreamLabsDonationEvent(donations.getJSONObject(i)));
                 }
             }
         }
@@ -98,7 +104,9 @@ public class DonationsCache implements Listener {
             EventBus.instance().postAsync(new StreamLabsDonationInitializedEvent());
         }
 
-        PhantomBot.instance().getDataStore().SetInteger("settings", "", "DonationsCache_lastId", lastId);
+        if (hasChanged) {
+            PhantomBot.instance().getDataStore().SetInteger("settings", "", "DonationsCache_lastId", this.lastId);
+        }
     }
 
     @Handler
