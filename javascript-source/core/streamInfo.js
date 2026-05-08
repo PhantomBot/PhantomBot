@@ -21,6 +21,7 @@
     let count = 1;
     let gamesPlayed;
     let Logger = Packages.com.illusionaryone.Logger;
+    let addonsFileSaveInterval;
 
     function logModeration(message) {
         if ($.getIniDbBoolean('chatModerator', 'moderationLogs')) {
@@ -174,6 +175,13 @@
             $.inidb.set('panelstats', 'playTimeReset', $.systemTime());
             $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));
         }
+
+        addonsFileSaveInterval = setInterval(function() {
+            $.writeToFile(getFollows(), './addons/followHandler/followcount.txt', false);
+            $.writeToFile(getSubscriberCount(), './addons/subscribeHandler/subscribercount.txt', false);
+            $.writeToFile(getSubscriberPoints(), './addons/subscribeHandler/subscriberpoints.txt', false);
+            $.writeToFile(getViewers(), './addons/viewers.txt', false);
+        }, 30e3);
     });
 
     /**
@@ -186,7 +194,9 @@
             $.inidb.set('panelstats', 'gameCount', 1);
             $.inidb.del('streamInfo', 'gamesPlayed');
         }
+
         $.inidb.set('streamInfo', 'downtime', String($.systemTime()));
+        clearInterval(addonsFileSaveInterval);
     });
 
     /**
@@ -643,13 +653,6 @@
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     }
-
-    setInterval(function() {
-        $.writeToFile(getFollows(), './addons/followHandler/followcount.txt', false);
-        $.writeToFile(getSubscriberCount(), './addons/subscribeHandler/subscribercount.txt', false);
-        $.writeToFile(getSubscriberPoints(), './addons/subscribeHandler/subscriberpoints.txt', false);
-        $.writeToFile(getViewers(), './addons/viewers.txt', false);
-    }, 30e3);
 
     /** Export functions to API */
     $.getPlayTime = getPlayTime;
