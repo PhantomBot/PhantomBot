@@ -616,7 +616,7 @@
      * @param {String} username
      */
     function addSubUsersList(username) {
-        subUsers.addIfAbsent($.javaString(username.toLowerCase()));
+        return subUsers.addIfAbsent($.javaString(username.toLowerCase()));
     }
 
     /**
