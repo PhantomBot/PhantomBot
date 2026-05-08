@@ -31,6 +31,7 @@ public class CommandEvent extends Event {
 
     private final String sender;
     private final String command;
+    private final String alias;
     private final String arguments;
     private final Map<String, String> tags;
     private final String[] args;
@@ -48,20 +49,49 @@ public class CommandEvent extends Event {
     }
 
     /**
+     * Class constructor for this event without tags. Always send tags if you can.
+     *
+     * @param sender
+     * @param command
+     * @param alias
+     * @param arguments
+     */
+    public CommandEvent(String sender, String command, String alias, String arguments) {
+        this(sender, command, alias, arguments, new HashMap<>());
+    }
+
+    /**
      * Class constructor for this event.
      *
      * @param sender
      * @param command
+     * @param alias
      * @param arguments
      * @param tags
      */
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags) {
+         this(sender, command, command, arguments, tags);
+    }
+
+    /**
+     * Class constructor for this event.
+     *
+     * @param sender
+     * @param command
+     * @param alias
+     * @param arguments
+     * @param tags
+     */
+    public CommandEvent(String sender, String command, String alias, String arguments, Map<String, String> tags) {
         super();
         if (sender == null) {
             throw new NullPointerException("sender");
         }
         if (command == null) {
             throw new NullPointerException("command");
+        }
+        if (alias == null || alias.isBlank()) {
+            alias = command;
         }
         if (command.isBlank()) {
             throw new IllegalArgumentException("command");
@@ -71,6 +101,7 @@ public class CommandEvent extends Event {
         }
         this.sender = sender;
         this.command = command;
+        this.alias = alias;
         this.arguments = arguments;
         this.args = this.parse();
         this.tags = (tags == null ? new HashMap<>() : tags);
@@ -209,6 +240,23 @@ public class CommandEvent extends Event {
     }
 
     /**
+     * Method that will return if this command was triggered by an alias.
+     * @return
+     */
+    public boolean isAlias() {
+        return !this.alias.equalsIgnoreCase(this.command);
+    }
+
+    /**
+     * Method that will return the alias name.
+     *
+     * @return
+     */
+    public String getAlias() {
+        return this.alias.toLowerCase();
+    }
+
+    /**
      * Method that will return the string of arguments.
      *
      * @return arguments
@@ -242,6 +290,6 @@ public class CommandEvent extends Event {
      */
     @Override
     public String toString() {
-        return "CommandEvent -> { command: [" + this.command + "] sender: [" + this.sender + "] arguments: [" + this.arguments + "] tags: [" + this.tags + "] }";
+        return "CommandEvent -> { command: [" + this.command + "] alias: [" + this.alias + "] sender: [" + this.sender + "] arguments: [" + this.arguments + "] tags: [" + this.tags + "] }";
     }
 }
