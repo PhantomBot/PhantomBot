@@ -359,7 +359,11 @@ public final class CustomPanelManifestCollector {
 
     /**
      * Card ids must be a short identifier safe to use as a DOM id segment: letters, digits,
-     * underscores, or hyphens, 1-64 chars.
+     * underscores, or hyphens, 1-64 chars. Used as a suffix on the card's element ids and as
+     * part of the de-duplication key.
+     *
+     * @param id manifest-supplied card id
+     * @return {@code true} if the id is safe to interpolate into DOM ids and selectors
      */
     private static boolean isSafeCardId(String id) {
         if (id.isEmpty() || id.length() > 64) {
@@ -377,7 +381,11 @@ public final class CustomPanelManifestCollector {
 
     /**
      * Script paths are passed verbatim to the {@code module enable/disable} command. We only
-     * reject obviously malformed inputs; PhantomBot's module system normalizes the rest.
+     * reject obviously malformed inputs (path traversal, backslashes, line breaks, oversized
+     * strings, missing {@code .js} suffix); PhantomBot's module system normalizes the rest.
+     *
+     * @param scriptPath manifest-supplied bot-script path (e.g. {@code ./games/myGame.js})
+     * @return {@code true} if the script path is safe to forward to the {@code module} command
      */
     private static boolean isSafeScriptPath(String scriptPath) {
         if (scriptPath.length() > 256) {
