@@ -210,7 +210,7 @@
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
-                                <ul class="treeview-menu">
+                                <ul class="treeview-menu" id="pb-panel-alerts-menu">
                                     <li><a href="#alerts.html" data-folder="alerts"><i class="fa fa-circle-o"></i> Chat alerts</a></li>
                                     <li><a href="#greetings.html" data-folder="alerts"><i class="fa fa-circle-o"></i> User Greetings</a></li>
                                 </ul>
@@ -283,7 +283,7 @@
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
-                                <ul class="treeview-menu">
+                                <ul class="treeview-menu" id="pb-panel-giveaways-menu">
                                     <li><a href="#raffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Raffle</a></li>
                                     <li><a href="#ticketRaffle.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Ticket Raffle</a></li>
                                     <li><a href="#auction.html" data-folder="giveaways"><i class="fa fa-circle-o"></i> Auction</a></li>
@@ -342,7 +342,7 @@
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
-                                <ul class="treeview-menu">
+                                <ul class="treeview-menu" id="pb-panel-extra-menu">
                                     <li><a href="#commercials.html" data-folder="extra"><i class="fa fa-circle-o"></i> Automatic Commercials</a></li>
                                     <li><a href="#dualstream.html" data-folder="extra"><i class="fa fa-circle-o"></i> Dual Stream</a></li>
                                     <li><a href="#deathcounter.html" data-folder="extra"><i class="fa fa-circle-o"></i> Death Counter</a></li>
@@ -362,7 +362,7 @@
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
-                                <ul class="treeview-menu">
+                                <ul class="treeview-menu" id="pb-panel-audio-menu">
                                     <li><a href="#audioHooks.html" data-folder="audio"><i class="fa fa-circle-o"></i> Audio Hooks</a></li>
                                     <!-- For now, as long as the YouTube player module hasn't gotten a rewrite, we will redirect to the player. -->
                                     <li><a id="sr-link" href="/ytplayer" target="_blank" rel="noopener noreferrer"><i class="fa fa-circle-o"></i> Song Requests</a></li>
@@ -559,6 +559,8 @@
         <script src="js/utils/helpers.js"></script>
         <!-- Ajax page loader -->
         <script src="js/utils/ajaxLoader.js"></script>
+        <!-- Optional manifest-based custom panel nav -->
+        <script src="js/utils/customPanelNav.js"></script>
         <!-- Reconnecting socket -->
         <script src="../common/reconnecting-websocket/reconnectingWS.min.js"></script>
         <!-- Crypto-JS -->

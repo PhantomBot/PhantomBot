@@ -817,6 +817,9 @@ $(function () {
                         window.panelSettings.displayName = message.displayName;
                         helpers.loadCurrentUserInfo();
                         $.loadPage('dashboard', 'dashboard.html');
+                        if (typeof window.initCustomPanelNav === 'function') {
+                            window.initCustomPanelNav();
+                        }
                         helpers.getUserLogo();
                     }
                 }
