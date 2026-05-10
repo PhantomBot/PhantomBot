@@ -846,7 +846,23 @@ $(function () {
                         if (callback.isArray) {
                             callback.queryData = message.results;
                         } else if (callback.storeKey === true) {
-                            callback.queryData[Object.keys(message.results)[1]] = message.results.value;
+                            var res = message.results;
+                            var dbKeys = Object.keys(res);
+                            var dbKey = null;
+                            var di;
+                            for (di = 0; di < dbKeys.length; di++) {
+                                var dk = dbKeys[di];
+                                if (dk !== 'table' && dk !== 'value') {
+                                    dbKey = dk;
+                                    break;
+                                }
+                            }
+                            if (dbKey === null && dbKeys.length > 1) {
+                                dbKey = dbKeys[1];
+                            }
+                            if (dbKey !== null) {
+                                callback.queryData[dbKey] = res.value;
+                            }
                         } else {
                             callback.queryData[message.results.table] = message.results.value;
                         }
