@@ -77,6 +77,62 @@ public final class CustomPanelManifestCollector {
     private static final String DEFAULT_CARD_SECTION = "games";
 
     /**
+     * Maximum fields in a card {@code settingsModal} block (DoS guardrail), counting all fields
+     * across {@code sections} when using accordion layout.
+     */
+    private static final int MAX_SETTINGS_MODAL_FIELDS = 50;
+
+    /**
+     * Maximum collapsible sections in {@code settingsModal.sections}.
+     */
+    private static final int MAX_SETTINGS_MODAL_SECTIONS = 10;
+
+    /**
+     * Modal title / field label length limit.
+     */
+    private static final int MAX_SETTINGS_TITLE_LEN = 200;
+
+    /**
+     * Tooltip / help text length limit for modal fields.
+     */
+    private static final int MAX_SETTINGS_HELP_LEN = 500;
+
+    /**
+     * Optional {@code detailsModal.content} length cap (text or sanitized HTML for the info dialog).
+     */
+    private static final int MAX_DETAILS_MODAL_CONTENT_LEN = 16384;
+
+    /**
+     * INIDB table name and key segment length limit.
+     */
+    private static final int MAX_DB_IDENTIFIER_LEN = 64;
+
+    /**
+     * Optional {@code reloadCommand} passed to {@code socket.sendCommand} after save.
+     */
+    private static final int MAX_RELOAD_CMD_LEN = 64;
+
+    /**
+     * Optional {@code wsEvent.argsString} length cap.
+     */
+    private static final int MAX_WSEVENT_ARGS_STRING_LEN = 512;
+
+    /**
+     * Optional {@code wsEvent.args[]} length and element caps.
+     */
+    private static final int MAX_WSEVENT_ARGS_COUNT = 32;
+
+    /**
+     * Optional {@code wsEvent.args[]} element length cap.
+     */
+    private static final int MAX_WSEVENT_ARG_ITEM_LEN = 256;
+
+    /**
+     * Allowed {@code settingsModal.fields[].type} values for declarative game-card settings UI.
+     */
+    private static final Set<String> SETTINGS_FIELD_TYPES = Set.of("number", "text", "textarea", "yesno", "dropdown", "permission");
+
+    /**
      * Utility class (not instantiable).
      */
     private CustomPanelManifestCollector() {
@@ -234,7 +290,7 @@ public final class CustomPanelManifestCollector {
      * Validates each entry in a manifest's {@code cards} array and copies the survivors into
      * {@code cardsOut} as canonical JSON objects ({@code section}, {@code id}, {@code title},
      * {@code description}, optional {@code scriptPath}, optional {@code settingsFolder} and
-     * {@code settingsPage}). Entries are dropped (with a warn-log) when:
+     * {@code settingsPage}, optional {@code detailsModal}). Entries are dropped (with a warn-log) when:
      *
      * <ul>
      *   <li>{@code id} or {@code title} is missing,</li>
@@ -318,8 +374,441 @@ public final class CustomPanelManifestCollector {
                 out.put("settingsFolder", settingsFolder);
                 out.put("settingsPage", settingsPage);
             }
+
+            JSONObject settingsModal = optValidatedSettingsModal(entry.optJSONObject("settingsModal"), manifest);
+            if (settingsModal != null) {
+                out.put("settingsModal", settingsModal);
+            }
+
+            JSONObject detailsModal = optValidatedDetailsModal(entry.optJSONObject("detailsModal"), manifest);
+            if (detailsModal != null) {
+                out.put("detailsModal", detailsModal);
+            }
+
             cardsOut.put(out);
         }
+    }
+
+    /**
+     * Validates optional {@code detailsModal} for the read-only card info dialog.
+     * {@code content} is plain text unless {@code format} is {@code html}; HTML is sanitized in the panel.
+     *
+     * @param raw      raw {@code detailsModal} object from manifest, or {@code null}
+     * @param manifest source manifest path for logging
+     * @return canonical JSON or {@code null} when absent or invalid
+     */
+    private static JSONObject optValidatedDetailsModal(JSONObject raw, Path manifest) {
+        if (raw == null) {
+            return null;
+        }
+
+        String content = raw.optString("content", "").trim();
+
+        if (content.isEmpty()) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped detailsModal (empty content): " + manifest);
+            return null;
+        }
+
+        if (content.length() > MAX_DETAILS_MODAL_CONTENT_LEN) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped detailsModal (content too long): " + manifest);
+            return null;
+        }
+
+        String fmt = raw.optString("format", "text").trim().toLowerCase(Locale.ROOT);
+
+        if (!fmt.equals("text") && !fmt.equals("html")) {
+            com.gmt2001.Console.warn.println("Custom panel manifest: detailsModal unknown format '" + fmt + "', using text: " + manifest);
+            fmt = "text";
+        }
+
+        JSONObject out = new JSONObject();
+        out.put("content", content);
+
+        if ("html".equals(fmt)) {
+            out.put("format", "html");
+        }
+
+        String title = raw.optString("title", "").trim();
+
+        if (!title.isEmpty()) {
+            if (title.length() > MAX_SETTINGS_TITLE_LEN) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped detailsModal (title too long): " + manifest);
+                return null;
+            }
+
+            out.put("title", title);
+        }
+
+        return out;
+    }
+
+    /**
+     * Validates {@code settingsModal} for declarative game-card settings (Bootstrap modal + INIDB).
+     *
+     * <p>Optional {@code reloadCommand} and {@code wsEvent} are consumed by {@code customPanelNav.js}
+     * after a successful save. If {@code wsEvent} is omitted but the parent card declares
+     * {@code scriptPath}, the panel sends a websocket event to that script with first argument
+     * {@code panel-settings-saved} so Rhino modules can refresh in-memory settings without a fork-specific
+     * reload command.</p>
+     *
+     * @param raw      raw {@code settingsModal} object from manifest, or {@code null}
+     * @param manifest source manifest path for logging
+     * @return canonical JSON or {@code null} when absent or invalid
+     */
+    private static JSONObject optValidatedSettingsModal(JSONObject raw, Path manifest) {
+        if (raw == null) {
+            return null;
+        }
+
+        String title = raw.optString("title", "").trim();
+        if (title.isEmpty() || title.length() > MAX_SETTINGS_TITLE_LEN) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid title): " + manifest);
+            return null;
+        }
+
+        JSONArray fieldsIn = raw.optJSONArray("fields");
+        JSONArray sectionsIn = raw.optJSONArray("sections");
+        boolean hasFields = fieldsIn != null && fieldsIn.length() > 0;
+        boolean hasSections = sectionsIn != null && sectionsIn.length() > 0;
+
+        if (hasFields && hasSections) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (use either fields or sections, not both): " + manifest);
+            return null;
+        }
+
+        if (!hasFields && !hasSections) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (need fields or sections): " + manifest);
+            return null;
+        }
+
+        JSONObject out = new JSONObject();
+        out.put("title", title);
+
+        Set<String> fieldIds = new HashSet<>();
+
+        if (hasSections) {
+            if (sectionsIn.length() < 1 || sectionsIn.length() > MAX_SETTINGS_MODAL_SECTIONS) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid sections count): " + manifest);
+                return null;
+            }
+
+            JSONArray sectionsOut = new JSONArray();
+            Set<String> sectionIds = new HashSet<>();
+            int totalFields = 0;
+
+            for (int s = 0; s < sectionsIn.length(); s++) {
+                JSONObject sec = sectionsIn.optJSONObject(s);
+
+                if (sec == null) {
+                    continue;
+                }
+
+                String sid = sec.optString("id", "").trim();
+                String stitle = sec.optString("title", "").trim();
+                JSONArray secFieldsIn = sec.optJSONArray("fields");
+
+                if (!isSafeCardId(sid) || stitle.isEmpty() || stitle.length() > MAX_SETTINGS_TITLE_LEN) {
+                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid section id/title): " + manifest);
+                    return null;
+                }
+
+                if (!sectionIds.add(sid)) {
+                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (duplicate section id): " + manifest);
+                    return null;
+                }
+
+                if (secFieldsIn == null || secFieldsIn.length() < 1) {
+                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (section needs fields): " + manifest);
+                    return null;
+                }
+
+                JSONArray secFieldsOut = validateSettingsModalFieldsArray(secFieldsIn, manifest, fieldIds);
+
+                if (secFieldsOut == null) {
+                    return null;
+                }
+
+                totalFields += secFieldsOut.length();
+
+                if (totalFields > MAX_SETTINGS_MODAL_FIELDS) {
+                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (too many fields across sections): " + manifest);
+                    return null;
+                }
+
+                JSONObject secOut = new JSONObject();
+                secOut.put("id", sid);
+                secOut.put("title", stitle);
+                secOut.put("fields", secFieldsOut);
+
+                if (sec.optBoolean("defaultExpanded", false)) {
+                    secOut.put("defaultExpanded", true);
+                }
+
+                sectionsOut.put(secOut);
+            }
+
+            if (sectionsOut.length() == 0) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (no valid sections): " + manifest);
+                return null;
+            }
+
+            out.put("sections", sectionsOut);
+        } else {
+            if (fieldsIn.length() > MAX_SETTINGS_MODAL_FIELDS) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (too many fields): " + manifest);
+                return null;
+            }
+
+            JSONArray fieldsOut = validateSettingsModalFieldsArray(fieldsIn, manifest, fieldIds);
+
+            if (fieldsOut == null) {
+                return null;
+            }
+
+            out.put("fields", fieldsOut);
+        }
+
+        String reload = raw.optString("reloadCommand", "").trim();
+
+        if (!reload.isEmpty()) {
+            if (!isSafeReloadCommand(reload)) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid reloadCommand): " + manifest);
+                return null;
+            }
+
+            out.put("reloadCommand", reload);
+        }
+
+        JSONObject wsOut = optValidatedWsEvent(raw.optJSONObject("wsEvent"), manifest);
+
+        if (wsOut != null) {
+            out.put("wsEvent", wsOut);
+        }
+
+        return out;
+    }
+
+    /**
+     * Validates {@code settingsModal.fields} or a section's {@code fields} array.
+     *
+     * @param fieldsIn raw JSON array of field objects
+     * @param manifest manifest path for logging
+     * @param fieldIds accumulator for unique {@code id}s across the whole modal; mutated in place
+     * @return canonical JSON array or {@code null} when invalid
+     */
+    private static JSONArray validateSettingsModalFieldsArray(JSONArray fieldsIn, Path manifest, Set<String> fieldIds) {
+        JSONArray fieldsOut = new JSONArray();
+
+        for (int i = 0; i < fieldsIn.length(); i++) {
+            JSONObject f = fieldsIn.optJSONObject(i);
+
+            if (f == null) {
+                continue;
+            }
+
+            JSONObject fout = validateOneSettingsModalField(f, manifest, fieldIds);
+
+            if (fout == null) {
+                return null;
+            }
+
+            fieldsOut.put(fout);
+        }
+
+        if (fieldsOut.length() == 0) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (no valid fields): " + manifest);
+            return null;
+        }
+
+        return fieldsOut;
+    }
+
+    /**
+     * Validates a single settings field object.
+     *
+     * @param f        raw field JSON
+     * @param manifest manifest path for logging
+     * @param fieldIds ids seen so far in this modal (including across sections); mutated in place
+     * @return canonical field JSON or {@code null}
+     */
+    private static JSONObject validateOneSettingsModalField(JSONObject f, Path manifest, Set<String> fieldIds) {
+        String fid = f.optString("id", "").trim();
+        String type = f.optString("type", "").trim().toLowerCase(Locale.ROOT);
+        String label = f.optString("label", "").trim();
+        String table = f.optString("table", "").trim();
+        String key = f.optString("key", "").trim();
+        String help = f.optString("help", "").trim();
+
+        if (!isSafeCardId(fid) || !SETTINGS_FIELD_TYPES.contains(type) || label.isEmpty() || label.length() > MAX_SETTINGS_TITLE_LEN
+                || !isSafeDbIdentifier(table) || !isSafeDbIdentifier(key)) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid field): " + manifest);
+            return null;
+        }
+
+        if (!fieldIds.add(fid)) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (duplicate field id): " + manifest);
+            return null;
+        }
+
+        if (help.length() > MAX_SETTINGS_HELP_LEN) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (help too long): " + manifest);
+            return null;
+        }
+
+        JSONObject fout = new JSONObject();
+        fout.put("id", fid);
+        fout.put("type", type);
+        fout.put("label", label);
+        fout.put("table", table);
+        fout.put("key", key);
+
+        if (!help.isEmpty()) {
+            fout.put("help", help);
+        }
+
+        if ("dropdown".equals(type)) {
+            JSONArray opts = f.optJSONArray("options");
+
+            if (opts == null || opts.length() < 1) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (dropdown needs options): " + manifest);
+                return null;
+            }
+
+            JSONArray optsOut = new JSONArray();
+
+            for (int j = 0; j < opts.length(); j++) {
+                String o = opts.optString(j, "").trim();
+
+                if (o.isEmpty() || o.length() > 200) {
+                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (bad dropdown option): " + manifest);
+                    return null;
+                }
+
+                optsOut.put(o);
+            }
+
+            fout.put("options", optsOut);
+        }
+
+        if ("number".equals(type)) {
+            if (f.has("min")) {
+                fout.put("min", f.optInt("min"));
+            }
+
+            if (f.has("max")) {
+                fout.put("max", f.optInt("max"));
+            }
+        }
+
+        if ("textarea".equals(type) && f.optBoolean("unlimited", false)) {
+            fout.put("unlimited", true);
+        }
+
+        return fout;
+    }
+
+    /**
+     * Validates optional {@code wsEvent} for {@code socket.wsEvent} after INIDB save.
+     *
+     * @param raw      raw {@code wsEvent} object or {@code null}
+     * @param manifest manifest path for logging
+     * @return canonical JSON or {@code null} when absent or invalid
+     */
+    private static JSONObject optValidatedWsEvent(JSONObject raw, Path manifest) {
+        if (raw == null) {
+            return null;
+        }
+
+        String script = raw.optString("script", "").trim();
+
+        if (script.isEmpty() || !isSafeScriptPath(script)) {
+            com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (invalid script): " + manifest);
+            return null;
+        }
+
+        JSONObject out = new JSONObject();
+        out.put("script", script);
+
+        if (raw.has("argsString") && !raw.isNull("argsString")) {
+            String as = raw.optString("argsString", "");
+
+            if (as.length() > MAX_WSEVENT_ARGS_STRING_LEN) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (argsString too long): " + manifest);
+                return null;
+            }
+
+            out.put("argsString", as);
+        }
+
+        JSONArray argsIn = raw.optJSONArray("args");
+
+        if (argsIn != null) {
+            if (argsIn.length() > MAX_WSEVENT_ARGS_COUNT) {
+                com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (too many args): " + manifest);
+                return null;
+            }
+
+            JSONArray argsOut = new JSONArray();
+
+            for (int i = 0; i < argsIn.length(); i++) {
+                if (!argsIn.isNull(i) && !(argsIn.get(i) instanceof String)) {
+                    com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (args must be strings): " + manifest);
+                    return null;
+                }
+
+                String a = argsIn.optString(i, "");
+
+                if (a.length() > MAX_WSEVENT_ARG_ITEM_LEN) {
+                    com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (arg too long): " + manifest);
+                    return null;
+                }
+
+                argsOut.put(a);
+            }
+
+            out.put("args", argsOut);
+        }
+
+        return out;
+    }
+
+    /**
+     * INIDB table / key names: alphanumeric plus underscore, typical PhantomBot naming.
+     */
+    private static boolean isSafeDbIdentifier(String s) {
+        if (s.isEmpty() || s.length() > MAX_DB_IDENTIFIER_LEN) {
+            return false;
+        }
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            boolean ok = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_';
+
+            if (!ok) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Bot console reload command after saving modal settings (e.g. {@code reloadadventure}).
+     */
+    private static boolean isSafeReloadCommand(String s) {
+        if (s.isEmpty() || s.length() > MAX_RELOAD_CMD_LEN) {
+            return false;
+        }
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
