@@ -278,32 +278,6 @@
     }
 
     /**
-     * Shows a non-dismissible info toast that stays visible until {@link clearStickyToast}
-     * is called with the returned handle. No-op (returns {@code null}) if {@code toastr} is
-     * not loaded.
-     *
-     * @param {string} message text to display
-     * @returns {*} toastr handle or {@code null}
-     */
-    function showStickyToast(message) {
-        if (typeof toastr === 'undefined') {
-            return null;
-        }
-        return toastr.info(message, '', {timeOut: 0, extendedTimeOut: 0, closeButton: false, tapToDismiss: false});
-    }
-
-    /**
-     * Clears a specific sticky toast handle (does not affect other toasts).
-     *
-     * @param {*} handle returned by {@link showStickyToast}
-     */
-    function clearStickyToast(handle) {
-        if (handle && typeof toastr !== 'undefined' && typeof toastr.clear === 'function') {
-            toastr.clear(handle);
-        }
-    }
-
-    /**
      * Runs {@code socket.sendCommand} for a settings-modal {@code reloadCommand} guarded by
      * a watchdog timeout. The DB save has already succeeded by the time this is called, so
      * on timeout we surface an error toast (so the user knows settings were persisted but
@@ -374,12 +348,9 @@
             keys.push(f.key);
         });
 
-        var loadToast = showStickyToast('Loading settings…');
         var loadAborted = false;
         var loadWatchdog = setTimeout(function () {
             loadAborted = true;
-            clearStickyToast(loadToast);
-            loadToast = null;
             if (typeof toastr !== 'undefined') {
                 toastr.error(
                     'Settings did not load within ' +
@@ -395,8 +366,6 @@
                 return;
             }
             clearTimeout(loadWatchdog);
-            clearStickyToast(loadToast);
-            loadToast = null;
 
             if (!results) {
                 results = {};
