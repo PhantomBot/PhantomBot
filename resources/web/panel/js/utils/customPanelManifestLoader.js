@@ -1,0 +1,221 @@
+/*
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* global helpers, $ */
+
+/**
+ * Custom-panel **loader / namespace owner**. Fetches the merged
+ * {@code /panel/custom-manifests.json} produced by
+ * {@code com.mcawful.CustomPanelManifestCollector}, indexes the {@code cards} array, and
+ * dispatches a {@code pbCustomManifestsLoaded} {@code CustomEvent} on {@code document} that
+ * the sibling files (nav, cards, modals) consume.
+ *
+ * <p>Owns the {@code window.__pbCustomPanel__} namespace — every other file in the
+ * {@code customPanel*} family reads constants, shared state, and shared helpers from there
+ * (and modal files register their opener via {@code ns.openSettingsModal} /
+ * {@code ns.openDetailsModal}). Defensive {@code ||} initialization means script load order
+ * is forgiving, but the canonical order in {@code index.html} is loader → modals → nav →
+ * cards so this file's defaults always win.</p>
+ *
+ * <p>Public API exposed on {@code window}:</p>
+ * <ul>
+ *   <li>{@code initCustomPanelNav()} — call once after panel websocket auth completes (from
+ *       {@code js/index.js}). Idempotent: repeat calls after the first are ignored.</li>
+ *   <li>{@code __pbCustomManifests__} — populated after a successful fetch with the canonical
+ *       {@code {nav, cards, cardsBySection}} shape, kept for backwards compat with anything
+ *       that grew up reading it directly.</li>
+ * </ul>
+ *
+ * @author mcawful
+ */
+(function () {
+    var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
+
+    ns.loaded = ns.loaded || false;
+    ns.cardsBySection = ns.cardsBySection || {};
+    ns.cardsById = ns.cardsById || {};
+    ns.EVENTS = ns.EVENTS || {
+        MANIFESTS_LOADED: 'pbCustomManifestsLoaded',
+        CARD_SETTINGS_SAVED: 'pbCustomCardSettingsSaved'
+    };
+    ns.PANEL_SETTINGS_SAVED_WS_ARG = ns.PANEL_SETTINGS_SAVED_WS_ARG || 'panel-settings-saved';
+    ns.LOAD_TIMEOUT_MS = ns.LOAD_TIMEOUT_MS || 8000;
+    ns.RELOAD_TIMEOUT_MS = ns.RELOAD_TIMEOUT_MS || 8000;
+
+    var stylesInjected = false;
+    var ran = false;
+
+    /**
+     * Defines whether {@code settingsModal} is "actionable" — i.e. has a title and at least
+     * one declarative field (flat or accordion). Cards with {@code settingsModal} but no
+     * fields fall through to the legacy {@code settingsFolder}/{@code settingsPage} flow.
+     *
+     * @param {object} sm settingsModal block from a canonical card entry
+     * @returns {boolean}
+     */
+    function settingsModalHasContent(sm) {
+        if (!sm || typeof sm !== 'object') {
+            return false;
+        }
+        var hasFlat = Array.isArray(sm.fields) && sm.fields.length > 0;
+        var hasSec = Array.isArray(sm.sections) && sm.sections.length > 0;
+        return !!sm.title && (hasFlat || hasSec);
+    }
+    ns.settingsModalHasContent = settingsModalHasContent;
+
+    /**
+     * @param {object} card canonical card entry
+     * @returns {boolean} whether the card has any usable settings (modal or legacy page)
+     */
+    ns.cardHasSettings = function (card) {
+        if (!card) {
+            return false;
+        }
+        if (settingsModalHasContent(card.settingsModal)) {
+            return true;
+        }
+        return !!(card.settingsFolder && card.settingsPage);
+    };
+
+    /**
+     * @param {object} card canonical card entry
+     * @returns {boolean} whether the card declares read-only {@code detailsModal} content
+     */
+    ns.cardHasDetailsModal = function (card) {
+        var dm = card && card.detailsModal;
+        return !!(dm && typeof dm.content === 'string' && dm.content.trim().length > 0);
+    };
+
+    /**
+     * Injects a single small {@code <style>} block once, the first time any custom UI is
+     * rendered. Keeps stock CSS files unmodified; nothing is added to the DOM if no manifests
+     * load. Used by the nav file (sidebar dividers) and the cards file (cards-row dividers).
+     */
+    ns.ensureStylesInjected = function () {
+        if (stylesInjected || document.getElementById('pb-custom-panel-styles')) {
+            stylesInjected = true;
+            return;
+        }
+        stylesInjected = true;
+        var style = document.createElement('style');
+        style.id = 'pb-custom-panel-styles';
+        style.textContent = [
+            '.pb-custom-nav-divider {',
+            '    list-style: none;',
+            '    margin: 6px 10px 2px 10px;',
+            '    padding: 4px 4px 2px 4px;',
+            '    border-top: 1px solid rgba(255,255,255,0.08);',
+            '    color: #8aa4b1;',
+            '    font-size: 10px;',
+            '    font-weight: 600;',
+            '    text-transform: uppercase;',
+            '    letter-spacing: 1px;',
+            '    pointer-events: none;',
+            '    user-select: none;',
+            '}',
+            '.pb-custom-cards-divider {',
+            '    margin: 16px 0 6px 0;',
+            '    padding: 8px 0 4px 0;',
+            '    border-top: 1px solid rgba(0,0,0,0.08);',
+            '    color: #6c757d;',
+            '    font-size: 13px;',
+            '    font-weight: 600;',
+            '    text-transform: uppercase;',
+            '    letter-spacing: 1px;',
+            '}',
+            '.pb-custom-cards-divider .fa {',
+            '    margin-right: 6px;',
+            '}'
+        ].join('\n');
+        document.head.appendChild(style);
+    };
+
+    /**
+     * Populates {@code ns.cardsById} and {@code ns.cardsBySection} from a canonical card array.
+     * Cards missing required fields are dropped silently — the backend already warn-logs them
+     * via {@code com.mcawful.CustomPanelManifestCollector}.
+     *
+     * @param {Array<object>} cards canonical card entries from the merged manifest response
+     */
+    function indexCards(cards) {
+        ns.cardsBySection = {};
+        ns.cardsById = {};
+        if (!Array.isArray(cards)) {
+            return;
+        }
+        cards.forEach(function (card) {
+            if (!card || !card.section || !card.id || !card.title) {
+                return;
+            }
+            ns.cardsById[card.id] = card;
+            var section = String(card.section).toLowerCase();
+            if (!ns.cardsBySection[section]) {
+                ns.cardsBySection[section] = [];
+            }
+            ns.cardsBySection[section].push(card);
+        });
+    }
+
+    /**
+     * Public entry point invoked once from {@code js/index.js} after the panel websocket
+     * finishes authenticating. Fetches the merged manifest JSON, indexes {@code cards}, and
+     * dispatches {@code pbCustomManifestsLoaded} on {@code document} so sibling files (nav,
+     * cards) can react. Repeat calls after the first are ignored, so it is safe to call from
+     * any post-login hook.
+     */
+    window.initCustomPanelNav = function () {
+        if (ran) {
+            return;
+        }
+        ran = true;
+
+        $.ajax({
+            url: 'custom-manifests.json',
+            type: 'GET',
+            dataType: 'json',
+            cache: false,
+            timeout: 15000,
+            success: function (data) {
+                if (!data) {
+                    return;
+                }
+
+                var navList = Array.isArray(data.nav) ? data.nav : [];
+                var cardList = Array.isArray(data.cards) ? data.cards : [];
+
+                indexCards(cardList);
+                ns.loaded = true;
+
+                window.__pbCustomManifests__ = {
+                    nav: navList,
+                    cards: cardList,
+                    cardsBySection: ns.cardsBySection
+                };
+
+                if (typeof document !== 'undefined' && typeof CustomEvent === 'function') {
+                    document.dispatchEvent(new CustomEvent(ns.EVENTS.MANIFESTS_LOADED, {
+                        bubbles: true,
+                        detail: {nav: navList, cards: cardList}
+                    }));
+                }
+            },
+            error: function (xhr, status, err) {
+                helpers.log('Custom panel manifest not loaded (' + status + '): ' + (err || ''), helpers.LOG_TYPE.DEBUG);
+            }
+        });
+    };
+}());
