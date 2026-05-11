@@ -212,6 +212,16 @@
                         detail: {nav: navList, cards: cardList}
                     }));
                 }
+
+                // Ask the bot to scan scripts/custom for any newly-dropped modules
+                // so the panel UI we just rendered isn't pointing at scriptPaths
+                // Rhino doesn't know about yet. Idempotent + silent on the bot
+                // side; the per-file load log still lands in the bot console.
+                // No callback wiring needed: the panel doesn't display anything
+                // about the scan and the operator can verify via console.
+                if (typeof socket !== 'undefined' && socket && typeof socket.sendCommand === 'function') {
+                    socket.sendCommand('pb_custom_panel_scan', 'reloadcustom silent', function () {});
+                }
             },
             error: function (xhr, status, err) {
                 helpers.log('Custom panel manifest not loaded (' + status + '): ' + (err || ''), helpers.LOG_TYPE.DEBUG);
