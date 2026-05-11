@@ -846,6 +846,11 @@ $(function () {
                         if (callback.isArray) {
                             callback.queryData = message.results;
                         } else if (callback.storeKey === true) {
+                            // Resolve the queried key explicitly (skip the envelope's
+                            // `table` / `value`) instead of trusting `Object.keys()[1]`
+                            // ordering, which is unspecified per JSON spec. Stock
+                            // callers consume the result via `e.<keyName>` so this
+                            // stays wire-compatible.
                             var res = message.results;
                             var dbKeys = Object.keys(res);
                             var dbKey = null;
