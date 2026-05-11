@@ -18,46 +18,88 @@
 /**
  * customScripts.js
  *
- * Lets the bot pick up newly-dropped community modules under
- * {@code scripts/custom/} (and lang strings under {@code scripts/lang/custom/})
- * without restarting. Idempotent: existing modules skip in O(1) via init.js's
- * {@code isModuleLoaded} guard, so the only real work happens for genuinely new
- * files.
+ * Hot-loads newly-dropped modules under {@code scripts/custom/} and lang files
+ * under {@code scripts/lang/custom/}. Exposes {@code !reloadcustom}
+ * (caster perm) for chat use; the panel's {@code customPanelManifestLoader.js}
+ * fires {@code !reloadcustom silent} after every manifest fetch so a browser
+ * refresh is enough to pick up new modules.
  *
- * <p>Two ways to invoke:</p>
- * <ul>
- *   <li><b>Chat:</b> {@code !reloadcustom} (caster permission). Whispers a short
- *       confirmation back to the caller.</li>
- *   <li><b>Panel:</b> {@code !reloadcustom silent}. Same scan, no chat
- *       acknowledgement. The fork's {@code customPanelManifestLoader.js}
- *       fires this automatically after every manifest fetch so a browser
- *       refresh closes the loop on "drop module + reload panel."</li>
- * </ul>
- *
- * <p>Newly-loaded modules are seeded as {@code modules.<scriptPath> = true} in
- * INIDB by {@code init.js}'s {@code loadScript}, matching boot-time behaviour.
- * The bot console logs every fresh load (the {@code silent} arg only suppresses
- * the chat reply, not the per-script console line).</p>
+ * <p>{@code init.js} only fires {@code initReady} once at boot, but most
+ * modules register chat commands inside that hook. After the scan we diff
+ * {@code $.bot.modules} and selectively re-invoke {@code initReady} handlers
+ * for the newly-loaded scripts so their commands actually register.</p>
  *
  * @author mcawful
  */
 (function () {
+    function normalizeScriptName(name) {
+        return ('' + name).replace(/^\.\//, '');
+    }
+
+    function snapshotLoadedModules() {
+        var out = [];
+        if ($.bot && $.bot.modules) {
+            for (var name in $.bot.modules) {
+                if ($.bot.modules.hasOwnProperty(name)) {
+                    out.push(name);
+                }
+            }
+        }
+        return out;
+    }
+
+    function diffLoadedModules(after, before) {
+        var seen = {};
+        for (var i = 0; i < before.length; i++) {
+            seen[before[i]] = true;
+        }
+        var fresh = [];
+        for (var j = 0; j < after.length; j++) {
+            if (!seen[after[j]]) {
+                fresh.push(after[j]);
+            }
+        }
+        return fresh;
+    }
+
+    function fireInitReadyOn(newModuleNames) {
+        if (!newModuleNames || newModuleNames.length === 0) {
+            return 0;
+        }
+
+        var hookContainer = $.bot && $.bot.hooks ? $.bot.hooks.initReady : null;
+        if (!hookContainer || !hookContainer.handlers) {
+            return 0;
+        }
+
+        // $.bot.modules keys keep the leading "./", Hook.scriptName strips it.
+        var nameSet = {};
+        for (var i = 0; i < newModuleNames.length; i++) {
+            nameSet[normalizeScriptName(newModuleNames[i])] = true;
+        }
+
+        var fired = 0;
+        for (var j = 0; j < hookContainer.handlers.length; j++) {
+            var handler = hookContainer.handlers[j];
+            if (handler && nameSet[normalizeScriptName(handler.scriptName)]) {
+                try {
+                    handler.handler(null);
+                    fired++;
+                } catch (ex) {
+                    $.log.error('reloadcustom: initReady handler for ' + handler.scriptName + ' threw: ' + ex);
+                }
+            }
+        }
+        return fired;
+    }
+
     /**
-     * Re-scan {@code scripts/custom/} for any {@code .js} files Rhino doesn't
-     * already know about, and re-load lang files (covers
-     * {@code scripts/lang/custom/} *.js helpers and *.json string files via
-     * {@code $.lang.load}).
-     *
-     * <p>Defensive against missing APIs so this script can no-op safely if the
-     * surrounding init bundle is ever rearranged. Errors are logged but
-     * swallowed — a single broken module shouldn't take down the whole scan.</p>
-     *
-     * @param {boolean} silentLog when true, suppresses the per-file
-     *        {@code Loaded module: ...} bot console line for the freshly-loaded
-     *        scripts (chat reply suppression is handled separately by the
-     *        command handler)
+     * @param {boolean} silentLog suppress the per-file bot-console load line
+     * @returns {{loaded: number, initReadyFired: number}}
      */
     function reloadCustom(silentLog) {
+        var beforeModules = snapshotLoadedModules();
+
         try {
             if (typeof $.bot !== 'undefined' && typeof $.bot.loadScriptRecursive === 'function') {
                 $.bot.loadScriptRecursive('./custom', !!silentLog, false);
@@ -73,6 +115,15 @@
         } catch (ex) {
             $.log.error('reloadcustom: lang reload failed: ' + ex);
         }
+
+        var afterModules = snapshotLoadedModules();
+        var newModules = diffLoadedModules(afterModules, beforeModules);
+        var fired = fireInitReadyOn(newModules);
+
+        return {
+            loaded: newModules.length,
+            initReadyFired: fired
+        };
     }
 
     /**
@@ -86,10 +137,13 @@
         var args = event.getArgs();
         var silent = args && args.length > 0 && $.equalsIgnoreCase(args[0], 'silent');
 
-        reloadCustom(silent);
+        var result = reloadCustom(silent);
 
         if (!silent) {
-            $.say($.whisperPrefix(event.getSender()) + 'Custom scripts and lang files re-scanned. See bot console for any newly-loaded modules.');
+            $.say($.whisperPrefix(event.getSender())
+                    + 'Custom scripts re-scanned: ' + result.loaded
+                    + ' new module(s), ' + result.initReadyFired
+                    + ' initReady handler(s) fired. See bot console for details.');
         }
     });
 
