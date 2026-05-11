@@ -154,9 +154,6 @@ public final class CustomPanelManifestCollector {
      * supplies the manifest-domain callbacks (filesystem-signature recipe and JSON-bytes
      * builder) while the cache layer owns the TTL/ETag/concurrency policy.
      *
-     * <p>Use this instead of {@link #buildJsonResponseBytes()} when you also want to set an
-     * {@code ETag} / honor {@code If-None-Match} on the HTTP response.</p>
-     *
      * @return current cached response, recomputed on demand when the underlying manifests change
      */
     public static CustomPanelManifestCache.CachedResponse getCachedResponse() {
@@ -164,18 +161,6 @@ public final class CustomPanelManifestCollector {
         return CustomPanelManifestCache.getOrRefresh(
                 () -> computeFilesystemSignature(roots),
                 () -> buildJsonResponseBytesUncached(roots));
-    }
-
-    /**
-     * Convenience accessor that returns the merged manifest JSON bytes without exposing the
-     * surrounding {@link CustomPanelManifestCache.CachedResponse}. Cache-aware — same
-     * characteristics as {@link #getCachedResponse()}.
-     *
-     * @return UTF-8 JSON bytes of the form {@code { "nav": [...], "cards": [...] }}; both arrays
-     *         are always present even when empty
-     */
-    public static byte[] buildJsonResponseBytes() {
-        return getCachedResponse().bytes();
     }
 
     /**
@@ -351,17 +336,17 @@ public final class CustomPanelManifestCollector {
             String section = entry.optString("section", DEFAULT_NAV_SECTION).trim().toLowerCase(Locale.ROOT);
 
             if (label.isEmpty() || folder.isEmpty() || page.isEmpty()) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped nav (missing label/folder/page): " + manifest);
+                warnSkip(manifest, "nav (missing label/folder/page)");
                 continue;
             }
 
             if (!isSafeFolder(folder) || !isSafePageFile(page)) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped nav (invalid folder/page): " + manifest);
+                warnSkip(manifest, "nav (invalid folder/page)");
                 continue;
             }
 
             if (!ALLOWED_NAV_SECTIONS.contains(section)) {
-                com.gmt2001.Console.warn.println("Custom panel manifest: nav section '" + section + "' is not supported, using '" + DEFAULT_NAV_SECTION + "': " + manifest);
+                warnNote(manifest, "nav section '" + section + "' is not supported, using '" + DEFAULT_NAV_SECTION + "'");
                 section = DEFAULT_NAV_SECTION;
             }
 
@@ -431,29 +416,29 @@ public final class CustomPanelManifestCollector {
             String settingsPage = entry.optString("settingsPage", "").trim();
 
             if (id.isEmpty() || title.isEmpty()) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped card (missing id/title): " + manifest);
+                warnSkip(manifest, "card (missing id/title)");
                 continue;
             }
 
             if (!isSafeCardId(id)) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped card (invalid id): " + manifest);
+                warnSkip(manifest, "card (invalid id)");
                 continue;
             }
 
             if (!ALLOWED_CARD_SECTIONS.contains(section)) {
-                com.gmt2001.Console.warn.println("Custom panel manifest: card section '" + section + "' is not supported, using '" + DEFAULT_CARD_SECTION + "': " + manifest);
+                warnNote(manifest, "card section '" + section + "' is not supported, using '" + DEFAULT_CARD_SECTION + "'");
                 section = DEFAULT_CARD_SECTION;
             }
 
             if (!scriptPath.isEmpty() && !isSafeScriptPath(scriptPath)) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped card (invalid scriptPath): " + manifest);
+                warnSkip(manifest, "card (invalid scriptPath)");
                 continue;
             }
 
             boolean hasSettings = !settingsFolder.isEmpty() || !settingsPage.isEmpty();
 
             if (hasSettings && (!isSafeFolder(settingsFolder) || !isSafePageFile(settingsPage))) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped card (invalid settingsFolder/settingsPage): " + manifest);
+                warnSkip(manifest, "card (invalid settingsFolder/settingsPage)");
                 continue;
             }
 
@@ -515,19 +500,19 @@ public final class CustomPanelManifestCollector {
         String content = raw.optString("content", "").trim();
 
         if (content.isEmpty()) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped detailsModal (empty content): " + manifest);
+            warnSkip(manifest, "detailsModal (empty content)");
             return null;
         }
 
         if (content.length() > MAX_DETAILS_MODAL_CONTENT_LEN) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped detailsModal (content too long): " + manifest);
+            warnSkip(manifest, "detailsModal (content too long)");
             return null;
         }
 
         String fmt = raw.optString("format", "text").trim().toLowerCase(Locale.ROOT);
 
         if (!fmt.equals("text") && !fmt.equals("html")) {
-            com.gmt2001.Console.warn.println("Custom panel manifest: detailsModal unknown format '" + fmt + "', using text: " + manifest);
+            warnNote(manifest, "detailsModal unknown format '" + fmt + "', using text");
             fmt = "text";
         }
 
@@ -542,7 +527,7 @@ public final class CustomPanelManifestCollector {
 
         if (!title.isEmpty()) {
             if (title.length() > MAX_SETTINGS_TITLE_LEN) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped detailsModal (title too long): " + manifest);
+                warnSkip(manifest, "detailsModal (title too long)");
                 return null;
             }
 
@@ -579,7 +564,7 @@ public final class CustomPanelManifestCollector {
 
         String title = raw.optString("title", "").trim();
         if (title.isEmpty() || title.length() > MAX_SETTINGS_TITLE_LEN) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid title): " + manifest);
+            warnSkip(manifest, "settingsModal (invalid title)");
             return null;
         }
 
@@ -589,12 +574,12 @@ public final class CustomPanelManifestCollector {
         boolean hasSections = sectionsIn != null && sectionsIn.length() > 0;
 
         if (hasFields && hasSections) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (use either fields or sections, not both): " + manifest);
+            warnSkip(manifest, "settingsModal (use either fields or sections, not both)");
             return null;
         }
 
         if (!hasFields && !hasSections) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (need fields or sections): " + manifest);
+            warnSkip(manifest, "settingsModal (need fields or sections)");
             return null;
         }
 
@@ -605,7 +590,7 @@ public final class CustomPanelManifestCollector {
 
         if (hasSections) {
             if (sectionsIn.length() < 1 || sectionsIn.length() > MAX_SETTINGS_MODAL_SECTIONS) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid sections count): " + manifest);
+                warnSkip(manifest, "settingsModal (invalid sections count)");
                 return null;
             }
 
@@ -625,17 +610,17 @@ public final class CustomPanelManifestCollector {
                 JSONArray secFieldsIn = sec.optJSONArray("fields");
 
                 if (!isSafeCardId(sid) || stitle.isEmpty() || stitle.length() > MAX_SETTINGS_TITLE_LEN) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid section id/title): " + manifest);
+                    warnSkip(manifest, "settingsModal (invalid section id/title)");
                     return null;
                 }
 
                 if (!sectionIds.add(sid)) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (duplicate section id): " + manifest);
+                    warnSkip(manifest, "settingsModal (duplicate section id)");
                     return null;
                 }
 
                 if (secFieldsIn == null || secFieldsIn.length() < 1) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (section needs fields): " + manifest);
+                    warnSkip(manifest, "settingsModal (section needs fields)");
                     return null;
                 }
 
@@ -648,7 +633,7 @@ public final class CustomPanelManifestCollector {
                 totalFields += secFieldsOut.length();
 
                 if (totalFields > MAX_SETTINGS_MODAL_FIELDS) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (too many fields across sections): " + manifest);
+                    warnSkip(manifest, "settingsModal (too many fields across sections)");
                     return null;
                 }
 
@@ -665,14 +650,14 @@ public final class CustomPanelManifestCollector {
             }
 
             if (sectionsOut.length() == 0) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (no valid sections): " + manifest);
+                warnSkip(manifest, "settingsModal (no valid sections)");
                 return null;
             }
 
             out.put("sections", sectionsOut);
         } else {
             if (fieldsIn.length() > MAX_SETTINGS_MODAL_FIELDS) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (too many fields): " + manifest);
+                warnSkip(manifest, "settingsModal (too many fields)");
                 return null;
             }
 
@@ -689,7 +674,7 @@ public final class CustomPanelManifestCollector {
 
         if (!reload.isEmpty()) {
             if (!isSafeReloadCommand(reload)) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid reloadCommand): " + manifest);
+                warnSkip(manifest, "settingsModal (invalid reloadCommand)");
                 return null;
             }
 
@@ -737,7 +722,7 @@ public final class CustomPanelManifestCollector {
         }
 
         if (fieldsOut.length() == 0) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (no valid fields): " + manifest);
+            warnSkip(manifest, "settingsModal (no valid fields)");
             return null;
         }
 
@@ -762,17 +747,17 @@ public final class CustomPanelManifestCollector {
 
         if (!isSafeCardId(fid) || !SETTINGS_FIELD_TYPES.contains(type) || label.isEmpty() || label.length() > MAX_SETTINGS_TITLE_LEN
                 || !isSafeDbIdentifier(table) || !isSafeDbIdentifier(key)) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (invalid field): " + manifest);
+            warnSkip(manifest, "settingsModal (invalid field)");
             return null;
         }
 
         if (!fieldIds.add(fid)) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (duplicate field id): " + manifest);
+            warnSkip(manifest, "settingsModal (duplicate field id)");
             return null;
         }
 
         if (help.length() > MAX_SETTINGS_HELP_LEN) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (help too long): " + manifest);
+            warnSkip(manifest, "settingsModal (help too long)");
             return null;
         }
 
@@ -791,7 +776,7 @@ public final class CustomPanelManifestCollector {
             JSONArray opts = f.optJSONArray("options");
 
             if (opts == null || opts.length() < 1) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (dropdown needs options): " + manifest);
+                warnSkip(manifest, "settingsModal (dropdown needs options)");
                 return null;
             }
 
@@ -801,7 +786,7 @@ public final class CustomPanelManifestCollector {
                 String o = opts.optString(j, "").trim();
 
                 if (o.isEmpty() || o.length() > 200) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest skipped settingsModal (bad dropdown option): " + manifest);
+                    warnSkip(manifest, "settingsModal (bad dropdown option)");
                     return null;
                 }
 
@@ -843,7 +828,7 @@ public final class CustomPanelManifestCollector {
         String script = raw.optString("script", "").trim();
 
         if (script.isEmpty() || !isSafeScriptPath(script)) {
-            com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (invalid script): " + manifest);
+            warnSkip(manifest, "wsEvent (invalid script)");
             return null;
         }
 
@@ -854,7 +839,7 @@ public final class CustomPanelManifestCollector {
             String as = raw.optString("argsString", "");
 
             if (as.length() > MAX_WSEVENT_ARGS_STRING_LEN) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (argsString too long): " + manifest);
+                warnSkip(manifest, "wsEvent (argsString too long)");
                 return null;
             }
 
@@ -865,7 +850,7 @@ public final class CustomPanelManifestCollector {
 
         if (argsIn != null) {
             if (argsIn.length() > MAX_WSEVENT_ARGS_COUNT) {
-                com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (too many args): " + manifest);
+                warnSkip(manifest, "wsEvent (too many args)");
                 return null;
             }
 
@@ -873,14 +858,14 @@ public final class CustomPanelManifestCollector {
 
             for (int i = 0; i < argsIn.length(); i++) {
                 if (!argsIn.isNull(i) && !(argsIn.get(i) instanceof String)) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (args must be strings): " + manifest);
+                    warnSkip(manifest, "wsEvent (args must be strings)");
                     return null;
                 }
 
                 String a = argsIn.optString(i, "");
 
                 if (a.length() > MAX_WSEVENT_ARG_ITEM_LEN) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest skipped wsEvent (arg too long): " + manifest);
+                    warnSkip(manifest, "wsEvent (arg too long)");
                     return null;
                 }
 
@@ -894,37 +879,56 @@ public final class CustomPanelManifestCollector {
     }
 
     /**
+     * Logs that an entry was skipped, naming the manifest and reason. Use for hard-fail
+     * validation (entry is dropped from the merged response).
+     */
+    private static void warnSkip(Path manifest, String reason) {
+        com.gmt2001.Console.warn.println("Custom panel manifest skipped " + reason + ": " + manifest);
+    }
+
+    /**
+     * Logs an informational note about a manifest entry that survived validation, typically
+     * when an unsupported value was normalized to a default rather than dropped.
+     */
+    private static void warnNote(Path manifest, String detail) {
+        com.gmt2001.Console.warn.println("Custom panel manifest: " + detail + ": " + manifest);
+    }
+
+    /**
      * INIDB table / key names: alphanumeric plus underscore, typical PhantomBot naming.
      */
     private static boolean isSafeDbIdentifier(String s) {
-        if (s.isEmpty() || s.length() > MAX_DB_IDENTIFIER_LEN) {
-            return false;
-        }
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            boolean ok = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_';
-
-            if (!ok) {
-                return false;
-            }
-        }
-
-        return true;
+        return isSafeIdentifier(s, MAX_DB_IDENTIFIER_LEN, false);
     }
 
     /**
      * Bot console reload command after saving modal settings (e.g. {@code reloadadventure}).
      */
     private static boolean isSafeReloadCommand(String s) {
-        if (s.isEmpty() || s.length() > MAX_RELOAD_CMD_LEN) {
+        return isSafeIdentifier(s, MAX_RELOAD_CMD_LEN, false);
+    }
+
+    /**
+     * Shared validator for short identifier-shaped strings: 1..{@code maxLen} chars, ASCII
+     * letters/digits/underscore, optionally hyphen. Used by INIDB identifiers, reload commands,
+     * and card / field ids.
+     *
+     * @param s            input to validate
+     * @param maxLen       inclusive maximum length
+     * @param allowHyphen  whether {@code -} is permitted
+     * @return {@code true} if {@code s} is non-empty, within length, and matches the charset
+     */
+    private static boolean isSafeIdentifier(String s, int maxLen, boolean allowHyphen) {
+        if (s.isEmpty() || s.length() > maxLen) {
             return false;
         }
 
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
+            boolean ok = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
+                    || (allowHyphen && c == '-');
 
-            if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) {
+            if (!ok) {
                 return false;
             }
         }
@@ -976,17 +980,7 @@ public final class CustomPanelManifestCollector {
      * @return {@code true} if the id is safe to interpolate into DOM ids and selectors
      */
     private static boolean isSafeCardId(String id) {
-        if (id.isEmpty() || id.length() > 64) {
-            return false;
-        }
-        for (int i = 0; i < id.length(); i++) {
-            char c = id.charAt(i);
-            boolean ok = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '_';
-            if (!ok) {
-                return false;
-            }
-        }
-        return true;
+        return isSafeIdentifier(id, 64, true);
     }
 
     /**
