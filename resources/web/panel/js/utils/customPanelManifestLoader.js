@@ -31,14 +31,8 @@
  * is forgiving, but the canonical order in {@code index.html} is loader → modals → nav →
  * cards so this file's defaults always win.</p>
  *
- * <p>Public API exposed on {@code window}:</p>
- * <ul>
- *   <li>{@code initCustomPanelNav()} — call once after panel websocket auth completes (from
- *       {@code js/index.js}). Idempotent: repeat calls after the first are ignored.</li>
- *   <li>{@code __pbCustomManifests__} — populated after a successful fetch with the canonical
- *       {@code {nav, cards, cardsBySection}} shape, kept for backwards compat with anything
- *       that grew up reading it directly.</li>
- * </ul>
+ * <p>Public API: {@code window.initCustomPanelNav()} — call once after panel websocket auth
+ * completes (from {@code js/index.js}). Idempotent; repeat calls after the first are ignored.</p>
  *
  * @author mcawful
  */
@@ -199,12 +193,6 @@
 
                 indexCards(cardList);
                 ns.loaded = true;
-
-                window.__pbCustomManifests__ = {
-                    nav: navList,
-                    cards: cardList,
-                    cardsBySection: ns.cardsBySection
-                };
 
                 if (typeof document !== 'undefined' && typeof CustomEvent === 'function') {
                     document.dispatchEvent(new CustomEvent(ns.EVENTS.MANIFESTS_LOADED, {
