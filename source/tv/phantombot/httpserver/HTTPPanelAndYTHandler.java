@@ -21,6 +21,7 @@ import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
+import com.mcawful.CustomPanelManifestCache;
 import com.mcawful.CustomPanelManifestCollector;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -90,9 +91,21 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         }
 
         if (req.method().equals(HttpMethod.GET) && "/panel/custom-manifests.json".equals(qsd.path())) {
-            byte[] data = CustomPanelManifestCollector.buildJsonResponseBytes();
+            CustomPanelManifestCache.CachedResponse cached = CustomPanelManifestCollector.getCachedResponse();
+            String ifNoneMatch = req.headers().get(HttpHeaderNames.IF_NONE_MATCH);
+
+            if (cached.matchesIfNoneMatch(ifNoneMatch)) {
+                FullHttpResponse notModified = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_MODIFIED);
+                notModified.headers().set(HttpHeaderNames.ETAG, cached.etag());
+                com.gmt2001.Console.debug.println("304 " + req.method().asciiName() + ": /panel/custom-manifests.json");
+                HttpServerPageHandler.sendHttpResponse(ctx, req, notModified);
+                return;
+            }
+
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, cached.bytes(), "custom-manifests.json");
+            res.headers().set(HttpHeaderNames.ETAG, cached.etag());
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": /panel/custom-manifests.json");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, data, "custom-manifests.json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 

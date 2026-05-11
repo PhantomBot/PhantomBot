@@ -24,7 +24,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -128,6 +131,13 @@ public final class CustomPanelManifestCollector {
     private static final int MAX_WSEVENT_ARG_ITEM_LEN = 256;
 
     /**
+     * Minimum legal length of {@code card.scriptPath} (and {@code wsEvent.script}). The bot's
+     * {@code module} command works with {@code ./<dir>/<file>.js}-shape paths, and the shortest
+     * legal value of that shape — {@code ./a/b.js} — is exactly 8 characters.
+     */
+    private static final int SAFE_SCRIPT_PATH_MIN_LEN = 8;
+
+    /**
      * Allowed {@code settingsModal.fields[].type} values for declarative game-card settings UI.
      */
     private static final Set<String> SETTINGS_FIELD_TYPES = Set.of("number", "text", "textarea", "yesno", "dropdown", "permission");
@@ -139,34 +149,125 @@ public final class CustomPanelManifestCollector {
     }
 
     /**
-     * Walks {@code web/panel/custom/} under the bot execution directory (and, when running in
-     * Docker, under {@code getDockerPath()/web/panel/custom/}), parses every immediate-child
-     * module's {@code manifest.json}, validates and de-duplicates the {@code nav} and
-     * {@code cards} entries, and serializes them into the JSON document served at
-     * {@code /panel/custom-manifests.json}.
+     * Returns a memoized {@link CustomPanelManifestCache.CachedResponse} for the merged
+     * manifest JSON. Delegates to {@link CustomPanelManifestCache#getOrRefresh}; this method
+     * supplies the manifest-domain callbacks (filesystem-signature recipe and JSON-bytes
+     * builder) while the cache layer owns the TTL/ETag/concurrency policy.
      *
-     * <p>Invalid manifests are logged and skipped rather than aborting the response, so a single
-     * misbehaving module cannot break the panel.</p>
+     * <p>Use this instead of {@link #buildJsonResponseBytes()} when you also want to set an
+     * {@code ETag} / honor {@code If-None-Match} on the HTTP response.</p>
+     *
+     * @return current cached response, recomputed on demand when the underlying manifests change
+     */
+    public static CustomPanelManifestCache.CachedResponse getCachedResponse() {
+        List<Path> roots = customRoots();
+        return CustomPanelManifestCache.getOrRefresh(
+                () -> computeFilesystemSignature(roots),
+                () -> buildJsonResponseBytesUncached(roots));
+    }
+
+    /**
+     * Convenience accessor that returns the merged manifest JSON bytes without exposing the
+     * surrounding {@link CustomPanelManifestCache.CachedResponse}. Cache-aware — same
+     * characteristics as {@link #getCachedResponse()}.
      *
      * @return UTF-8 JSON bytes of the form {@code { "nav": [...], "cards": [...] }}; both arrays
      *         are always present even when empty
      */
     public static byte[] buildJsonResponseBytes() {
+        return getCachedResponse().bytes();
+    }
+
+    /**
+     * Returns the {@code web/panel/custom/} directories the collector should scan, in priority
+     * order: bot execution directory first, Docker {@code _data} second (if applicable). Either
+     * may be missing — callers must handle the empty list and individual missing roots.
+     */
+    private static List<Path> customRoots() {
+        List<Path> roots = new ArrayList<>(2);
+        roots.add(Paths.get(Reflect.GetExecutionPath(), "web", "panel", "custom"));
+        if (RepoVersion.isDocker()) {
+            roots.add(Paths.get(PathValidator.getDockerPath(), "web", "panel", "custom"));
+        }
+        return roots;
+    }
+
+    /**
+     * Walks every root for direct-child {@code manifest.json} files, parses them, and serializes
+     * the merged result. Callers should prefer {@link #getCachedResponse()} so repeated invocations
+     * during a panel-login burst don't re-parse identical content.
+     *
+     * <p>Invalid manifests are logged and skipped rather than aborting the response, so a single
+     * misbehaving module cannot break the panel.</p>
+     *
+     * @param roots the {@code web/panel/custom} directories to scan
+     * @return UTF-8 JSON bytes of the form {@code { "nav": [...], "cards": [...] }}
+     */
+    private static byte[] buildJsonResponseBytesUncached(List<Path> roots) {
         JSONArray nav = new JSONArray();
         JSONArray cards = new JSONArray();
         Set<String> seenNav = new HashSet<>();
         Set<String> seenCards = new HashSet<>();
 
-        appendFromCustomRoot(Paths.get(Reflect.GetExecutionPath(), "web", "panel", "custom"), nav, cards, seenNav, seenCards);
-
-        if (RepoVersion.isDocker()) {
-            appendFromCustomRoot(Paths.get(PathValidator.getDockerPath(), "web", "panel", "custom"), nav, cards, seenNav, seenCards);
+        for (Path root : roots) {
+            appendFromCustomRoot(root, nav, cards, seenNav, seenCards);
         }
 
         JSONObject root = new JSONObject();
         root.put("nav", nav);
         root.put("cards", cards);
         return root.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Computes a fast content fingerprint of the on-disk manifest set without parsing any
+     * {@code manifest.json}. Walks each root for direct-child {@code manifest.json} files and
+     * concatenates {@code path|lastModified|size} for each (sorted for stable output across runs).
+     *
+     * <p>Any I/O error degrades to a wall-clock sentinel — that intentionally invalidates the
+     * cache so the next request re-parses, surfacing the issue rather than serving potentially
+     * stale bytes.</p>
+     *
+     * @param roots the directories to inspect
+     * @return opaque signature string; never {@code null}
+     */
+    private static String computeFilesystemSignature(List<Path> roots) {
+        List<String> entries = new ArrayList<>();
+
+        for (Path root : roots) {
+            if (!Files.isDirectory(root)) {
+                entries.add(root.toString() + "|<missing>");
+                continue;
+            }
+
+            try (Stream<Path> stream = Files.list(root)) {
+                stream.filter(Files::isDirectory).forEach(modDir -> {
+                    Path manifest = modDir.resolve("manifest.json");
+                    if (!Files.isRegularFile(manifest)) {
+                        return;
+                    }
+                    try {
+                        long mtime = Files.getLastModifiedTime(manifest).toMillis();
+                        long size = Files.size(manifest);
+                        entries.add(manifest.toString() + "|" + mtime + "|" + size);
+                    } catch (IOException ex) {
+                        entries.add(manifest.toString() + "|<io-error>");
+                    }
+                });
+            } catch (IOException ex) {
+                // Force a cache invalidation on the next request so the failure is reported
+                // by the warn-log in appendFromCustomRoot rather than silently re-using
+                // potentially stale bytes.
+                entries.add(root.toString() + "|<io-error>|" + System.nanoTime());
+            }
+        }
+
+        Collections.sort(entries);
+        StringBuilder sb = new StringBuilder();
+        for (String entry : entries) {
+            sb.append(entry).append('\n');
+        }
+        return CustomPanelManifestCache.sha256Base64(sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -393,6 +494,15 @@ public final class CustomPanelManifestCollector {
      * Validates optional {@code detailsModal} for the read-only card info dialog.
      * {@code content} is plain text unless {@code format} is {@code html}; HTML is sanitized in the panel.
      *
+     * <p>TODO(security, design #8): move HTML sanitization here (e.g. via {@code org.jsoup}'s
+     * {@code Safelist}) instead of relying solely on the client-side whitelist in
+     * {@code customPanelDetailsModal.js#sanitizeDetailsModalHtml}. The panel sanitizer can stay as
+     * defense-in-depth, but the server should be authoritative — there's no reason for dirty
+     * HTML to leave the bot, especially if the manifest endpoint is ever consumed by something
+     * other than the stock panel. Deferred for now to avoid pulling in a 440 KB dep for what is
+     * effectively trusted-author content (custom modules are already trusted code); revisit if
+     * the manifest endpoint ever grows non-panel consumers.</p>
+     *
      * @param raw      raw {@code detailsModal} object from manifest, or {@code null}
      * @param manifest source manifest path for logging
      * @return canonical JSON or {@code null} when absent or invalid
@@ -445,11 +555,18 @@ public final class CustomPanelManifestCollector {
     /**
      * Validates {@code settingsModal} for declarative game-card settings (Bootstrap modal + INIDB).
      *
-     * <p>Optional {@code reloadCommand} and {@code wsEvent} are consumed by {@code customPanelNav.js}
-     * after a successful save. If {@code wsEvent} is omitted but the parent card declares
+     * <p>Optional {@code reloadCommand} and {@code wsEvent} are consumed by
+     * {@code customPanelSettingsModal.js} after a successful save. If {@code wsEvent} is omitted but the parent card declares
      * {@code scriptPath}, the panel sends a websocket event to that script with first argument
-     * {@code panel-settings-saved} so Rhino modules can refresh in-memory settings without a fork-specific
-     * reload command.</p>
+     * {@code panel-settings-saved} so Rhino modules can refresh in-memory settings without
+     * needing a separate {@code reloadCommand}.</p>
+     *
+     * <p>The implicit {@code panel-settings-saved} fallback can be opted out of with
+     * {@code "disableWsFallback": true} in the manifest, for authors whose modules use a
+     * different reload mechanism (e.g. polling, a {@code reloadCommand} only, or no reload at
+     * all). The flag only flows into the canonical JSON when explicitly set to {@code true} so
+     * the wire format stays compact for the common case. Has no effect when an explicit
+     * {@code wsEvent} block is also declared (the explicit event always wins).</p>
      *
      * @param raw      raw {@code settingsModal} object from manifest, or {@code null}
      * @param manifest source manifest path for logging
@@ -583,6 +700,10 @@ public final class CustomPanelManifestCollector {
 
         if (wsOut != null) {
             out.put("wsEvent", wsOut);
+        }
+
+        if (raw.optBoolean("disableWsFallback", false)) {
+            out.put("disableWsFallback", true);
         }
 
         return out;
@@ -869,20 +990,51 @@ public final class CustomPanelManifestCollector {
     }
 
     /**
-     * Script paths are passed verbatim to the {@code module enable/disable} command. We only
-     * reject obviously malformed inputs (path traversal, backslashes, line breaks, oversized
-     * strings, missing {@code .js} suffix); PhantomBot's module system normalizes the rest.
+     * Script paths are passed verbatim to the {@code module enable/disable} command and to
+     * {@code socket.wsEvent} as the target script. PhantomBot's {@code module} command works
+     * against {@code ./<dir>/<file>.js}-shape paths under {@code scripts/}, so the manifest
+     * must declare the same shape: a {@code ./} prefix, at least one subdirectory segment, and
+     * a {@code .js} suffix. Bare filenames ({@code "foo.js"}, {@code "./foo.js"}) and absolute
+     * or otherwise-malformed paths are rejected outright; the parent caller then logs and
+     * skips the offending entry rather than letting an invalid path silently no-op at toggle
+     * time.
+     *
+     * <p>Additional negatives (defense-in-depth alongside the shape rule):</p>
+     * <ul>
+     *   <li>{@code ..} anywhere (path traversal)</li>
+     *   <li>{@code \\} (Windows-style separators)</li>
+     *   <li>{@code \n} / {@code \r} (line splitting in the bot console)</li>
+     *   <li>oversized strings (&gt; 256 chars)</li>
+     *   <li>empty path segments around the inner {@code /} ({@code ./.foo}, {@code ./foo/.js})</li>
+     * </ul>
+     *
+     * <p>The {@link #SAFE_SCRIPT_PATH_MIN_LEN} constant of 8 corresponds to the shortest legal
+     * shape: {@code ./a/b.js}.</p>
      *
      * @param scriptPath manifest-supplied bot-script path (e.g. {@code ./games/myGame.js})
      * @return {@code true} if the script path is safe to forward to the {@code module} command
      */
     private static boolean isSafeScriptPath(String scriptPath) {
-        if (scriptPath.length() > 256) {
+        int len = scriptPath.length();
+
+        if (len < SAFE_SCRIPT_PATH_MIN_LEN || len > 256) {
             return false;
         }
+
+        if (!scriptPath.startsWith("./") || !scriptPath.endsWith(".js")) {
+            return false;
+        }
+
         if (scriptPath.contains("\\") || scriptPath.contains("..") || scriptPath.contains("\n") || scriptPath.contains("\r")) {
             return false;
         }
-        return scriptPath.endsWith(".js");
+
+        // Require at least one additional path separator AFTER the "./" prefix so the script
+        // lives in a subdirectory (matches PB's `scripts/<dir>/<file>.js` convention). The
+        // separator must be strictly between the prefix and the ".js" suffix, with at least one
+        // non-separator character on each side — rejects "././foo.js" (separator at index 2)
+        // and "./foo/.js" (separator immediately before ".js").
+        int separator = scriptPath.indexOf('/', 2);
+        return separator > 2 && separator < len - 3;
     }
 }
