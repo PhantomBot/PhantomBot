@@ -111,6 +111,11 @@ public final class CustomPanelManifestCollector {
     private static final int MAX_DB_IDENTIFIER_LEN = 64;
 
     /**
+     * Card / field id length limit (DOM-id-safe identifier segment).
+     */
+    private static final int MAX_CARD_ID_LEN = 64;
+
+    /**
      * Optional {@code reloadCommand} passed to {@code socket.sendCommand} after save.
      */
     private static final int MAX_RELOAD_CMD_LEN = 64;
@@ -138,9 +143,49 @@ public final class CustomPanelManifestCollector {
     private static final int SAFE_SCRIPT_PATH_MIN_LEN = 8;
 
     /**
+     * Maximum legal length of {@code card.scriptPath} (and {@code wsEvent.script}). The bot's
+     * {@code module} command happily handles long subdirectory chains, but a value over 256
+     * chars is almost certainly a mistake (or an exploit attempt) and would also bloat the
+     * cached manifest payload disproportionately.
+     */
+    private static final int MAX_SCRIPT_PATH_LEN = 256;
+
+    /**
+     * Per-option string length limit for {@code dropdown} and {@code boolean} field
+     * {@code options}. Matches the schema's {@code maxLength} so server and IDE agree.
+     */
+    private static final int MAX_OPTION_LEN = 200;
+
+    /**
      * Allowed {@code settingsModal.fields[].type} values for declarative game-card settings UI.
      */
-    private static final Set<String> SETTINGS_FIELD_TYPES = Set.of("number", "text", "textarea", "yesno", "dropdown", "permission");
+    private static final Set<String> SETTINGS_FIELD_TYPES = Set.of("number", "text", "textarea", "boolean", "toggle", "checkboxgroup", "dropdown", "permission");
+
+    /**
+     * Lowest legal value for a field's optional {@code column} layout hint
+     * (Bootstrap col-md-{@code N}). Anything outside {@code [1, 12]} is rejected.
+     */
+    private static final int MIN_FIELD_COLUMN_SPAN = 1;
+
+    /**
+     * Highest legal value for a field's optional {@code column} layout hint. Mirrors
+     * Bootstrap's 12-column grid; {@code column} omitted (or set to 12) means full-width.
+     */
+    private static final int MAX_FIELD_COLUMN_SPAN = 12;
+
+    /**
+     * Maximum number of inline checkboxes a single {@code checkboxgroup} field can declare.
+     * Each checkbox writes its own INIDB key, but the whole group still counts as one
+     * entry against {@link #MAX_SETTINGS_MODAL_FIELDS}.
+     */
+    private static final int MAX_CHECKBOXES_PER_GROUP = 12;
+
+    /**
+     * Required length of {@code options} on a {@code boolean} field. The two strings are the
+     * dropdown labels for {@code true} ({@code options[0]}) and {@code false} ({@code options[1]});
+     * INIDB still stores a JS boolean.
+     */
+    private static final int BOOLEAN_OPTIONS_LENGTH = 2;
 
     /**
      * Utility class (not instantiable).
@@ -289,7 +334,7 @@ public final class CustomPanelManifestCollector {
                     appendNavEntries(manifest, root.optJSONArray("nav"), nav, seenNav);
                     appendCardEntries(manifest, root.optJSONArray("cards"), cards, seenCards);
                 } catch (Exception ex) {
-                    com.gmt2001.Console.warn.println("Custom panel manifest invalid: " + manifest + " — " + ex.getMessage());
+                    warnSkip(manifest, "manifest parse error: " + ex.getMessage());
                 }
             });
         } catch (IOException ex) {
@@ -477,16 +522,10 @@ public final class CustomPanelManifestCollector {
 
     /**
      * Validates optional {@code detailsModal} for the read-only card info dialog.
-     * {@code content} is plain text unless {@code format} is {@code html}; HTML is sanitized in the panel.
-     *
-     * <p>TODO(security, design #8): move HTML sanitization here (e.g. via {@code org.jsoup}'s
-     * {@code Safelist}) instead of relying solely on the client-side whitelist in
-     * {@code customPanelDetailsModal.js#sanitizeDetailsModalHtml}. The panel sanitizer can stay as
-     * defense-in-depth, but the server should be authoritative — there's no reason for dirty
-     * HTML to leave the bot, especially if the manifest endpoint is ever consumed by something
-     * other than the stock panel. Deferred for now to avoid pulling in a 440 KB dep for what is
-     * effectively trusted-author content (custom modules are already trusted code); revisit if
-     * the manifest endpoint ever grows non-panel consumers.</p>
+     * {@code content} is plain text unless {@code format} is {@code html}; HTML is sanitized
+     * client-side by {@code customPanelDetailsModal.js#sanitizeDetailsModalHtml} (see schema
+     * for the allowed tag whitelist). Server-side sanitization is intentionally not done —
+     * custom modules are already trusted code, and the panel is the only consumer.
      *
      * @param raw      raw {@code detailsModal} object from manifest, or {@code null}
      * @param manifest source manifest path for logging
@@ -742,22 +781,33 @@ public final class CustomPanelManifestCollector {
         String type = f.optString("type", "").trim().toLowerCase(Locale.ROOT);
         String label = f.optString("label", "").trim();
         String table = f.optString("table", "").trim();
-        String key = f.optString("key", "").trim();
         String help = f.optString("help", "").trim();
 
-        if (!isSafeCardId(fid) || !SETTINGS_FIELD_TYPES.contains(type) || label.isEmpty() || label.length() > MAX_SETTINGS_TITLE_LEN
-                || !isSafeDbIdentifier(table) || !isSafeDbIdentifier(key)) {
-            warnSkip(manifest, "settingsModal (invalid field)");
+        if (!SETTINGS_FIELD_TYPES.contains(type) || !isSafeDbIdentifier(table)) {
+            warnSkip(manifest, "settingsModal (field has invalid type or table)");
             return null;
         }
 
-        if (!fieldIds.add(fid)) {
-            warnSkip(manifest, "settingsModal (duplicate field id)");
+        if (!validateFieldIdentity(fid, label, help, manifest, fieldIds, "field")) {
             return null;
         }
 
-        if (help.length() > MAX_SETTINGS_HELP_LEN) {
-            warnSkip(manifest, "settingsModal (help too long)");
+        // checkboxgroup bundles its own subfields and writes one INIDB row per inner
+        // checkbox, so it has no field-level "key" and rejects all type-specific knobs
+        // belonging to other field types. Branch out before the regular key check.
+        if ("checkboxgroup".equals(type)) {
+            return validateCheckboxGroupField(f, fid, label, table, help, manifest, fieldIds);
+        }
+
+        String key = f.optString("key", "").trim();
+
+        if (!isSafeDbIdentifier(key)) {
+            warnSkip(manifest, "settingsModal (field has invalid key)");
+            return null;
+        }
+
+        if (f.has("checkboxes")) {
+            warnSkip(manifest, "settingsModal ('checkboxes' is only valid on type=checkboxgroup)");
             return null;
         }
 
@@ -773,24 +823,25 @@ public final class CustomPanelManifestCollector {
         }
 
         if ("dropdown".equals(type)) {
-            JSONArray opts = f.optJSONArray("options");
+            JSONArray optsOut = validateOptionsArray(f.optJSONArray("options"), manifest, "dropdown", 1, Integer.MAX_VALUE, false);
 
-            if (opts == null || opts.length() < 1) {
-                warnSkip(manifest, "settingsModal (dropdown needs options)");
+            if (optsOut == null) {
                 return null;
             }
 
-            JSONArray optsOut = new JSONArray();
+            fout.put("options", optsOut);
+        }
 
-            for (int j = 0; j < opts.length(); j++) {
-                String o = opts.optString(j, "").trim();
+        // 'boolean' renders the same widget as 'dropdown' (helpers.getDropdownGroup) but stores
+        // a JS boolean in INIDB. Authors supply exactly two unique labels: options[0] is the
+        // label for true, options[1] is the label for false. (See schema for the [trueLabel,
+        // falseLabel] convention.)
+        if ("boolean".equals(type)) {
+            JSONArray optsOut = validateOptionsArray(f.optJSONArray("options"), manifest, "boolean",
+                    BOOLEAN_OPTIONS_LENGTH, BOOLEAN_OPTIONS_LENGTH, true);
 
-                if (o.isEmpty() || o.length() > 200) {
-                    warnSkip(manifest, "settingsModal (bad dropdown option)");
-                    return null;
-                }
-
-                optsOut.put(o);
+            if (optsOut == null) {
+                return null;
             }
 
             fout.put("options", optsOut);
@@ -810,7 +861,214 @@ public final class CustomPanelManifestCollector {
             fout.put("unlimited", true);
         }
 
+        if (f.has("column") && !f.isNull("column")) {
+            // 'toggle' renders a small fixed-width pretty-checkbox that doesn't fill a
+            // Bootstrap col-md-N cell, so packing it with 'column' produces orphan
+            // whitespace. Reject at validation time and steer authors at 'checkboxgroup'
+            // (for grouped booleans) or full-width rendering (for a single boolean).
+            // 'checkboxgroup' itself rejects 'column' separately in validateCheckboxGroupField
+            // since it has no field-level column slot at all. ('boolean' is fine here — it
+            // renders as a full-width dropdown like 'dropdown' / 'permission'.)
+            if ("toggle".equals(type)) {
+                warnSkip(manifest, "settingsModal (column is not supported on type=toggle; use checkboxgroup for grouped booleans)");
+                return null;
+            }
+
+            int col = f.optInt("column", -1);
+
+            if (col < MIN_FIELD_COLUMN_SPAN || col > MAX_FIELD_COLUMN_SPAN) {
+                warnSkip(manifest, "settingsModal (field column must be " + MIN_FIELD_COLUMN_SPAN + ".." + MAX_FIELD_COLUMN_SPAN + ")");
+                return null;
+            }
+
+            if (col < MAX_FIELD_COLUMN_SPAN) {
+                fout.put("column", col);
+            }
+        }
+
         return fout;
+    }
+
+    /**
+     * Validates a {@code checkboxgroup} field. Each inner checkbox is itself a tiny
+     * field-like object ({@code id}, {@code label}, {@code key}, optional {@code help})
+     * and shares the field-level {@code table}. Inner ids are added to {@code fieldIds}
+     * so collisions with sibling field ids — flat or nested — are caught modal-wide.
+     *
+     * <p>This field type intentionally rejects {@code key}, {@code min}, {@code max},
+     * {@code options}, {@code unlimited}, and {@code column} — all of those belong to
+     * other field types and would be silently ignored otherwise. Failing fast surfaces
+     * authoring mistakes as warn-log skips instead of mysterious save bugs.</p>
+     *
+     * @param f raw manifest field
+     * @param fid pre-validated field id
+     * @param label pre-validated label
+     * @param table pre-validated INIDB table (shared by every checkbox in the group)
+     * @param help pre-validated help text (may be empty)
+     * @param manifest manifest path for warn logging
+     * @param fieldIds modal-wide id set; updated with every accepted checkbox id
+     * @return canonical JSON for the field, or {@code null} when validation fails
+     */
+    private static JSONObject validateCheckboxGroupField(JSONObject f, String fid, String label, String table, String help, Path manifest, Set<String> fieldIds) {
+        if (f.has("key") || f.has("min") || f.has("max") || f.has("options") || f.has("unlimited") || f.has("column")) {
+            warnSkip(manifest, "settingsModal (checkboxgroup does not support key/min/max/options/unlimited/column)");
+            return null;
+        }
+
+        JSONArray cbsIn = f.optJSONArray("checkboxes");
+
+        if (cbsIn == null || cbsIn.length() < 1 || cbsIn.length() > MAX_CHECKBOXES_PER_GROUP) {
+            warnSkip(manifest, "settingsModal (checkboxgroup needs 1.." + MAX_CHECKBOXES_PER_GROUP + " checkboxes)");
+            return null;
+        }
+
+        JSONArray cbsOut = new JSONArray();
+
+        for (int i = 0; i < cbsIn.length(); i++) {
+            JSONObject cb = cbsIn.optJSONObject(i);
+
+            if (cb == null) {
+                warnSkip(manifest, "settingsModal (checkboxgroup checkbox not an object)");
+                return null;
+            }
+
+            String cbId = cb.optString("id", "").trim();
+            String cbLabel = cb.optString("label", "").trim();
+            String cbKey = cb.optString("key", "").trim();
+            String cbHelp = cb.optString("help", "").trim();
+
+            if (!validateFieldIdentity(cbId, cbLabel, cbHelp, manifest, fieldIds, "checkboxgroup checkbox")) {
+                return null;
+            }
+
+            if (!isSafeDbIdentifier(cbKey)) {
+                warnSkip(manifest, "settingsModal (checkboxgroup checkbox has invalid key)");
+                return null;
+            }
+
+            JSONObject cbOut = new JSONObject();
+            cbOut.put("id", cbId);
+            cbOut.put("label", cbLabel);
+            cbOut.put("key", cbKey);
+
+            if (!cbHelp.isEmpty()) {
+                cbOut.put("help", cbHelp);
+            }
+
+            cbsOut.put(cbOut);
+        }
+
+        JSONObject fout = new JSONObject();
+        fout.put("id", fid);
+        fout.put("type", "checkboxgroup");
+        fout.put("label", label);
+        fout.put("table", table);
+
+        if (!help.isEmpty()) {
+            fout.put("help", help);
+        }
+
+        fout.put("checkboxes", cbsOut);
+        return fout;
+    }
+
+    /**
+     * Validates the identity properties shared by every settings-modal field — and by every
+     * inner checkbox of a {@code checkboxgroup}:
+     *
+     * <ul>
+     *   <li>{@code id}: safe identifier (≤ {@link #MAX_CARD_ID_LEN} chars), unique modal-wide</li>
+     *   <li>{@code label}: non-empty, ≤ {@link #MAX_SETTINGS_TITLE_LEN} chars</li>
+     *   <li>{@code help}: ≤ {@link #MAX_SETTINGS_HELP_LEN} chars (may be empty)</li>
+     * </ul>
+     *
+     * <p>Type-specific concerns ({@code type}, {@code key}, {@code table}, {@code options},
+     * {@code checkboxes}, {@code column}) are validated by the caller.</p>
+     *
+     * @param id           trimmed candidate id
+     * @param label        trimmed candidate label
+     * @param help         trimmed help text (may be empty)
+     * @param manifest     manifest path for warn logging
+     * @param fieldIds     modal-wide id set; mutated on success
+     * @param contextLabel inserted into warn messages so authors can tell whether the bad
+     *                     field was an outer field or an inner checkbox (e.g. {@code "field"},
+     *                     {@code "checkboxgroup checkbox"})
+     * @return {@code true} on success; {@code false} after warn-skip
+     */
+    private static boolean validateFieldIdentity(String id, String label, String help, Path manifest, Set<String> fieldIds, String contextLabel) {
+        if (!isSafeCardId(id)) {
+            warnSkip(manifest, "settingsModal (" + contextLabel + " has invalid id)");
+            return false;
+        }
+
+        if (!fieldIds.add(id)) {
+            warnSkip(manifest, "settingsModal (" + contextLabel + " id collides with another field id)");
+            return false;
+        }
+
+        if (label.isEmpty() || label.length() > MAX_SETTINGS_TITLE_LEN) {
+            warnSkip(manifest, "settingsModal (" + contextLabel + " has invalid label)");
+            return false;
+        }
+
+        if (help.length() > MAX_SETTINGS_HELP_LEN) {
+            warnSkip(manifest, "settingsModal (" + contextLabel + " help too long)");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Shared validator for the {@code options} array on field types that present a dropdown of
+     * author-supplied strings. Used by {@code dropdown} (1+ items, duplicates allowed) and
+     * {@code boolean} (exactly 2 unique items, where {@code [0]} = true, {@code [1]} = false).
+     * Each option is trimmed to a non-empty string of at most {@link #MAX_OPTION_LEN} chars.
+     *
+     * @param opts          raw options array (may be {@code null})
+     * @param manifest      manifest path for warn logging
+     * @param kind          field type name used in the warn message (e.g. {@code "dropdown"})
+     * @param minLen        minimum array length (inclusive)
+     * @param maxLen        maximum array length (inclusive); use {@link Integer#MAX_VALUE} for unbounded
+     * @param requireUnique reject duplicate entries
+     * @return canonical {@code JSONArray} of trimmed strings, or {@code null} on validation failure
+     */
+    private static JSONArray validateOptionsArray(JSONArray opts, Path manifest, String kind, int minLen, int maxLen, boolean requireUnique) {
+        int len = opts == null ? 0 : opts.length();
+
+        if (opts == null || len < minLen || len > maxLen) {
+            String range;
+            if (minLen == maxLen) {
+                range = "exactly " + minLen;
+            } else if (maxLen == Integer.MAX_VALUE) {
+                range = "at least " + minLen;
+            } else {
+                range = minLen + ".." + maxLen;
+            }
+            warnSkip(manifest, "settingsModal (" + kind + " needs " + range + " options)");
+            return null;
+        }
+
+        JSONArray optsOut = new JSONArray();
+        Set<String> seen = requireUnique ? new HashSet<>() : null;
+
+        for (int j = 0; j < len; j++) {
+            String o = opts.optString(j, "").trim();
+
+            if (o.isEmpty() || o.length() > MAX_OPTION_LEN) {
+                warnSkip(manifest, "settingsModal (bad " + kind + " option)");
+                return null;
+            }
+
+            if (seen != null && !seen.add(o)) {
+                warnSkip(manifest, "settingsModal (" + kind + " options must be unique)");
+                return null;
+            }
+
+            optsOut.put(o);
+        }
+
+        return optsOut;
     }
 
     /**
@@ -980,7 +1238,7 @@ public final class CustomPanelManifestCollector {
      * @return {@code true} if the id is safe to interpolate into DOM ids and selectors
      */
     private static boolean isSafeCardId(String id) {
-        return isSafeIdentifier(id, 64, true);
+        return isSafeIdentifier(id, MAX_CARD_ID_LEN, true);
     }
 
     /**
@@ -1003,7 +1261,7 @@ public final class CustomPanelManifestCollector {
      * </ul>
      *
      * <p>The {@link #SAFE_SCRIPT_PATH_MIN_LEN} constant of 8 corresponds to the shortest legal
-     * shape: {@code ./a/b.js}.</p>
+     * shape: {@code ./a/b.js}. The upper bound is {@link #MAX_SCRIPT_PATH_LEN} chars.</p>
      *
      * @param scriptPath manifest-supplied bot-script path (e.g. {@code ./games/myGame.js})
      * @return {@code true} if the script path is safe to forward to the {@code module} command
@@ -1011,7 +1269,7 @@ public final class CustomPanelManifestCollector {
     private static boolean isSafeScriptPath(String scriptPath) {
         int len = scriptPath.length();
 
-        if (len < SAFE_SCRIPT_PATH_MIN_LEN || len > 256) {
+        if (len < SAFE_SCRIPT_PATH_MIN_LEN || len > MAX_SCRIPT_PATH_LEN) {
             return false;
         }
 
