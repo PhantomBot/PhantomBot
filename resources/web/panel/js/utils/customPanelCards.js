@@ -111,70 +111,61 @@
     }
 
     /**
-     * Builds a single Bootstrap card ({@code col-md-4} wrapping a {@code box box-solid}) from
-     * a canonical card entry. Optional {@code detailsModal} adds an info ({@code fa-info-circle})
-     * button that opens a read-only dialog. Settings cog matches stock Games cards: modal
-     * ({@code settingsModal}), legacy full-page ({@code settingsFolder}/{@code settingsPage}),
-     * or disabled with tooltip when there are no settings.
+     * Builds the {@code box-tools} cluster that lives in the card header — module toggle (when
+     * {@code scriptPath} is set), info button (when {@code detailsModal} is present), and
+     * settings cog (modal, legacy page, or disabled-with-tooltip when neither is configured).
+     * Visual spacing on every button comes from the shared {@code .pb-custom-card-tool-btn}
+     * class injected by {@link customPanelManifestLoader#ensureStylesInjected}.
      *
      * @param {object} card canonical manifest card
      * @returns {jQuery}
      */
-    function buildCardElement(card) {
-        var toggleId = cardChildId(card.id, 'toggle');
-        var settingsBtnId = cardChildId(card.id, 'settings');
-        var detailsBtnId = cardChildId(card.id, 'details');
+    function buildCardTools(card) {
+        var $tools = $('<div/>', {'class': 'box-tools pull-right'});
         var hasSettings = ns.cardHasSettings(card);
         var useModal = ns.settingsModalHasContent(card.settingsModal);
         var hasDetails = ns.cardHasDetailsModal(card);
-
-        var $col = $('<div/>', {'class': 'col-md-4'});
-        var $box = $('<div/>', {'class': 'box box-solid', 'id': 'pb-custom-card-' + card.id});
-        var $header = $('<div/>', {'class': 'box-header with-border'});
-        var $tools = $('<div/>', {'class': 'box-tools pull-right'});
 
         if (card.scriptPath) {
             var $label = $('<label/>', {'class': 'switch', 'data-toggle': 'tooltip', 'title': 'Module toggle.'});
             var $input = $('<input/>', {
                 type: 'checkbox',
-                id: toggleId,
+                id: cardChildId(card.id, 'toggle'),
                 'data-pb-custom-card-toggle': card.scriptPath,
                 'data-pb-custom-card-id': card.id
             });
             $input.prop('checked', true);
-            $label.append($input);
-            $label.append($('<span/>', {'class': 'slider round'}));
+            $label.append($input).append($('<span/>', {'class': 'slider round'}));
             $tools.append($label);
         }
 
         if (hasDetails) {
             $tools.append($('<button/>', {
                 type: 'button',
-                id: detailsBtnId,
-                'class': 'btn btn-md btn-box-tool pb-custom-card-open-details',
-                style: 'margin-bottom: 7px;',
+                id: cardChildId(card.id, 'details'),
+                'class': 'btn btn-md btn-box-tool pb-custom-card-open-details pb-custom-card-tool-btn',
                 'data-toggle': 'tooltip',
                 title: 'More information',
                 'data-pb-custom-card-id': card.id
             }).append($('<i/>', {'class': 'fa fa-info-circle fa-lg'})));
         }
 
+        var settingsBtnId = cardChildId(card.id, 'settings');
+
         if (hasSettings) {
             var $btn = $('<button/>', {
                 type: 'button',
                 id: settingsBtnId,
-                'class': 'btn btn-md btn-box-tool',
-                style: 'margin-bottom: 7px;',
+                'class': 'btn btn-md btn-box-tool pb-custom-card-tool-btn',
                 'data-pb-custom-card-id': card.id
             });
             if (useModal) {
                 $btn.attr('data-pb-custom-card-settings-mode', 'modal');
             } else {
-                var hash = '#' + card.settingsPage;
                 $btn.attr('data-pb-custom-card-settings-mode', 'page');
                 $btn.attr('data-pb-custom-card-settings-folder', card.settingsFolder);
                 $btn.attr('data-pb-custom-card-settings-page', card.settingsPage);
-                $btn.attr('data-pb-custom-card-settings-hash', hash);
+                $btn.attr('data-pb-custom-card-settings-hash', '#' + card.settingsPage);
             }
             $btn.append($('<i/>', {'class': 'fa fa-cog fa-lg'}));
             $tools.append($btn);
@@ -182,26 +173,52 @@
             $tools.append($('<button/>', {
                 type: 'button',
                 id: settingsBtnId,
-                'class': 'btn btn-md btn-box-tool disabled pb-custom-no-settings',
+                'class': 'btn btn-md btn-box-tool disabled pb-custom-no-settings pb-custom-card-tool-btn',
                 'data-toggle': 'tooltip',
-                title: 'This module doesn\'t have any settings.',
-                style: 'margin-bottom: 7px;'
+                title: "This module doesn't have any settings."
             }).append($('<i/>', {'class': 'fa fa-cog fa-lg disabled'})));
         }
 
-        $header.append($tools);
-        $header.append($('<h3/>', {'class': 'box-title'}).text(card.title));
+        return $tools;
+    }
 
-        var $body = $('<div/>', {'class': 'box-body'});
-        $body.append($('<p/>', {'class': 'auto-cut'}).text(card.description || ''));
+    /**
+     * Builds the card header ({@code box-header with-border}): tools cluster + title.
+     *
+     * @param {object} card canonical manifest card
+     * @returns {jQuery}
+     */
+    function buildCardHeader(card) {
+        return $('<div/>', {'class': 'box-header with-border'})
+            .append(buildCardTools(card))
+            .append($('<h3/>', {'class': 'box-title'}).text(card.title));
+    }
 
-        var $form = $('<form/>', {'role': 'form'});
-        $form.append($body);
+    /**
+     * Builds the card body ({@code box-body}): description paragraph (escaped, may be empty).
+     *
+     * @param {object} card canonical manifest card
+     * @returns {jQuery}
+     */
+    function buildCardBody(card) {
+        return $('<div/>', {'class': 'box-body'})
+            .append($('<p/>', {'class': 'auto-cut'}).text(card.description || ''));
+    }
 
-        $box.append($header);
-        $box.append($form);
-        $col.append($box);
-        return $col;
+    /**
+     * Builds a single Bootstrap card ({@code col-md-4} wrapping a {@code box box-solid}).
+     * Delegates header/tools/body construction to the smaller builders so this orchestrator
+     * stays a 1:1 mirror of the resulting DOM tree.
+     *
+     * @param {object} card canonical manifest card
+     * @returns {jQuery}
+     */
+    function buildCardElement(card) {
+        var $form = $('<form/>', {'role': 'form'}).append(buildCardBody(card));
+        var $box = $('<div/>', {'class': 'box box-solid', 'id': 'pb-custom-card-' + card.id})
+            .append(buildCardHeader(card))
+            .append($form);
+        return $('<div/>', {'class': 'col-md-4'}).append($box);
     }
 
     /**

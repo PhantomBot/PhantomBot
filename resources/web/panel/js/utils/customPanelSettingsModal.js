@@ -41,18 +41,6 @@
     var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
     /**
-     * Returns the input value coerced to a string, or {@code ''} when the value is
-     * {@code undefined} or {@code null}. Used for {@code <input>}/{@code <textarea>}
-     * defaults populated from {@code getDBValues} responses.
-     *
-     * @param {*} v raw value from the DB result
-     * @returns {string}
-     */
-    function asStringOrEmpty(v) {
-        return v !== undefined && v !== null ? String(v) : '';
-    }
-
-    /**
      * Wraps an async {@code callback} with a watchdog timer. Returns a function the caller
      * passes to {@code socket.sendCommand} / {@code socket.getDBValues} / similar; whichever
      * fires first wins, the loser becomes a no-op.
@@ -218,6 +206,67 @@
     }
 
     /**
+     * Expands a manifest field into its underlying {@code (table, key)} INIDB rows.
+     *
+     * <p>Most field types map 1:1 to a single INIDB row, so the returned array has one
+     * entry. {@code checkboxgroup} fields fan out into one entry per inner checkbox,
+     * each sharing the field-level {@code table} and using its own {@code key}. The
+     * {@code getValue} thunk is what the save loop calls once the user hits Save —
+     * regular fields delegate to {@link readValidatedFieldValue}; checkbox entries
+     * read their checked state straight from the DOM.</p>
+     *
+     * @param {string} cardId canonical card id (used for namespaced DOM ids)
+     * @param {object} f manifest field entry
+     * @returns {Array<{table: string, key: string, getValue: function(): *}>}
+     */
+    function expandFieldEntries(cardId, f) {
+        if (!f) {
+            return [];
+        }
+        var type = (f.type || '').toLowerCase();
+        if (type === 'checkboxgroup' && Array.isArray(f.checkboxes)) {
+            var out = [];
+            f.checkboxes.forEach(function (cb) {
+                if (!cb || !cb.id || !cb.key) {
+                    return;
+                }
+                var cbDomId = cardFieldDomId(cardId, cb.id);
+                out.push({
+                    table: f.table,
+                    key: cb.key,
+                    getValue: function () {
+                        return $('#' + cbDomId).is(':checked');
+                    }
+                });
+            });
+            return out;
+        }
+        return [{
+            table: f.table,
+            key: f.key,
+            getValue: function () {
+                return readValidatedFieldValue(cardId, f);
+            }
+        }];
+    }
+
+    /**
+     * Iterates every {@code (table, key, getValue)} INIDB row across a flat field list,
+     * including the per-checkbox fan-out from {@code checkboxgroup} fields. Centralises
+     * the {@code fields.forEach -> expandFieldEntries.forEach} traversal that load and
+     * save paths both need.
+     *
+     * @param {string} cardId canonical card id (forwarded to {@link expandFieldEntries})
+     * @param {Array<object>} fields manifest field entries in declared order
+     * @param {function(object)} callback receives each {@code {table, key, getValue}} entry
+     */
+    function forEachFieldEntry(cardId, fields, callback) {
+        fields.forEach(function (f) {
+            expandFieldEntries(cardId, f).forEach(callback);
+        });
+    }
+
+    /**
      * Appends one declarative field widget to a container form using a namespaced DOM id
      * (see {@link cardFieldDomId}). Pairs with {@link readValidatedFieldValue} which must be
      * called with the same {@code cardId} so the lookups match.
@@ -244,11 +293,39 @@
             }
             $form.append(helpers.getInputGroup(id, 'number', f.label, '', numVal, help));
         } else if (type === 'text') {
-            $form.append(helpers.getInputGroup(id, 'text', f.label, '', asStringOrEmpty(raw), help));
+            $form.append(helpers.getInputGroup(id, 'text', f.label, '', raw != null ? String(raw) : '', help));
         } else if (type === 'textarea') {
-            $form.append(helpers.getTextAreaGroup(id, 'text', f.label, '', asStringOrEmpty(raw), help, !!f.unlimited));
-        } else if (type === 'yesno') {
-            $form.append(helpers.getDropdownGroup(id, f.label, helpers.isTrue(raw) ? 'Yes' : 'No', ['Yes', 'No'], help));
+            $form.append(helpers.getTextAreaGroup(id, 'text', f.label, '', raw != null ? String(raw) : '', help, !!f.unlimited));
+        } else if (type === 'boolean') {
+            // Author-supplied labels: options[0] = true, options[1] = false. The Java
+            // validator guarantees exactly 2 unique non-empty strings, so the array shape
+            // check below is purely defensive against direct JS callers / test harnesses.
+            var boolOpts = (f.options && f.options.length === 2)
+                ? [String(f.options[0]), String(f.options[1])]
+                : ['Yes', 'No'];
+            $form.append(helpers.getDropdownGroup(id, f.label, helpers.isTrue(raw) ? boolOpts[0] : boolOpts[1], boolOpts, help));
+        } else if (type === 'toggle') {
+            $form.append(helpers.getCheckBox(id, helpers.isTrue(raw), f.label, help));
+        } else if (type === 'checkboxgroup') {
+            if (typeof ns.ensureStylesInjected === 'function') {
+                ns.ensureStylesInjected();
+            }
+            var $group = $('<div/>', {'class': 'pb-custom-checkbox-group'});
+            $group.append($('<span/>', {'class': 'pb-custom-checkbox-group-label', 'text': f.label}));
+            if (help) {
+                $group.append($('<div/>', {'class': 'pb-custom-checkbox-group-help', 'text': help}));
+            }
+            var $items = $('<div/>', {'class': 'pb-custom-checkbox-group-items'});
+            (f.checkboxes || []).forEach(function (cb) {
+                if (!cb || !cb.id || !cb.key) {
+                    return;
+                }
+                var cbDomId = cardFieldDomId(cardId, cb.id);
+                var cbVal = helpers.isTrue(results[cb.key]);
+                $items.append(helpers.getCheckBox(cbDomId, cbVal, cb.label, cb.help || ''));
+            });
+            $group.append($items);
+            $form.append($group);
         } else if (type === 'dropdown') {
             var opts = f.options || [];
             var def = raw !== undefined && raw !== null ? String(raw) : (opts[0] || '');
@@ -257,11 +334,58 @@
             }
             $form.append(helpers.getDropdownGroup(id, f.label, def, opts, help));
         } else if (type === 'permission') {
-            var gid = raw !== undefined && raw !== null ? parseInt(raw, 10) : 7;
+            var gid = raw != null ? parseInt(raw, 10) : ns.DEFAULT_PERMISSION_GROUP_ID;
             if (isNaN(gid)) {
-                gid = 7;
+                gid = ns.DEFAULT_PERMISSION_GROUP_ID;
             }
             $form.append(helpers.getDropdownGroup(id, f.label, helpers.getGroupNameById(gid), helpers.getPermGroupNames(), help));
+        }
+    }
+
+    /**
+     * Renders a flat field list into {@code $container}, packing any consecutive run of
+     * fields that declare a Bootstrap {@code column} (1-11) into a single
+     * {@code <div class="row">} with {@code col-md-N} wrappers. Fields without {@code column}
+     * (or with {@code column} = 12) flush any open row and render full-width as before.
+     *
+     * <p>The Java validator already strips {@code column = 12} (it's the implicit full-width
+     * default), so in practice the renderer only sees 1-11. The {@code <= 11} check here
+     * is defensive against direct JS callers and any future code path that might bypass
+     * the validator's normalization.</p>
+     *
+     * <p>Bootstrap's grid wraps on overflow naturally, so a run that totals more than 12 just
+     * spills onto a second visual row inside the same {@code .row} wrapper — no special
+     * accumulator math needed here.</p>
+     *
+     * @param {jQuery} $container target form / inner form receiving the rendered fields
+     * @param {string} cardId canonical card id (forwarded to {@link appendSettingsFieldWidget})
+     * @param {Array<object>} fields manifest field entries in declared order
+     * @param {object} results key → value map from {@code getDBValues}
+     */
+    function renderFieldList($container, cardId, fields, results) {
+        var openRow = null;
+        fields.forEach(function (f) {
+            if (!f) {
+                return;
+            }
+            var col = (typeof f.column === 'number' && f.column >= 1 && f.column <= 11) ? f.column : null;
+            if (col === null) {
+                if (openRow) {
+                    $container.append(openRow);
+                    openRow = null;
+                }
+                appendSettingsFieldWidget($container, cardId, f, results);
+                return;
+            }
+            if (!openRow) {
+                openRow = $('<div/>', {'class': 'row'});
+            }
+            var $cell = $('<div/>', {'class': 'col-md-' + col});
+            appendSettingsFieldWidget($cell, cardId, f, results);
+            openRow.append($cell);
+        });
+        if (openRow) {
+            $container.append(openRow);
         }
     }
 
@@ -297,14 +421,20 @@
         }
         if (type === 'textarea') {
             var $ta = $('#' + id);
-            var maxLen = f.unlimited ? Number.MAX_SAFE_INTEGER : 480;
+            var maxLen = f.unlimited ? Number.MAX_SAFE_INTEGER : ns.TEXTAREA_DEFAULT_MAX_LEN;
             if (!helpers.handleInputString($ta, 0, maxLen)) {
                 return 'invalid';
             }
             return $ta.val();
         }
-        if (type === 'yesno') {
-            return $('#' + id).find(':selected').text() === 'Yes';
+        if (type === 'boolean') {
+            // The 'true' label is options[0] by convention. Same defensive fallback as the
+            // render path above; in practice the validator guarantees options is well-formed.
+            var trueLabel = (f.options && f.options[0]) ? String(f.options[0]) : 'Yes';
+            return $('#' + id).find(':selected').text() === trueLabel;
+        }
+        if (type === 'toggle') {
+            return $('#' + id).is(':checked');
         }
         if (type === 'dropdown') {
             return $('#' + id).find(':selected').text();
@@ -345,12 +475,112 @@
     }
 
     /**
+     * Builds the {@code <form>} body for a settings modal. Branches on accordion vs flat
+     * layout and delegates field rendering to {@link renderFieldList}.
+     *
+     * @param {object} card canonical manifest card
+     * @param {object} sm validated settingsModal block
+     * @param {Array<object>} fieldsFlat flattened field list (used in flat mode only)
+     * @param {object} results key → value map from {@code getDBValues}
+     * @returns {jQuery} {@code <form>} ready to drop into {@code helpers.getModal}
+     */
+    function buildSettingsForm(card, sm, fieldsFlat, results) {
+        var $form = $('<form/>', {'role': 'form'});
+
+        if (Array.isArray(sm.sections) && sm.sections.length > 0) {
+            var accDomId = 'pb-custom-settings-acc-' + card.id;
+            var $group = $('<div/>', {'class': 'panel-group', 'id': accDomId});
+            var placedDefault = false;
+
+            sm.sections.forEach(function (sec, idx) {
+                if (!sec || !Array.isArray(sec.fields) || sec.fields.length === 0) {
+                    return;
+                }
+                var collapseId = 'pb-custom-sec-' + card.id + '-' + sec.id;
+                var expand = !!(sec.defaultExpanded === true) || (!placedDefault && idx === 0);
+                if (expand) {
+                    placedDefault = true;
+                }
+                var $inner = $('<form/>', {'role': 'form'});
+                renderFieldList($inner, card.id, sec.fields, results);
+                $group.append(pbCollapsibleAccordion(accDomId, collapseId, sec.title || 'Section', $inner, expand));
+            });
+
+            $form.append($group);
+        } else {
+            renderFieldList($form, card.id, fieldsFlat, results);
+        }
+
+        return $form;
+    }
+
+    /**
+     * Reads + validates every field on Save and assembles the {@code updateDBValues}
+     * payload. Returns {@code null} when any field is invalid (caller should abort the
+     * save and let the per-widget validation toast surface to the user).
+     *
+     * @param {string} cardId canonical card id (used for namespaced DOM lookups)
+     * @param {Array<object>} fieldsFlat flattened field list
+     * @returns {?{tables: string[], keys: string[], values: *[]}}
+     */
+    function collectSaveData(cardId, fieldsFlat) {
+        var tables = [];
+        var keys = [];
+        var values = [];
+        var ok = true;
+
+        forEachFieldEntry(cardId, fieldsFlat, function (entry) {
+            if (!ok) {
+                return;
+            }
+            var val = entry.getValue();
+            if (val === 'invalid') {
+                ok = false;
+                return;
+            }
+            tables.push(entry.table);
+            keys.push(entry.key);
+            values.push(val);
+        });
+
+        if (!ok) {
+            return null;
+        }
+
+        return {tables: tables, keys: keys, values: values};
+    }
+
+    /**
+     * Persists the save payload then chains the optional {@code reloadCommand} and
+     * {@code wsEvent} hooks. {@code finish} is invoked exactly once after the full chain
+     * settles (or once on watchdog timeout — see {@link dispatchReloadCommandWithWatchdog}).
+     *
+     * @param {object} card canonical manifest card
+     * @param {object} sm validated settingsModal
+     * @param {string} modalId DOM id of the open settings modal (for the reload watchdog)
+     * @param {{tables: string[], keys: string[], values: *[]}} payload from {@link collectSaveData}
+     * @param {function()} finish post-chain callback (closes modal, fires success toast, etc.)
+     */
+    function dispatchSaveSequence(card, sm, modalId, payload, finish) {
+        socket.updateDBValues('pb_custom_card_save_' + card.id, payload, function () {
+            var afterReload = function () {
+                dispatchBotWsAfterCustomCardSave(sm, card, finish);
+            };
+
+            if (sm.reloadCommand && String(sm.reloadCommand).length > 0 && typeof socket.sendCommand === 'function') {
+                dispatchReloadCommandWithWatchdog(modalId, card, sm, afterReload);
+            } else {
+                afterReload();
+            }
+        });
+    }
+
+    /**
      * Opens a Bootstrap settings modal using {@link helpers.getModal}, populated from the
      * manifest {@code settingsModal} block (flat {@code fields} or accordion {@code sections}).
-     * Wraps the initial {@code getDBValues} round-trip in a sticky "Loading…" toast plus a
-     * watchdog timeout, and runs any {@code reloadCommand} via
-     * {@link dispatchReloadCommandWithWatchdog} so a hung bot surfaces an explicit error
-     * rather than a silent hang or a misleading success toast.
+     * Wraps the initial {@code getDBValues} round-trip in a watchdog timeout and runs any
+     * {@code reloadCommand} via {@link dispatchReloadCommandWithWatchdog} so a hung bot
+     * surfaces an explicit error rather than a silent hang.
      *
      * @param {object} card canonical manifest card with {@code settingsModal}
      */
@@ -361,17 +591,16 @@
         if (!sm || fieldsFlat.length === 0 || typeof helpers === 'undefined' || typeof helpers.getModal !== 'function') {
             return;
         }
-
         if (typeof socket === 'undefined' || !socket || !socket.getDBValues || !socket.updateDBValues) {
             return;
         }
 
+        var modalId = 'pb-custom-game-settings-' + card.id;
         var tables = [];
         var keys = [];
-
-        fieldsFlat.forEach(function (f) {
-            tables.push(f.table);
-            keys.push(f.key);
+        forEachFieldEntry(card.id, fieldsFlat, function (entry) {
+            tables.push(entry.table);
+            keys.push(entry.key);
         });
 
         var loadCallback = withWatchdog(ns.LOAD_TIMEOUT_MS, function () {
@@ -384,86 +613,18 @@
                 );
             }
         }, function (results) {
-            if (!results) {
-                results = {};
-            }
-
-            var $form = $('<form/>', {'role': 'form'});
-
-            if (Array.isArray(sm.sections) && sm.sections.length > 0) {
-                var accDomId = 'pb-custom-settings-acc-' + card.id;
-                var $group = $('<div/>', {
-                    'class': 'panel-group',
-                    'id': accDomId
-                });
-                var placedDefault = false;
-
-                sm.sections.forEach(function (sec, idx) {
-                    if (!sec || !Array.isArray(sec.fields) || sec.fields.length === 0) {
-                        return;
-                    }
-                    var collapseId = 'pb-custom-sec-' + card.id + '-' + sec.id;
-                    var expand = !!(sec.defaultExpanded === true) || (!placedDefault && idx === 0);
-                    if (expand) {
-                        placedDefault = true;
-                    }
-                    var $inner = $('<form/>', {'role': 'form'});
-                    sec.fields.forEach(function (field) {
-                        appendSettingsFieldWidget($inner, card.id, field, results);
-                    });
-                    $group.append(pbCollapsibleAccordion(accDomId, collapseId, sec.title || 'Section', $inner, expand));
-                });
-
-                $form.append($group);
-            } else {
-                fieldsFlat.forEach(function (field) {
-                    appendSettingsFieldWidget($form, card.id, field, results);
-                });
-            }
-
-            var modalId = 'pb-custom-game-settings-' + card.id;
+            var $form = buildSettingsForm(card, sm, fieldsFlat, results || {});
 
             helpers.getModal(modalId, sm.title || 'Settings', 'Save', $form, function () {
-                var tablesOut = [];
-                var keysOut = [];
-                var valuesOut = [];
-
-                var ok = true;
-                fieldsFlat.forEach(function (f) {
-                    if (!ok) {
-                        return;
-                    }
-                    tablesOut.push(f.table);
-                    keysOut.push(f.key);
-                    var val = readValidatedFieldValue(card.id, f);
-                    if (val === 'invalid') {
-                        ok = false;
-                        return;
-                    }
-                    valuesOut.push(val);
-                });
-
-                if (!ok) {
+                var payload = collectSaveData(card.id, fieldsFlat);
+                if (payload === null) {
                     return;
                 }
-
-                socket.updateDBValues('pb_custom_card_save_' + card.id, {tables: tablesOut, keys: keysOut, values: valuesOut}, function () {
-                    var finish = function () {
-                        notifyCustomCardSettingsSaved(card);
-                        $('#' + modalId).modal('toggle');
-                        if (typeof toastr !== 'undefined') {
-                            toastr.success('Successfully saved settings!');
-                        }
-                    };
-
-                    var afterReload = function () {
-                        dispatchBotWsAfterCustomCardSave(sm, card, finish);
-                    };
-
-                    if (sm.reloadCommand && String(sm.reloadCommand).length > 0 && typeof socket.sendCommand === 'function') {
-                        dispatchReloadCommandWithWatchdog(modalId, card, sm, afterReload);
-                    } else {
-                        afterReload();
+                dispatchSaveSequence(card, sm, modalId, payload, function () {
+                    notifyCustomCardSettingsSaved(card);
+                    $('#' + modalId).modal('toggle');
+                    if (typeof toastr !== 'undefined') {
+                        toastr.success('Successfully saved settings!');
                     }
                 });
             }).modal('toggle');

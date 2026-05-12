@@ -49,6 +49,9 @@
     ns.PANEL_SETTINGS_SAVED_WS_ARG = ns.PANEL_SETTINGS_SAVED_WS_ARG || 'panel-settings-saved';
     ns.LOAD_TIMEOUT_MS = ns.LOAD_TIMEOUT_MS || 8000;
     ns.RELOAD_TIMEOUT_MS = ns.RELOAD_TIMEOUT_MS || 8000;
+    ns.MANIFEST_FETCH_TIMEOUT_MS = ns.MANIFEST_FETCH_TIMEOUT_MS || 15000;
+    ns.TEXTAREA_DEFAULT_MAX_LEN = ns.TEXTAREA_DEFAULT_MAX_LEN || 480;
+    ns.DEFAULT_PERMISSION_GROUP_ID = ns.DEFAULT_PERMISSION_GROUP_ID != null ? ns.DEFAULT_PERMISSION_GROUP_ID : 7;
 
     var stylesInjected = false;
     var ran = false;
@@ -100,11 +103,13 @@
      * load. Used by the nav file (sidebar dividers) and the cards file (cards-row dividers).
      */
     ns.ensureStylesInjected = function () {
-        if (stylesInjected || document.getElementById('pb-custom-panel-styles')) {
-            stylesInjected = true;
+        if (stylesInjected) {
             return;
         }
         stylesInjected = true;
+        if (document.getElementById('pb-custom-panel-styles')) {
+            return;
+        }
         var style = document.createElement('style');
         style.id = 'pb-custom-panel-styles';
         style.textContent = [
@@ -133,6 +138,32 @@
             '}',
             '.pb-custom-cards-divider .fa {',
             '    margin-right: 6px;',
+            '}',
+            '.pb-custom-card-tool-btn {',
+            '    margin-bottom: 7px;',
+            '}',
+            '.pb-custom-checkbox-group {',
+            '    margin-bottom: 14px;',
+            '}',
+            '.pb-custom-checkbox-group-label {',
+            '    display: block;',
+            '    margin-bottom: 6px;',
+            '    font-weight: 600;',
+            '}',
+            '.pb-custom-checkbox-group-help {',
+            '    margin-bottom: 6px;',
+            '    font-size: 0.9em;',
+            '    opacity: 0.75;',
+            '}',
+            '.pb-custom-checkbox-group-items {',
+            '    display: flex;',
+            '    flex-wrap: wrap;',
+            '    column-gap: 24px;',
+            '    row-gap: 4px;',
+            '    align-items: center;',
+            '}',
+            '.pb-custom-checkbox-group-items > .pretty {',
+            '    margin-right: 0;',
             '}'
         ].join('\n');
         document.head.appendChild(style);
@@ -182,7 +213,7 @@
             type: 'GET',
             dataType: 'json',
             cache: false,
-            timeout: 15000,
+            timeout: ns.MANIFEST_FETCH_TIMEOUT_MS,
             success: function (data) {
                 if (!data) {
                     return;
