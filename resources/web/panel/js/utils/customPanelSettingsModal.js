@@ -21,9 +21,11 @@
  * Custom-panel **settings modal**. Builds a Bootstrap modal from the manifest
  * {@code settingsModal} block (flat {@code fields} or accordion {@code sections}), populates
  * it from INIDB via {@code socket.getDBValues}, validates + writes back via
- * {@code socket.updateDBValues} on Save, and runs any optional {@code reloadCommand} /
- * {@code wsEvent} chain — all guarded by watchdog timeouts so a hung bot or dropped websocket
- * surfaces an error toast instead of leaving the user staring at an unresponsive modal.
+ * {@code socket.updateDBValues} on Save, then fires the implicit {@code panel-settings-saved}
+ * websocket event against the card's {@code scriptPath} so Rhino modules can refresh in-memory
+ * state. Both the initial load and the save round-trip are guarded by watchdog timeouts so a
+ * hung bot or dropped websocket surfaces an error toast instead of leaving the user staring at
+ * an unresponsive modal.
  *
  * <p>Registers itself as {@code window.__pbCustomPanel__.openSettingsModal} so the cards file
  * can dispatch the open via the shared namespace. After a successful save the file fires a
@@ -34,10 +36,10 @@
  * @author mcawful
  */
 (function () {
-    // Namespace + shared constants (EVENTS, PANEL_SETTINGS_SAVED_WS_ARG, LOAD_TIMEOUT_MS,
-    // RELOAD_TIMEOUT_MS) are owned by customPanelManifestLoader.js, which runs first per the
-    // script-tag order in index.html. The `||` fallback is a load-order safety net only;
-    // nothing else here re-initializes shared state.
+    // Namespace + shared constants (EVENTS, PANEL_SETTINGS_SAVED_WS_ARG, LOAD_TIMEOUT_MS) are
+    // owned by customPanelManifestLoader.js, which runs first per the script-tag order in
+    // index.html. The `||` fallback is a load-order safety net only; nothing else here
+    // re-initializes shared state.
     var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
     /**
@@ -95,27 +97,16 @@
     }
 
     /**
-     * Runs {@code socket.wsEvent} after save: explicit manifest {@code wsEvent} wins; else
-     * the implicit {@code scriptPath} + {@code panel-settings-saved} fallback fires unless
-     * the manifest opts out via {@code settingsModal.disableWsFallback: true}. The opt-out
-     * has no effect when an explicit {@code wsEvent} block is also declared.
+     * After a save succeeds, fires {@code socket.wsEvent} against the card's {@code scriptPath}
+     * with first argument {@code panel-settings-saved} so Rhino modules can refresh in-memory
+     * state by listening on {@code webPanelSocketUpdate}. No-ops when the card declares no
+     * {@code scriptPath} (headless card) or when the websocket isn't available.
      *
-     * @param {object} sm settingsModal (validated)
      * @param {object} card canonical manifest card
      * @param {function()} finish callback when done or skipped
      */
-    function dispatchBotWsAfterCustomCardSave(sm, card, finish) {
+    function dispatchBotWsAfterCustomCardSave(card, finish) {
         if (typeof socket === 'undefined' || !socket || typeof socket.wsEvent !== 'function') {
-            finish();
-            return;
-        }
-        var w = sm.wsEvent;
-        if (w && w.script) {
-            var argStr = Object.prototype.hasOwnProperty.call(w, 'argsString') ? w.argsString : null;
-            socket.wsEvent('pb_custom_card_ws_' + card.id, w.script, argStr, w.args || [], finish);
-            return;
-        }
-        if (sm.disableWsFallback === true) {
             finish();
             return;
         }
@@ -297,9 +288,10 @@
         } else if (type === 'textarea') {
             $form.append(helpers.getTextAreaGroup(id, 'text', f.label, '', raw != null ? String(raw) : '', help, !!f.unlimited));
         } else if (type === 'boolean') {
-            // Author-supplied labels: options[0] = true, options[1] = false. The Java
-            // validator guarantees exactly 2 unique non-empty strings, so the array shape
-            // check below is purely defensive against direct JS callers / test harnesses.
+            // options[0] = true label, options[1] = false label. The Java validator either
+            // accepts an author-supplied pair (exactly 2 unique non-empty strings) or fills in
+            // ["Yes", "No"] as the default when 'options' is omitted, so f.options is always
+            // present here. The array-shape check below is defensive against direct JS callers.
             var boolOpts = (f.options && f.options.length === 2)
                 ? [String(f.options[0]), String(f.options[1])]
                 : ['Yes', 'No'];
@@ -343,19 +335,10 @@
     }
 
     /**
-     * Renders a flat field list into {@code $container}, packing any consecutive run of
-     * fields that declare a Bootstrap {@code column} (1-11) into a single
-     * {@code <div class="row">} with {@code col-md-N} wrappers. Fields without {@code column}
-     * (or with {@code column} = 12) flush any open row and render full-width as before.
-     *
-     * <p>The Java validator already strips {@code column = 12} (it's the implicit full-width
-     * default), so in practice the renderer only sees 1-11. The {@code <= 11} check here
-     * is defensive against direct JS callers and any future code path that might bypass
-     * the validator's normalization.</p>
-     *
-     * <p>Bootstrap's grid wraps on overflow naturally, so a run that totals more than 12 just
-     * spills onto a second visual row inside the same {@code .row} wrapper — no special
-     * accumulator math needed here.</p>
+     * Renders a flat field list into {@code $container}. Every field renders full-width;
+     * the renderer no longer interprets any layout hint on the field. Authors who want
+     * multiple booleans packed tightly should use a single {@code checkboxgroup} field
+     * instead of multiple individual fields.
      *
      * @param {jQuery} $container target form / inner form receiving the rendered fields
      * @param {string} cardId canonical card id (forwarded to {@link appendSettingsFieldWidget})
@@ -363,30 +346,12 @@
      * @param {object} results key → value map from {@code getDBValues}
      */
     function renderFieldList($container, cardId, fields, results) {
-        var openRow = null;
         fields.forEach(function (f) {
             if (!f) {
                 return;
             }
-            var col = (typeof f.column === 'number' && f.column >= 1 && f.column <= 11) ? f.column : null;
-            if (col === null) {
-                if (openRow) {
-                    $container.append(openRow);
-                    openRow = null;
-                }
-                appendSettingsFieldWidget($container, cardId, f, results);
-                return;
-            }
-            if (!openRow) {
-                openRow = $('<div/>', {'class': 'row'});
-            }
-            var $cell = $('<div/>', {'class': 'col-md-' + col});
-            appendSettingsFieldWidget($cell, cardId, f, results);
-            openRow.append($cell);
+            appendSettingsFieldWidget($container, cardId, f, results);
         });
-        if (openRow) {
-            $container.append(openRow);
-        }
     }
 
     /**
@@ -428,8 +393,9 @@
             return $ta.val();
         }
         if (type === 'boolean') {
-            // The 'true' label is options[0] by convention. Same defensive fallback as the
-            // render path above; in practice the validator guarantees options is well-formed.
+            // The 'true' label is options[0] by convention. The validator either accepts an
+            // author-supplied pair or fills in ["Yes", "No"], so f.options is always present
+            // here; defensive fallback mirrors the render path above.
             var trueLabel = (f.options && f.options[0]) ? String(f.options[0]) : 'Yes';
             return $('#' + id).find(':selected').text() === trueLabel;
         }
@@ -443,35 +409,6 @@
             return helpers.getGroupIdByName($('#' + id).find(':selected').text(), true);
         }
         return 'invalid';
-    }
-
-    /**
-     * Runs {@code socket.sendCommand} for a settings-modal {@code reloadCommand} guarded by
-     * {@link #withWatchdog}. The DB save has already succeeded by the time this is called,
-     * so on timeout we surface an error toast (settings persisted, live reload didn't
-     * confirm) and close the modal — without chaining into the misleading
-     * "Successfully saved settings!" success path.
-     *
-     * @param {string} modalId DOM id of the open settings modal (closed on timeout)
-     * @param {object} card canonical manifest card
-     * @param {object} sm validated settingsModal block
-     * @param {function()} onSuccess invoked exactly once when the bot acknowledges the reload
-     */
-    function dispatchReloadCommandWithWatchdog(modalId, card, sm, onSuccess) {
-        var ack = withWatchdog(ns.RELOAD_TIMEOUT_MS, function () {
-            if (typeof toastr !== 'undefined') {
-                toastr.error(
-                    'Settings were saved, but the bot did not acknowledge the reload command "' +
-                    String(sm.reloadCommand) + '" within ' +
-                    Math.round(ns.RELOAD_TIMEOUT_MS / 1000) +
-                    ' seconds. A manual reload may be required.',
-                    'Reload command timed out'
-                );
-            }
-            $('#' + modalId).modal('toggle');
-        }, onSuccess);
-
-        socket.sendCommand('pb_custom_card_reload_' + card.id, sm.reloadCommand, ack);
     }
 
     /**
@@ -551,35 +488,25 @@
     }
 
     /**
-     * Persists the save payload then chains the optional {@code reloadCommand} and
-     * {@code wsEvent} hooks. {@code finish} is invoked exactly once after the full chain
-     * settles (or once on watchdog timeout — see {@link dispatchReloadCommandWithWatchdog}).
+     * Persists the save payload then fires the implicit {@code panel-settings-saved} websocket
+     * event against the card's {@code scriptPath} (see
+     * {@link dispatchBotWsAfterCustomCardSave}). {@code finish} is invoked exactly once after
+     * the chain settles.
      *
      * @param {object} card canonical manifest card
-     * @param {object} sm validated settingsModal
-     * @param {string} modalId DOM id of the open settings modal (for the reload watchdog)
      * @param {{tables: string[], keys: string[], values: *[]}} payload from {@link collectSaveData}
      * @param {function()} finish post-chain callback (closes modal, fires success toast, etc.)
      */
-    function dispatchSaveSequence(card, sm, modalId, payload, finish) {
+    function dispatchSaveSequence(card, payload, finish) {
         socket.updateDBValues('pb_custom_card_save_' + card.id, payload, function () {
-            var afterReload = function () {
-                dispatchBotWsAfterCustomCardSave(sm, card, finish);
-            };
-
-            if (sm.reloadCommand && String(sm.reloadCommand).length > 0 && typeof socket.sendCommand === 'function') {
-                dispatchReloadCommandWithWatchdog(modalId, card, sm, afterReload);
-            } else {
-                afterReload();
-            }
+            dispatchBotWsAfterCustomCardSave(card, finish);
         });
     }
 
     /**
      * Opens a Bootstrap settings modal using {@link helpers.getModal}, populated from the
      * manifest {@code settingsModal} block (flat {@code fields} or accordion {@code sections}).
-     * Wraps the initial {@code getDBValues} round-trip in a watchdog timeout and runs any
-     * {@code reloadCommand} via {@link dispatchReloadCommandWithWatchdog} so a hung bot
+     * Wraps the initial {@code getDBValues} round-trip in a watchdog timeout so a hung bot
      * surfaces an explicit error rather than a silent hang.
      *
      * @param {object} card canonical manifest card with {@code settingsModal}
@@ -620,7 +547,7 @@
                 if (payload === null) {
                     return;
                 }
-                dispatchSaveSequence(card, sm, modalId, payload, function () {
+                dispatchSaveSequence(card, payload, function () {
                     notifyCustomCardSettingsSaved(card);
                     $('#' + modalId).modal('toggle');
                     if (typeof toastr !== 'undefined') {
