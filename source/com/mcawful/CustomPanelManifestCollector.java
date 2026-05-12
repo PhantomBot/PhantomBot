@@ -116,34 +116,14 @@ public final class CustomPanelManifestCollector {
     private static final int MAX_CARD_ID_LEN = 64;
 
     /**
-     * Optional {@code reloadCommand} passed to {@code socket.sendCommand} after save.
-     */
-    private static final int MAX_RELOAD_CMD_LEN = 64;
-
-    /**
-     * Optional {@code wsEvent.argsString} length cap.
-     */
-    private static final int MAX_WSEVENT_ARGS_STRING_LEN = 512;
-
-    /**
-     * Optional {@code wsEvent.args[]} length and element caps.
-     */
-    private static final int MAX_WSEVENT_ARGS_COUNT = 32;
-
-    /**
-     * Optional {@code wsEvent.args[]} element length cap.
-     */
-    private static final int MAX_WSEVENT_ARG_ITEM_LEN = 256;
-
-    /**
-     * Minimum legal length of {@code card.scriptPath} (and {@code wsEvent.script}). The bot's
-     * {@code module} command works with {@code ./<dir>/<file>.js}-shape paths, and the shortest
-     * legal value of that shape — {@code ./a/b.js} — is exactly 8 characters.
+     * Minimum legal length of {@code card.scriptPath}. The bot's {@code module} command works
+     * with {@code ./<dir>/<file>.js}-shape paths, and the shortest legal value of that shape —
+     * {@code ./a/b.js} — is exactly 8 characters.
      */
     private static final int SAFE_SCRIPT_PATH_MIN_LEN = 8;
 
     /**
-     * Maximum legal length of {@code card.scriptPath} (and {@code wsEvent.script}). The bot's
+     * Maximum legal length of {@code card.scriptPath}. The bot's
      * {@code module} command happily handles long subdirectory chains, but a value over 256
      * chars is almost certainly a mistake (or an exploit attempt) and would also bloat the
      * cached manifest payload disproportionately.
@@ -160,18 +140,6 @@ public final class CustomPanelManifestCollector {
      * Allowed {@code settingsModal.fields[].type} values for declarative game-card settings UI.
      */
     private static final Set<String> SETTINGS_FIELD_TYPES = Set.of("number", "text", "textarea", "boolean", "toggle", "checkboxgroup", "dropdown", "permission");
-
-    /**
-     * Lowest legal value for a field's optional {@code column} layout hint
-     * (Bootstrap col-md-{@code N}). Anything outside {@code [1, 12]} is rejected.
-     */
-    private static final int MIN_FIELD_COLUMN_SPAN = 1;
-
-    /**
-     * Highest legal value for a field's optional {@code column} layout hint. Mirrors
-     * Bootstrap's 12-column grid; {@code column} omitted (or set to 12) means full-width.
-     */
-    private static final int MAX_FIELD_COLUMN_SPAN = 12;
 
     /**
      * Maximum number of inline checkboxes a single {@code checkboxgroup} field can declare.
@@ -522,10 +490,11 @@ public final class CustomPanelManifestCollector {
 
     /**
      * Validates optional {@code detailsModal} for the read-only card info dialog.
-     * {@code content} is plain text unless {@code format} is {@code html}; HTML is sanitized
-     * client-side by {@code customPanelDetailsModal.js#sanitizeDetailsModalHtml} (see schema
-     * for the allowed tag whitelist). Server-side sanitization is intentionally not done —
-     * custom modules are already trusted code, and the panel is the only consumer.
+     * {@code content} is always treated as HTML and sanitized client-side by
+     * {@code customPanelDetailsModal.js#sanitizeDetailsModalHtml} against a tag/attribute
+     * allowlist; anything outside the allowlist is unwrapped or stripped. Plain text passes
+     * through unchanged. Server-side sanitization is intentionally not done — custom modules
+     * are already trusted code, and the panel is the only consumer.
      *
      * @param raw      raw {@code detailsModal} object from manifest, or {@code null}
      * @param manifest source manifest path for logging
@@ -548,19 +517,8 @@ public final class CustomPanelManifestCollector {
             return null;
         }
 
-        String fmt = raw.optString("format", "text").trim().toLowerCase(Locale.ROOT);
-
-        if (!fmt.equals("text") && !fmt.equals("html")) {
-            warnNote(manifest, "detailsModal unknown format '" + fmt + "', using text");
-            fmt = "text";
-        }
-
         JSONObject out = new JSONObject();
         out.put("content", content);
-
-        if ("html".equals(fmt)) {
-            out.put("format", "html");
-        }
 
         String title = raw.optString("title", "").trim();
 
@@ -579,18 +537,11 @@ public final class CustomPanelManifestCollector {
     /**
      * Validates {@code settingsModal} for declarative game-card settings (Bootstrap modal + INIDB).
      *
-     * <p>Optional {@code reloadCommand} and {@code wsEvent} are consumed by
-     * {@code customPanelSettingsModal.js} after a successful save. If {@code wsEvent} is omitted but the parent card declares
-     * {@code scriptPath}, the panel sends a websocket event to that script with first argument
-     * {@code panel-settings-saved} so Rhino modules can refresh in-memory settings without
-     * needing a separate {@code reloadCommand}.</p>
-     *
-     * <p>The implicit {@code panel-settings-saved} fallback can be opted out of with
-     * {@code "disableWsFallback": true} in the manifest, for authors whose modules use a
-     * different reload mechanism (e.g. polling, a {@code reloadCommand} only, or no reload at
-     * all). The flag only flows into the canonical JSON when explicitly set to {@code true} so
-     * the wire format stays compact for the common case. Has no effect when an explicit
-     * {@code wsEvent} block is also declared (the explicit event always wins).</p>
+     * <p>After a successful save the panel automatically calls {@code socket.wsEvent} against
+     * the parent card's {@code scriptPath} with first argument {@code panel-settings-saved} so
+     * Rhino modules can refresh in-memory state by listening on {@code webPanelSocketUpdate}.
+     * No per-manifest configuration is needed — the implicit hook is always on for any card
+     * that declares {@code scriptPath}.</p>
      *
      * @param raw      raw {@code settingsModal} object from manifest, or {@code null}
      * @param manifest source manifest path for logging
@@ -709,27 +660,6 @@ public final class CustomPanelManifestCollector {
             out.put("fields", fieldsOut);
         }
 
-        String reload = raw.optString("reloadCommand", "").trim();
-
-        if (!reload.isEmpty()) {
-            if (!isSafeReloadCommand(reload)) {
-                warnSkip(manifest, "settingsModal (invalid reloadCommand)");
-                return null;
-            }
-
-            out.put("reloadCommand", reload);
-        }
-
-        JSONObject wsOut = optValidatedWsEvent(raw.optJSONObject("wsEvent"), manifest);
-
-        if (wsOut != null) {
-            out.put("wsEvent", wsOut);
-        }
-
-        if (raw.optBoolean("disableWsFallback", false)) {
-            out.put("disableWsFallback", true);
-        }
-
         return out;
     }
 
@@ -833,18 +763,26 @@ public final class CustomPanelManifestCollector {
         }
 
         // 'boolean' renders the same widget as 'dropdown' (helpers.getDropdownGroup) but stores
-        // a JS boolean in INIDB. Authors supply exactly two unique labels: options[0] is the
-        // label for true, options[1] is the label for false. (See schema for the [trueLabel,
-        // falseLabel] convention.)
+        // a JS boolean in INIDB. options[0] is the label for true, options[1] is the label for
+        // false. The 'options' array is optional — when omitted, the panel uses ["Yes", "No"]
+        // so the common "I just want a checkbox-y thing that stores a bool" case needs zero
+        // config. Authors who supply 'options' must provide exactly two unique non-empty strings.
         if ("boolean".equals(type)) {
-            JSONArray optsOut = validateOptionsArray(f.optJSONArray("options"), manifest, "boolean",
-                    BOOLEAN_OPTIONS_LENGTH, BOOLEAN_OPTIONS_LENGTH, true);
+            if (!f.has("options") || f.isNull("options")) {
+                JSONArray defaultOpts = new JSONArray();
+                defaultOpts.put("Yes");
+                defaultOpts.put("No");
+                fout.put("options", defaultOpts);
+            } else {
+                JSONArray optsOut = validateOptionsArray(f.optJSONArray("options"), manifest, "boolean",
+                        BOOLEAN_OPTIONS_LENGTH, BOOLEAN_OPTIONS_LENGTH, true);
 
-            if (optsOut == null) {
-                return null;
+                if (optsOut == null) {
+                    return null;
+                }
+
+                fout.put("options", optsOut);
             }
-
-            fout.put("options", optsOut);
         }
 
         if ("number".equals(type)) {
@@ -861,31 +799,6 @@ public final class CustomPanelManifestCollector {
             fout.put("unlimited", true);
         }
 
-        if (f.has("column") && !f.isNull("column")) {
-            // 'toggle' renders a small fixed-width pretty-checkbox that doesn't fill a
-            // Bootstrap col-md-N cell, so packing it with 'column' produces orphan
-            // whitespace. Reject at validation time and steer authors at 'checkboxgroup'
-            // (for grouped booleans) or full-width rendering (for a single boolean).
-            // 'checkboxgroup' itself rejects 'column' separately in validateCheckboxGroupField
-            // since it has no field-level column slot at all. ('boolean' is fine here — it
-            // renders as a full-width dropdown like 'dropdown' / 'permission'.)
-            if ("toggle".equals(type)) {
-                warnSkip(manifest, "settingsModal (column is not supported on type=toggle; use checkboxgroup for grouped booleans)");
-                return null;
-            }
-
-            int col = f.optInt("column", -1);
-
-            if (col < MIN_FIELD_COLUMN_SPAN || col > MAX_FIELD_COLUMN_SPAN) {
-                warnSkip(manifest, "settingsModal (field column must be " + MIN_FIELD_COLUMN_SPAN + ".." + MAX_FIELD_COLUMN_SPAN + ")");
-                return null;
-            }
-
-            if (col < MAX_FIELD_COLUMN_SPAN) {
-                fout.put("column", col);
-            }
-        }
-
         return fout;
     }
 
@@ -896,9 +809,9 @@ public final class CustomPanelManifestCollector {
      * so collisions with sibling field ids — flat or nested — are caught modal-wide.
      *
      * <p>This field type intentionally rejects {@code key}, {@code min}, {@code max},
-     * {@code options}, {@code unlimited}, and {@code column} — all of those belong to
-     * other field types and would be silently ignored otherwise. Failing fast surfaces
-     * authoring mistakes as warn-log skips instead of mysterious save bugs.</p>
+     * {@code options}, and {@code unlimited} — all of those belong to other field types
+     * and would be silently ignored otherwise. Failing fast surfaces authoring mistakes
+     * as warn-log skips instead of mysterious save bugs.</p>
      *
      * @param f raw manifest field
      * @param fid pre-validated field id
@@ -910,8 +823,8 @@ public final class CustomPanelManifestCollector {
      * @return canonical JSON for the field, or {@code null} when validation fails
      */
     private static JSONObject validateCheckboxGroupField(JSONObject f, String fid, String label, String table, String help, Path manifest, Set<String> fieldIds) {
-        if (f.has("key") || f.has("min") || f.has("max") || f.has("options") || f.has("unlimited") || f.has("column")) {
-            warnSkip(manifest, "settingsModal (checkboxgroup does not support key/min/max/options/unlimited/column)");
+        if (f.has("key") || f.has("min") || f.has("max") || f.has("options") || f.has("unlimited")) {
+            warnSkip(manifest, "settingsModal (checkboxgroup does not support key/min/max/options/unlimited)");
             return null;
         }
 
@@ -983,7 +896,7 @@ public final class CustomPanelManifestCollector {
      * </ul>
      *
      * <p>Type-specific concerns ({@code type}, {@code key}, {@code table}, {@code options},
-     * {@code checkboxes}, {@code column}) are validated by the caller.</p>
+     * {@code checkboxes}) are validated by the caller.</p>
      *
      * @param id           trimmed candidate id
      * @param label        trimmed candidate label
@@ -1072,71 +985,6 @@ public final class CustomPanelManifestCollector {
     }
 
     /**
-     * Validates optional {@code wsEvent} for {@code socket.wsEvent} after INIDB save.
-     *
-     * @param raw      raw {@code wsEvent} object or {@code null}
-     * @param manifest manifest path for logging
-     * @return canonical JSON or {@code null} when absent or invalid
-     */
-    private static JSONObject optValidatedWsEvent(JSONObject raw, Path manifest) {
-        if (raw == null) {
-            return null;
-        }
-
-        String script = raw.optString("script", "").trim();
-
-        if (script.isEmpty() || !isSafeScriptPath(script)) {
-            warnSkip(manifest, "wsEvent (invalid script)");
-            return null;
-        }
-
-        JSONObject out = new JSONObject();
-        out.put("script", script);
-
-        if (raw.has("argsString") && !raw.isNull("argsString")) {
-            String as = raw.optString("argsString", "");
-
-            if (as.length() > MAX_WSEVENT_ARGS_STRING_LEN) {
-                warnSkip(manifest, "wsEvent (argsString too long)");
-                return null;
-            }
-
-            out.put("argsString", as);
-        }
-
-        JSONArray argsIn = raw.optJSONArray("args");
-
-        if (argsIn != null) {
-            if (argsIn.length() > MAX_WSEVENT_ARGS_COUNT) {
-                warnSkip(manifest, "wsEvent (too many args)");
-                return null;
-            }
-
-            JSONArray argsOut = new JSONArray();
-
-            for (int i = 0; i < argsIn.length(); i++) {
-                if (!argsIn.isNull(i) && !(argsIn.get(i) instanceof String)) {
-                    warnSkip(manifest, "wsEvent (args must be strings)");
-                    return null;
-                }
-
-                String a = argsIn.optString(i, "");
-
-                if (a.length() > MAX_WSEVENT_ARG_ITEM_LEN) {
-                    warnSkip(manifest, "wsEvent (arg too long)");
-                    return null;
-                }
-
-                argsOut.put(a);
-            }
-
-            out.put("args", argsOut);
-        }
-
-        return out;
-    }
-
-    /**
      * Logs that an entry was skipped, naming the manifest and reason. Use for hard-fail
      * validation (entry is dropped from the merged response).
      */
@@ -1157,13 +1005,6 @@ public final class CustomPanelManifestCollector {
      */
     private static boolean isSafeDbIdentifier(String s) {
         return isSafeIdentifier(s, MAX_DB_IDENTIFIER_LEN, false);
-    }
-
-    /**
-     * Bot console reload command after saving modal settings (e.g. {@code reloadadventure}).
-     */
-    private static boolean isSafeReloadCommand(String s) {
-        return isSafeIdentifier(s, MAX_RELOAD_CMD_LEN, false);
     }
 
     /**
@@ -1243,7 +1084,8 @@ public final class CustomPanelManifestCollector {
 
     /**
      * Script paths are passed verbatim to the {@code module enable/disable} command and to
-     * {@code socket.wsEvent} as the target script. PhantomBot's {@code module} command works
+     * the implicit {@code panel-settings-saved socket.wsEvent} the panel fires after a save.
+     * PhantomBot's {@code module} command works
      * against {@code ./<dir>/<file>.js}-shape paths under {@code scripts/}, so the manifest
      * must declare the same shape: a {@code ./} prefix, at least one subdirectory segment, and
      * a {@code .js} suffix. Bare filenames ({@code "foo.js"}, {@code "./foo.js"}) and absolute
