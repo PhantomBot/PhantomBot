@@ -33,11 +33,25 @@
  * @author mcawful
  */
 (function () {
+    // Namespace + card indexes are owned by customPanelManifestLoader.js, which runs first
+    // per the script-tag order in index.html. The `||` fallback is a load-order safety net
+    // only; nothing else here re-initializes shared state.
     var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
-    ns.cardsBySection = ns.cardsBySection || {};
-    ns.cardsById = ns.cardsById || {};
 
     var SAFE_MOUNT_SELECTOR = /^#pb-panel-[a-z0-9-]+-custom-cards$/;
+
+    /**
+     * DOM id helper for a card's child elements (matches {@link #buildCardElement} output).
+     * Centralizing this keeps the toggle/settings/details lookups in lockstep with the
+     * builder when the id shape ever changes.
+     *
+     * @param {string} cardId canonical card id from the manifest
+     * @param {string} suffix one of {@code "toggle"}, {@code "settings"}, {@code "details"}
+     * @returns {string}
+     */
+    function cardChildId(cardId, suffix) {
+        return 'pb-custom-card-' + cardId + '-' + suffix;
+    }
 
     /**
      * Whitelisted mount-selector validation — must be exactly the canonical hash-id shape
@@ -107,15 +121,15 @@
      * @returns {jQuery}
      */
     function buildCardElement(card) {
-        var domId = 'pb-custom-card-' + card.id;
-        var toggleId = domId + '-toggle';
-        var settingsBtnId = domId + '-settings';
+        var toggleId = cardChildId(card.id, 'toggle');
+        var settingsBtnId = cardChildId(card.id, 'settings');
+        var detailsBtnId = cardChildId(card.id, 'details');
         var hasSettings = ns.cardHasSettings(card);
         var useModal = ns.settingsModalHasContent(card.settingsModal);
         var hasDetails = ns.cardHasDetailsModal(card);
 
         var $col = $('<div/>', {'class': 'col-md-4'});
-        var $box = $('<div/>', {'class': 'box box-solid', 'id': domId});
+        var $box = $('<div/>', {'class': 'box box-solid', 'id': 'pb-custom-card-' + card.id});
         var $header = $('<div/>', {'class': 'box-header with-border'});
         var $tools = $('<div/>', {'class': 'box-tools pull-right'});
 
@@ -136,7 +150,7 @@
         if (hasDetails) {
             $tools.append($('<button/>', {
                 type: 'button',
-                id: domId + '-details',
+                id: detailsBtnId,
                 'class': 'btn btn-md btn-box-tool pb-custom-card-open-details',
                 style: 'margin-bottom: 7px;',
                 'data-toggle': 'tooltip',
@@ -198,7 +212,7 @@
      * @param {jQuery} $mount container holding the freshly injected card elements
      */
     function wireCardToggles($mount) {
-        $mount.find('[data-pb-custom-card-toggle]').off('change.pbCustomNav').on('change.pbCustomNav', function () {
+        $mount.find('[data-pb-custom-card-toggle]').on('change', function () {
             var $input = $(this);
             var scriptPath = $input.data('pb-custom-card-toggle');
             var checked = $input.is(':checked');
@@ -213,7 +227,7 @@
                     toastr.success('Successfully ' + (checked ? 'enabled' : 'disabled') + ' the module!');
                 }
                 if (cardId && ns.cardsById[cardId] && ns.cardHasSettings(ns.cardsById[cardId])) {
-                    $mount.find('#pb-custom-card-' + cardId + '-settings').prop('disabled', !checked);
+                    $mount.find('#' + cardChildId(cardId, 'settings')).prop('disabled', !checked);
                 }
             });
         });
@@ -312,10 +326,9 @@
                     return;
                 }
                 var isEnabled = modulesDbValueIsEnabled(enabled);
-                var $toggle = $mount.find('#pb-custom-card-' + card.id + '-toggle');
-                $toggle.prop('checked', isEnabled);
+                $mount.find('#' + cardChildId(card.id, 'toggle')).prop('checked', isEnabled);
                 if (ns.cardHasSettings(card)) {
-                    $mount.find('#pb-custom-card-' + card.id + '-settings').prop('disabled', !isEnabled);
+                    $mount.find('#' + cardChildId(card.id, 'settings')).prop('disabled', !isEnabled);
                 }
             });
         });

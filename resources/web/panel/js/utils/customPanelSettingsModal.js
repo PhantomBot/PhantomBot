@@ -34,15 +34,54 @@
  * @author mcawful
  */
 (function () {
+    // Namespace + shared constants (EVENTS, PANEL_SETTINGS_SAVED_WS_ARG, LOAD_TIMEOUT_MS,
+    // RELOAD_TIMEOUT_MS) are owned by customPanelManifestLoader.js, which runs first per the
+    // script-tag order in index.html. The `||` fallback is a load-order safety net only;
+    // nothing else here re-initializes shared state.
     var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
-    ns.EVENTS = ns.EVENTS || {
-        MANIFESTS_LOADED: 'pbCustomManifestsLoaded',
-        CARD_SETTINGS_SAVED: 'pbCustomCardSettingsSaved'
-    };
-    ns.PANEL_SETTINGS_SAVED_WS_ARG = ns.PANEL_SETTINGS_SAVED_WS_ARG || 'panel-settings-saved';
-    ns.LOAD_TIMEOUT_MS = ns.LOAD_TIMEOUT_MS || 8000;
-    ns.RELOAD_TIMEOUT_MS = ns.RELOAD_TIMEOUT_MS || 8000;
+    /**
+     * Returns the input value coerced to a string, or {@code ''} when the value is
+     * {@code undefined} or {@code null}. Used for {@code <input>}/{@code <textarea>}
+     * defaults populated from {@code getDBValues} responses.
+     *
+     * @param {*} v raw value from the DB result
+     * @returns {string}
+     */
+    function asStringOrEmpty(v) {
+        return v !== undefined && v !== null ? String(v) : '';
+    }
+
+    /**
+     * Wraps an async {@code callback} with a watchdog timer. Returns a function the caller
+     * passes to {@code socket.sendCommand} / {@code socket.getDBValues} / similar; whichever
+     * fires first wins, the loser becomes a no-op.
+     *
+     * @param {number} timeoutMs how long to wait before triggering {@code onTimeout}
+     * @param {function()} onTimeout fired exactly once if {@code callback} doesn't return in time
+     * @param {function(*=)} callback original success callback; receives the bot's result(s)
+     * @returns {function(*=)}
+     */
+    function withWatchdog(timeoutMs, onTimeout, callback) {
+        var done = false;
+        var timer = setTimeout(function () {
+            if (done) {
+                return;
+            }
+            done = true;
+            try {
+                onTimeout();
+            } catch (e) {}
+        }, timeoutMs);
+        return function () {
+            if (done) {
+                return;
+            }
+            done = true;
+            clearTimeout(timer);
+            callback.apply(null, arguments);
+        };
+    }
 
     /**
      * Notifies panel scripts after INIDB save + post-save hooks finish (modal still open
@@ -195,7 +234,7 @@
         var type = (f.type || '').toLowerCase();
 
         if (type === 'number') {
-            var numVal = '';
+            var numVal;
             if (raw !== undefined && raw !== null && raw !== '') {
                 numVal = raw;
             } else if (f.min !== undefined && f.min !== null) {
@@ -205,10 +244,9 @@
             }
             $form.append(helpers.getInputGroup(id, 'number', f.label, '', numVal, help));
         } else if (type === 'text') {
-            $form.append(helpers.getInputGroup(id, 'text', f.label, '', raw !== undefined && raw !== null ? String(raw) : '', help));
+            $form.append(helpers.getInputGroup(id, 'text', f.label, '', asStringOrEmpty(raw), help));
         } else if (type === 'textarea') {
-            var unlimited = !!f.unlimited;
-            $form.append(helpers.getTextAreaGroup(id, 'text', f.label, '', raw !== undefined && raw !== null ? String(raw) : '', help, unlimited));
+            $form.append(helpers.getTextAreaGroup(id, 'text', f.label, '', asStringOrEmpty(raw), help, !!f.unlimited));
         } else if (type === 'yesno') {
             $form.append(helpers.getDropdownGroup(id, f.label, helpers.isTrue(raw) ? 'Yes' : 'No', ['Yes', 'No'], help));
         } else if (type === 'dropdown') {
@@ -279,10 +317,10 @@
 
     /**
      * Runs {@code socket.sendCommand} for a settings-modal {@code reloadCommand} guarded by
-     * a watchdog timeout. The DB save has already succeeded by the time this is called, so
-     * on timeout we surface an error toast (so the user knows settings were persisted but
-     * the live reload didn't confirm) and close the modal — without chaining into the
-     * misleading "Successfully saved settings!" success path.
+     * {@link #withWatchdog}. The DB save has already succeeded by the time this is called,
+     * so on timeout we surface an error toast (settings persisted, live reload didn't
+     * confirm) and close the modal — without chaining into the misleading
+     * "Successfully saved settings!" success path.
      *
      * @param {string} modalId DOM id of the open settings modal (closed on timeout)
      * @param {object} card canonical manifest card
@@ -290,12 +328,7 @@
      * @param {function()} onSuccess invoked exactly once when the bot acknowledges the reload
      */
     function dispatchReloadCommandWithWatchdog(modalId, card, sm, onSuccess) {
-        var done = false;
-        var watchdog = setTimeout(function () {
-            if (done) {
-                return;
-            }
-            done = true;
+        var ack = withWatchdog(ns.RELOAD_TIMEOUT_MS, function () {
             if (typeof toastr !== 'undefined') {
                 toastr.error(
                     'Settings were saved, but the bot did not acknowledge the reload command "' +
@@ -306,16 +339,9 @@
                 );
             }
             $('#' + modalId).modal('toggle');
-        }, ns.RELOAD_TIMEOUT_MS);
+        }, onSuccess);
 
-        socket.sendCommand('pb_custom_card_reload_' + card.id, sm.reloadCommand, function () {
-            if (done) {
-                return;
-            }
-            done = true;
-            clearTimeout(watchdog);
-            onSuccess();
-        });
+        socket.sendCommand('pb_custom_card_reload_' + card.id, sm.reloadCommand, ack);
     }
 
     /**
@@ -348,9 +374,7 @@
             keys.push(f.key);
         });
 
-        var loadAborted = false;
-        var loadWatchdog = setTimeout(function () {
-            loadAborted = true;
+        var loadCallback = withWatchdog(ns.LOAD_TIMEOUT_MS, function () {
             if (typeof toastr !== 'undefined') {
                 toastr.error(
                     'Settings did not load within ' +
@@ -359,14 +383,7 @@
                     'Settings load timed out'
                 );
             }
-        }, ns.LOAD_TIMEOUT_MS);
-
-        socket.getDBValues('pb_custom_card_settings_' + card.id, {tables: tables, keys: keys}, true, function (results) {
-            if (loadAborted) {
-                return;
-            }
-            clearTimeout(loadWatchdog);
-
+        }, function (results) {
             if (!results) {
                 results = {};
             }
@@ -451,5 +468,7 @@
                 });
             }).modal('toggle');
         });
+
+        socket.getDBValues('pb_custom_card_settings_' + card.id, {tables: tables, keys: keys}, true, loadCallback);
     };
 }());

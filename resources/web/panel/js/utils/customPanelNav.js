@@ -31,11 +31,9 @@
  * @author mcawful
  */
 (function () {
+    // Namespace + EVENTS are owned by customPanelManifestLoader.js, which runs first per
+    // the script-tag order in index.html. The `||` fallback is a load-order safety net only.
     var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
-    ns.EVENTS = ns.EVENTS || {
-        MANIFESTS_LOADED: 'pbCustomManifestsLoaded',
-        CARD_SETTINGS_SAVED: 'pbCustomCardSettingsSaved'
-    };
 
     var SECTION_MOUNTS = {
         'extra': '#pb-panel-extra-menu',
