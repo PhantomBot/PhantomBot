@@ -31,12 +31,18 @@
      * @param {string} username
      * @param {string} command
      * @param {string} args
+     * @param {object} tags
+     * @param {string} alias
      */
-    function runCommand(username, command, args, tags) {
+    function runCommand(username, command, args, tags, alias) {
+        if (alias === undefined) {
+            alias = null;
+        }
+
         if (tags !== undefined) {
-            EventBus.instance().postAsync(new CommandEvent(username, command, args, tags));
+            EventBus.instance().postAsync(new CommandEvent(username, command, alias, args, tags));
         } else {
-            EventBus.instance().postAsync(new CommandEvent(username, command, args));
+            EventBus.instance().postAsync(new CommandEvent(username, command, alias, args));
         }
     }
 
