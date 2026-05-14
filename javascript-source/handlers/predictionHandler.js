@@ -160,32 +160,11 @@
         } catch (e) {}
     }
 
-    $.bind('twitchBroadcasterType', function(event) {
-        if (!event.wasAffiliateOrPartner() && event.isAffiliateOrPartner()) {
-            subscribeEventSub();
-            sync();
-        }
-    }, true);
-
-    setInterval(function(){
-        if (Packages.com.gmt2001.twitch.eventsub.EventSub.instance().sessionId() !== null) {
-            if (!$.twitchcache.isAffiliateOrPartner()) {
-                return;
-            }
-
-            subscribeEventSub();
-        }
-    }, 60 * 60 * 1000);
-
     /*
      * @event eventSubWelcome
      */
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
-            if (!$.twitchcache.isAffiliateOrPartner()) {
-                return;
-            }
-
             subscribeEventSub();
         }
     }, true);
@@ -199,10 +178,6 @@
             args = $.jsArgs(event.getArgs());
 
             if (command === 'prediction') {
-                if (!$.twitchcache.isAffiliateOrPartner()) {
-                    return;
-                }
-
                 let handled = false;
                 if (args.length > 0) {
                     let action = args[0].toLowerCase();
@@ -384,10 +359,6 @@
         $.registerChatSubcommand('prediction', 'cancel', $.PERMISSION.Admin);
 
         setTimeout(function() {
-            if (!$.twitchcache.isAffiliateOrPartner()) {
-                return;
-            }
-
             sync();
         }, 2000);
     });
