@@ -1042,7 +1042,7 @@ public final class CustomPanelManifestCollector {
     /**
      * Page values from a manifest must be a single {@code .html} filename (no path separators,
      * no parent traversal, no backslashes) so the panel loader can join them onto an
-     * already-validated folder without further sanitisation. Used for {@code nav.page}.
+     * already-validated folder without further sanitization. Used for {@code nav.page}.
      *
      * @param page manifest-supplied page filename
      * @return {@code true} if the page filename is safe to forward to the panel page loader
