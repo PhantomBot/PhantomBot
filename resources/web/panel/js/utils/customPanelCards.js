@@ -166,7 +166,7 @@
                 id: settingsBtnId,
                 'class': 'btn btn-md btn-box-tool disabled pb-custom-no-settings pb-custom-card-tool-btn',
                 'data-toggle': 'tooltip',
-                title: "This module doesn't have any settings."
+                title: 'This module doesn\'t have any settings.'
             }).append($('<i/>', {'class': 'fa fa-cog fa-lg disabled'})));
         }
 
