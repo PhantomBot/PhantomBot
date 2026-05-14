@@ -113,7 +113,7 @@
     /**
      * Builds the {@code box-tools} cluster that lives in the card header — module toggle (when
      * {@code scriptPath} is set), info button (when {@code detailsModal} is present), and
-     * settings cog (modal, legacy page, or disabled-with-tooltip when neither is configured).
+     * settings cog (opens {@code settingsModal} when configured, or disabled-with-tooltip when not).
      * Visual spacing on every button comes from the shared {@code .pb-custom-card-tool-btn}
      * class injected by {@link customPanelManifestLoader#ensureStylesInjected}.
      *
@@ -123,7 +123,6 @@
     function buildCardTools(card) {
         var $tools = $('<div/>', {'class': 'box-tools pull-right'});
         var hasSettings = ns.cardHasSettings(card);
-        var useModal = ns.settingsModalHasContent(card.settingsModal);
         var hasDetails = ns.cardHasDetailsModal(card);
 
         if (card.scriptPath) {
@@ -156,17 +155,9 @@
             var $btn = $('<button/>', {
                 type: 'button',
                 id: settingsBtnId,
-                'class': 'btn btn-md btn-box-tool pb-custom-card-tool-btn',
+                'class': 'btn btn-md btn-box-tool pb-custom-card-open-settings pb-custom-card-tool-btn',
                 'data-pb-custom-card-id': card.id
             });
-            if (useModal) {
-                $btn.attr('data-pb-custom-card-settings-mode', 'modal');
-            } else {
-                $btn.attr('data-pb-custom-card-settings-mode', 'page');
-                $btn.attr('data-pb-custom-card-settings-folder', card.settingsFolder);
-                $btn.attr('data-pb-custom-card-settings-page', card.settingsPage);
-                $btn.attr('data-pb-custom-card-settings-hash', '#' + card.settingsPage);
-            }
             $btn.append($('<i/>', {'class': 'fa fa-cog fa-lg'}));
             $tools.append($btn);
         } else {
@@ -251,38 +242,20 @@
     }
 
     /**
-     * Binds the settings cog with a single delegated click handler that branches on the
-     * card's {@code data-pb-custom-card-settings-mode} attribute. {@code "page"} =>
-     * {@link $.loadPage} (legacy {@code settingsFolder}/{@code settingsPage} flow);
-     * {@code "modal"} => {@code ns.openSettingsModal(card)} from
-     * {@code customPanelSettingsModal.js}.
+     * Binds the settings cog (elements with {@code .pb-custom-card-open-settings}):
+     * opens {@code ns.openSettingsModal(card)} from {@code customPanelSettingsModal.js}.
      *
      * @param {jQuery} $mount container holding the freshly injected card elements
      */
     function wireCardSettings($mount) {
-        $mount.find('[data-pb-custom-card-settings-mode]').on('click', function (e) {
+        $mount.find('.pb-custom-card-open-settings').on('click', function (e) {
             e.preventDefault();
             var $btn = $(this);
-            var mode = $btn.data('pb-custom-card-settings-mode');
+            var id = $btn.data('pb-custom-card-id');
+            var card = ns.cardsById[id];
 
-            if (mode === 'page') {
-                var folder = $btn.data('pb-custom-card-settings-folder');
-                var page = $btn.data('pb-custom-card-settings-page');
-                var hash = $btn.data('pb-custom-card-settings-hash');
-
-                if (folder && page && typeof $.loadPage === 'function') {
-                    $.loadPage(folder, page, hash);
-                }
-                return;
-            }
-
-            if (mode === 'modal') {
-                var id = $btn.data('pb-custom-card-id');
-                var card = ns.cardsById[id];
-
-                if (card && card.settingsModal && typeof ns.openSettingsModal === 'function') {
-                    ns.openSettingsModal(card);
-                }
+            if (card && card.settingsModal && typeof ns.openSettingsModal === 'function') {
+                ns.openSettingsModal(card);
             }
         });
     }

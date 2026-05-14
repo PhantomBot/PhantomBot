@@ -57,8 +57,7 @@
 
     /**
      * Defines whether {@code settingsModal} is "actionable" — i.e. has a title and at least
-     * one declarative field (flat or accordion). Cards with {@code settingsModal} but no
-     * fields fall through to the legacy {@code settingsFolder}/{@code settingsPage} flow.
+     * one declarative field (flat or accordion).
      *
      * @param {object} sm settingsModal block from a canonical card entry
      * @returns {boolean}
@@ -75,16 +74,13 @@
 
     /**
      * @param {object} card canonical card entry
-     * @returns {boolean} whether the card has any usable settings (modal or legacy page)
+     * @returns {boolean} whether the card has a usable {@code settingsModal}
      */
     ns.cardHasSettings = function (card) {
         if (!card) {
             return false;
         }
-        if (settingsModalHasContent(card.settingsModal)) {
-            return true;
-        }
-        return !!(card.settingsFolder && card.settingsPage);
+        return settingsModalHasContent(card.settingsModal);
     };
 
     /**

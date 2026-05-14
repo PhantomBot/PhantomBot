@@ -33,35 +33,87 @@ Pick a stable **`moduleId`** (short, filesystem-safe) and use the **same** name 
 
 At least one of **`nav`** or **`cards`** must be present (non-empty) when the file exists. Both keys are optional at the JSON level, but an empty manifest is invalid.
 
+**Legend:** `?` = optional key or optional object. Indentation shows nesting.
+
 ```text
 manifest.json
-├── nav[]                              optional — sidebar links (Extra, Alerts, Giveaways, or Audio)
-│   └── { label, folder, page, hash?, section? }
 │
-└── cards[]                            optional — cards on the Games page
-    └── { id, title, description?, section?, scriptPath? }
-        ├── detailsModal?              optional — read-only info dialog
-        │   └── { title?, content }   content = sanitized HTML
+├── nav[]                              optional — sidebar links
+│   └── each entry                     { label, folder, page, hash?, section? }
+│                                      section: extra | alerts | giveaways | audio
+│
+└── cards[]                            optional — Games page
+    └── each entry                     { id, title, description?, section?, scriptPath? }
         │
-        ├── settingsModal?             optional — declarative settings (wins over legacy if both set)
-        │   ├── title
-        │   ├── fields[]               flat list of fields  ─┐
-        │   │   └── { id, type, label, table, key, … }      │ use exactly one of
-        │   └── sections[]             accordion groups       ─┘ fields[] OR sections[], not both
-        │       └── { id, title, defaultExpanded?, fields[] }
+        ├── detailsModal?              optional — read-only info
+        │   └──                        { title?, content }   (HTML, sanitized when shown)
         │
-        └── settingsFolder + settingsPage   optional legacy — full-page settings via $.loadPage
-                                            (cog uses settingsModal when both are present)
+        └── settingsModal?             optional — enables settings cog when valid
+            ├── title                  required when this block is present
+            ├── fields[]               flat rows — use this OR sections[], not both
+            │   └── row                { id, type, label, table, key, … }
+            └── sections[]             accordion panels — use this OR fields[], not both
+                └── panel              { id, title, defaultExpanded?, fields[] }
+                    └── fields[]       same row shape as top-level fields[] above
 ```
 
-**`settingsModal` field `type`** (each field in `fields` or inside each section’s `fields`): `number`, `text`, `textarea`, `boolean`, `toggle`, `checkboxgroup`, `dropdown`, `permission` — see the full spec for per-type keys and limits.
+### Example `manifest.json`
+
+Illustrates **`nav`** plus one **Games** **`cards`** entry with **`detailsModal`**, **`scriptPath`**, and a flat **`settingsModal.fields`** list (the same field row shape appears under **`sections[].fields`** when you use accordions instead). Replace `demomod`, page names, `scriptPath`, and INIDB **`table`** / **`key`** names with your own module.
+
+```json
+{
+  "nav": [
+    {
+      "label": "Demo mod",
+      "folder": "custom/demomod",
+      "page": "panel.html",
+      "section": "extra"
+    }
+  ],
+  "cards": [
+    {
+      "section": "games",
+      "id": "demomod-game",
+      "title": "Demo minigame",
+      "description": "Games card with info dialog, module toggle, and declarative settings.",
+      "scriptPath": "./games/demomodGame.js",
+      "detailsModal": {
+        "title": "About this game",
+        "content": "<p>Allowed HTML only; content is sanitized in the panel.</p>"
+      },
+      "settingsModal": {
+        "title": "Demo mod settings",
+        "fields": [
+          {
+            "id": "min-bet",
+            "type": "number",
+            "label": "Minimum bet",
+            "table": "demomod_settings",
+            "key": "min_bet",
+            "min": 1
+          },
+          {
+            "id": "bonus-enabled",
+            "type": "boolean",
+            "label": "Enable bonus round",
+            "table": "demomod_settings",
+            "key": "bonus_enabled"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+**`settingsModal` field `type`** (each row in `fields[]`, including rows nested under `sections[]`):  
+`number`, `text`, `textarea`, `boolean`, `toggle`, `checkboxgroup`, `dropdown`, `permission` — see the full spec for per-type keys and limits.
 
 1. Place **`web/panel/custom/<moduleId>/manifest.json`** on disk using the structure above. Each **`nav`** entry must match a **`pages/custom/<moduleId>/<page>.html`** file (and optional JS) on disk.
 2. For each **`nav`** link, add **`web/panel/pages/custom/<moduleId>/<page>.html`** and optional matching JS under **`web/panel/js/pages/custom/<moduleId>/`**. Manifest fields `folder` and `page` must match: `folder` is always `custom/<moduleId>`, `page` is a single filename like `mypage.html`.
-3. For **Games** **`cards`**, set **`scriptPath`** to a path PhantomBot’s `module` command understands, e.g. **`./games/myGame.js`** (must start with `./`, include a subdirectory, end with `.js`).
+3. For **Games** **`cards`**, set **`scriptPath`** to a path PhantomBot’s `module` command understands, e.g. **`./games/myGame.js`** (must start with `./`, include a subdirectory, end with `.js`). For a working settings cog, add a valid **`settingsModal`** (`title` plus `fields` or `sections`).
 4. After a declarative **settings** save, the panel sends **`panel-settings-saved`** to that script over the panel websocket—handle it in **`webPanelSocketUpdate`** to refresh in-memory settings.
-
-Legacy **full-page** settings via **`settingsFolder`** + **`settingsPage`** still work if you prefer `$.loadPage`; if both that and **`settingsModal`** exist, the modal wins for the cog.
 
 ## Docker and data volumes
 

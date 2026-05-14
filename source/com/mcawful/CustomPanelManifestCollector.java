@@ -388,15 +388,13 @@ public final class CustomPanelManifestCollector {
     /**
      * Validates each entry in a manifest's {@code cards} array and copies the survivors into
      * {@code cardsOut} as canonical JSON objects ({@code section}, {@code id}, {@code title},
-     * {@code description}, optional {@code scriptPath}, optional {@code settingsFolder} and
-     * {@code settingsPage}, optional {@code detailsModal}). Entries are dropped (with a warn-log) when:
+     * {@code description}, optional {@code scriptPath}, optional {@code settingsModal},
+     * optional {@code detailsModal}). Entries are dropped (with a warn-log) when:
      *
      * <ul>
      *   <li>{@code id} or {@code title} is missing,</li>
      *   <li>{@code id} fails {@link #isSafeCardId},</li>
-     *   <li>{@code scriptPath} is present but fails {@link #isSafeScriptPath},</li>
-     *   <li>either {@code settingsFolder} or {@code settingsPage} is set and fails its safe-path
-     *       check, or</li>
+     *   <li>{@code scriptPath} is present but fails {@link #isSafeScriptPath}, or</li>
      *   <li>the {@code section + id} key has already been seen across all manifests.</li>
      * </ul>
      *
@@ -425,8 +423,6 @@ public final class CustomPanelManifestCollector {
             String title = entry.optString("title", "").trim();
             String description = entry.optString("description", "").trim();
             String scriptPath = entry.optString("scriptPath", "").trim();
-            String settingsFolder = entry.optString("settingsFolder", "").trim();
-            String settingsPage = entry.optString("settingsPage", "").trim();
 
             if (id.isEmpty() || title.isEmpty()) {
                 warnSkip(manifest, "card (missing id/title)");
@@ -448,13 +444,6 @@ public final class CustomPanelManifestCollector {
                 continue;
             }
 
-            boolean hasSettings = !settingsFolder.isEmpty() || !settingsPage.isEmpty();
-
-            if (hasSettings && (!isSafeFolder(settingsFolder) || !isSafePageFile(settingsPage))) {
-                warnSkip(manifest, "card (invalid settingsFolder/settingsPage)");
-                continue;
-            }
-
             String key = section + '\0' + id;
 
             if (!seen.add(key)) {
@@ -468,10 +457,6 @@ public final class CustomPanelManifestCollector {
             out.put("description", description);
             if (!scriptPath.isEmpty()) {
                 out.put("scriptPath", scriptPath);
-            }
-            if (hasSettings) {
-                out.put("settingsFolder", settingsFolder);
-                out.put("settingsPage", settingsPage);
             }
 
             JSONObject settingsModal = optValidatedSettingsModal(entry.optJSONObject("settingsModal"), manifest);
@@ -1038,8 +1023,8 @@ public final class CustomPanelManifestCollector {
     /**
      * Folder values from a manifest must begin with {@code custom/} (so paths land in the
      * namespaced custom tree) and contain neither {@code ..} nor {@code \\}, which would let a
-     * malicious manifest escape that namespace or trip Windows path quirks. Used both for
-     * {@code nav.folder} and {@code cards.settingsFolder}.
+     * malicious manifest escape that namespace or trip Windows path quirks. Used for
+     * {@code nav.folder}.
      *
      * @param folder manifest-supplied folder string
      * @return {@code true} if the folder is safe to forward to the panel page loader
@@ -1057,8 +1042,7 @@ public final class CustomPanelManifestCollector {
     /**
      * Page values from a manifest must be a single {@code .html} filename (no path separators,
      * no parent traversal, no backslashes) so the panel loader can join them onto an
-     * already-validated folder without further sanitisation. Used both for {@code nav.page} and
-     * {@code cards.settingsPage}.
+     * already-validated folder without further sanitisation. Used for {@code nav.page}.
      *
      * @param page manifest-supplied page filename
      * @return {@code true} if the page filename is safe to forward to the panel page loader
