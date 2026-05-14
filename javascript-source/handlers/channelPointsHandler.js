@@ -38,31 +38,11 @@
         }
     }
 
-    $.bind('twitchBroadcasterType', function(event) {
-        if (!event.wasAffiliateOrPartner() && event.isAffiliateOrPartner()) {
-            subscribeEventSub();
-        }
-    }, true);
-
-    setInterval(function(){
-        if (Packages.com.gmt2001.twitch.eventsub.EventSub.instance().sessionId() !== null) {
-            if (!$.twitchcache.isAffiliateOrPartner()) {
-                return;
-            }
-
-            subscribeEventSub();
-        }
-    }, 60 * 60 * 1000);
-
     /*
      * @event eventSubWelcome
      */
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
-            if (!$.twitchcache.isAffiliateOrPartner()) {
-                return;
-            }
-
             subscribeEventSub();
         }
     }, true);
@@ -277,10 +257,6 @@
     }
 
     function reloadManagedRedeemables() {
-        if (!$.twitchcache.isAffiliateOrPartner()) {
-            return;
-        }
-
         let jso = $.helix.getCustomReward(null, true);
 
         if (jso.getInt('_http') === 200 && jso.has('data')) {
@@ -308,10 +284,6 @@
      * @param {string} redemptionId The id of the redemption event
      */
     function updateRedemptionStatusFulfilled(redeemableId, redemptionId) {
-        if (!$.twitchcache.isAffiliateOrPartner()) {
-            return;
-        }
-
         let rsp = $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
                 Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
 
@@ -338,10 +310,6 @@
      * @param {string} redemptionId The id of the redemption event
      */
     function updateRedemptionStatusCancelled(redeemableId, redemptionId) {
-        if (!$.twitchcache.isAffiliateOrPartner()) {
-            return;
-        }
-
         let rsp = $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
                 Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELED);
 
@@ -370,10 +338,6 @@
      * @param {boolean} isEnabled The new enabled state
      */
     function setRedeemableEnabled(redeemableId, isEnabled) {
-        if (!$.twitchcache.isAffiliateOrPartner()) {
-            return;
-        }
-
         let rsp = $.helix.updateCustomReward(redeemableId, null, null, isEnabled, null, null,
                 null, null, null, null, null, null, null, null, null);
 
@@ -400,10 +364,6 @@
      * @param {boolean} isPaused The new paused state
      */
     function setRedeemablePaused(redeemableId, isPaused) {
-        if (!$.twitchcache.isAffiliateOrPartner()) {
-            return;
-        }
-
         let rsp = $.helix.updateCustomReward(redeemableId, null, null, null, isPaused, null,
                 null, null, null, null, null, null, null, null, null);
 
@@ -440,11 +400,6 @@
                         $.panel.sendArray(event.getId(), managed);
                         break;
                     case 'redeemable-delete-managed':
-                        if (!$.twitchcache.isAffiliateOrPartner()) {
-                            $.panel.sendObject(event.getId(), {'success': false, 'error': 'Not an affiliate or partner'});
-                            return;
-                        }
-
                         let rmid = $.jsString(args[1]);
                         let rsp = $.helix.deleteCustomReward(args[1]);
                         if (rsp.getInt('_http') === 204) {
@@ -471,11 +426,6 @@
                         }
                         break;
                     case 'redeemable-add-managed':
-                        if (!$.twitchcache.isAffiliateOrPartner()) {
-                            $.panel.sendObject(event.getId(), {'success': false, 'error': 'Not an affiliate or partner'});
-                            return;
-                        }
-
                         //                                      title    cost
                         let addrsp = $.helix.createCustomReward(args[1], parseInt(args[2]),
                                 //is_enabled                              background_color  is_user_input_required
@@ -518,11 +468,6 @@
                         }
                         break;
                     case 'redeemable-update-managed':
-                        if (!$.twitchcache.isAffiliateOrPartner()) {
-                            $.panel.sendObject(event.getId(), {'success': false, 'error': 'Not an affiliate or partner'});
-                            return;
-                        }
-
                         //                                         id                                 title
                         let updatersp = $.helix.updateCustomReward(args[1], args[2] === null ? null : args[2],
                                 //                        cost                                         is_enabled
@@ -576,12 +521,6 @@
         $.registerChatSubcommand('channelpoints', 'add', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'edit', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'remove', $.PERMISSION.Admin);
-    });
-
-    $.bind('twitchBroadcasterType', function(event) {
-        if (!event.wasAffiliateOrPartner() && event.isAffiliateOrPartner()) {
-            reloadManagedRedeemables();
-        }
     });
 
     $.channelpoints = {
