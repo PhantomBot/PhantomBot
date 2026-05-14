@@ -16,9 +16,6 @@
  */
 package com.mcawful;
 
-import com.gmt2001.PathValidator;
-import com.gmt2001.util.Reflect;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,6 +31,9 @@ import java.util.stream.Stream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.gmt2001.PathValidator;
+import com.gmt2001.util.Reflect;
 
 import tv.phantombot.RepoVersion;
 
