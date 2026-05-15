@@ -74,7 +74,7 @@ public final class RollbarProvider implements AutoCloseable {
     /**
      * Namespaces owned by the PhantomBot project. Used for calculating the hash for {@link #reportsPassedFilters}
      */
-    private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
+    private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv", "com.mcawful"));
     /**
      * Filename regexes that should be used for calculating the hash for {@link #reportsPassedFilters}
      */
