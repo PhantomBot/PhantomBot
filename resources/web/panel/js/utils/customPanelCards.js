@@ -355,6 +355,8 @@
             ns.ensureStylesInjected();
         }
 
+        $mount.addClass('pb-custom-cards-mount');
+
         $mount.empty();
 
         var $divider = $('<div/>', {'class': 'col-md-12'}).append(
