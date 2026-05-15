@@ -91,22 +91,29 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         }
 
         if (req.method().equals(HttpMethod.GET) && "/panel/custom-manifests.json".equals(qsd.path())) {
-            CustomPanelManifestCache.CachedResponse cached = CustomPanelManifestCollector.getCachedResponse();
-            String ifNoneMatch = req.headers().get(HttpHeaderNames.IF_NONE_MATCH);
+            try {
+                CustomPanelManifestCache.CachedResponse cached = CustomPanelManifestCollector.getCachedResponse();
+                String ifNoneMatch = req.headers().get(HttpHeaderNames.IF_NONE_MATCH);
 
-            if (cached.matchesIfNoneMatch(ifNoneMatch)) {
-                FullHttpResponse notModified = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_MODIFIED);
-                notModified.headers().set(HttpHeaderNames.ETAG, cached.etag());
-                com.gmt2001.Console.debug.println("304 " + req.method().asciiName() + ": /panel/custom-manifests.json");
-                HttpServerPageHandler.sendHttpResponse(ctx, req, notModified);
+                if (cached.matchesIfNoneMatch(ifNoneMatch)) {
+                    FullHttpResponse notModified = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_MODIFIED);
+                    notModified.headers().set(HttpHeaderNames.ETAG, cached.etag());
+                    com.gmt2001.Console.debug.println("304 " + req.method().asciiName() + ": /panel/custom-manifests.json");
+                    HttpServerPageHandler.sendHttpResponse(ctx, req, notModified);
+                    return;
+                }
+
+                FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, cached.bytes(), "custom-manifests.json");
+                res.headers().set(HttpHeaderNames.ETAG, cached.etag());
+                com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": /panel/custom-manifests.json");
+                HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+                return;
+            } catch (Throwable ex) {
+                com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": /panel/custom-manifests.json");
+                com.gmt2001.Console.debug.printOrLogStackTrace(ex);
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
                 return;
             }
-
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, cached.bytes(), "custom-manifests.json");
-            res.headers().set(HttpHeaderNames.ETAG, cached.etag());
-            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": /panel/custom-manifests.json");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
-            return;
         }
 
         try {
