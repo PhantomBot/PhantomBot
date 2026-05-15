@@ -94,17 +94,20 @@
 
     /**
      * Injects a single small {@code <style>} block once, the first time any custom UI is
-     * rendered. Keeps stock CSS files unmodified; nothing is added to the DOM if no manifests
-     * load. Used by the nav file (sidebar dividers) and the cards file (cards-row dividers).
+     * rendered. If {@code #pb-custom-panel-styles} already exists (e.g. hot navigation),
+     * marks injection complete without duplicating the block. Keeps stock CSS files
+     * unmodified; nothing is added to the DOM if no manifests load. Used by the nav file
+     * (sidebar dividers) and the cards file (cards-row dividers).
      */
     ns.ensureStylesInjected = function () {
         if (stylesInjected) {
             return;
         }
-        stylesInjected = true;
         if (document.getElementById('pb-custom-panel-styles')) {
+            stylesInjected = true;
             return;
         }
+        stylesInjected = true;
         var style = document.createElement('style');
         style.id = 'pb-custom-panel-styles';
         style.textContent = [
@@ -156,18 +159,15 @@
             '        display: flex;',
             '        flex-direction: column;',
             '    }',
-            '    .pb-custom-cards-mount > .col-md-4 > .box {',
-            '        flex: 1 1 auto;',
-            '        display: flex;',
-            '        flex-direction: column;',
-            '        width: 100%;',
-            '        min-height: 0;',
-            '    }',
+            '    .pb-custom-cards-mount > .col-md-4 > .box,',
             '    .pb-custom-cards-mount > .col-md-4 > .box > form {',
             '        flex: 1 1 auto;',
             '        display: flex;',
             '        flex-direction: column;',
             '        min-height: 0;',
+            '    }',
+            '    .pb-custom-cards-mount > .col-md-4 > .box {',
+            '        width: 100%;',
             '    }',
             '    .pb-custom-cards-mount > .col-md-4 .box-body {',
             '        flex: 1 1 auto;',

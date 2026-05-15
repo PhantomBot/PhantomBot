@@ -327,9 +327,11 @@
     /**
      * Public per-page entry point. Injects all manifest-supplied cards for the given section
      * into the element matching {@code mountSelector}, prefixed with a one-time
-     * {@code Community modules} divider. Page fragments (e.g. {@code games.html}) call this
-     * after their HTML is in the DOM. No-op when the mount selector is invalid or missing,
-     * when the namespace isn't ready yet, or when there are no cards for that section.
+     * {@code Community modules} divider. Adds {@code pb-custom-cards-mount} to the mount
+     * (expected to be a Bootstrap {@code .row}) so injected CSS can use flexbox for
+     * equal-height cards. Page fragments (e.g. {@code games.html}) call this after their
+     * HTML is in the DOM. No-op when the mount selector is invalid or missing, when the
+     * namespace isn't ready yet, or when there are no cards for that section.
      *
      * @param {string} section the canonical section key (e.g. {@code "games"})
      * @param {string} mountSelector the canonical {@code "#pb-panel-<id>-custom-cards"} selector
