@@ -7,6 +7,11 @@ Community **custom modules** extend PhantomBot with extra chat commands, games, 
 - Install modules only from **people and sites you trust**. A module runs with the same privileges as the rest of the bot and can read or change bot data, send chat messages, and use your Twitch and panel access depending on what it does.
 - Take a **backup** of your bot (especially `config/` and any database files) before copying new files over an existing install.
 
+## Upgrades and older modules
+
+- A module that worked on an **older PhantomBot** can still **fail after you upgrade**: newer builds may change chat APIs, the panel, Rhino helpers, databases, or Twitch/EventSub behavior. **Retest** your custom modules after every upgrade and skim **release notes** for breaking changes.
+- Modules that rely on **`web/panel/pages/extra/...`** plus a **patched `index.html`** are not “frozen in time” either—those patterns can break the same way. If you maintain such a module, consider **moving it to the manifest-based layout** when you next touch it (see **[Creating custom modules](guide=content/developerdocs/custommodules "##guide_link")**): no `index.html` merge, and the same packaging model newer community modules use.
+
 ## What you might be copying
 
 Many modules ship a small tree of files. Common pieces:
