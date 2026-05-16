@@ -177,6 +177,10 @@ When manifest content actually renders, the panel inserts a small separator: a *
 
 Modules that only add **`web/panel/pages/extra/...`** and a **manually patched** `index.html` link keep working. The manifest path is **additive**—use it when you want **no `index.html` edit**.
 
+That compatibility is **not a guarantee across upgrades**: a module written for an older PhantomBot can still **break on a newer build** if the build changes APIs, panel markup, Rhino helpers, database layout, Twitch/EventSub behavior, or other contracts the module relied on. Retest custom modules after upgrading, and read release notes when they call out breaking changes.
+
+When you revise an older module anyway (fixes, new features, or post-upgrade repair), **consider moving it to the manifest-based system** (`web/panel/custom/<moduleId>/manifest.json` and pages under `web/panel/pages/custom/<moduleId>/`): you can drop the hand-edited `index.html` merge, align with current community packaging expectations, and use declarative **`nav`**, **`cards`**, and **`settingsModal`** where they fit.
+
 ## Checklist (manifest + assets)
 
 1. Place **`web/panel/custom/<moduleId>/manifest.json`** on disk using the structure and rules in [Full manifest specification](#full-manifest-specification). Each **`nav`** entry must match a **`pages/custom/<moduleId>/<page>.html`** file (and optional JS) on disk.
