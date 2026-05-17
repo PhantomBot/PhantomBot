@@ -243,7 +243,6 @@
             url: 'custom-manifests.json',
             type: 'GET',
             dataType: 'json',
-            cache: false,
             timeout: ns.MANIFEST_FETCH_TIMEOUT_MS,
             success: function (data) {
                 if (!data) {
