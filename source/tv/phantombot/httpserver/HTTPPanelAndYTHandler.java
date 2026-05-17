@@ -45,6 +45,8 @@ import tv.phantombot.CaselessProperties;
  */
 public class HTTPPanelAndYTHandler implements HttpRequestHandler {
 
+    private static final String CUSTOM_MANIFESTS_PATH = "/panel/custom-manifests.json";
+
     private HttpAuthenticationHandler authHandler;
 
     public HTTPPanelAndYTHandler() {
@@ -90,26 +92,14 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             return;
         }
 
-        if (req.method().equals(HttpMethod.GET) && "/panel/custom-manifests.json".equals(qsd.path())) {
+        if (req.method().equals(HttpMethod.GET) && CUSTOM_MANIFESTS_PATH.equals(qsd.path())) {
             try {
                 CustomPanelManifestCache.CachedResponse cached = CustomPanelManifestCollector.getCachedResponse();
-                String ifNoneMatch = req.headers().get(HttpHeaderNames.IF_NONE_MATCH);
-
-                if (cached.matchesIfNoneMatch(ifNoneMatch)) {
-                    FullHttpResponse notModified = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_MODIFIED);
-                    notModified.headers().set(HttpHeaderNames.ETAG, cached.etag());
-                    com.gmt2001.Console.debug.println("304 " + req.method().asciiName() + ": /panel/custom-manifests.json");
-                    HttpServerPageHandler.sendHttpResponse(ctx, req, notModified);
-                    return;
-                }
-
-                FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, cached.bytes(), "custom-manifests.json");
-                res.headers().set(HttpHeaderNames.ETAG, cached.etag());
-                com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": /panel/custom-manifests.json");
-                HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+                boolean notModified = HttpServerPageHandler.sendCachedBytes(ctx, req, cached.bytes(), "custom-manifests.json", cached.etag());
+                com.gmt2001.Console.debug.println((notModified ? "304" : "200") + " " + req.method().asciiName() + ": " + CUSTOM_MANIFESTS_PATH);
                 return;
             } catch (Throwable ex) {
-                com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": /panel/custom-manifests.json");
+                com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": " + CUSTOM_MANIFESTS_PATH);
                 com.gmt2001.Console.debug.printOrLogStackTrace(ex);
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
                 return;
