@@ -3,6 +3,7 @@
     },
     "pages": {
         "registerchatcommand": "registerChatCommand Function",
-        "sanitize": "sanitize Function"
+        "sanitize": "sanitize Function",
+        "custommodules": "Creating custom modules"
     }
 }

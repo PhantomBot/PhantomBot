@@ -1,0 +1,383 @@
+/*
+ * Copyright (C) 2016-2026 phantombot.github.io/PhantomBot
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* global socket, toastr, $ */
+
+/**
+ * Custom-panel **cards renderer**. Renders manifest-supplied cards into a per-page mount
+ * point ({@code window.injectCustomCards(section, mountSelector)}), wires their module
+ * toggle, settings cog, and info button. Modal opens are dispatched via the shared
+ * {@code window.__pbCustomPanel__} namespace ({@code openSettingsModal} /
+ * {@code openDetailsModal}); the cards file itself never reaches into modal internals.
+ *
+ * <p>Mount-selector validation: stock pages call this with their own static selector
+ * (e.g. {@code games.html} hardcodes {@code "#pb-panel-games-custom-cards"}), but the
+ * function is on {@code window} so external pages could pass arbitrary input. We allow only
+ * the canonical {@code #pb-panel-<id>-custom-cards} shape and silently drop anything else
+ * to keep card injection from being abused as a generic DOM-replace primitive.</p>
+ *
+ * @author mcawful
+ */
+(function () {
+    // Namespace + card indexes are owned by customPanelManifestLoader.js, which runs first
+    // per the script-tag order in index.html. The `||` fallback is a load-order safety net
+    // only; nothing else here re-initializes shared state.
+    const ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
+
+    const SAFE_MOUNT_SELECTOR = /^#pb-panel-[a-z0-9-]+-custom-cards$/;
+
+    /**
+     * DOM id helper for a card's child elements (matches {@link #buildCardElement} output).
+     * Centralizing this keeps the toggle/settings/details lookups in lockstep with the
+     * builder when the id shape ever changes.
+     *
+     * @param {string} cardId canonical card id from the manifest
+     * @param {string} suffix one of {@code "toggle"}, {@code "settings"}, {@code "details"}
+     * @returns {string}
+     */
+    function cardChildId(cardId, suffix) {
+        return 'pb-custom-card-' + cardId + '-' + suffix;
+    }
+
+    /**
+     * Whitelisted mount-selector validation — must be exactly the canonical hash-id shape
+     * used by stock pages. Anything else returns false and the cards skip rendering.
+     *
+     * @param {string} sel mountSelector argument passed to {@code injectCustomCards}
+     * @returns {boolean}
+     */
+    function isSafeMountSelector(sel) {
+        return typeof sel === 'string' && SAFE_MOUNT_SELECTOR.test(sel);
+    }
+
+    /**
+     * Pulls a single {@code modules} table value out of a {@code getDBValues storeKey: true}
+     * result. Tolerates the shape variants we've seen across stock callers (flat
+     * {@code {key: value}}, nested {@code {value: ...}}, list-style {@code {0:..., 1:...}}).
+     *
+     * @param {object} results getDBValues result object
+     * @param {string} scriptPath manifest scriptPath used as the lookup key
+     * @returns {*} stored value, or undefined when no matching key is present
+     */
+    function lookupModulesTableValue(results, scriptPath) {
+        if (!results) {
+            return undefined;
+        }
+        if (Object.prototype.hasOwnProperty.call(results, scriptPath)) {
+            return results[scriptPath];
+        }
+        const keys = Object.keys(results);
+        for (let i = 0; i < keys.length; i++) {
+            const entry = results[keys[i]];
+            if (entry && typeof entry === 'object' && entry.table === 'modules' && entry.key === scriptPath) {
+                return entry.value;
+            }
+        }
+        return undefined;
+    }
+
+    /**
+     * Decides whether a stored {@code modules} value means "enabled". The stock convention
+     * is {@code "true"}/{@code "false"} strings but we accept booleans, {@code 1}/{@code 0},
+     * and {@code "enabled"}/{@code "disabled"} just in case a custom module wrote one of
+     * those instead.
+     *
+     * @param {*} raw value from {@code lookupModulesTableValue}
+     * @returns {boolean}
+     */
+    function modulesDbValueIsEnabled(raw) {
+        if (raw === true || raw === 1 || raw === '1') {
+            return true;
+        }
+        if (typeof raw === 'string') {
+            const s = raw.trim().toLowerCase();
+            return s === 'true' || s === 'enabled' || s === 'on';
+        }
+        return false;
+    }
+
+    /**
+     * Builds the {@code box-tools} cluster that lives in the card header — module toggle (when
+     * {@code scriptPath} is set), info button (when {@code detailsModal} is present), and
+     * settings cog (opens {@code settingsModal} when configured, or disabled-with-tooltip when not).
+     * Visual spacing on every button comes from the shared {@code .pb-custom-card-tool-btn}
+     * class injected by {@link customPanelManifestLoader#ensureStylesInjected}.
+     *
+     * @param {object} card canonical manifest card
+     * @returns {jQuery}
+     */
+    function buildCardTools(card) {
+        const $tools = $('<div/>', {'class': 'box-tools pull-right'});
+        const hasSettings = ns.cardHasSettings(card);
+        const hasDetails = ns.cardHasDetailsModal(card);
+
+        if (card.scriptPath) {
+            const $label = $('<label/>', {'class': 'switch', 'data-toggle': 'tooltip', 'title': 'Module toggle.'});
+            const $input = $('<input/>', {
+                type: 'checkbox',
+                id: cardChildId(card.id, 'toggle'),
+                'data-pb-custom-card-toggle': card.scriptPath,
+                'data-pb-custom-card-id': card.id
+            });
+            $input.prop('checked', true);
+            $label.append($input).append($('<span/>', {'class': 'slider round'}));
+            $tools.append($label);
+        }
+
+        if (hasDetails) {
+            $tools.append($('<button/>', {
+                type: 'button',
+                id: cardChildId(card.id, 'details'),
+                'class': 'btn btn-md btn-box-tool pb-custom-card-open-details pb-custom-card-tool-btn',
+                'data-toggle': 'tooltip',
+                title: 'More information',
+                'data-pb-custom-card-id': card.id
+            }).append($('<i/>', {'class': 'fa fa-info-circle fa-lg'})));
+        }
+
+        const settingsBtnId = cardChildId(card.id, 'settings');
+
+        if (hasSettings) {
+            const $btn = $('<button/>', {
+                type: 'button',
+                id: settingsBtnId,
+                'class': 'btn btn-md btn-box-tool pb-custom-card-open-settings pb-custom-card-tool-btn',
+                'data-pb-custom-card-id': card.id
+            });
+            $btn.append($('<i/>', {'class': 'fa fa-cog fa-lg'}));
+            $tools.append($btn);
+        } else {
+            $tools.append($('<button/>', {
+                type: 'button',
+                id: settingsBtnId,
+                'class': 'btn btn-md btn-box-tool disabled pb-custom-no-settings pb-custom-card-tool-btn',
+                'data-toggle': 'tooltip',
+                title: 'This module doesn\'t have any settings.'
+            }).append($('<i/>', {'class': 'fa fa-cog fa-lg disabled'})));
+        }
+
+        return $tools;
+    }
+
+    /**
+     * Builds the card header ({@code box-header with-border}): tools cluster + title.
+     *
+     * @param {object} card canonical manifest card
+     * @returns {jQuery}
+     */
+    function buildCardHeader(card) {
+        return $('<div/>', {'class': 'box-header with-border'})
+            .append(buildCardTools(card))
+            .append($('<h3/>', {'class': 'box-title'}).text(card.title));
+    }
+
+    /**
+     * Builds the card body ({@code box-body}): description paragraph (escaped, may be empty).
+     *
+     * @param {object} card canonical manifest card
+     * @returns {jQuery}
+     */
+    function buildCardBody(card) {
+        return $('<div/>', {'class': 'box-body'})
+            .append($('<p/>', {'class': 'auto-cut'}).text(card.description || ''));
+    }
+
+    /**
+     * Builds a single Bootstrap card ({@code col-md-4} wrapping a {@code box box-solid}).
+     * Delegates header/tools/body construction to the smaller builders so this orchestrator
+     * stays a 1:1 mirror of the resulting DOM tree.
+     *
+     * @param {object} card canonical manifest card
+     * @returns {jQuery}
+     */
+    function buildCardElement(card) {
+        const $form = $('<form/>', {'role': 'form'}).append(buildCardBody(card));
+        const $box = $('<div/>', {'class': 'box box-solid', 'id': 'pb-custom-card-' + card.id})
+            .append(buildCardHeader(card))
+            .append($form);
+        return $('<div/>', {'class': 'col-md-4'}).append($box);
+    }
+
+    /**
+     * Binds a {@code change} handler to every card module-toggle inside {@code $mount} that
+     * issues {@code module enablesilent|disablesilent <scriptPath>} over the panel websocket
+     * and surfaces a toast confirmation on success. No-op if {@code socket} is unavailable.
+     *
+     * @param {jQuery} $mount container holding the freshly injected card elements
+     */
+    function wireCardToggles($mount) {
+        $mount.find('[data-pb-custom-card-toggle]').on('change', function () {
+            const $input = $(this);
+            const scriptPath = $input.data('pb-custom-card-toggle');
+            const checked = $input.is(':checked');
+            const cardId = $input.data('pb-custom-card-id');
+
+            if (typeof socket === 'undefined' || !socket || !socket.sendCommandSync) {
+                return;
+            }
+
+            socket.sendCommandSync('pb_custom_card_toggle', 'module ' + (checked ? 'enablesilent' : 'disablesilent') + ' ' + scriptPath, function () {
+                if (typeof toastr !== 'undefined') {
+                    toastr.success('Successfully ' + (checked ? 'enabled' : 'disabled') + ' the module!');
+                }
+                if (cardId && ns.cardsById[cardId] && ns.cardHasSettings(ns.cardsById[cardId])) {
+                    $mount.find('#' + cardChildId(cardId, 'settings')).prop('disabled', !checked);
+                }
+            });
+        });
+    }
+
+    /**
+     * Binds the settings cog (elements with {@code .pb-custom-card-open-settings}):
+     * opens {@code ns.openSettingsModal(card)} from {@code customPanelSettingsModal.js}.
+     *
+     * @param {jQuery} $mount container holding the freshly injected card elements
+     */
+    function wireCardSettings($mount) {
+        $mount.find('.pb-custom-card-open-settings').on('click', function (e) {
+            e.preventDefault();
+            const $btn = $(this);
+            const id = $btn.data('pb-custom-card-id');
+            const card = ns.cardsById[id];
+
+            if (card && card.settingsModal && typeof ns.openSettingsModal === 'function') {
+                ns.openSettingsModal(card);
+            }
+        });
+    }
+
+    /**
+     * Binds the optional info ({@code fa-info-circle}) control to {@code ns.openDetailsModal}
+     * registered by {@code customPanelDetailsModal.js}.
+     *
+     * @param {jQuery} $mount container holding the freshly injected card elements
+     */
+    function wireCardDetails($mount) {
+        $mount.find('.pb-custom-card-open-details').on('click', function (e) {
+            e.preventDefault();
+            const id = $(this).data('pb-custom-card-id');
+            const c = ns.cardsById[id];
+            if (c && ns.cardHasDetailsModal(c) && typeof ns.openDetailsModal === 'function') {
+                ns.openDetailsModal(c);
+            }
+        });
+    }
+
+    /**
+     * Queries the bot DB for the current {@code modules} table state of every card that
+     * declares a {@code scriptPath}, then syncs each toggle's checked state and the matching
+     * settings button's {@code disabled} state. No-op if no cards declare {@code scriptPath}
+     * or if {@code socket} is unavailable.
+     *
+     * @param {jQuery} $mount container holding the freshly injected card elements
+     * @param {Array<object>} cards canonical card entries that were just rendered into {@code $mount}
+     */
+    function loadInitialCardStates($mount, cards) {
+        const togglesNeeded = cards.filter(function (c) {
+            return c.scriptPath;
+        });
+
+        if (togglesNeeded.length === 0) {
+            return;
+        }
+
+        if (typeof socket === 'undefined' || !socket || !socket.getDBValues) {
+            return;
+        }
+
+        const tables = [];
+        const keys = [];
+        togglesNeeded.forEach(function (c) {
+            tables.push('modules');
+            keys.push(c.scriptPath);
+        });
+
+        socket.getDBValues('pb_custom_cards_get_modules', {tables: tables, keys: keys}, true, function (results) {
+            if (!results) {
+                return;
+            }
+            togglesNeeded.forEach(function (card) {
+                const enabled = lookupModulesTableValue(results, card.scriptPath);
+                if (enabled === undefined || enabled === null) {
+                    return;
+                }
+                const isEnabled = modulesDbValueIsEnabled(enabled);
+                $mount.find('#' + cardChildId(card.id, 'toggle')).prop('checked', isEnabled);
+                if (ns.cardHasSettings(card)) {
+                    $mount.find('#' + cardChildId(card.id, 'settings')).prop('disabled', !isEnabled);
+                }
+            });
+        });
+    }
+
+    /**
+     * Public per-page entry point. Injects all manifest-supplied cards for the given section
+     * into the element matching {@code mountSelector}, prefixed with a one-time
+     * {@code Community modules} divider. Adds {@code pb-custom-cards-mount} to the mount
+     * (expected to be a Bootstrap {@code .row}) so injected CSS can use flexbox for
+     * equal-height cards. Page fragments (e.g. {@code games.html}) call this after their
+     * HTML is in the DOM. No-op when the mount selector is invalid or missing, when the
+     * namespace isn't ready yet, or when there are no cards for that section.
+     *
+     * @param {string} section the canonical section key (e.g. {@code "games"})
+     * @param {string} mountSelector the canonical {@code "#pb-panel-<id>-custom-cards"} selector
+     */
+    window.injectCustomCards = function (section, mountSelector) {
+        if (!isSafeMountSelector(mountSelector)) {
+            return;
+        }
+        const $mount = $(mountSelector);
+
+        if ($mount.length === 0) {
+            return;
+        }
+
+        const sectionKey = String(section || '').toLowerCase();
+        const cards = ns.cardsBySection[sectionKey] || [];
+
+        if (cards.length === 0) {
+            return;
+        }
+
+        if (typeof ns.ensureStylesInjected === 'function') {
+            ns.ensureStylesInjected();
+        }
+
+        $mount.addClass('pb-custom-cards-mount');
+
+        $mount.empty();
+
+        const $divider = $('<div/>', {'class': 'col-md-12'}).append(
+            $('<h4/>', {'class': 'pb-custom-cards-divider'})
+                .append($('<i/>', {'class': 'fa fa-puzzle-piece'}))
+                .append(document.createTextNode('Community modules'))
+        );
+        $mount.append($divider);
+
+        cards.forEach(function (card) {
+            $mount.append(buildCardElement(card));
+        });
+
+        wireCardToggles($mount);
+        wireCardSettings($mount);
+        wireCardDetails($mount);
+        loadInitialCardStates($mount, cards);
+        if (typeof $.fn.tooltip === 'function') {
+            $mount.find('[data-toggle="tooltip"]').tooltip({container: 'body'});
+        }
+    };
+}());

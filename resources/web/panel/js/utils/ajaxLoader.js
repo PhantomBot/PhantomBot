@@ -105,8 +105,8 @@ $(function () {
         return currentPageInfo;
     }
 
-    // Handles loading of tabs.
-    $('[data-folder]').on('click', function (e) {
+    // Handles loading of tabs (delegated so dynamically added custom nav links work).
+    $(document).on('click', '[data-folder]', function (e) {
         e.preventDefault();
         // Load the page.
         loadPage($(this).data('folder'), $(this).attr('href').substring(1), this.href);

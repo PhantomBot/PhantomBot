@@ -5,6 +5,7 @@
     "pages": {
         "moderation": "Custom Moderation Scripts",
         "channelpoints": "Channel Points Handler",
-        "streamoverlay": "Stream Overlay"
+        "streamoverlay": "Stream Overlay",
+        "addingcustommodules": "Adding custom modules"
     }
 }

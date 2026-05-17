@@ -238,8 +238,15 @@
                 </div>
             </div>
         </div>
+        <!-- Mount point for community-contributed game cards (manifest-driven). -->
+        <div class="row" id="pb-panel-games-custom-cards"></div>
     </section>
 
     <!-- games -->
     <script src="js/pages/games/games.js"></script>
+    <script>
+        if (typeof window.injectCustomCards === 'function') {
+            window.injectCustomCards('games', '#pb-panel-games-custom-cards');
+        }
+    </script>
 </main>
