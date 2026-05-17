@@ -37,9 +37,9 @@
     }
 
     function snapshotLoadedModules() {
-        var out = [];
+        const out = [];
         if ($.bot && $.bot.modules) {
-            for (var name in $.bot.modules) {
+            for (let name in $.bot.modules) {
                 if ($.bot.modules.hasOwnProperty(name)) {
                     out.push(name);
                 }
@@ -49,12 +49,12 @@
     }
 
     function diffLoadedModules(after, before) {
-        var seen = {};
-        for (var i = 0; i < before.length; i++) {
+        const seen = {};
+        for (let i = 0; i < before.length; i++) {
             seen[before[i]] = true;
         }
-        var fresh = [];
-        for (var j = 0; j < after.length; j++) {
+        const fresh = [];
+        for (let j = 0; j < after.length; j++) {
             if (!seen[after[j]]) {
                 fresh.push(after[j]);
             }
@@ -67,20 +67,20 @@
             return 0;
         }
 
-        var hookContainer = $.bot && $.bot.hooks ? $.bot.hooks.initReady : null;
+        const hookContainer = $.bot && $.bot.hooks ? $.bot.hooks.initReady : null;
         if (!hookContainer || !hookContainer.handlers) {
             return 0;
         }
 
         // $.bot.modules keys keep the leading "./", Hook.scriptName strips it.
-        var nameSet = {};
-        for (var i = 0; i < newModuleNames.length; i++) {
+        const nameSet = {};
+        for (let i = 0; i < newModuleNames.length; i++) {
             nameSet[normalizeScriptName(newModuleNames[i])] = true;
         }
 
-        var fired = 0;
-        for (var j = 0; j < hookContainer.handlers.length; j++) {
-            var handler = hookContainer.handlers[j];
+        let fired = 0;
+        for (let j = 0; j < hookContainer.handlers.length; j++) {
+            const handler = hookContainer.handlers[j];
             if (handler && nameSet[normalizeScriptName(handler.scriptName)]) {
                 try {
                     handler.handler(null);
@@ -98,7 +98,7 @@
      * @returns {{loaded: number, initReadyFired: number}}
      */
     function reloadCustom(silentLog) {
-        var beforeModules = snapshotLoadedModules();
+        const beforeModules = snapshotLoadedModules();
 
         try {
             if (typeof $.bot !== 'undefined' && typeof $.bot.loadScriptRecursive === 'function') {
@@ -116,9 +116,9 @@
             $.log.error('reloadcustom: lang reload failed: ' + ex);
         }
 
-        var afterModules = snapshotLoadedModules();
-        var newModules = diffLoadedModules(afterModules, beforeModules);
-        var fired = fireInitReadyOn(newModules);
+        const afterModules = snapshotLoadedModules();
+        const newModules = diffLoadedModules(afterModules, beforeModules);
+        const fired = fireInitReadyOn(newModules);
 
         return {
             loaded: newModules.length,
@@ -134,10 +134,10 @@
             return;
         }
 
-        var args = event.getArgs();
-        var silent = args && args.length > 0 && $.equalsIgnoreCase(args[0], 'silent');
+        const args = event.getArgs();
+        const silent = args && args.length > 0 && $.equalsIgnoreCase(args[0], 'silent');
 
-        var result = reloadCustom(silent);
+        const result = reloadCustom(silent);
 
         if (!silent) {
             $.say($.whisperPrefix(event.getSender())

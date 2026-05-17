@@ -34,7 +34,7 @@
  * @author mcawful
  */
 (function () {
-    var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
+    const ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
     /**
      * Allowed tags for {@code detailsModal.content}. Everything else is unwrapped (its text
@@ -43,7 +43,7 @@
      *
      * @type {Object<string, boolean>}
      */
-    var PB_DETAILS_HTML_TAGS = {
+    const PB_DETAILS_HTML_TAGS = {
         P: true, BR: true, STRONG: true, B: true, EM: true, I: true, U: true, S: true,
         H4: true, H5: true, H6: true, UL: true, OL: true, LI: true,
         A: true, CODE: true, PRE: true, BLOCKQUOTE: true, DIV: true, SPAN: true, HR: true
@@ -62,11 +62,11 @@
         if (!href || typeof href !== 'string') {
             return '';
         }
-        var h = href.trim();
+        const h = href.trim();
         if (h.length === 0) {
             return '';
         }
-        var lower = h.toLowerCase();
+        const lower = h.toLowerCase();
         if (lower.indexOf('javascript:') === 0 || lower.indexOf('data:') === 0 || lower.indexOf('vbscript:') === 0) {
             return '';
         }
@@ -92,13 +92,13 @@
      * @returns {string} sanitized HTML
      */
     function sanitizeDetailsModalHtml(html) {
-        var container = document.createElement('div');
+        const container = document.createElement('div');
         container.innerHTML = html;
-        var all = container.querySelectorAll('*');
-        var i;
+        const all = container.querySelectorAll('*');
+        let i;
         for (i = all.length - 1; i >= 0; i--) {
-            var el = all[i];
-            var tag = el.tagName.toUpperCase();
+            const el = all[i];
+            const tag = el.tagName.toUpperCase();
             if (!PB_DETAILS_HTML_TAGS[tag]) {
                 while (el.firstChild) {
                     el.parentNode.insertBefore(el.firstChild, el);
@@ -106,8 +106,8 @@
                 el.parentNode.removeChild(el);
                 continue;
             }
-            var attrs = el.attributes;
-            var hRef = '';
+            const attrs = el.attributes;
+            let hRef = '';
             if (tag === 'A') {
                 hRef = sanitizeDetailsHref(el.getAttribute('href') || '');
             }
@@ -139,7 +139,7 @@
      * @param {object} card canonical manifest card with {@code detailsModal}
      */
     ns.openDetailsModal = function (card) {
-        var dm = card && card.detailsModal;
+        const dm = card && card.detailsModal;
         if (!dm || typeof dm.content !== 'string' || !dm.content.trim()) {
             return;
         }
@@ -147,9 +147,9 @@
             return;
         }
 
-        var modalId = 'pb-custom-card-details-' + card.id;
-        var modalTitle = (typeof dm.title === 'string' && dm.title.trim()) ? dm.title.trim() : 'Details';
-        var $body = $('<div/>', {'class': 'pb-custom-details-modal-body'})
+        const modalId = 'pb-custom-card-details-' + card.id;
+        const modalTitle = (typeof dm.title === 'string' && dm.title.trim()) ? dm.title.trim() : 'Details';
+        const $body = $('<div/>', {'class': 'pb-custom-details-modal-body'})
             .css({'word-break': 'break-word', 'white-space': 'normal'})
             .html(sanitizeDetailsModalHtml(dm.content));
 

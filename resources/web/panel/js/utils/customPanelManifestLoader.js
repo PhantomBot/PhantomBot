@@ -37,7 +37,7 @@
  * @author mcawful
  */
 (function () {
-    var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
+    const ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
     ns.loaded = ns.loaded || false;
     ns.cardsBySection = ns.cardsBySection || {};
@@ -52,8 +52,8 @@
     ns.TEXTAREA_DEFAULT_MAX_LEN = ns.TEXTAREA_DEFAULT_MAX_LEN || 480;
     ns.DEFAULT_PERMISSION_GROUP_ID = ns.DEFAULT_PERMISSION_GROUP_ID != null ? ns.DEFAULT_PERMISSION_GROUP_ID : 7;
 
-    var stylesInjected = false;
-    var ran = false;
+    let stylesInjected = false;
+    let ran = false;
 
     /**
      * Defines whether {@code settingsModal} is "actionable" — i.e. has a title and at least
@@ -66,8 +66,8 @@
         if (!sm || typeof sm !== 'object') {
             return false;
         }
-        var hasFlat = Array.isArray(sm.fields) && sm.fields.length > 0;
-        var hasSec = Array.isArray(sm.sections) && sm.sections.length > 0;
+        const hasFlat = Array.isArray(sm.fields) && sm.fields.length > 0;
+        const hasSec = Array.isArray(sm.sections) && sm.sections.length > 0;
         return !!sm.title && (hasFlat || hasSec);
     }
     ns.settingsModalHasContent = settingsModalHasContent;
@@ -88,7 +88,7 @@
      * @returns {boolean} whether the card declares read-only {@code detailsModal} content
      */
     ns.cardHasDetailsModal = function (card) {
-        var dm = card && card.detailsModal;
+        const dm = card && card.detailsModal;
         return !!(dm && typeof dm.content === 'string' && dm.content.trim().length > 0);
     };
 
@@ -108,7 +108,7 @@
             return;
         }
         stylesInjected = true;
-        var style = document.createElement('style');
+        const style = document.createElement('style');
         style.id = 'pb-custom-panel-styles';
         style.textContent = [
             '.pb-custom-nav-divider {',
@@ -218,7 +218,7 @@
                 return;
             }
             ns.cardsById[card.id] = card;
-            var section = String(card.section).toLowerCase();
+            const section = String(card.section).toLowerCase();
             if (!ns.cardsBySection[section]) {
                 ns.cardsBySection[section] = [];
             }
@@ -250,8 +250,8 @@
                     return;
                 }
 
-                var navList = Array.isArray(data.nav) ? data.nav : [];
-                var cardList = Array.isArray(data.cards) ? data.cards : [];
+                const navList = Array.isArray(data.nav) ? data.nav : [];
+                const cardList = Array.isArray(data.cards) ? data.cards : [];
 
                 indexCards(cardList);
                 ns.loaded = true;

@@ -40,7 +40,7 @@
     // owned by customPanelManifestLoader.js, which runs first per the script-tag order in
     // index.html. The `||` fallback is a load-order safety net only; nothing else here
     // re-initializes shared state.
-    var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
+    const ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
     /**
      * Wraps an async {@code callback} with a watchdog timer. Returns a function the caller
@@ -53,8 +53,8 @@
      * @returns {function(*=)}
      */
     function withWatchdog(timeoutMs, onTimeout, callback) {
-        var done = false;
-        var timer = setTimeout(function () {
+        let done = false;
+        const timer = setTimeout(function () {
             if (done) {
                 return;
             }
@@ -87,7 +87,7 @@
         if (typeof document === 'undefined' || typeof CustomEvent !== 'function') {
             return;
         }
-        var detail = {
+        const detail = {
             cardId: card.id,
             section: card.section != null ? card.section : null,
             scriptPath: card.scriptPath != null ? card.scriptPath : null,
@@ -110,7 +110,7 @@
             finish();
             return;
         }
-        var scriptPath = card.scriptPath;
+        const scriptPath = card.scriptPath;
         if (scriptPath && String(scriptPath).length > 0) {
             socket.wsEvent('pb_custom_card_ws_' + card.id, scriptPath, null, [ns.PANEL_SETTINGS_SAVED_WS_ARG], finish);
             return;
@@ -125,7 +125,7 @@
      * @returns {Array<object>}
      */
     function collectSettingsModalFields(sm) {
-        var out = [];
+        const out = [];
         if (!sm) {
             return out;
         }
@@ -214,14 +214,14 @@
         if (!f) {
             return [];
         }
-        var type = (f.type || '').toLowerCase();
+        let type = (f.type || '').toLowerCase();
         if (type === 'checkboxgroup' && Array.isArray(f.checkboxes)) {
-            var out = [];
+            let out = [];
             f.checkboxes.forEach(function (cb) {
                 if (!cb || !cb.id || !cb.key) {
                     return;
                 }
-                var cbDomId = cardFieldDomId(cardId, cb.id);
+                let cbDomId = cardFieldDomId(cardId, cb.id);
                 out.push({
                     table: f.table,
                     key: cb.key,
@@ -268,13 +268,13 @@
      * @param {object} results key → value map from {@code getDBValues}
      */
     function appendSettingsFieldWidget($form, cardId, f, results) {
-        var raw = results[f.key];
-        var id = cardFieldDomId(cardId, f.id);
-        var help = f.help || '';
-        var type = (f.type || '').toLowerCase();
+        let raw = results[f.key];
+        let id = cardFieldDomId(cardId, f.id);
+        let help = f.help || '';
+        let type = (f.type || '').toLowerCase();
 
         if (type === 'number') {
-            var numVal;
+            let numVal;
             if (raw !== undefined && raw !== null && raw !== '') {
                 numVal = raw;
             } else if (f.min !== undefined && f.min !== null) {
@@ -292,7 +292,7 @@
             // accepts an author-supplied pair (exactly 2 unique non-empty strings) or fills in
             // ["Yes", "No"] as the default when 'options' is omitted, so f.options is always
             // present here. The array-shape check below is defensive against direct JS callers.
-            var boolOpts = (f.options && f.options.length === 2)
+            let boolOpts = (f.options && f.options.length === 2)
                 ? [String(f.options[0]), String(f.options[1])]
                 : ['Yes', 'No'];
             $form.append(helpers.getDropdownGroup(id, f.label, helpers.isTrue(raw) ? boolOpts[0] : boolOpts[1], boolOpts, help));
@@ -302,31 +302,31 @@
             if (typeof ns.ensureStylesInjected === 'function') {
                 ns.ensureStylesInjected();
             }
-            var $group = $('<div/>', {'class': 'pb-custom-checkbox-group'});
+            let $group = $('<div/>', {'class': 'pb-custom-checkbox-group'});
             $group.append($('<span/>', {'class': 'pb-custom-checkbox-group-label', 'text': f.label}));
             if (help) {
                 $group.append($('<div/>', {'class': 'pb-custom-checkbox-group-help', 'text': help}));
             }
-            var $items = $('<div/>', {'class': 'pb-custom-checkbox-group-items'});
+            let $items = $('<div/>', {'class': 'pb-custom-checkbox-group-items'});
             (f.checkboxes || []).forEach(function (cb) {
                 if (!cb || !cb.id || !cb.key) {
                     return;
                 }
-                var cbDomId = cardFieldDomId(cardId, cb.id);
-                var cbVal = helpers.isTrue(results[cb.key]);
+                let cbDomId = cardFieldDomId(cardId, cb.id);
+                let cbVal = helpers.isTrue(results[cb.key]);
                 $items.append(helpers.getCheckBox(cbDomId, cbVal, cb.label, cb.help || ''));
             });
             $group.append($items);
             $form.append($group);
         } else if (type === 'dropdown') {
-            var opts = f.options || [];
-            var def = raw !== undefined && raw !== null ? String(raw) : (opts[0] || '');
+            let opts = f.options || [];
+            let def = raw !== undefined && raw !== null ? String(raw) : (opts[0] || '');
             if (opts.indexOf(def) === -1) {
                 def = opts[0] || '';
             }
             $form.append(helpers.getDropdownGroup(id, f.label, def, opts, help));
         } else if (type === 'permission') {
-            var gid = raw != null ? parseInt(raw, 10) : ns.DEFAULT_PERMISSION_GROUP_ID;
+            let gid = raw != null ? parseInt(raw, 10) : ns.DEFAULT_PERMISSION_GROUP_ID;
             if (isNaN(gid)) {
                 gid = ns.DEFAULT_PERMISSION_GROUP_ID;
             }
@@ -365,28 +365,28 @@
      *   or {@code 'invalid'}
      */
     function readValidatedFieldValue(cardId, f) {
-        var type = (f.type || '').toLowerCase();
-        var id = cardFieldDomId(cardId, f.id);
+        let type = (f.type || '').toLowerCase();
+        let id = cardFieldDomId(cardId, f.id);
 
         if (type === 'number') {
-            var $n = $('#' + id);
-            var minV = f.min !== undefined && f.min !== null ? f.min : undefined;
-            var maxV = f.max !== undefined && f.max !== null ? f.max : undefined;
+            let $n = $('#' + id);
+            let minV = f.min !== undefined && f.min !== null ? f.min : undefined;
+            let maxV = f.max !== undefined && f.max !== null ? f.max : undefined;
             if (!helpers.handleInputNumber($n, minV, maxV)) {
                 return 'invalid';
             }
             return $n.val();
         }
         if (type === 'text') {
-            var $t = $('#' + id);
+            let $t = $('#' + id);
             if (!helpers.handleInputString($t, 0)) {
                 return 'invalid';
             }
             return $t.val();
         }
         if (type === 'textarea') {
-            var $ta = $('#' + id);
-            var maxLen = f.unlimited ? Number.MAX_SAFE_INTEGER : ns.TEXTAREA_DEFAULT_MAX_LEN;
+            let $ta = $('#' + id);
+            let maxLen = f.unlimited ? Number.MAX_SAFE_INTEGER : ns.TEXTAREA_DEFAULT_MAX_LEN;
             if (!helpers.handleInputString($ta, 0, maxLen)) {
                 return 'invalid';
             }
@@ -396,7 +396,7 @@
             // The 'true' label is options[0] by convention. The validator either accepts an
             // author-supplied pair or fills in ["Yes", "No"], so f.options is always present
             // here; defensive fallback mirrors the render path above.
-            var trueLabel = (f.options && f.options[0]) ? String(f.options[0]) : 'Yes';
+            let trueLabel = (f.options && f.options[0]) ? String(f.options[0]) : 'Yes';
             return $('#' + id).find(':selected').text() === trueLabel;
         }
         if (type === 'toggle') {
@@ -422,23 +422,23 @@
      * @returns {jQuery} {@code <form>} ready to drop into {@code helpers.getModal}
      */
     function buildSettingsForm(card, sm, fieldsFlat, results) {
-        var $form = $('<form/>', {'role': 'form'});
+        let $form = $('<form/>', {'role': 'form'});
 
         if (Array.isArray(sm.sections) && sm.sections.length > 0) {
-            var accDomId = 'pb-custom-settings-acc-' + card.id;
-            var $group = $('<div/>', {'class': 'panel-group', 'id': accDomId});
-            var placedDefault = false;
+            let accDomId = 'pb-custom-settings-acc-' + card.id;
+            let $group = $('<div/>', {'class': 'panel-group', 'id': accDomId});
+            let placedDefault = false;
 
             sm.sections.forEach(function (sec, idx) {
                 if (!sec || !Array.isArray(sec.fields) || sec.fields.length === 0) {
                     return;
                 }
-                var collapseId = 'pb-custom-sec-' + card.id + '-' + sec.id;
-                var expand = !!(sec.defaultExpanded === true) || (!placedDefault && idx === 0);
+                let collapseId = 'pb-custom-sec-' + card.id + '-' + sec.id;
+                let expand = !!(sec.defaultExpanded === true) || (!placedDefault && idx === 0);
                 if (expand) {
                     placedDefault = true;
                 }
-                var $inner = $('<form/>', {'role': 'form'});
+                let $inner = $('<form/>', {'role': 'form'});
                 renderFieldList($inner, card.id, sec.fields, results);
                 $group.append(pbCollapsibleAccordion(accDomId, collapseId, sec.title || 'Section', $inner, expand));
             });
@@ -461,16 +461,16 @@
      * @returns {?{tables: string[], keys: string[], values: *[]}}
      */
     function collectSaveData(cardId, fieldsFlat) {
-        var tables = [];
-        var keys = [];
-        var values = [];
-        var ok = true;
+        let tables = [];
+        let keys = [];
+        let values = [];
+        let ok = true;
 
         forEachFieldEntry(cardId, fieldsFlat, function (entry) {
             if (!ok) {
                 return;
             }
-            var val = entry.getValue();
+            let val = entry.getValue();
             if (val === 'invalid') {
                 ok = false;
                 return;
@@ -512,8 +512,8 @@
      * @param {object} card canonical manifest card with {@code settingsModal}
      */
     ns.openSettingsModal = function (card) {
-        var sm = card && card.settingsModal;
-        var fieldsFlat = collectSettingsModalFields(sm);
+        let sm = card && card.settingsModal;
+        let fieldsFlat = collectSettingsModalFields(sm);
 
         if (!sm || fieldsFlat.length === 0 || typeof helpers === 'undefined' || typeof helpers.getModal !== 'function') {
             return;
@@ -522,15 +522,15 @@
             return;
         }
 
-        var modalId = 'pb-custom-game-settings-' + card.id;
-        var tables = [];
-        var keys = [];
+        let modalId = 'pb-custom-game-settings-' + card.id;
+        let tables = [];
+        let keys = [];
         forEachFieldEntry(card.id, fieldsFlat, function (entry) {
             tables.push(entry.table);
             keys.push(entry.key);
         });
 
-        var loadCallback = withWatchdog(ns.LOAD_TIMEOUT_MS, function () {
+        let loadCallback = withWatchdog(ns.LOAD_TIMEOUT_MS, function () {
             if (typeof toastr !== 'undefined') {
                 toastr.error(
                     'Settings did not load within ' +
@@ -540,10 +540,10 @@
                 );
             }
         }, function (results) {
-            var $form = buildSettingsForm(card, sm, fieldsFlat, results || {});
+            let $form = buildSettingsForm(card, sm, fieldsFlat, results || {});
 
             helpers.getModal(modalId, sm.title || 'Settings', 'Save', $form, function () {
-                var payload = collectSaveData(card.id, fieldsFlat);
+                let payload = collectSaveData(card.id, fieldsFlat);
                 if (payload === null) {
                     return;
                 }

@@ -36,9 +36,9 @@
     // Namespace + card indexes are owned by customPanelManifestLoader.js, which runs first
     // per the script-tag order in index.html. The `||` fallback is a load-order safety net
     // only; nothing else here re-initializes shared state.
-    var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
+    const ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
-    var SAFE_MOUNT_SELECTOR = /^#pb-panel-[a-z0-9-]+-custom-cards$/;
+    const SAFE_MOUNT_SELECTOR = /^#pb-panel-[a-z0-9-]+-custom-cards$/;
 
     /**
      * DOM id helper for a card's child elements (matches {@link #buildCardElement} output).
@@ -80,9 +80,9 @@
         if (Object.prototype.hasOwnProperty.call(results, scriptPath)) {
             return results[scriptPath];
         }
-        var keys = Object.keys(results);
-        for (var i = 0; i < keys.length; i++) {
-            var entry = results[keys[i]];
+        const keys = Object.keys(results);
+        for (let i = 0; i < keys.length; i++) {
+            const entry = results[keys[i]];
             if (entry && typeof entry === 'object' && entry.table === 'modules' && entry.key === scriptPath) {
                 return entry.value;
             }
@@ -104,7 +104,7 @@
             return true;
         }
         if (typeof raw === 'string') {
-            var s = raw.trim().toLowerCase();
+            const s = raw.trim().toLowerCase();
             return s === 'true' || s === 'enabled' || s === 'on';
         }
         return false;
@@ -121,13 +121,13 @@
      * @returns {jQuery}
      */
     function buildCardTools(card) {
-        var $tools = $('<div/>', {'class': 'box-tools pull-right'});
-        var hasSettings = ns.cardHasSettings(card);
-        var hasDetails = ns.cardHasDetailsModal(card);
+        const $tools = $('<div/>', {'class': 'box-tools pull-right'});
+        const hasSettings = ns.cardHasSettings(card);
+        const hasDetails = ns.cardHasDetailsModal(card);
 
         if (card.scriptPath) {
-            var $label = $('<label/>', {'class': 'switch', 'data-toggle': 'tooltip', 'title': 'Module toggle.'});
-            var $input = $('<input/>', {
+            const $label = $('<label/>', {'class': 'switch', 'data-toggle': 'tooltip', 'title': 'Module toggle.'});
+            const $input = $('<input/>', {
                 type: 'checkbox',
                 id: cardChildId(card.id, 'toggle'),
                 'data-pb-custom-card-toggle': card.scriptPath,
@@ -149,10 +149,10 @@
             }).append($('<i/>', {'class': 'fa fa-info-circle fa-lg'})));
         }
 
-        var settingsBtnId = cardChildId(card.id, 'settings');
+        const settingsBtnId = cardChildId(card.id, 'settings');
 
         if (hasSettings) {
-            var $btn = $('<button/>', {
+            const $btn = $('<button/>', {
                 type: 'button',
                 id: settingsBtnId,
                 'class': 'btn btn-md btn-box-tool pb-custom-card-open-settings pb-custom-card-tool-btn',
@@ -205,8 +205,8 @@
      * @returns {jQuery}
      */
     function buildCardElement(card) {
-        var $form = $('<form/>', {'role': 'form'}).append(buildCardBody(card));
-        var $box = $('<div/>', {'class': 'box box-solid', 'id': 'pb-custom-card-' + card.id})
+        const $form = $('<form/>', {'role': 'form'}).append(buildCardBody(card));
+        const $box = $('<div/>', {'class': 'box box-solid', 'id': 'pb-custom-card-' + card.id})
             .append(buildCardHeader(card))
             .append($form);
         return $('<div/>', {'class': 'col-md-4'}).append($box);
@@ -221,10 +221,10 @@
      */
     function wireCardToggles($mount) {
         $mount.find('[data-pb-custom-card-toggle]').on('change', function () {
-            var $input = $(this);
-            var scriptPath = $input.data('pb-custom-card-toggle');
-            var checked = $input.is(':checked');
-            var cardId = $input.data('pb-custom-card-id');
+            const $input = $(this);
+            const scriptPath = $input.data('pb-custom-card-toggle');
+            const checked = $input.is(':checked');
+            const cardId = $input.data('pb-custom-card-id');
 
             if (typeof socket === 'undefined' || !socket || !socket.sendCommandSync) {
                 return;
@@ -250,9 +250,9 @@
     function wireCardSettings($mount) {
         $mount.find('.pb-custom-card-open-settings').on('click', function (e) {
             e.preventDefault();
-            var $btn = $(this);
-            var id = $btn.data('pb-custom-card-id');
-            var card = ns.cardsById[id];
+            const $btn = $(this);
+            const id = $btn.data('pb-custom-card-id');
+            const card = ns.cardsById[id];
 
             if (card && card.settingsModal && typeof ns.openSettingsModal === 'function') {
                 ns.openSettingsModal(card);
@@ -269,8 +269,8 @@
     function wireCardDetails($mount) {
         $mount.find('.pb-custom-card-open-details').on('click', function (e) {
             e.preventDefault();
-            var id = $(this).data('pb-custom-card-id');
-            var c = ns.cardsById[id];
+            const id = $(this).data('pb-custom-card-id');
+            const c = ns.cardsById[id];
             if (c && ns.cardHasDetailsModal(c) && typeof ns.openDetailsModal === 'function') {
                 ns.openDetailsModal(c);
             }
@@ -287,7 +287,7 @@
      * @param {Array<object>} cards canonical card entries that were just rendered into {@code $mount}
      */
     function loadInitialCardStates($mount, cards) {
-        var togglesNeeded = cards.filter(function (c) {
+        const togglesNeeded = cards.filter(function (c) {
             return c.scriptPath;
         });
 
@@ -299,8 +299,8 @@
             return;
         }
 
-        var tables = [];
-        var keys = [];
+        const tables = [];
+        const keys = [];
         togglesNeeded.forEach(function (c) {
             tables.push('modules');
             keys.push(c.scriptPath);
@@ -311,11 +311,11 @@
                 return;
             }
             togglesNeeded.forEach(function (card) {
-                var enabled = lookupModulesTableValue(results, card.scriptPath);
+                const enabled = lookupModulesTableValue(results, card.scriptPath);
                 if (enabled === undefined || enabled === null) {
                     return;
                 }
-                var isEnabled = modulesDbValueIsEnabled(enabled);
+                const isEnabled = modulesDbValueIsEnabled(enabled);
                 $mount.find('#' + cardChildId(card.id, 'toggle')).prop('checked', isEnabled);
                 if (ns.cardHasSettings(card)) {
                     $mount.find('#' + cardChildId(card.id, 'settings')).prop('disabled', !isEnabled);
@@ -340,14 +340,14 @@
         if (!isSafeMountSelector(mountSelector)) {
             return;
         }
-        var $mount = $(mountSelector);
+        const $mount = $(mountSelector);
 
         if ($mount.length === 0) {
             return;
         }
 
-        var sectionKey = String(section || '').toLowerCase();
-        var cards = ns.cardsBySection[sectionKey] || [];
+        const sectionKey = String(section || '').toLowerCase();
+        const cards = ns.cardsBySection[sectionKey] || [];
 
         if (cards.length === 0) {
             return;
@@ -361,7 +361,7 @@
 
         $mount.empty();
 
-        var $divider = $('<div/>', {'class': 'col-md-12'}).append(
+        const $divider = $('<div/>', {'class': 'col-md-12'}).append(
             $('<h4/>', {'class': 'pb-custom-cards-divider'})
                 .append($('<i/>', {'class': 'fa fa-puzzle-piece'}))
                 .append(document.createTextNode('Community modules'))

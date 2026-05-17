@@ -849,12 +849,12 @@ $(function () {
                             // Had to change from object position via `Object.keys()[1]` to explicitly finding the
                             // key by name: key order is not guaranteed. Custom modules relied on key order and
                             // broke when it changed.
-                            var res = message.results;
-                            var dbKeys = Object.keys(res);
-                            var dbKey = null;
-                            var di;
+                            const res = message.results;
+                            const dbKeys = Object.keys(res);
+                            let dbKey = null;
+                            let di;
                             for (di = 0; di < dbKeys.length; di++) {
-                                var dk = dbKeys[di];
+                                const dk = dbKeys[di];
                                 if (dk !== 'table' && dk !== 'value') {
                                     dbKey = dk;
                                     break;

@@ -33,18 +33,18 @@
 (function () {
     // Namespace + EVENTS are owned by customPanelManifestLoader.js, which runs first per
     // the script-tag order in index.html. The `||` fallback is a load-order safety net only.
-    var ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
+    const ns = window.__pbCustomPanel__ = window.__pbCustomPanel__ || {};
 
-    var SECTION_MOUNTS = {
+    const SECTION_MOUNTS = {
         'extra': '#pb-panel-extra-menu',
         'alerts': '#pb-panel-alerts-menu',
         'giveaways': '#pb-panel-giveaways-menu',
         'audio': '#pb-panel-audio-menu'
     };
 
-    var DEFAULT_NAV_SECTION = 'extra';
+    const DEFAULT_NAV_SECTION = 'extra';
 
-    var navDividerInserted = {};
+    const navDividerInserted = {};
 
     /**
      * Appends a one-time divider to the given sidebar section so users can tell at a glance
@@ -79,18 +79,18 @@
      * @param {object} entry canonical nav entry from the merged manifest
      */
     function appendNavItem(entry) {
-        var href = entry.hash;
-        var folder = entry.folder;
-        var page = entry.page;
-        var label = entry.label;
-        var section = (entry.section || DEFAULT_NAV_SECTION).toString().toLowerCase();
+        const href = entry.hash;
+        const folder = entry.folder;
+        const page = entry.page;
+        const label = entry.label;
+        const section = (entry.section || DEFAULT_NAV_SECTION).toString().toLowerCase();
 
         if (!href || !folder || !page || !label) {
             return;
         }
 
-        var mount = SECTION_MOUNTS[section] || SECTION_MOUNTS[DEFAULT_NAV_SECTION];
-        var $mount = $(mount);
+        const mount = SECTION_MOUNTS[section] || SECTION_MOUNTS[DEFAULT_NAV_SECTION];
+        const $mount = $(mount);
 
         if ($mount.length === 0) {
             return;
@@ -98,7 +98,7 @@
 
         ensureNavDivider($mount, section);
 
-        var $a = $('<a/>', {
+        const $a = $('<a/>', {
             href: href,
             'data-folder': folder
         });
@@ -109,8 +109,8 @@
     }
 
     document.addEventListener(ns.EVENTS.MANIFESTS_LOADED, function (e) {
-        var detail = e && e.detail;
-        var navList = detail && Array.isArray(detail.nav) ? detail.nav : [];
+        const detail = e && e.detail;
+        const navList = detail && Array.isArray(detail.nav) ? detail.nav : [];
         navList.forEach(function (entry) {
             if (entry) {
                 appendNavItem(entry);
