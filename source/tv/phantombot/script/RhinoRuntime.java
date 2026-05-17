@@ -39,10 +39,9 @@ public final class RhinoRuntime {
     /**
      * Get the Rhino ContextFactory instance.
      */
-    public static RhinoContextFactory getContextFactory() {
+    protected static RhinoContextFactory getContextFactory() {
         return FACTORY;
     }
-
     
     /**
      * Initialize the Rhino runtime environment with optional GUI debugger.
@@ -79,22 +78,12 @@ public final class RhinoRuntime {
         }
     }
 
-
-    /**
-     * Get the Rhino GUI debugger instance
-     * @return
-     */
-    public static Main getDebugger() {
-        return guiDebugger;
-    }
-
     /**
      * Get the shared default Phantombot Rhino runtime script scope
      */
-    public static ScriptableObject getBaseScope() {
+    protected static ScriptableObject getBaseScope() {
         return BASESCOPE;
     }
-
 
     public static String callGlobalExposedScriptMethod(String method, String arg) {
         Object[] obj = new Object[]{arg};
