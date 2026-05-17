@@ -33,17 +33,15 @@ import tv.phantombot.PhantomBot;
 
 public class Script {
 
-    public static final NativeObject global = new NativeObject();
+    public static final NativeObject GLOBAL = new NativeObject();
+    private static final NativeObject VARS = new NativeObject();
     private final List<ScriptDestroyable<?>> destroyables = new ArrayList<>();
-    private static final NativeObject vars = new NativeObject();
     private final File file;
     private final String fileName;
     private long lastModified;
-    private Context context;
     private boolean killed = false;
     private ScriptableObject scope;
 
-    @SuppressWarnings({"CallToThreadStartDuringObjectConstruction", "LeakingThisInConstructor"})
     public Script(File file, String fileName) {
         this.file = file;
         this.fileName = fileName;
@@ -61,7 +59,7 @@ public class Script {
     public static String callMethod(String method, String arg) {
         Object[] obj = new Object[]{arg};
 
-        return ScriptableObject.callMethod(global, method, obj).toString();
+        return ScriptableObject.callMethod(GLOBAL, method, obj).toString();
     }
 
     public void reload() throws IOException {
@@ -70,6 +68,9 @@ public class Script {
         }
 
         doDestroyables();
+
+        scope = null;
+
         load();
         if (file.getPath().endsWith("init.js")) {
             com.gmt2001.Console.out.println("Reloaded module: init.js");
@@ -110,10 +111,10 @@ public class Script {
             return;
         }
 
-        context = RhinoRuntime.factory().enterContext();
+        Context context = RhinoRuntime.factory().enterContext();
 
-        scope = context.initStandardObjects(vars, false);//Normal scripting object.
-        scope.defineProperty("$", global, 0);// Global functions that can only be accessed and replaced with $.
+        scope = context.initStandardObjects(VARS, false);//Normal scripting object.
+        scope.defineProperty("$", GLOBAL, 0);// Global functions that can only be accessed and replaced with $.
         scope.defineProperty("$api", ScriptApi.instance(), 0);
         scope.defineProperty("$script", this, 0);
 
@@ -172,24 +173,26 @@ public class Script {
         return fileName;
     }
 
-    public Context getContext() {
-        return context;
-    }
-
     public boolean isKilled() {
         return killed;
     }
 
     public void kill() {
-        if (context == null) {
-            return;
+        ObservingDebugger od = null;
+        if (PhantomBot.getEnableRhinoDebugger()) {
+            od = new ObservingDebugger();
+            com.gmt2001.Console.out.println("Entering exit debugger context for script: " + file.getName());
+            Context context = RhinoRuntime.factory().enterContext();
+            context.setDebugger(od, 0);
+            context.setGeneratingDebug(true);
         }
-        ObservingDebugger od = new ObservingDebugger();
-        context.setDebugger(od, 0);
-        context.setGeneratingDebug(true);
+
         doDestroyables();
-        od.setDisconnected(true);
         killed = true;
+
+        if (od != null) {
+            od.setDisconnected(true);
+        }        
     }
 
     @Override
