@@ -25,25 +25,18 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptableObject;
 
 import tv.phantombot.PhantomBot;
 
 public class Script {
-
-    public static final NativeObject global = new NativeObject();
     private final List<ScriptDestroyable<?>> destroyables = new ArrayList<>();
-    private static final NativeObject vars = new NativeObject();
     private final File file;
     private final String fileName;
     private long lastModified;
-    private Context context;
     private boolean killed = false;
-    private ScriptableObject scope;
 
-    @SuppressWarnings({"CallToThreadStartDuringObjectConstruction", "LeakingThisInConstructor"})
     public Script(File file, String fileName) {
         this.file = file;
         this.fileName = fileName;
@@ -58,25 +51,8 @@ public class Script {
         }
     }
 
-    public static String callMethod(String method, String arg) {
-        Object[] obj = new Object[]{arg};
-
-        return ScriptableObject.callMethod(global, method, obj).toString();
-    }
-
     public void reload() throws IOException {
-        if (killed) {
-            return;
-        }
-
-        doDestroyables();
-        load();
-        if (file.getPath().endsWith("init.js")) {
-            com.gmt2001.Console.out.println("Reloaded module: init.js");
-        } else {
-            String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-            com.gmt2001.Console.out.println("Reloaded module: " + path);
-        }
+        reload(true);
     }
 
     public void reload(boolean silent) throws IOException {
@@ -86,6 +62,7 @@ public class Script {
 
         doDestroyables();
         load();
+
         if (silent) {
             if (file.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.out.println("Reloaded module: init.js");
@@ -110,26 +87,12 @@ public class Script {
             return;
         }
 
-        context = RhinoRuntime.factory().enterContext();
-
-        scope = context.initStandardObjects(vars, false);//Normal scripting object.
-        scope.defineProperty("$", global, 0);// Global functions that can only be accessed and replaced with $.
-        scope.defineProperty("$api", ScriptApi.instance(), 0);
-        scope.defineProperty("$script", this, 0);
-
-        /* Configure debugger. */
-        if (RhinoRuntime.debugger() != null) {
-            context.setGeneratingDebug(true);
-            if (file.getName().endsWith("init.js") ) {
-                RhinoRuntime.debugger().setBreakOnEnter(false);
-                RhinoRuntime.debugger().setScope(scope);
-                RhinoRuntime.debugger().setSize(640, 480);
-                RhinoRuntime.debugger().setVisible(true);
-            }
-        }
+        Context context = RhinoRuntime.getContextFactory().enterContext();
+        ScriptableObject localscope = RhinoRuntime.getBaseScope();
+        localscope.defineProperty("$script", this, ScriptableObject.PERMANENT);
 
         try {
-            context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
+            context.evaluateString(localscope, Files.readString(file.toPath()), file.getName(), 1, null);
         } catch (IOException | RhinoException ex) {
             com.gmt2001.Console.err.println(ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex, Map.of("file", this.getPath()));
@@ -172,24 +135,25 @@ public class Script {
         return fileName;
     }
 
-    public Context getContext() {
-        return context;
-    }
-
     public boolean isKilled() {
         return killed;
     }
 
     public void kill() {
-        if (context == null) {
-            return;
+        ObservingDebugger od = null;
+        if (PhantomBot.getEnableRhinoDebugger()) {
+            od = new ObservingDebugger();
+            Context context = RhinoRuntime.getContextFactory().enterContext();
+            context.setDebugger(od, 0);
+            context.setGeneratingDebug(true);
         }
-        ObservingDebugger od = new ObservingDebugger();
-        context.setDebugger(od, 0);
-        context.setGeneratingDebug(true);
+
         doDestroyables();
-        od.setDisconnected(true);
         killed = true;
+
+        if (od != null) {
+            od.setDisconnected(true);
+        }
     }
 
     @Override

@@ -75,7 +75,7 @@ import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
-import tv.phantombot.script.Script;
+import tv.phantombot.script.RhinoRuntime;
 
 public final class ConsoleEventHandler implements Listener {
 
@@ -312,7 +312,7 @@ public final class ConsoleEventHandler implements Listener {
                 str[0] = ("!" + key);
                 str[1] = PhantomBot.instance().getDataStore().get("groups",
                         PhantomBot.instance().getDataStore().get("permcom", key));
-                str[2] = Script.callMethod("getCommandScript",
+                str[2] = RhinoRuntime.callGlobalExposedScriptMethod("getCommandScript",
                         key.contains(" ") ? key.substring(0, key.indexOf(' ')) : key);
                 // If the module is disabled, return.
                 if (str[2].contains("Undefined")) {

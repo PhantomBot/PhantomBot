@@ -946,31 +946,31 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart owner
          */
         com.gmt2001.Console.debug.println("Init globals");
-        Script.global.defineProperty("inidb", DataStore.instance(), 0);
-        Script.global.defineProperty("datastore", Datastore2.instance(), 0);
-        Script.global.defineProperty("username", UsernameCache.instance(), 0);
-        Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
-        Script.global.defineProperty("helix", Helix.instance(), 0);
-        Script.global.defineProperty("botName", this.getBotName(), 0);
-        Script.global.defineProperty("channelName", this.getChannelName(), 0);
-        Script.global.defineProperty("ownerName", CaselessProperties.instance().getProperty("owner", this.getChannelName()).toLowerCase(), 0);
-        Script.global.defineProperty("ytplayer", this.ytHandler, 0);
-        Script.global.defineProperty("panelsocketserver", this.panelHandler, 0);
-        Script.global.defineProperty("alertspollssocket", this.alertsPollsHandler, 0);
-        Script.global.defineProperty("random", this.random, 0);
-        Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
-        Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
-        Script.global.defineProperty("isNightly", this.isNightly(), 0);
-        Script.global.defineProperty("isPrerelease", this.isPrerelease(), 0);
-        Script.global.defineProperty("version", this.botVersion(), 0);
-        Script.global.defineProperty("changed", CaselessProperties.instance().getPropertyAsBoolean("newSetup", false), 0);
-        Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
-        Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
-        Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
-        Script.global.defineProperty("streamLabsAPI", StreamLabsAPI.instance(), 0);
+        RhinoRuntime.ExposePropertyToScripts("inidb", DataStore.instance());
+        RhinoRuntime.ExposePropertyToScripts("datastore", Datastore2.instance());
+        RhinoRuntime.ExposePropertyToScripts("username", UsernameCache.instance());
+        RhinoRuntime.ExposePropertyToScripts("twitch", TwitchAPIv5.instance());
+        RhinoRuntime.ExposePropertyToScripts("helix", Helix.instance());
+        RhinoRuntime.ExposePropertyToScripts("botName", this.getBotName());
+        RhinoRuntime.ExposePropertyToScripts("channelName", this.getChannelName());
+        RhinoRuntime.ExposePropertyToScripts("ownerName", CaselessProperties.instance().getProperty("owner", this.getChannelName()).toLowerCase());
+        RhinoRuntime.ExposePropertyToScripts("ytplayer", this.ytHandler);
+        RhinoRuntime.ExposePropertyToScripts("panelsocketserver", this.panelHandler);
+        RhinoRuntime.ExposePropertyToScripts("alertspollssocket", this.alertsPollsHandler);
+        RhinoRuntime.ExposePropertyToScripts("random", this.random);
+        RhinoRuntime.ExposePropertyToScripts("youtube", YouTubeAPIv3.instance());
+        RhinoRuntime.ExposePropertyToScripts("twitchCacheReady", PhantomBot.twitchCacheReady);
+        RhinoRuntime.ExposePropertyToScripts("isNightly", this.isNightly());
+        RhinoRuntime.ExposePropertyToScripts("isPrerelease", this.isPrerelease());
+        RhinoRuntime.ExposePropertyToScripts("version", this.botVersion());
+        RhinoRuntime.ExposePropertyToScripts("changed", CaselessProperties.instance().getPropertyAsBoolean("newSetup", false));
+        RhinoRuntime.ExposePropertyToScripts("discordAPI", DiscordAPI.instance());
+        RhinoRuntime.ExposePropertyToScripts("hasDiscordToken", hasDiscordToken());
+        RhinoRuntime.ExposePropertyToScripts("customAPI", CustomAPI.instance());
+        RhinoRuntime.ExposePropertyToScripts("streamLabsAPI", StreamLabsAPI.instance());
         this.twitchCache = TwitchCache.instance();
-        Script.global.defineProperty("twitchcache", this.twitchCache, 0);
-        Script.global.defineProperty("viewer", ViewerCache.instance(), 0);
+        RhinoRuntime.ExposePropertyToScripts("twitchcache", this.twitchCache);
+        RhinoRuntime.ExposePropertyToScripts("viewer", ViewerCache.instance());
 
         /* And finally try to load init, that will then load the scripts */
         try {
@@ -1179,10 +1179,10 @@ public final class PhantomBot implements Listener {
         this.streamElementCache = StreamElementsCache.instance();
 
         /* Export these to the $. api for the sripts to use */
-        Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
-        Script.global.defineProperty("emotes", this.emotesCache, 0);
-        Script.global.defineProperty("followers", this.followersCache, 0);
-        Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
+        RhinoRuntime.ExposePropertyToScripts("twitchteamscache", this.twitchTeamCache);
+        RhinoRuntime.ExposePropertyToScripts("emotes", this.emotesCache);
+        RhinoRuntime.ExposePropertyToScripts("followers", this.followersCache);
+        RhinoRuntime.ExposePropertyToScripts("usernameCache", this.viewerListCache);
 
         com.gmt2001.Console.debug.println("Init EventSub");
         EventSub.instance();
@@ -1474,7 +1474,7 @@ public final class PhantomBot implements Listener {
      */
     public void setTwitchCacheReady(boolean twitchCacheReady) {
         PhantomBot.twitchCacheReady = twitchCacheReady;
-        Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
+        RhinoRuntime.ExposePropertyToScripts("twitchCacheReady", PhantomBot.twitchCacheReady);
     }
 
     /**
