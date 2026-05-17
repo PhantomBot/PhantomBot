@@ -21,6 +21,8 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.StackStyle;
 import org.mozilla.javascript.tools.debugger.Main;
 
+import tv.phantombot.CaselessProperties;
+
 /**
  * Rhino runtime environment configuration and management.
  * @author sartharon
@@ -49,6 +51,17 @@ public final class RhinoRuntime {
         if (enableGuiDebugger) {
             guiDebugger = new Main("Rhino Debugger");
             guiDebugger.attachTo(FACTORY);
+        }
+
+        /**
+         * @botproperty rhinointerpretmode - If `true`, Rhino will be running in interpret mode and won't compile ByteCode on the fly. Interpret mode is slower but can lead to reduced memory usage. Default `false`
+         * @botpropertycatsort rhinointerpretmode 10 50 Misc
+         * @botpropertyrestart rhinointerpretmode
+         */
+        if (CaselessProperties.instance().getPropertyAsBoolean("rhinointerpretmode", false)) {
+            com.gmt2001.Console.debug.println("Initializing Rhino in interpret mode. Scripts will not be compiled in to ByteCode!");
+        } else {
+            com.gmt2001.Console.debug.println("Initializing Rhino in JIT mode. Producing compiled ByteCode!");
         }
     }
 
