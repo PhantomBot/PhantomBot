@@ -116,6 +116,16 @@ public final class CustomPanelManifestCollector {
     private static final int MAX_CARD_ID_LEN = 64;
 
     /**
+     * Maximum length for a manifest {@code nav.folder} value ({@code custom/...} path).
+     */
+    private static final int MAX_NAV_FOLDER_LEN = 256;
+
+    /**
+     * Maximum length for a manifest {@code nav.page} or hash fragment filename.
+     */
+    private static final int MAX_NAV_PAGE_LEN = 128;
+
+    /**
      * Minimum legal length of {@code card.scriptPath}. The bot's {@code module} command works
      * with {@code ./<dir>/<file>.js}-shape paths, and the shortest legal value of that shape —
      * {@code ./a/b.js} — is exactly 8 characters.
@@ -317,13 +327,14 @@ public final class CustomPanelManifestCollector {
      *
      * <ul>
      *   <li>{@code label}, {@code folder}, or {@code page} is missing,</li>
-     *   <li>{@code folder} or {@code page} fails {@link #isSafeFolder} / {@link #isSafePageFile}, or</li>
+     *   <li>{@code folder} or {@code page} fails path/URI safety checks, or non-empty {@code hash}
+     *       does not match {@code page}, or</li>
      *   <li>the {@code folder + page} key has already been seen across all manifests.</li>
      * </ul>
      *
      * Unsupported {@code section} values are normalized to {@link #DEFAULT_NAV_SECTION} (warn-log)
-     * rather than dropped. Missing {@code hash} defaults to {@code "#" + page}; a non-empty
-     * {@code hash} that does not start with {@code #} is prefixed with one.
+     * rather than dropped. Merged {@code hash} is always {@code "#" + page}; if the manifest
+     * sets {@code hash}, its fragment (after an optional {@code #}) must equal {@code page}.
      *
      * @param manifest path of the source manifest, used in log messages
      * @param navIn    raw {@code nav} array as parsed from the manifest, may be {@code null}
@@ -363,11 +374,15 @@ public final class CustomPanelManifestCollector {
                 section = DEFAULT_NAV_SECTION;
             }
 
-            if (hash.isEmpty()) {
-                hash = '#' + page;
-            } else if (!hash.startsWith("#")) {
-                hash = '#' + hash;
+            if (!hash.isEmpty()) {
+                String frag = hash.startsWith("#") ? hash.substring(1) : hash;
+                if (!frag.equals(page)) {
+                    warnSkip(manifest, "nav (hash must match page)");
+                    continue;
+                }
             }
+
+            hash = '#' + page;
 
             String key = folder + '\0' + page;
 
@@ -1021,37 +1036,113 @@ public final class CustomPanelManifestCollector {
     }
 
     /**
-     * Folder values from a manifest must begin with {@code custom/} (so paths land in the
-     * namespaced custom tree) and contain neither {@code ..} nor {@code \\}, which would let a
-     * malicious manifest escape that namespace or trip Windows path quirks. Used for
+     * Returns {@code true} when {@code c} is permitted in a URL path segment used by the panel
+     * loader ({@code pages/<folder>/<page>}). Only unreserved-style characters are allowed so
+     * reserved URI delimiters ({@code ?}, {@code #}, {@code %}, etc.) cannot appear in manifest
+     * input.
+     *
+     * @param c         character to test
+     * @param allowDot  whether {@code .} is permitted (folder segments and {@code .html} names)
+     */
+    private static boolean isSafeNavPathChar(char c, boolean allowDot) {
+        if (c >= 'a' && c <= 'z') {
+            return true;
+        }
+        if (c >= 'A' && c <= 'Z') {
+            return true;
+        }
+        if (c >= '0' && c <= '9') {
+            return true;
+        }
+        if (c == '_' || c == '-') {
+            return true;
+        }
+        return allowDot && c == '.';
+    }
+
+    /**
+     * Validates a single path segment (no {@code /}) for use in panel page URLs.
+     *
+     * @param segment   one folder or file segment
+     * @param allowDot  whether {@code .} is allowed in this segment
+     * @param maxLen    inclusive maximum length
+     */
+    private static boolean isSafeNavPathSegment(String segment, boolean allowDot, int maxLen) {
+        if (segment.isEmpty() || segment.length() > maxLen) {
+            return false;
+        }
+        if (".".equals(segment) || "..".equals(segment) || segment.contains("..")) {
+            return false;
+        }
+        for (int i = 0; i < segment.length(); i++) {
+            if (!isSafeNavPathChar(segment.charAt(i), allowDot)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Folder values from a manifest must begin with {@code custom/} and contain only safe path
+     * segments (no reserved URI characters, no {@code ..}, no backslashes). Used for
      * {@code nav.folder}.
      *
      * @param folder manifest-supplied folder string
      * @return {@code true} if the folder is safe to forward to the panel page loader
      */
     private static boolean isSafeFolder(String folder) {
-        if (!folder.startsWith("custom/")) {
+        if (folder.isEmpty() || folder.length() > MAX_NAV_FOLDER_LEN) {
             return false;
         }
-        if (folder.contains("..") || folder.contains("\\")) {
+        if (!folder.startsWith("custom/") || folder.contains("\\") || folder.contains("..")) {
             return false;
         }
+        if (folder.endsWith("/")) {
+            return false;
+        }
+
+        String[] segments = folder.split("/", -1);
+        if (segments.length < 2 || !"custom".equals(segments[0])) {
+            return false;
+        }
+
+        for (int i = 1; i < segments.length; i++) {
+            if (!isSafeNavPathSegment(segments[i], true, MAX_NAV_FOLDER_LEN)) {
+                return false;
+            }
+        }
+
         return true;
     }
 
     /**
-     * Page values from a manifest must be a single {@code .html} filename (no path separators,
-     * no parent traversal, no backslashes) so the panel loader can join them onto an
-     * already-validated folder without further sanitization. Used for {@code nav.page}.
+     * Page values from a manifest must be a single {@code .html} filename built only from safe
+     * path characters (no separators, reserved URI characters, or traversal). Used for
+     * {@code nav.page}.
      *
      * @param page manifest-supplied page filename
      * @return {@code true} if the page filename is safe to forward to the panel page loader
      */
     private static boolean isSafePageFile(String page) {
-        if (page.contains("/") || page.contains("..") || page.contains("\\")) {
+        if (!page.endsWith(".html") || page.length() < 6 || page.length() > MAX_NAV_PAGE_LEN) {
             return false;
         }
-        return page.endsWith(".html");
+        if (page.contains("/") || page.contains("\\") || page.contains("..")) {
+            return false;
+        }
+
+        String base = page.substring(0, page.length() - 5);
+        if (base.isEmpty()) {
+            return false;
+        }
+
+        for (int i = 0; i < base.length(); i++) {
+            if (!isSafeNavPathChar(base.charAt(i), true)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
