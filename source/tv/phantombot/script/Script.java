@@ -113,10 +113,12 @@ public class Script {
 
         Context context = RhinoRuntime.factory().enterContext();
 
-        scope = context.initStandardObjects(VARS, false);//Normal scripting object.
-        scope.defineProperty("$", GLOBAL, 0);// Global functions that can only be accessed and replaced with $.
-        scope.defineProperty("$api", ScriptApi.instance(), 0);
-        scope.defineProperty("$script", this, 0);
+        if (scope == null) {
+            scope = context.initStandardObjects(VARS, false);//Normal scripting object.
+            scope.defineProperty("$", GLOBAL, ScriptableObject.PERMANENT);// Global functions that can only be accessed and replaced with $.
+            scope.defineProperty("$api", ScriptApi.instance(), ScriptableObject.PERMANENT);
+            scope.defineProperty("$script", this, ScriptableObject.PERMANENT);
+        }
 
         /* Configure debugger. */
         if (RhinoRuntime.debugger() != null) {
