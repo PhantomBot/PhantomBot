@@ -68,6 +68,7 @@ import java.util.concurrent.TimeUnit;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 import reactor.util.concurrent.Queues;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
@@ -103,6 +104,10 @@ public class DiscordAPI extends DiscordUtil {
     private static DiscordClient client;
     private static GatewayDiscordClient gateway;
     private static Snowflake guildId;
+    private static Sinks.One<Snowflake> guildIdSink;
+    private static Mono<Snowflake> guildIdMono;
+    private static Sinks.One<GatewayDiscordClient> gatewaySink;
+    private static Mono<GatewayDiscordClient> gatewayMono;
     private ConnectionState connectionState = ConnectionState.DISCONNECTED;
     private static DiscordClientBuilder<DiscordClient, RouterOptions> builder;
     private boolean ready;
@@ -113,7 +118,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to return this class object.
      *
-     * @return
+     * @return the active DiscordAPI instance
      */
     public static synchronized DiscordAPI instance() {
         if (DiscordAPI.instance == null) {
@@ -144,7 +149,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to connect to Discord.
      *
-     * @param token
+     * @param token API token to connect with
      */
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
@@ -167,6 +172,9 @@ public class DiscordAPI extends DiscordUtil {
         this.connect();
     }
 
+    /**
+     * Connect to Discord with the current token set in the builder
+     */
     public void connect() {
         synchronized (this.mutex) {
             if (this.connectionState == ConnectionState.CONNECTING) {
@@ -186,6 +194,10 @@ public class DiscordAPI extends DiscordUtil {
 
             this.connectionState = ConnectionState.CONNECTING;
             this.nextReconnect = Instant.now().plusSeconds(60);
+            guildIdSink = Sinks.one();
+            guildIdMono = guildIdSink.asMono().cache();
+            gatewaySink = Sinks.one();
+            gatewayMono = gatewaySink.asMono();
         }
 
         /**
@@ -194,7 +206,9 @@ public class DiscordAPI extends DiscordUtil {
          */
         DiscordAPI.selfId = null;
         com.gmt2001.Console.debug.println("IntentSet: " + this.connectIntents.toString());
-        DiscordAPI.client.gateway().setMaxMissedHeartbeatAck(5).setExtraOptions(o -> new DiscordGatewayOptions(o))
+        DiscordAPI.client.gateway()
+                .setMaxMissedHeartbeatAck(5)
+                .setExtraOptions(o -> new DiscordGatewayOptions(o))
                 .setInitialPresence(shardInfo -> {
                     ClientActivity activity = null;
                     if (CaselessProperties.instance().getPropertyAsBoolean("discord_restore_presence", true)
@@ -207,24 +221,32 @@ public class DiscordAPI extends DiscordUtil {
                     }
 
                     return ClientPresence.online(activity);
-                }).setEnabledIntents(this.connectIntents).withEventDispatcher(this::subscribeToEvents).login(DefaultGatewayClient::new)
-                .timeout(Duration.ofSeconds(30)).doOnSuccess(cgateway -> {
-            com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
-            synchronized (this.mutex) {
-                this.nextReconnect = Instant.now().plusSeconds(30);
-            }
-            DiscordAPI.gateway = cgateway;
-            DiscordAPI.selfId = cgateway.getSelfId();
-            com.gmt2001.Console.debug.println("selfid=" + DiscordAPI.selfId);
-        }).doOnError(e -> {
-            synchronized (this.mutex) {
-                DiscordAPI.lastDisconnectReason = "FailedOnConnect";
-                this.connectionState = ConnectionState.DISCONNECTED;
-                this.nextReconnect = Instant.now().plusSeconds(30);
-            }
-            com.gmt2001.Console.err.println("Failed to connect to Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
-            com.gmt2001.Console.err.logStackTrace(e);
-        }).subscribe();
+                })
+                .setEnabledIntents(this.connectIntents)
+                .withEventDispatcher(this::subscribeToEvents)
+                .login(DefaultGatewayClient::new)
+                .timeout(Duration.ofSeconds(30))
+                .doOnSuccess(cgateway -> {
+                    com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
+                    synchronized (this.mutex) {
+                        this.nextReconnect = Instant.now().plusSeconds(30);
+                    }
+                    DiscordAPI.gateway = cgateway;
+                    DiscordAPI.selfId = cgateway.getSelfId();
+                    gatewaySink.tryEmitValue(DiscordAPI.gateway);
+                    synchronized (this.mutex) {
+                        this.connectionState = ConnectionState.CONNECTED;
+                    }
+                    com.gmt2001.Console.debug.println("selfid=" + DiscordAPI.selfId);
+                }).doOnError(e -> {
+                    synchronized (this.mutex) {
+                        DiscordAPI.lastDisconnectReason = "FailedOnConnect";
+                        this.connectionState = ConnectionState.DISCONNECTED;
+                        this.nextReconnect = Instant.now().plusSeconds(30);
+                    }
+                    com.gmt2001.Console.err.println("Failed to connect to Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+                    com.gmt2001.Console.err.logStackTrace(e);
+                }).subscribe();
     }
 
     /**
@@ -250,6 +272,11 @@ public class DiscordAPI extends DiscordUtil {
         this.connect();
     }
 
+    /**
+     * Subscribes to Discord events and instructs how to dispatch them
+     * @param dispatcher The dispatcher to instruct how to dispatch events
+     * @return the modified dispatcher with our event subscriptions
+     */
     private Publisher<Void> subscribeToEvents(EventDispatcher dispatcher) {
         return dispatcher.on(DisconnectEvent.class).doOnNext(event -> DiscordEventListener.onDiscordDisconnectEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("DisconnectEvent disconnected due to " + s.name())).then().and(
                 dispatcher.on(ReadyEvent.class).doOnNext(event -> DiscordEventListener.onDiscordReadyEvent(event)).onErrorContinue((e, o) -> com.gmt2001.Console.err.printStackTrace(e)).retry().doFinally((s) -> com.gmt2001.Console.debug.println("ReadyEvent disconnected due to " + s.name())).then()).and(
@@ -283,16 +310,12 @@ public class DiscordAPI extends DiscordUtil {
         return this.ready;
     }
 
+    /**
+     * Get the current connection state with Discord
+     * @return Current connection state
+     */
     public ConnectionState getConnectionState() {
         return this.connectionState;
-    }
-
-    public void testJoin() {
-        try {
-            DiscordEventListener.onDiscordUserJoinEvent(new MemberJoinEvent(DiscordAPI.gateway, null, DiscordAPI.gateway.getSelf().block(Duration.ofSeconds(5)).asMember(DiscordAPI.getGuildId()).block(Duration.ofSeconds(5)), 0));
-        } catch (Exception e) {
-            com.gmt2001.Console.debug.printStackTrace(e);
-        }
     }
 
     /**
@@ -314,58 +337,70 @@ public class DiscordAPI extends DiscordUtil {
      * @return
      */
     public static Guild getGuild() {
-        return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId()).block(Duration.ofSeconds(5L));
+        return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId()).block(Duration.ofSeconds(GUILDIDTIMEOUT));
     }
 
     /**
-     * Updates the Discord Guild ID
+     * Updates the Discord guild ID
+     *
+     * <p>The depends on the {@code discord_guildid} configuration:</p>
+     * <ul>
+     *   <li>If set to a specific ID ({@code > 0}), that guild is selected</li>
+     *   <li>If set to {@code 0}, all detected guild IDs are printed and the first available guild is used</li>
+     *   <li>If unset or negative, the first available guild is used</li>
+     * </ul>
      */
-    public static void updateGuildId() {
-        if (DiscordAPI.gateway != null) {
-            try {
-                /**
-                 * @botproperty discord_guildid - If `0`, the bot will print detected Discord Guild IDs to console on startup. If set to a valid Guild ID, the bot will use that guild for all Discord functions. If unset, the first found guild is used. Default `unset`
-                 * @botpropertycatsort discord_guildid 60 200 Discord
-                 */
-                final long targetGuildId = getTargetGuildId();
-                if (targetGuildId == 0L) {
-                        com.gmt2001.Console.warn.println("Detected discordguildid=0. Will print Guild IDs, then select first Guild");
-                }
+    public static Mono<Void> updateGuildId() {
+        final long targetGuildId = getTargetGuildId();
+        if (targetGuildId == 0L) {
+                com.gmt2001.Console.warn.println("Detected discord__guildid=0. Will print Guild IDs, then select first Guild");
+        }
 
-                Guild guild = DiscordAPI.getGateway().getGuilds().filter(g -> {
+        return DiscordAPI.gatewayMono
+            .switchIfEmpty(Mono.error(new IllegalStateException("Gateway was not initialized")))
+            .flatMap(gateway -> 
+                gateway.getGuilds()
+                .doOnNext(g -> {
+                    if (targetGuildId == 0L) {
+                        com.gmt2001.Console.warn.println("[Discord] Found guild " + g.getId().asLong() + ": " + g.getName());
+                    }
+                })
+                .filter(g -> {
                     if (targetGuildId >= 0L) {
-                        long snowflakeId = getGuildId(g);
-
-                        if (snowflakeId > 0L) {
-                            if (targetGuildId == 0L) {
-                                com.gmt2001.Console.warn.println("[Discord] Found guild " + snowflakeId + ": " + g.getName());
-                            } else if (snowflakeId == targetGuildId) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        }
+                        return targetGuildId == getGuildId(g);
                     }
 
                     return true;
-                }).blockFirst(Duration.ofSeconds(DiscordAPI.GUILDIDTIMEOUT));
-                if (guild != null) {
-                    Snowflake snowflake = guild.getId();
-                    if (snowflake != null && snowflake.asLong() > 0L) {
-                        com.gmt2001.Console.out.println("[Discord] Guild ID updated to " + snowflake.asLong() + ": " + guild.getName());
-                        DiscordAPI.guildId = snowflake;
-                    }
-                }
-            } catch (Exception e) {
-                com.gmt2001.Console.err.printStackTrace(e);
-            }
-        }
+                })
+                .next()
+                .timeout(Duration.ofSeconds(DiscordAPI.GUILDIDTIMEOUT))
+                .doOnNext(guild -> {
+                                Snowflake snowflake = guild.getId();
+                                com.gmt2001.Console.out.println("[Discord] Guild ID updated to " + snowflake.asLong() + ": " + guild.getName());
+                                DiscordAPI.guildId = snowflake;
+                                DiscordAPI.guildIdSink.tryEmitValue(snowflake);
+                })
+                .then()
+            );
     }
 
+    /**
+     * Get the target guild ID set in the botlogin.txt
+     * @return Configured guild ID or -1 if not set
+     */
     private static long getTargetGuildId() {
+        /**
+         * @botproperty discord_guildid - If `0`, the bot will print detected Discord Guild IDs to console on startup. If set to a valid Guild ID, the bot will use that guild for all Discord functions. If unset, the first found guild is used. Default `unset`
+         * @botpropertycatsort discord_guildid 60 200 Discord
+         */
         return CaselessProperties.instance().containsKey("discord_guildid") ? CaselessProperties.instance().getPropertyAsLong("discord_guildid", 0L) : -1L;
     }
 
+    /**
+     * Get the ID of a guild
+     * @param guild The guild to get the ID of
+     * @return The ID of the guild if exists otherwise 0
+     */
     private static long getGuildId(Guild guild) {
         Snowflake snowflake = guild.getId();
         if (snowflake != null) {
@@ -375,6 +410,11 @@ public class DiscordAPI extends DiscordUtil {
         return 0L;
     }
 
+    /**
+     * Get the ID of a guild
+     * @param snowflake The Guilds Snowflake
+     * @return The ID of the guild if exists otherwise 0
+     */
     private static long getGuildId(Snowflake snowflake) {
         if (snowflake != null) {
             return snowflake.asLong();
@@ -383,6 +423,11 @@ public class DiscordAPI extends DiscordUtil {
         return 0L;
     }
 
+    /**
+     * Get the ID of a guild
+     * @param Osnowflake The Guilds Snowflake
+     * @return The ID of the guild if exists otherwise 0
+     */
     private static long getGuildId(Optional<Snowflake> Osnowflake) {
         if (Osnowflake != null && Osnowflake.isPresent()) {
             return Osnowflake.get().asLong();
@@ -391,28 +436,40 @@ public class DiscordAPI extends DiscordUtil {
         return 0L;
     }
 
+    /**
+     * Method that will return the current guild ID asynchronously
+     * @return  The current guild IDs Mono
+     */
+    public static Mono<Snowflake> getGuildIdAsync() {
+        return DiscordAPI.guildIdMono;
+    }
+
+    /**
+     * Method that will return the current guild ID
+     * If the guild ID is not yet available, it will wait up to {@code GUILDIDTIMEOUT} seconds for the guild ID to be set. If the guild ID is still not available after the timeout, 0 is returned
+     *
+     * @return The current guild ID, or 0 if not available after the timeout
+     */
     public static Snowflake getGuildId() {
-        if (DiscordAPI.instance().connectionState != ConnectionState.CONNECTED) {
-            throw new IllegalStateException("Not connected to Discord. (" + DiscordAPI.instance().connectionState.name() + ") Last disconnect reason: " + DiscordAPI.lastDisconnectReason);
+        if (DiscordAPI.guildId != null && DiscordAPI.guildId.asLong() > 0L) {
+            return DiscordAPI.guildId;
         }
 
-        if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
-            com.gmt2001.Console.warn.println("[Discord] Got an invalid Guild ID, trying to request it...");
-            DiscordAPI.updateGuildId();
-        }
-
-        if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
-            com.gmt2001.Console.err.println("[Discord] Failed to get a valid Guild ID");
-            return Snowflake.of(0L);
-        }
-
-        return DiscordAPI.guildId;
+        return getGuildIdAsync().doOnError(e -> {
+                if (DiscordAPI.instance().connectionState != ConnectionState.CONNECTED) {
+                    com.gmt2001.Console.err.println("Not connected to Discord. (" + DiscordAPI.instance().connectionState.name() + ") Last disconnect reason: " + DiscordAPI.lastDisconnectReason);
+                } else {
+                    com.gmt2001.Console.err.println("[Discord] Failed to get a valid Guild ID");
+                }
+            })
+            .timeout(Duration.ofSeconds(GUILDIDTIMEOUT), Mono.just(Snowflake.of(0L)))
+            .block();
     }
 
     /**
      * Method that will return the current client
      *
-     * @return
+     * @return Discord client instance
      */
     public static DiscordClient getClient() {
         return DiscordAPI.client;
@@ -421,17 +478,19 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current gateway
      *
-     * @return
+     * @return Discord gateway instance
      */
     public static GatewayDiscordClient getGateway() {
         return DiscordAPI.gateway;
     }
 
-    /**
-     * Method to parse commands.
-     *
-     * @param message
-     */
+    /** 
+     * Method that will parse a command from a Discord message and post a DiscordChannelCommandEvent if the message starts with the command prefix
+     * @param user The user who sent the message
+     * @param channel The channel the message was sent in
+     * @param message The message to parse
+     * @param isAdmin Whether the user is an admin
+    */
     private void parseCommand(User user, Channel channel, Message message, boolean isAdmin) {
         if (message.getContent().isEmpty()) {
             return;
@@ -456,11 +515,17 @@ public class DiscordAPI extends DiscordUtil {
 
         private static final List<Long> processedMessages = new CopyOnWriteArrayList<>();
 
+        /**
+         * Method that listens to disconnect events
+         * @param event The disconnect event
+         */
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             synchronized (DiscordAPI.instance().mutex) {
                 DiscordAPI.lastDisconnectReason = "Disconnected";
                 DiscordAPI.instance().connectionState = ConnectionState.DISCONNECTED;
                 DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(30);
+                guildIdSink.tryEmitError(new Error());
+                gatewaySink.tryEmitError(new Error());
             }
             if (event.getStatus().getCode() > 1000) {
                 if (event.getStatus().getCode() == 4014) {
@@ -493,6 +558,10 @@ public class DiscordAPI extends DiscordUtil {
             }
         }
 
+        /**
+         * Method that listens to ready events
+         * @param event The ready event
+         */
         public static void onDiscordReadyEvent(ReadyEvent event) {
             if (event.getGuilds().size() == 0) {
                 String errorMsg = "PhantomBot has not been invited into a Discord server. Invite the bot into your Discord Server and restart the bot in order to use the Discord functionality";
@@ -504,23 +573,16 @@ public class DiscordAPI extends DiscordUtil {
                 synchronized (DiscordAPI.instance().mutex) {
                     DiscordAPI.lastDisconnectReason = disconnectReason;
                     DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
+                    guildIdSink.tryEmitError(new Error());
+                    guildIdSink.tryEmitError(new Error());
                 }
                 return;
             }
 
-            Mono.delay(Duration.ofMillis(250)).block();
             com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
-            DiscordAPI.updateGuildId();
-            Mono.delay(Duration.ofMillis(250)).block();
-            DiscordAPI.instance().ready = true;
+            
             synchronized (DiscordAPI.instance().mutex) {
-                DiscordAPI.instance().connectionState = ConnectionState.CONNECTED;
                 DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(30);
-            }
-
-            if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
-                com.gmt2001.Console.warn.println("[Discord] Got an invalid Guild ID, trying to request it in " + GUILDIDTIMEOUT + " seconds...");
-                ExecutorService.schedule(DiscordAPI::updateGuildId, GUILDIDTIMEOUT, TimeUnit.SECONDS);
             }
 
             // Set a timer that checks our connection status with Discord every 60 seconds
@@ -530,26 +592,35 @@ public class DiscordAPI extends DiscordUtil {
                 }
             }, 0, 1, TimeUnit.MINUTES);
 
-            EventBus.instance().postAsync(new DiscordReadyEvent());
+            DiscordAPI.updateGuildId().doOnSuccess( a -> {
+                DiscordAPI.instance().ready = true;
+                EventBus.instance().postAsync(new DiscordReadyEvent());
+            })
+            .doOnError( e -> {
+                com.gmt2001.Console.err.println("[Discord] Failed to resolve guildId: " + e);
+            })
+            .subscribe();
         }
 
+        /**
+         * Method that listens to guild create events (Guild Join, Guild Available, ...)
+         * @param event The guild create event
+         */
         public static void onDiscordGuildCreateEvent(GuildCreateEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuild())) {
                 return;
             }
-            if (DiscordAPI.instance().getConnectionState() == ConnectionState.CONNECTING) {
-                Mono.delay(Duration.ofMillis(250)).block();
-                if (DiscordAPI.instance().getConnectionState() == ConnectionState.CONNECTING) {
-                    Mono.delay(Duration.ofMillis(250)).block();
-                }
-                Mono.delay(Duration.ofMillis(250)).block();
-            }
+
             Optional.ofNullable(event.getGuild().getRoles()).map(Flux<Role>::collectList).orElseGet(() -> {
                 return Flux.<Role>empty().collectList();
             }).doOnSuccess(l -> EventBus.instance().postAsync(new DiscordGuildCreateEvent(l))).subscribe();
         }
 
+        /**
+         * Method that listens to messages in the guild
+         * @param event The message event
+         */
         public static void onDiscordMessageEvent(MessageCreateEvent event) {
             Message iMessage = event.getMessage();
             if (iMessage.getContent() == null) {
@@ -624,6 +695,10 @@ public class DiscordAPI extends DiscordUtil {
             }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
         }
 
+        /**
+         * Method that listens to users joining the guild
+         * @param event The member join event
+         */
         public static void onDiscordUserJoinEvent(MemberJoinEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuildId())) {
@@ -632,6 +707,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordChannelJoinEvent(event.getMember()));
         }
 
+        /**
+         * Method that listens to users leaving the guild
+         * @param event The member leave event
+         */
         public static void onDiscordUserLeaveEvent(MemberLeaveEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuildId())) {
@@ -640,6 +719,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordChannelPartEvent(event.getUser()));
         }
 
+        /**
+         * Method that listens to role creations in the guild
+         * @param event The role create event
+         */
         public static void onDiscordRoleCreateEvent(RoleCreateEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuildId())) {
@@ -648,6 +731,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordRoleCreatedEvent(event.getRole()));
         }
 
+        /**
+         * Method that listens to role updates in the guild
+         * @param event The role update event
+         */
         public static void onDiscordRoleUpdateEvent(RoleUpdateEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getCurrent().getGuildId())) {
@@ -656,6 +743,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordRoleUpdatedEvent(event.getCurrent()));
         }
 
+        /**
+         * Method that listens to role deletions in the guild
+         * @param event The role delete event
+         */
         public static void onDiscordRoleDeleteEvent(RoleDeleteEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuildId())) {
@@ -670,6 +761,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordRoleDeletedEvent(role));
         }
 
+        /**
+         * Method that listens to message reactions being added in the guild
+         * @param event The reaction add event
+         */
         public static void onDiscordMessageReactionAddEvent(ReactionAddEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuildId())) {
@@ -678,6 +773,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordMessageReactionEvent(event));
         }
 
+        /**
+         * Method that listens to message reactions being removed in the guild
+         * @param event The reaction remove event
+         */
         public static void onDiscordMessageReactionRemoveEvent(ReactionRemoveEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuildId())) {
@@ -686,6 +785,10 @@ public class DiscordAPI extends DiscordUtil {
             EventBus.instance().postAsync(new DiscordMessageReactionEvent(event));
         }
 
+        /**
+         * Method that listens to users joining or leaving audio channels in the guild
+         * @param event The voice state update event
+         */
         public static void onDiscordVoiceStateUpdateEvent(VoiceStateUpdateEvent event) {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getCurrent().getGuildId())) {
@@ -711,6 +814,9 @@ public class DiscordAPI extends DiscordUtil {
         }
     }
 
+    /**
+     * Extra options for the Discord gateway
+     */
     public final class DiscordGatewayOptions extends GatewayOptions {
 
         public DiscordGatewayOptions(GatewayOptions parent) {
