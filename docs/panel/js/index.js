@@ -817,6 +817,9 @@ $(function () {
                         window.panelSettings.displayName = message.displayName;
                         helpers.loadCurrentUserInfo();
                         $.loadPage('dashboard', 'dashboard.html');
+                        if (typeof window.initCustomPanelNav === 'function') {
+                            window.initCustomPanelNav();
+                        }
                         helpers.getUserLogo();
                     }
                 }
@@ -843,7 +846,26 @@ $(function () {
                         if (callback.isArray) {
                             callback.queryData = message.results;
                         } else if (callback.storeKey === true) {
-                            callback.queryData[Object.keys(message.results)[1]] = message.results.value;
+                            // Had to change from object position via `Object.keys()[1]` to explicitly finding the
+                            // key by name: key order is not guaranteed. Custom modules relied on key order and
+                            // broke when it changed.
+                            const res = message.results;
+                            const dbKeys = Object.keys(res);
+                            let dbKey = null;
+                            let di;
+                            for (di = 0; di < dbKeys.length; di++) {
+                                const dk = dbKeys[di];
+                                if (dk !== 'table' && dk !== 'value') {
+                                    dbKey = dk;
+                                    break;
+                                }
+                            }
+                            if (dbKey === null && dbKeys.length > 1) {
+                                dbKey = dbKeys[1];
+                            }
+                            if (dbKey !== null) {
+                                callback.queryData[dbKey] = res.value;
+                            }
                         } else {
                             callback.queryData[message.results.table] = message.results.value;
                         }

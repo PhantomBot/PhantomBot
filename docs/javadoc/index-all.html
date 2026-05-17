@@ -784,6 +784,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Method to bulk delete messages from a channel.</div>
 </dd>
+<dt><a href="com/mcawful/CustomPanelManifestCache.CachedResponse.html#bytes()" class="member-name-link">bytes()</a> - Method in class com.mcawful.<a href="com/mcawful/CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
@@ -1386,6 +1388,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/illusionaryone/package-summary.html">com.illusionaryone</a> - package com.illusionaryone</dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/package-summary.html">com.mcawful</a> - package com.mcawful</dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/scaniatv/package-summary.html">com.scaniatv</a> - package com.scaniatv</dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/tmi/TMIMessage.html#command()" class="member-name-link">command()</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a></dt>
@@ -1923,6 +1927,21 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#customMutatorAsync(io.netty.handler.codec.http.HttpMethod,java.lang.String,org.json.JSONObject)" class="member-name-link">customMutatorAsync(HttpMethod, String, JSONObject)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Sends a custom mutation request to the specified endpoint.</div>
+</dd>
+<dt><a href="com/mcawful/CustomPanelManifestCache.html" class="type-name-link" title="class in com.mcawful">CustomPanelManifestCache</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Memoization layer for <a href="com/mcawful/CustomPanelManifestCollector.html" title="class in com.mcawful"><code>CustomPanelManifestCollector</code></a>'s merged JSON response.</div>
+</dd>
+<dt><a href="com/mcawful/CustomPanelManifestCache.CachedResponse.html" class="type-name-link" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Result of one full build: serialized bytes, an ETag derived from those bytes, the
+ caller-supplied signature that produced them, and the wall-clock time the signature
+ was last verified (used by the <code>CustomPanelManifestCache.CACHE_SIGNATURE_TTL_MILLIS</code> floor).</div>
+</dd>
+<dt><a href="com/mcawful/CustomPanelManifestCollector.html" class="type-name-link" title="class in com.mcawful">CustomPanelManifestCollector</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Discovers <code>manifest.json</code> files under <code>web/panel/custom/&amp;lt;moduleId&amp;gt;/</code> (bot install
+ and, in Docker, the data volume) and merges <code>nav</code> and <code>cards</code> entries for the panel.</div>
 </dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#customQueryAsync(java.lang.String)" class="member-name-link">customQueryAsync(String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
@@ -2707,6 +2726,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">General Error/Error placeholder</div>
 </dd>
+<dt><a href="com/mcawful/CustomPanelManifestCache.CachedResponse.html#etag()" class="member-name-link">etag()</a> - Method in class com.mcawful.<a href="com/mcawful/CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubInternalEvent.html#event()" class="member-name-link">event()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubInternalEvent.html" title="class in com.gmt2001.twitch.eventsub">EventSubInternalEvent</a></dt>
 <dd>
 <div class="block">Gets the event data object, describing the data for the notification</div>
@@ -3842,6 +3863,11 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the current cache.</div>
 </dd>
+<dt><a href="com/mcawful/CustomPanelManifestCollector.html#getCachedResponse()" class="member-name-link">getCachedResponse()</a> - Static method in class com.mcawful.<a href="com/mcawful/CustomPanelManifestCollector.html" title="class in com.mcawful">CustomPanelManifestCollector</a></dt>
+<dd>
+<div class="block">Returns a memoized <a href="com/mcawful/CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a> for the merged
+ manifest JSON.</div>
+</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#getCatalog()" class="member-name-link">getCatalog()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/DataStore.html#GetCategoryList(java.lang.String)" class="member-name-link">GetCategoryList(String)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
@@ -4854,6 +4880,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#getOptions()" class="member-name-link">getOptions()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/CustomPanelManifestCache.html#getOrRefresh(java.util.function.Supplier,java.util.function.Supplier)" class="member-name-link">getOrRefresh(Supplier&lt;String&gt;, Supplier&lt;byte[]&gt;)</a> - Static method in class com.mcawful.<a href="com/mcawful/CustomPanelManifestCache.html" title="class in com.mcawful">CustomPanelManifestCache</a></dt>
+<dd>
+<div class="block">Returns a memoized <a href="com/mcawful/CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a>.</div>
+</dd>
 <dt><a href="tv/phantombot/PhantomBot.html#getOsSuffix()" class="member-name-link">getOsSuffix()</a> - Static method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#getPackage()" class="member-name-link">getPackage()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
@@ -6890,6 +6920,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/event/twitch/TwitchBroadcasterTypeEvent.html#isPartner()" class="member-name-link">isPartner()</a> - Method in class tv.phantombot.event.twitch.<a href="tv/phantombot/event/twitch/TwitchBroadcasterTypeEvent.html" title="class in tv.phantombot.event.twitch">TwitchBroadcasterTypeEvent</a></dt>
 <dd>
 <div class="block">Indicates if this channel is a partner</div>
+</dd>
+<dt><a href="com/gmt2001/PathValidator.html#isPathUnderExecutionOrDockerWeb(java.nio.file.Path)" class="member-name-link">isPathUnderExecutionOrDockerWeb(Path)</a> - Static method in class com.gmt2001.<a href="com/gmt2001/PathValidator.html" title="class in com.gmt2001">PathValidator</a></dt>
+<dd>
+<div class="block">Returns true if the given absolute path is under the bot <code>./web</code> tree at the execution
+ directory, or (when running in Docker) under <code>getDockerPath()</code><code>/web</code>.</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html#isPending()" class="member-name-link">isPending()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscription</a></dt>
 <dd>
@@ -9595,6 +9630,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/panel/WsPanelHandler.html#sendArray(java.lang.String,java.util.List)" class="member-name-link">sendArray(String, List&lt;Object&gt;)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>
 <div class="block">Sends an array response to a WS query</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#sendCachedBytes(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,byte%5B%5D,java.lang.String,java.lang.String)" class="member-name-link">sendCachedBytes(ChannelHandlerContext, FullHttpRequest, byte[], String, String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
+<dd>
+<div class="block">Sends in-memory content using the same conditional caching headers as <a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#sendFile(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,java.nio.file.Path)"><code>HttpServerPageHandler.sendFile(io.netty.channel.ChannelHandlerContext, io.netty.handler.codec.http.FullHttpRequest, java.nio.file.Path)</code></a>,
+ with a caller-supplied strong <code>ETag</code> instead of file size / last-modified.</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html#sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">sendChannelCommand(String, String, String)</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html" title="class in com.gmt2001.twitch.tmi">TwitchMessageInterface</a></dt>
 <dd>
