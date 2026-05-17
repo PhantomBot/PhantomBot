@@ -63,21 +63,7 @@ public class Script {
     }
 
     public void reload() throws IOException {
-        if (killed) {
-            return;
-        }
-
-        doDestroyables();
-
-        scope = null;
-
-        load();
-        if (file.getPath().endsWith("init.js")) {
-            com.gmt2001.Console.out.println("Reloaded module: init.js");
-        } else {
-            String path = file.getPath().replace("\056\134", "").replace("\134", "/").replace("scripts/", "");
-            com.gmt2001.Console.out.println("Reloaded module: " + path);
-        }
+        reload(true);
     }
 
     public void reload(boolean silent) throws IOException {
@@ -86,6 +72,7 @@ public class Script {
         }
 
         doDestroyables();
+        scope = null;
         load();
         if (silent) {
             if (file.getPath().endsWith("init.js")) {
