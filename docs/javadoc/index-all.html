@@ -1551,7 +1551,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Connects to the server</div>
 </dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.html#connect()" class="member-name-link">connect()</a> - Method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Connect to Discord with the current token set in the builder</div>
+</dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.html#connect(java.lang.String)" class="member-name-link">connect(String)</a> - Method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
 <dd>
 <div class="block">Method to connect to Discord.</div>
@@ -2199,7 +2201,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Enum list of our connection states.</div>
 </dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.DiscordGatewayOptions.html" class="type-name-link" title="class in tv.phantombot.discord">DiscordAPI.DiscordGatewayOptions</a> - Class in <a href="tv/phantombot/discord/package-summary.html">tv.phantombot.discord</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Extra options for the Discord gateway</div>
+</dd>
 <dt><a href="tv/phantombot/event/discord/channel/DiscordChannelCommandEvent.html" class="type-name-link" title="class in tv.phantombot.event.discord.channel">DiscordChannelCommandEvent</a> - Class in <a href="tv/phantombot/event/discord/channel/package-summary.html">tv.phantombot.event.discord.channel</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/discord/channel/DiscordChannelCommandEvent.html#%3Cinit%3E(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.Channel,discord4j.core.object.entity.Message,java.lang.String,java.lang.String,boolean)" class="member-name-link">DiscordChannelCommandEvent(User, Channel, Message, String, String, boolean)</a> - Constructor for class tv.phantombot.event.discord.channel.<a href="tv/phantombot/event/discord/channel/DiscordChannelCommandEvent.html" title="class in tv.phantombot.event.discord.channel">DiscordChannelCommandEvent</a></dt>
@@ -4097,7 +4101,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Retrieves a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> from the connection pool</div>
 </dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.html#getConnectionState()" class="member-name-link">getConnectionState()</a> - Method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Get the current connection state with Discord</div>
+</dd>
 <dt><a href="tv/phantombot/script/Script.html#getContext()" class="member-name-link">getContext()</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/Script.html" title="class in tv.phantombot.script">Script</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#getConverter()" class="member-name-link">getConverter()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
@@ -4351,7 +4357,14 @@ loadScripts(document, 'script');</script>
 <div class="block">Method that will return the current guild.</div>
 </dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.html#getGuildId()" class="member-name-link">getGuildId()</a> - Static method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Method that will return the current guild ID
+ If the guild ID is not yet available, it will wait up to <code>GUILDIDTIMEOUT</code> seconds for the guild ID to be set.</div>
+</dd>
+<dt><a href="tv/phantombot/discord/DiscordAPI.html#getGuildIdAsync()" class="member-name-link">getGuildIdAsync()</a> - Static method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
+<dd>
+<div class="block">Method that will return the current guild ID asynchronously</div>
+</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#getGuildRoles()" class="member-name-link">getGuildRoles()</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>
 <div class="block">Method that gets a list of guild roles.</div>
@@ -10529,8 +10542,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Provides testing data</div>
 </dd>
-<dt><a href="tv/phantombot/discord/DiscordAPI.html#testJoin()" class="member-name-link">testJoin()</a> - Method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/chat/data/MessageData.html#text()" class="member-name-link">text()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.chat.data.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/chat/data/MessageData.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.chat.data">MessageData</a></dt>
 <dd>
 <div class="block">The entire raw text of the message, before fragmenting.</div>
@@ -11343,7 +11354,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.html#updateGuildId()" class="member-name-link">updateGuildId()</a> - Static method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
 <dd>
-<div class="block">Updates the Discord Guild ID</div>
+<div class="block">Updates the Discord guild ID</div>
 </dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#updateRedemptionStatus(java.util.List,java.lang.String,tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus)" class="member-name-link">updateRedemptionStatus(List&lt;String&gt;, String, Helix.CustomRewardRedemptionStatus)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>

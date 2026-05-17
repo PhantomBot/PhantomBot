@@ -104,7 +104,9 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><code>final class&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="DiscordAPI.DiscordGatewayOptions.html" class="type-name-link" title="class in tv.phantombot.discord">DiscordAPI.DiscordGatewayOptions</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">Extra options for the Discord gateway</div>
+</div>
 </div>
 <div class="inherited-list">
 <h2 id="nested-classes-inherited-from-class-tv.phantombot.discord.util.DiscordUtil">Nested classes/interfaces inherited from class&nbsp;tv.phantombot.discord.util.<a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></h2>
@@ -129,7 +131,9 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connect()" class="member-name-link">connect</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Connect to Discord with the current token set in the builder</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connect(java.lang.String)" class="member-name-link">connect</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;token)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -142,7 +146,9 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="DiscordAPI.ConnectionState.html" title="enum class in tv.phantombot.discord">DiscordAPI.ConnectionState</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getConnectionState()" class="member-name-link">getConnectionState</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Get the current connection state with Discord</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/GatewayDiscordClient.html" title="class or interface in discord4j.core" class="external-link">GatewayDiscordClient</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getGateway()" class="member-name-link">getGateway</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -155,34 +161,39 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html" title="class or interface in discord4j.common.util" class="external-link">Snowflake</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getGuildId()" class="member-name-link">getGuildId</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Method that will return the current guild ID
+ If the guild ID is not yet available, it will wait up to <code>GUILDIDTIMEOUT</code> seconds for the guild ID to be set.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html" title="class or interface in discord4j.common.util" class="external-link">Snowflake</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getGuildIdAsync()" class="member-name-link">getGuildIdAsync</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Method that will return the current guild ID asynchronously</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Method to return this class object.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isLoggedIn()" class="member-name-link">isLoggedIn</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isLoggedIn()" class="member-name-link">isLoggedIn</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that checks if we are logged in to Discord.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReady()" class="member-name-link">isReady</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReady()" class="member-name-link">isReady</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that checks if Discord is ready and has sent all Guilds.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reconnect()" class="member-name-link">reconnect</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reconnect()" class="member-name-link">reconnect</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method to reconnect to Discord.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#testJoin()" class="member-name-link">testJoin</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#updateGuildId()" class="member-name-link">updateGuildId</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Updates the Discord Guild ID</div>
+<div class="block">Updates the Discord guild ID</div>
 </div>
 </div>
 </div>
@@ -211,6 +222,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Method to return this class object.</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the active DiscordAPI instance</dd>
 </dl>
 </section>
 </li>
@@ -221,7 +233,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Method to connect to Discord.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>token</code> - </dd>
+<dd><code>token</code> - API token to connect with</dd>
 </dl>
 </section>
 </li>
@@ -229,6 +241,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="connect()">
 <h3>connect</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">connect</span>()</div>
+<div class="block">Connect to Discord with the current token set in the builder</div>
 </section>
 </li>
 <li>
@@ -262,12 +275,11 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getConnectionState()">
 <h3>getConnectionState</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="DiscordAPI.ConnectionState.html" title="enum class in tv.phantombot.discord">DiscordAPI.ConnectionState</a></span>&nbsp;<span class="element-name">getConnectionState</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="testJoin()">
-<h3>testJoin</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">testJoin</span>()</div>
+<div class="block">Get the current connection state with Discord</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>Current connection state</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -290,14 +302,38 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="updateGuildId()">
 <h3>updateGuildId</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateGuildId</span>()</div>
-<div class="block">Updates the Discord Guild ID</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</span>&nbsp;<span class="element-name">updateGuildId</span>()</div>
+<div class="block">Updates the Discord guild ID
+
+ <p>The depends on the <code>discord_guildid</code> configuration:</p>
+ <ul>
+   <li>If set to a specific ID (<code>&gt; 0</code>), that guild is selected</li>
+   <li>If set to <code>0</code>, all detected guild IDs are printed and the first available guild is used</li>
+   <li>If unset or negative, the first available guild is used</li>
+ </ul></div>
+</section>
+</li>
+<li>
+<section class="detail" id="getGuildIdAsync()">
+<h3>getGuildIdAsync</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html" title="class or interface in discord4j.common.util" class="external-link">Snowflake</a>&gt;</span>&nbsp;<span class="element-name">getGuildIdAsync</span>()</div>
+<div class="block">Method that will return the current guild ID asynchronously</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The current guild IDs Mono</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getGuildId()">
 <h3>getGuildId</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html" title="class or interface in discord4j.common.util" class="external-link">Snowflake</a></span>&nbsp;<span class="element-name">getGuildId</span>()</div>
+<div class="block">Method that will return the current guild ID
+ If the guild ID is not yet available, it will wait up to <code>GUILDIDTIMEOUT</code> seconds for the guild ID to be set. If the guild ID is still not available after the timeout, 0 is returned</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The current guild ID, or 0 if not available after the timeout</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -307,6 +343,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Method that will return the current client</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>Discord client instance</dd>
 </dl>
 </section>
 </li>
@@ -317,6 +354,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Method that will return the current gateway</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>Discord gateway instance</dd>
 </dl>
 </section>
 </li>
