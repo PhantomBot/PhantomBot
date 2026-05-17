@@ -109,7 +109,7 @@ Illustrates **`nav`** plus one **Games** **`cards`** entry with **`detailsModal`
 
 ## Full manifest specification
 
-The bot reads every **`web/panel/custom/<moduleId>/manifest.json`**, merges valid entries, and serves **`GET /panel/custom-manifests.json`** (authenticated). Invalid entries are skipped with a **`warn`** log line that names the manifest path—check the bot console if UI is missing.
+The bot reads every **`web/panel/custom/<moduleId>/manifest.json`**, merges valid entries, and serves **`GET /panel/custom-manifests.json`** (authenticated). Responses are cacheable like other panel static assets (strong **ETag**, **304** when unchanged). Invalid entries are skipped with a **`warn`** log line that names the manifest path—check the bot console if UI is missing.
 
 ### `nav` entries (sidebar links)
 
