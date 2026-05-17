@@ -723,15 +723,28 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             return true;
         }
         for (String token : trimmed.split(",")) {
-            String t = token.trim();
-            if (t.startsWith("W/")) {
-                t = t.substring(2).trim();
-            }
-            if (t.equals(eTag)) {
+            if (normalizeEtagToken(token).equals(normalizeEtagToken(eTag))) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Normalizes an ETag or {@code If-None-Match} token for comparison (weak prefix, optional quotes).
+     */
+    private static String normalizeEtagToken(String tag) {
+        if (tag == null) {
+            return "";
+        }
+        String t = tag.trim();
+        if (t.startsWith("W/")) {
+            t = t.substring(2).trim();
+        }
+        if (t.length() >= 2 && t.charAt(0) == '"' && t.charAt(t.length() - 1) == '"') {
+            t = t.substring(1, t.length() - 1);
+        }
+        return t;
     }
 
     /**
