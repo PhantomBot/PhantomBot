@@ -16,7 +16,6 @@
  */
 package tv.phantombot.script;
 
-import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.StackStyle;
 import org.mozilla.javascript.tools.debugger.Main;
@@ -36,7 +35,7 @@ public final class RhinoRuntime {
     /**
      * Get the Rhino ContextFactory instance.
      */
-    public static ContextFactory factory() {
+    public static RhinoContextFactory factory() {
         return FACTORY;
     }
 
