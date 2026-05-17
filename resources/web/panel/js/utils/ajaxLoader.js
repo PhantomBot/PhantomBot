@@ -105,11 +105,13 @@ $(function () {
         return currentPageInfo;
     }
 
-    // Handles loading of tabs (delegated so dynamically added custom nav links work).
+    // Delegated so manifest-injected nav links work; data-page avoids parsing href fragments.
     $(document).on('click', '[data-folder]', function (e) {
         e.preventDefault();
+        const $link = $(this);
+        const page = $link.data('page') || String($link.attr('href') || '').substring(1);
         // Load the page.
-        loadPage($(this).data('folder'), $(this).attr('href').substring(1), this.href);
+        loadPage($link.data('folder'), page, this.href);
     });
 
     // Export to API.

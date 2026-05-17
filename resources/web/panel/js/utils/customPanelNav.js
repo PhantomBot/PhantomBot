@@ -100,7 +100,8 @@
 
         const $a = $('<a/>', {
             href: href,
-            'data-folder': folder
+            'data-folder': folder,
+            'data-page': page
         });
         $a.append($('<i/>', {'class': 'fa fa-circle-o'}));
         $a.append(document.createTextNode(' '));
