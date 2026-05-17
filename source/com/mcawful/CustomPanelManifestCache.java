@@ -32,7 +32,9 @@ import java.util.function.Supplier;
  * "fingerprint" of the underlying source (any string that compares-equal when content is
  * unchanged) and one that produces the serialized bytes when a rebuild is needed. That
  * keeps cache-invalidation policy, hashing, and ETag generation in one small, easy-to-audit
- * class while the collector stays focused on validating and merging community manifests.</p>
+ * class while the collector stays focused on validating and merging community manifests.
+ * Conditional {@code If-None-Match} / {@code 304} handling is done in
+ * {@link com.gmt2001.httpwsserver.HttpServerPageHandler#sendCachedBytes}.</p>
  *
  * <p>Concurrency: HTTP threads call {@link #getOrRefresh} freely. The cache is a single
  * {@code volatile} reference replaced atomically; under concurrent rebuilds the worst case
@@ -85,35 +87,11 @@ public final class CustomPanelManifestCache {
         }
 
         /**
-         * @return strong ETag of the form {@code "sha256-<base64url>"}, suitable for
-         *         {@code ETag} / {@code If-None-Match}
+         * @return strong ETag of the form {@code "sha256-<base64url>"}, passed to
+         *         {@link com.gmt2001.httpwsserver.HttpServerPageHandler#sendCachedBytes}
          */
         public String etag() {
             return etag;
-        }
-
-        /**
-         * @param ifNoneMatch raw {@code If-None-Match} request header (may be {@code null})
-         * @return {@code true} when the client already has the current bytes
-         */
-        public boolean matchesIfNoneMatch(String ifNoneMatch) {
-            if (ifNoneMatch == null || ifNoneMatch.isEmpty()) {
-                return false;
-            }
-            String trimmed = ifNoneMatch.trim();
-            if ("*".equals(trimmed)) {
-                return true;
-            }
-            for (String token : trimmed.split(",")) {
-                String t = token.trim();
-                if (t.startsWith("W/")) {
-                    t = t.substring(2).trim();
-                }
-                if (t.equals(etag)) {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 
