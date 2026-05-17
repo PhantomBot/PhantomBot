@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global socket, toastr, $ */
+/* global helpers, socket, toastr, $ */
 
 /**
  * Custom-panel **cards renderer**. Renders manifest-supplied cards into a per-page mount
@@ -88,26 +88,6 @@
             }
         }
         return undefined;
-    }
-
-    /**
-     * Decides whether a stored {@code modules} value means "enabled". The stock convention
-     * is {@code "true"}/{@code "false"} strings but we accept booleans, {@code 1}/{@code 0},
-     * and {@code "enabled"}/{@code "disabled"} just in case a custom module wrote one of
-     * those instead.
-     *
-     * @param {*} raw value from {@code lookupModulesTableValue}
-     * @returns {boolean}
-     */
-    function modulesDbValueIsEnabled(raw) {
-        if (raw === true || raw === 1 || raw === '1') {
-            return true;
-        }
-        if (typeof raw === 'string') {
-            const s = raw.trim().toLowerCase();
-            return s === 'true' || s === 'enabled' || s === 'on';
-        }
-        return false;
     }
 
     /**
@@ -315,7 +295,7 @@
                 if (enabled === undefined || enabled === null) {
                     return;
                 }
-                const isEnabled = modulesDbValueIsEnabled(enabled);
+                const isEnabled = helpers.isTrue(enabled);
                 $mount.find('#' + cardChildId(card.id, 'toggle')).prop('checked', isEnabled);
                 if (ns.cardHasSettings(card)) {
                     $mount.find('#' + cardChildId(card.id, 'settings')).prop('disabled', !isEnabled);
