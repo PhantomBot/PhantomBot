@@ -95,6 +95,12 @@ public final class RhinoRuntime {
         return BASESCOPE;
     }
 
+
+    public static String callGlobalExposedScriptMethod(String method, String arg) {
+        Object[] obj = new Object[]{arg};
+        return ScriptableObject.callMethod(FACTORY.enterContext(), GLOBAL, method, obj).toString();
+    }
+
     /**
      * Expose a property to all scripts via the {@code $} api. Scripts can later use {@code $.property} and {@code $.property.function()} to access these
      * @param propertyName The name of the property visible to the scripts

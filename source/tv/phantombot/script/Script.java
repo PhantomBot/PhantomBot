@@ -51,11 +51,6 @@ public class Script {
         }
     }
 
-    public static String callMethod(String method, String arg) {
-        Object[] obj = new Object[]{arg};
-        return ScriptableObject.callMethod(RhinoRuntime.GLOBAL, method, obj).toString();
-    }
-
     public void reload() throws IOException {
         reload(true);
     }
