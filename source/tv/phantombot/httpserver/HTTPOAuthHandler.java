@@ -24,7 +24,6 @@ import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import com.gmt2001.security.Digest;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
-import com.gmt2001.util.Reflect;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -110,7 +109,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
                 p = Paths.get("./web/", path);
             }
 
-            if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web"))) {
+            if (!PathValidator.isValidPathWebAuth(p.toString()) || !PathValidator.isPathUnderExecutionOrDockerWeb(p.toAbsolutePath().normalize())) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
                 return;

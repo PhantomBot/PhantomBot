@@ -9,7 +9,7 @@ if [[ ${UID+x} && ${GID+x} ]]; then
 	fi
 fi
 
-mkdir -p /opt/PhantomBot_data/logs /opt/PhantomBot_data/dbbackup /opt/PhantomBot_data/addons /opt/PhantomBot_data/config /opt/PhantomBot_data/gameslist /opt/PhantomBot_data/scripts/custom /opt/PhantomBot_data/scripts/discord /opt/PhantomBot_data/scripts/lang
+mkdir -p /opt/PhantomBot_data/logs /opt/PhantomBot_data/dbbackup /opt/PhantomBot_data/addons /opt/PhantomBot_data/config /opt/PhantomBot_data/gameslist /opt/PhantomBot_data/scripts/custom /opt/PhantomBot_data/scripts/discord /opt/PhantomBot_data/scripts/lang /opt/PhantomBot_data/web/panel/custom /opt/PhantomBot_data/web/panel/pages/custom /opt/PhantomBot_data/web/panel/js/pages/custom
 touch /opt/PhantomBot_data/gameslist/gamesList.txt
 
 # allow the container to be started with `--user`

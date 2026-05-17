@@ -248,4 +248,31 @@ public final class PathValidator {
 
         return false;
     }
+
+    /**
+     * Returns true if the given absolute path is under the bot {@code ./web} tree at the execution
+     * directory, or (when running in Docker) under {@code getDockerPath()}{@code /web}.
+     * Used by HTTP handlers that must mirror {@link #isValidPathWebAuth} disk layout rules.
+     *
+     * @param absolutePath normalized or absolute path to test
+     * @return whether the path is confined to an allowed web root
+     */
+    public static boolean isPathUnderExecutionOrDockerWeb(Path absolutePath) {
+        Path norm = absolutePath.toAbsolutePath().normalize();
+        Path execWeb = Paths.get(Reflect.GetExecutionPath(), "./web").toAbsolutePath().normalize();
+
+        if (norm.startsWith(execWeb)) {
+            return true;
+        }
+
+        if (RepoVersion.isDocker()) {
+            Path dockerWeb = Paths.get(getDockerPath(), "web").toAbsolutePath().normalize();
+
+            if (norm.startsWith(dockerWeb)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

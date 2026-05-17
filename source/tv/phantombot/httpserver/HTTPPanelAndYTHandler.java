@@ -21,7 +21,8 @@ import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
-import com.gmt2001.util.Reflect;
+import com.mcawful.CustomPanelManifestCache;
+import com.mcawful.CustomPanelManifestCollector;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -43,6 +44,8 @@ import tv.phantombot.CaselessProperties;
  * @author gmt2001
  */
 public class HTTPPanelAndYTHandler implements HttpRequestHandler {
+
+    private static final String CUSTOM_MANIFESTS_PATH = "/panel/custom-manifests.json";
 
     private HttpAuthenticationHandler authHandler;
 
@@ -89,6 +92,20 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
             return;
         }
 
+        if (req.method().equals(HttpMethod.GET) && CUSTOM_MANIFESTS_PATH.equals(qsd.path())) {
+            try {
+                CustomPanelManifestCache.CachedResponse cached = CustomPanelManifestCollector.getCachedResponse();
+                boolean notModified = HttpServerPageHandler.sendCachedBytes(ctx, req, cached.bytes(), "custom-manifests.json", cached.etag());
+                com.gmt2001.Console.debug.println((notModified ? "304" : "200") + " " + req.method().asciiName() + ": " + CUSTOM_MANIFESTS_PATH);
+                return;
+            } catch (Throwable ex) {
+                com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": " + CUSTOM_MANIFESTS_PATH);
+                com.gmt2001.Console.debug.printOrLogStackTrace(ex);
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                return;
+            }
+        }
+
         try {
             String path = qsd.path();
 
@@ -99,7 +116,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
                 p = Paths.get("./web/", path);
             }
 
-            if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web"))) {
+            if (!PathValidator.isValidPathWebAuth(p.toString()) || !PathValidator.isPathUnderExecutionOrDockerWeb(p.toAbsolutePath().normalize())) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
                 return;

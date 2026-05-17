@@ -67,11 +67,16 @@ RUN set -eux; \
     mkdir "${DATADIR}/scripts/discord"; \
     mkdir "${DATADIR}/scripts/lang"; \
     mkdir "${DATADIR}/logs"; \
+    mkdir -p "${DATADIR}/web/panel/pages" "${DATADIR}/web/panel/js/pages"; \
+    mkdir -p "./web/panel/custom" "./web/panel/pages/custom" "./web/panel/js/pages/custom"; \
     mv "./addons" "${DATADIR}/"; \
     mv "./config" "${DATADIR}/"; \
     mv "./scripts/custom" "${DATADIR}/scripts/custom/"; \
     mv "./scripts/discord/custom" "${DATADIR}/scripts/discord/"; \
     mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"; \
+    mv "./web/panel/custom" "${DATADIR}/web/panel/custom"; \
+    mv "./web/panel/pages/custom" "${DATADIR}/web/panel/pages/custom"; \
+    mv "./web/panel/js/pages/custom" "${DATADIR}/web/panel/js/pages/custom"; \
     rm "./lib"
 
 # Application container
@@ -130,6 +135,9 @@ RUN set -eux; \
     ln -s "${DATADIR}/scripts/custom" "${BASEDIR}/scripts/custom"; \
     ln -s "${DATADIR}/scripts/discord" "${BASEDIR}/scripts/discord/custom"; \
     ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom"; \
+    ln -s "${DATADIR}/web/panel/custom" "${BASEDIR}/web/panel/custom"; \
+    ln -s "${DATADIR}/web/panel/pages/custom" "${BASEDIR}/web/panel/pages/custom"; \
+    ln -s "${DATADIR}/web/panel/js/pages/custom" "${BASEDIR}/web/panel/js/pages/custom"; \
     touch "${DATADIR}/gameslist/gamesList.txt"; \
     ln -s "${DATADIR}/gameslist/gamesList.txt" "${BASEDIR}/web/panel/js/utils/gamesList.txt"; \
     touch "${DATADIR}/java.opt.custom"; \
