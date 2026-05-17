@@ -519,6 +519,61 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     /**
+     * Sends in-memory content using the same conditional caching headers as {@link #sendFile},
+     * with a caller-supplied strong {@code ETag} instead of file size / last-modified.
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param content Response body bytes
+     * @param fileNameOrType Filename or extension for MIME type detection
+     * @param eTag Strong ETag value (quoted), used for {@code ETag} / {@code If-None-Match}
+     * @return {@code true} when {@link HttpResponseStatus#NOT_MODIFIED} was sent
+     */
+    public static boolean sendCachedBytes(ChannelHandlerContext ctx, FullHttpRequest req, byte[] content, String fileNameOrType, String eTag) {
+        boolean keepAlive = HttpUtil.isKeepAlive(req);
+        HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+        String contentType = detectContentType(fileNameOrType);
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, contentType);
+        response.headers().set(HttpHeaderNames.CONNECTION, keepAlive ? HttpHeaderValues.KEEP_ALIVE : HttpHeaderValues.CLOSE);
+
+        if (checkIfClientCacheMatches(req, response, eTag, 0L)) {
+            ctx.write(response);
+            ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+            if (!keepAlive) {
+                f.addListener(ChannelFutureListener.CLOSE);
+            }
+            return true;
+        }
+
+        if (req.method() == HttpMethod.HEAD) {
+            HttpUtil.setContentLength(response, content.length);
+            sendResponseForHEAD(ctx, req, response);
+            return false;
+        }
+
+        FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(content));
+        copyCacheHeaders(response, res);
+        res.headers().set(HttpHeaderNames.CONTENT_TYPE, contentType);
+        res.headers().set(HttpHeaderNames.CONNECTION, keepAlive ? HttpHeaderValues.KEEP_ALIVE : HttpHeaderValues.CLOSE);
+        HttpUtil.setContentLength(res, content.length);
+        sendHttpResponse(ctx, req, res);
+        return false;
+    }
+
+    /**
+     * Copies cache-related headers set by {@link #checkIfClientCacheMatches} onto a full response.
+     */
+    private static void copyCacheHeaders(HttpResponse from, HttpResponse to) {
+        to.headers().set(HttpHeaderNames.DATE, from.headers().get(HttpHeaderNames.DATE));
+        to.headers().set(HttpHeaderNames.EXPIRES, from.headers().get(HttpHeaderNames.EXPIRES));
+        to.headers().set(HttpHeaderNames.ETAG, from.headers().get(HttpHeaderNames.ETAG));
+        to.headers().set(HttpHeaderNames.CACHE_CONTROL, from.headers().get(HttpHeaderNames.CACHE_CONTROL));
+        if (from.headers().contains(HttpHeaderNames.LAST_MODIFIED)) {
+            to.headers().set(HttpHeaderNames.LAST_MODIFIED, from.headers().get(HttpHeaderNames.LAST_MODIFIED));
+        }
+    }
+
+    /**
      * Parses {@link HttpHeaderNames.RANGE} from the given request and determines the
      * byte range to serve for the requested file based on the given file length
      * 
@@ -609,25 +664,34 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @return {@true} if the client has an up-to-date cache, {@false} otherwise
      */
     private static boolean checkIfClientCacheMatches(FullHttpRequest req, HttpResponse response, File file) {
-        long fileLength = file.length();
         long lastModified = file.lastModified();
-        String eTag = "\"" + fileLength + "-" + lastModified + "\"";
+        String eTag = "\"" + file.length() + "-" + lastModified + "\"";
+        return checkIfClientCacheMatches(req, response, eTag, lastModified);
+    }
+
+    /**
+     * @param eTag strong ETag for the representation (quoted)
+     * @param lastModified {@code Last-Modified} source; {@code 0} skips {@code If-Modified-Since}
+     */
+    private static boolean checkIfClientCacheMatches(FullHttpRequest req, HttpResponse response, String eTag, long lastModified) {
         String ifNoneMatch = req.headers().get(HttpHeaderNames.IF_NONE_MATCH);
         String ifModifiedSince = req.headers().get(HttpHeaderNames.IF_MODIFIED_SINCE);
         boolean notModified = false;
 
         // Add cache headers
         Calendar time = new GregorianCalendar();
-        response.headers().set(HttpHeaderNames.DATE, DateFormatter.format(time.getTime()));        
+        response.headers().set(HttpHeaderNames.DATE, DateFormatter.format(time.getTime()));
         time.add(Calendar.SECOND, HTTP_CACHE_SECONDS);
-        response.headers().set(HttpHeaderNames.EXPIRES, DateFormatter.format(time.getTime())); ;
+        response.headers().set(HttpHeaderNames.EXPIRES, DateFormatter.format(time.getTime()));
         response.headers().set(HttpHeaderNames.ETAG, eTag);
-        response.headers().set(HttpHeaderNames.LAST_MODIFIED, DateFormatter.format(new Date(lastModified)));
-        response.headers().set(HttpHeaderNames.CACHE_CONTROL, "private, max-age=" + HTTP_CACHE_SECONDS  + ", no-transform");
+        if (lastModified > 0L) {
+            response.headers().set(HttpHeaderNames.LAST_MODIFIED, DateFormatter.format(new Date(lastModified)));
+        }
+        response.headers().set(HttpHeaderNames.CACHE_CONTROL, "private, max-age=" + HTTP_CACHE_SECONDS + ", no-transform");
 
-        if (ifNoneMatch != null && ifNoneMatch.equals(eTag)) {
+        if (ifNoneMatchHeaderMatches(ifNoneMatch, eTag)) {
             notModified = true;
-        } else if (ifModifiedSince != null) {
+        } else if (lastModified > 0L && ifModifiedSince != null) {
             Date ifModSinceDate = DateFormatter.parseHttpDate(ifModifiedSince);
             if (ifModSinceDate != null) {
                 long ifModSinceTime = ifModSinceDate.getTime();
@@ -644,6 +708,30 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         }
 
         return notModified;
+    }
+
+    /**
+     * @param ifNoneMatch raw {@code If-None-Match} header
+     * @param eTag current strong ETag (quoted)
+     */
+    private static boolean ifNoneMatchHeaderMatches(String ifNoneMatch, String eTag) {
+        if (ifNoneMatch == null || ifNoneMatch.isEmpty()) {
+            return false;
+        }
+        String trimmed = ifNoneMatch.trim();
+        if ("*".equals(trimmed)) {
+            return true;
+        }
+        for (String token : trimmed.split(",")) {
+            String t = token.trim();
+            if (t.startsWith("W/")) {
+                t = t.substring(2).trim();
+            }
+            if (t.equals(eTag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
