@@ -116,9 +116,9 @@ The bot reads every **`web/panel/custom/<moduleId>/manifest.json`**, merges vali
 | Field | Required | Rules |
 | --- | --- | --- |
 | `label` | Yes | Shown in the sidebar. |
-| `folder` | Yes | Must start with **`custom/`** (e.g. `custom/mycoolmod`) and match the directory under `web/panel/pages/`. |
-| `page` | Yes | **Single** filename only: `something.html`. No `/`, `..`, or `\`. |
-| `hash` | No | Anchor for the link; if omitted, defaults to `#` + `page`. If present without `#`, one is prepended. |
+| `folder` | Yes | Must start with **`custom/`** (e.g. `custom/mycoolmod`) and match the directory under `web/panel/pages/`. Only letters, digits, `_`, `-`, `.`, and `/` between segments; no reserved URI characters (`?`, `#`, `%`, etc.). |
+| `page` | Yes | **Single** filename only: `something.html`. Same safe character set; no `/`, `..`, `\`, or reserved URI delimiters. |
+| `hash` | No | Optional; merged output always uses `#` + `page`. If you set `hash`, the fragment (with or without `#`) must equal `page` or the nav row is skipped. |
 | `section` | No | **`extra`** (default), **`alerts`**, **`giveaways`**, or **`audio`**. Any other value is logged and treated as **`extra`**. |
 
 **Section hints:** **`extra`** is the general catch-all; **`alerts`**, **`giveaways`**, and **`audio`** match those submenu themes. Other built-in areas (Commands, Moderation, Loyalty, single-page panels like Dashboard, etc.) are **not** valid `nav` targets—there is no submenu to attach to. **`Games`** is for **`cards`**, not **`nav`**.
