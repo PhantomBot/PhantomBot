@@ -97,13 +97,23 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.mozilla.javascript.tools.debugger.Main</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#debugger()" class="member-name-link">debugger</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Get the Rhino GUI debugger instance</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#callGlobalExposedScriptMethod(java.lang.String,java.lang.String)" class="member-name-link">callGlobalExposedScriptMethod</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;method,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arg)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#ExposePropertyToScripts(java.lang.String,java.lang.Object)" class="member-name-link">ExposePropertyToScripts</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;property)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Expose a property to all scripts via the <code>$</code> api.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.mozilla.javascript.ContextFactory</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#factory()" class="member-name-link">factory</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>protected static org.mozilla.javascript.ScriptableObject</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getBaseScope()" class="member-name-link">getBaseScope</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Get the shared default Phantombot Rhino runtime script scope</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>protected static <a href="RhinoContextFactory.html" title="class in tv.phantombot.script">RhinoContextFactory</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getContextFactory()" class="member-name-link">getContextFactory</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Get the Rhino ContextFactory instance.</div>
 </div>
@@ -130,9 +140,9 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="factory()">
-<h3>factory</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">org.mozilla.javascript.ContextFactory</span>&nbsp;<span class="element-name">factory</span>()</div>
+<section class="detail" id="getContextFactory()">
+<h3>getContextFactory</h3>
+<div class="member-signature"><span class="modifiers">protected static</span>&nbsp;<span class="return-type"><a href="RhinoContextFactory.html" title="class in tv.phantombot.script">RhinoContextFactory</a></span>&nbsp;<span class="element-name">getContextFactory</span>()</div>
 <div class="block">Get the Rhino ContextFactory instance.</div>
 </section>
 </li>
@@ -148,12 +158,29 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="debugger()">
-<h3>debugger</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">org.mozilla.javascript.tools.debugger.Main</span>&nbsp;<span class="element-name">debugger</span>()</div>
-<div class="block">Get the Rhino GUI debugger instance</div>
+<section class="detail" id="getBaseScope()">
+<h3>getBaseScope</h3>
+<div class="member-signature"><span class="modifiers">protected static</span>&nbsp;<span class="return-type">org.mozilla.javascript.ScriptableObject</span>&nbsp;<span class="element-name">getBaseScope</span>()</div>
+<div class="block">Get the shared default Phantombot Rhino runtime script scope</div>
+</section>
+</li>
+<li>
+<section class="detail" id="callGlobalExposedScriptMethod(java.lang.String,java.lang.String)">
+<h3>callGlobalExposedScriptMethod</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">callGlobalExposedScriptMethod</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;method,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;arg)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="ExposePropertyToScripts(java.lang.String,java.lang.Object)">
+<h3>ExposePropertyToScripts</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">ExposePropertyToScripts</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;property)</span></div>
+<div class="block">Expose a property to all scripts via the <code>$</code> api. Scripts can later use <code>$.property</code> and <code>$.property.function()</code> to access these</div>
 <dl class="notes">
-<dt>Returns:</dt>
+<dt>Parameters:</dt>
+<dd><code>propertyName</code> - The name of the property visible to the scripts</dd>
+<dd><code>property</code> - The property object to be exposed to the scripts</dd>
 </dl>
 </section>
 </li>
