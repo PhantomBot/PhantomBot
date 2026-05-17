@@ -256,6 +256,14 @@ $(function () {
         });
     };
 
+    const disableButtons = function  () {
+        $('#addcpreward-button').attr('disabled', 'disabled');
+        $('#refreshcprewards-button').attr('disabled', 'disabled');
+        $('#addcpredeemable-button').attr('disabled', 'disabled');
+        $('#convertcpredeemable-button').attr('disabled', 'disabled');
+        $('#refreshcpredeemables-button').attr('disabled', 'disabled');
+    };
+
     const loadRedeemables = function (cb, updateTable) {
         socket.query('channelpointslist', 'channelpoints_redeemables', null, function (e1) {
             socket.wsEvent('channelpoints_redeemable_get_managed_ws', './handlers/channelPointsHandler.js', null, ['redeemable-get-managed'], function (e2) {
@@ -273,6 +281,9 @@ $(function () {
                 if (updateTable !== false) {
                     if (e1.hasOwnProperty('error')) {
                         toastr.error('HTTP ' + e1.status + ': ' + e1.message);
+                        if (e1.hasOwnProperty('message') && e1.message.trim().toLowerCase() === 'The broadcaster must have partner or affiliate status.'.toLowerCase()) {
+                            disableButtons();
+                        }
                     } else {
                         let tableData = [];
                         for (const redeemable of redeemables) {
@@ -724,11 +735,7 @@ $(function () {
                 loadRewards();
                 loadRedeemables();
             } else {
-                $('#addcpreward-button').attr('disabled', 'disabled');
-                $('#refreshcprewards-button').attr('disabled', 'disabled');
-                $('#addcpredeemable-button').attr('disabled', 'disabled');
-                $('#convertcpredeemable-button').attr('disabled', 'disabled');
-                $('#refreshcpredeemables-button').attr('disabled', 'disabled');
+                disableButtons();
             }
         });
     };

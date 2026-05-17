@@ -333,15 +333,13 @@ public final class TwitchCache implements Listener {
                 }
             }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
 
-        if (this.isAffiliateOrPartner()) {
-            Helix.instance().getBroadcasterSubscriptionsAsync(ViewerCache.instance().broadcaster().id(), null, 1, null)
-                .doOnSuccess(jso -> {
-                    if (jso != null && !jso.has("error")) {
-                        this.subscriberCount = jso.optInt("total");
-                        this.subscriberPoints = jso.optInt("points");
-                    }
-                }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
-        }
+        Helix.instance().getBroadcasterSubscriptionsAsync(ViewerCache.instance().broadcaster().id(), null, 1, null)
+            .doOnSuccess(jso -> {
+                if (jso != null && !jso.has("error")) {
+                    this.subscriberCount = jso.optInt("total");
+                    this.subscriberPoints = jso.optInt("points");
+                }
+            }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
     }
 
     /**
