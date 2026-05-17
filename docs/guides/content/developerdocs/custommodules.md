@@ -175,11 +175,15 @@ When manifest content actually renders, the panel inserts a small separator: a *
 
 ### Compatibility with older custom modules
 
-Modules that only add **`web/panel/pages/extra/...`** and a **manually patched** `index.html` link keep working. The manifest path is **additive**—use it when you want **no `index.html` edit**.
+Custom modules fall into a few integration styles. **Upgrades can affect any of them**—retest after every PhantomBot upgrade and read release notes when they mention breaking changes.
 
-That compatibility is **not a guarantee across upgrades**: a module written for an older PhantomBot can still **break on a newer build** if the build changes APIs, panel markup, Rhino helpers, database layout, Twitch/EventSub behavior, or other contracts the module relied on. Retest custom modules after upgrading, and read release notes when they call out breaking changes.
+**Legacy panel integration (pre-manifest)** — The module adds panel HTML (often under **`web/panel/pages/extra/...`**) and instructions (or a patch) to **edit stock `index.html`** so a sidebar link points at that page. PhantomBot does **not** remove this path; it still works on current builds when the merge is kept in sync. This style is **not** the same as manifest-based modules: it depends on your forked panel shell and can break when **`index.html`**, stock sidebar markup, or panel JS changes.
 
-When you revise an older module anyway (fixes, new features, or post-upgrade repair), **consider moving it to the manifest-based system** (`web/panel/custom/<moduleId>/manifest.json` and pages under `web/panel/pages/custom/<moduleId>/`): you can drop the hand-edited `index.html` merge, align with current community packaging expectations, and use declarative **`nav`**, **`cards`**, and **`settingsModal`** where they fit.
+**Manifest-based modules (this guide’s model)** — The module ships **`web/panel/custom/<moduleId>/manifest.json`** and pages under **`web/panel/pages/custom/<moduleId>/`** (no `index.html` edit). That layout is **additive** to legacy installs. A module that **already** uses manifests can still **break on a newer build** if APIs, validation rules, panel helpers, Rhino behavior, databases, or Twitch/EventSub contracts change—being on manifests does not freeze compatibility.
+
+**Headless modules** — Only **`scripts/custom/...`** (and optional lang). No panel files; unaffected by `index.html` or manifest changes unless the bot’s script APIs change.
+
+If you still maintain a **legacy** panel module, **consider migrating to manifests** when you next revise it: drop the `index.html` merge, use **`custom/<moduleId>`** paths, and gain declarative **`nav`**, **`cards`**, and **`settingsModal`** where they fit (see [Full manifest specification](#full-manifest-specification)).
 
 ## Checklist (manifest + assets)
 
