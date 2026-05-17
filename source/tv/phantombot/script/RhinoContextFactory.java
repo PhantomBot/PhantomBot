@@ -20,6 +20,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 
 /**
  * Custom Rhino ContextFactory
@@ -32,6 +33,9 @@ public final class RhinoContextFactory extends ContextFactory {
         Context cx = super.makeContext();
         if (CaselessProperties.instance().getPropertyAsBoolean("rhinointerpretmode", false)) {
             cx.setInterpretedMode(true);
+        }
+        if (PhantomBot.getEnableRhinoDebugger()) {
+            cx.setGeneratingDebug(true);
         }
         return cx;
     }

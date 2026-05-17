@@ -25,22 +25,17 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptableObject;
 
 import tv.phantombot.PhantomBot;
 
 public class Script {
-
-    public static final NativeObject GLOBAL = new NativeObject();
-    private static final NativeObject VARS = new NativeObject();
     private final List<ScriptDestroyable<?>> destroyables = new ArrayList<>();
     private final File file;
     private final String fileName;
     private long lastModified;
     private boolean killed = false;
-    private ScriptableObject scope;
 
     public Script(File file, String fileName) {
         this.file = file;
@@ -58,8 +53,7 @@ public class Script {
 
     public static String callMethod(String method, String arg) {
         Object[] obj = new Object[]{arg};
-
-        return ScriptableObject.callMethod(GLOBAL, method, obj).toString();
+        return ScriptableObject.callMethod(RhinoRuntime.GLOBAL, method, obj).toString();
     }
 
     public void reload() throws IOException {
@@ -72,8 +66,8 @@ public class Script {
         }
 
         doDestroyables();
-        scope = null;
         load();
+
         if (silent) {
             if (file.getPath().endsWith("init.js")) {
                 com.gmt2001.Console.out.println("Reloaded module: init.js");
@@ -98,28 +92,12 @@ public class Script {
             return;
         }
 
-        Context context = RhinoRuntime.factory().enterContext();
-
-        if (scope == null) {
-            scope = context.initStandardObjects(VARS, false);//Normal scripting object.
-            scope.defineProperty("$", GLOBAL, ScriptableObject.PERMANENT);// Global functions that can only be accessed and replaced with $.
-            scope.defineProperty("$api", ScriptApi.instance(), ScriptableObject.PERMANENT);
-            scope.defineProperty("$script", this, ScriptableObject.PERMANENT);
-        }
-
-        /* Configure debugger. */
-        if (RhinoRuntime.debugger() != null) {
-            context.setGeneratingDebug(true);
-            if (file.getName().endsWith("init.js") ) {
-                RhinoRuntime.debugger().setBreakOnEnter(false);
-                RhinoRuntime.debugger().setScope(scope);
-                RhinoRuntime.debugger().setSize(640, 480);
-                RhinoRuntime.debugger().setVisible(true);
-            }
-        }
+        Context context = RhinoRuntime.getContextFactory().enterContext();
+        ScriptableObject localscope = RhinoRuntime.getBaseScope();
+        localscope.defineProperty("$script", this, ScriptableObject.PERMANENT);
 
         try {
-            context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
+            context.evaluateString(localscope, Files.readString(file.toPath()), file.getName(), 1, null);
         } catch (IOException | RhinoException ex) {
             com.gmt2001.Console.err.println(ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex, Map.of("file", this.getPath()));
@@ -170,8 +148,7 @@ public class Script {
         ObservingDebugger od = null;
         if (PhantomBot.getEnableRhinoDebugger()) {
             od = new ObservingDebugger();
-            com.gmt2001.Console.out.println("Entering exit debugger context for script: " + file.getName());
-            Context context = RhinoRuntime.factory().enterContext();
+            Context context = RhinoRuntime.getContextFactory().enterContext();
             context.setDebugger(od, 0);
             context.setGeneratingDebug(true);
         }
@@ -181,7 +158,7 @@ public class Script {
 
         if (od != null) {
             od.setDisconnected(true);
-        }        
+        }
     }
 
     @Override
