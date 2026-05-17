@@ -9,14 +9,8 @@ Community **custom modules** extend PhantomBot with extra chat commands, games, 
 
 ## Upgrades and older modules
 
-**Retest every custom module after you upgrade PhantomBot.** Newer builds can change chat APIs, the panel, Rhino helpers, databases, or Twitch/EventSub behavior. Release notes may call out breaking changes.
-
-Know which style you have:
-
-- **Legacy panel modules** — Panel pages (often under **`web/panel/pages/extra/...`**) plus a **hand-edited or patched `index.html`** sidebar link. They do **not** use **`manifest.json`**. They can break when stock panel files change, and you must re-merge or re-apply `index.html` fixes after upgrades.
-- **Manifest-based modules** — **`web/panel/custom/<moduleId>/manifest.json`** and pages under **`web/panel/pages/custom/<moduleId>/`** (no `index.html` edit). This is the **current** supported packaging model; links and **Games** cards come from the manifest. These modules can **still** break on a newer build if validation, panel JS, or bot APIs change—they are not immune to upgrades, only to `index.html` merge pain.
-
-If you run a **legacy** module, consider **migrating to manifests** when you next update it (see **[Creating custom modules](guide=content/developerdocs/custommodules "##guide_link")**).
+- A module that worked on an **older PhantomBot** can still **fail after you upgrade**: newer builds may change chat APIs, the panel, Rhino helpers, databases, or Twitch/EventSub behavior. **Retest** your custom modules after every upgrade and skim **release notes** for breaking changes.
+- Modules that rely on **`web/panel/pages/extra/...`** plus a **patched `index.html`** are not “frozen in time” either—those patterns can break the same way. If you maintain such a module, consider **moving it to the manifest-based layout** when you next touch it (see **[Creating custom modules](guide=content/developerdocs/custommodules "##guide_link")**): no `index.html` merge, and the same packaging model newer community modules use.
 
 ## What you might be copying
 
