@@ -111,6 +111,49 @@ Illustrates **`nav`** plus one **Games** **`cards`** entry with **`detailsModal`
 
 The bot reads every **`web/panel/custom/<moduleId>/manifest.json`**, merges valid entries, and serves **`GET /panel/custom-manifests.json`** (authenticated). Responses are cacheable like other panel static assets (strong **ETag**, **304** when unchanged). Invalid entries are skipped with a **`warn`** log line that names the manifest path—check the bot console if UI is missing.
 
+### Panel user permissions (section-based)
+
+Custom modules use the same **Settings → Panel Users** sections as stock panel areas—**not** per-module ACL. Grant **Extra** for a typical `nav.section: "extra"` page, or **Games** for `cards.section: "games"`.
+
+| Panel Users access on the section | Custom `nav` / `cards` in that section |
+| --- | --- |
+| **Full Access** | Visible; settings, toggles, saves, and custom page writes allowed. Websocket checks use the manifest **`section`** (e.g. `extra` or `games`) on each panel message. |
+| **Read Only** | Visible; viewing and read-only details allowed. Writes are blocked on the server. In the UI, **Games** card toggles/settings are disabled; clicks show the stock **Permissions error** toast. **Custom nav pages** must implement the same pattern in their own page JS (see below)—the manifest does not wire your buttons. |
+| **No access** (section not granted) | Omitted from **`custom-manifests.json`** for that user; sidebar block is hidden like stock pages. |
+
+Set **`nav.section`** to `extra`, `alerts`, `giveaways`, or `audio`. Set **`cards.section`** to `games` (only supported card section today).
+
+The bot rebuilds an internal index whenever manifests change: every **`settingsModal`** field **`table`** (and **`cards.scriptPath`**) is mapped to that entry’s **`section`** for Panel User websocket checks—no module-specific names are compiled into PhantomBot.
+
+**Websocket `section`:** `socket.getDBValues`, `socket.updateDBValues`, `socket.sendCommand`, and related panel APIs attach **`message.section`** from the active page. For manifest nav, that value comes from **`nav.section`** (`data-panel-section` on the sidebar link). Users should open your page through that link so section checks match **Settings → Panel Users**.
+
+#### Declarative Games cards (built-in UI)
+
+When `cards` are rendered, the panel applies read-only styling automatically: module toggle and settings cog are non-interactive for write, with tooltip text from **`window.__pbCustomPanel__.READ_ONLY_PANEL_TITLE`**. Clicks call **`requirePanelSectionWrite('games')`** and show the permission toast. Declarative **`settingsModal`** saves are blocked the same way.
+
+#### Custom nav pages (your page JS)
+
+Manifest **`nav`** only adds the sidebar link and sets **`section`** on websocket traffic. Buttons, tables, and modals in **`web/panel/pages/custom/<moduleId>/`** are **your** responsibility.
+
+Use the shared namespace **`window.__pbCustomPanel__`** (from `customPanelManifestLoader.js`, loaded in `index.html` before your page script):
+
+| Helper | Purpose |
+| --- | --- |
+| `panelSectionCanWrite(section)` | `true` when the user has **Full Access** on that section. |
+| `requirePanelSectionWrite(section)` | Returns `false` and shows the **Permissions error** toast when read-only; use at the start of click/save handlers. |
+| `READ_ONLY_PANEL_TITLE` | Tooltip for disabled write controls. |
+
+Recommended pattern for read-only users:
+
+- Keep write controls **visible** but styled disabled (`cursor: not-allowed`, reduced opacity, `aria-disabled="true"`).
+- Do **not** use Bootstrap’s `disabled` class on buttons you still want to accept clicks— it sets `pointer-events: none` and blocks the toast.
+- Call **`requirePanelSectionWrite`** (or check **`panelSectionCanWrite`**) before opening modals, confirming deletes, or sending commands.
+- Re-apply read-only styling after AJAX table refreshes if you rebuild row buttons.
+
+Use the same **`section`** string as in your manifest (`extra`, etc.). You can read the active value with **`$.currentPage().panelSection`** after the user navigates via the manifest link.
+
+Optional: declare a minimal **`settingsModal`** on a **Games** card (or any card) listing your INIDB **`table`** names so the server indexes them to a section even when the primary UI is a **nav** page.
+
 ### `nav` entries (sidebar links)
 
 | Field | Required | Rules |
@@ -171,6 +214,8 @@ When manifest content actually renders, the panel inserts a small separator: a *
 - **No card:** `section` must be `games`; `id` safe and unique; console may show **`skipped card`** with a reason (`invalid id`, `invalid scriptPath`, modal validation, etc.).
 - **Toggle no-op:** `scriptPath` must match what the `module` command expects (e.g. `./games/foo.js`). Bare `./foo.js` is rejected.
 - **Commands missing after drop:** Run **`!reloadcustom`** (caster); register commands inside **`$.bind('initReady', ...)`** so the reload fan-out can re-run them.
+- **Read-only user can still “succeed” in UI:** Use **`requirePanelSectionWrite`** before showing success dialogs; avoid **`helpers.getConfirmDeleteModal`** success text on async websocket actions (it runs before the server responds). Prefer **`toastr`** on command callback for deletes.
+- **Wrong section / denied writes:** Open the page from the manifest sidebar link so **`$.currentPage().panelSection`** matches **`nav.section`**. Index INIDB tables in **`settingsModal`** if you rely on table-based checks.
 - **Docker:** Put files under the **host** path you bind to **`/opt/PhantomBot_data`**; symlinks from the image point `./web/panel/.../custom` (and related paths) at that volume.
 
 ### Compatibility with older custom modules
@@ -191,6 +236,7 @@ If you still maintain a **legacy** panel module, **consider migrating to manifes
 2. For each **`nav`** link, add **`web/panel/pages/custom/<moduleId>/<page>.html`** and optional matching JS under **`web/panel/js/pages/custom/<moduleId>/`**. Manifest fields `folder` and `page` must match: `folder` is always `custom/<moduleId>`, `page` is a single filename like `mypage.html`.
 3. For **Games** **`cards`**, set **`scriptPath`** to a path PhantomBot’s `module` command understands, e.g. **`./games/myGame.js`**. For a working settings cog, add a valid **`settingsModal`** (`title` plus `fields` or `sections`).
 4. After a declarative **settings** save, the panel sends **`panel-settings-saved`** to that script over the panel websocket—handle it in **`webPanelSocketUpdate`** to refresh in-memory settings (see [Full manifest specification](#full-manifest-specification)).
+5. For **nav-only** pages with Panel Users: implement read-only UI in your page JS using **`window.__pbCustomPanel__`** (see [Panel user permissions](#panel-user-permissions-section-based)).
 
 ## Docker and data volumes
 
