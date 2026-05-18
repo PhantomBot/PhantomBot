@@ -30,6 +30,10 @@
  * the canonical {@code #pb-panel-<id>-custom-cards} shape and silently drop anything else
  * to keep card injection from being abused as a generic DOM-replace primitive.</p>
  *
+ * <p>Honors {@code ns.panelSectionCanWrite} for the injected section: read-only Panel Users
+ * get disabled toggles/settings, a tooltip, and the stock permission toast on click;
+ * info/details remain available.</p>
+ *
  * @author mcawful
  */
 (function () {
@@ -100,13 +104,16 @@
      * @param {object} card canonical manifest card
      * @returns {jQuery}
      */
-    function buildCardTools(card) {
+    function buildCardTools(card, canWrite) {
         const $tools = $('<div/>', {'class': 'box-tools pull-right'});
         const hasSettings = ns.cardHasSettings(card);
         const hasDetails = ns.cardHasDetailsModal(card);
-
         if (card.scriptPath) {
-            const $label = $('<label/>', {'class': 'switch', 'data-toggle': 'tooltip', 'title': 'Module toggle.'});
+            const $label = $('<label/>', {
+                'class': 'switch',
+                'data-toggle': 'tooltip',
+                title: canWrite ? 'Module toggle.' : ns.READ_ONLY_PANEL_TITLE
+            });
             const $input = $('<input/>', {
                 type: 'checkbox',
                 id: cardChildId(card.id, 'toggle'),
@@ -114,6 +121,10 @@
                 'data-pb-custom-card-id': card.id
             });
             $input.prop('checked', true);
+            if (!canWrite) {
+                $input.prop('disabled', true);
+                $label.addClass('pb-custom-card-readonly-toggle');
+            }
             $label.append($input).append($('<span/>', {'class': 'slider round'}));
             $tools.append($label);
         }
@@ -135,8 +146,12 @@
             const $btn = $('<button/>', {
                 type: 'button',
                 id: settingsBtnId,
-                'class': 'btn btn-md btn-box-tool pb-custom-card-open-settings pb-custom-card-tool-btn',
-                'data-pb-custom-card-id': card.id
+                'class': 'btn btn-md btn-box-tool pb-custom-card-open-settings pb-custom-card-tool-btn'
+                    + (canWrite ? '' : ' pb-custom-card-readonly-settings'),
+                'data-pb-custom-card-id': card.id,
+                'data-toggle': canWrite ? undefined : 'tooltip',
+                title: canWrite ? undefined : ns.READ_ONLY_PANEL_TITLE,
+                'aria-disabled': canWrite ? undefined : 'true'
             });
             $btn.append($('<i/>', {'class': 'fa fa-cog fa-lg'}));
             $tools.append($btn);
@@ -159,9 +174,9 @@
      * @param {object} card canonical manifest card
      * @returns {jQuery}
      */
-    function buildCardHeader(card) {
+    function buildCardHeader(card, canWrite) {
         return $('<div/>', {'class': 'box-header with-border'})
-            .append(buildCardTools(card))
+            .append(buildCardTools(card, canWrite))
             .append($('<h3/>', {'class': 'box-title'}).text(card.title));
     }
 
@@ -184,10 +199,10 @@
      * @param {object} card canonical manifest card
      * @returns {jQuery}
      */
-    function buildCardElement(card) {
+    function buildCardElement(card, canWrite) {
         const $form = $('<form/>', {'role': 'form'}).append(buildCardBody(card));
         const $box = $('<div/>', {'class': 'box box-solid', 'id': 'pb-custom-card-' + card.id})
-            .append(buildCardHeader(card))
+            .append(buildCardHeader(card, canWrite))
             .append($form);
         return $('<div/>', {'class': 'col-md-4'}).append($box);
     }
@@ -222,6 +237,20 @@
     }
 
     /**
+     * Read-only Panel Users: toggle labels and settings cogs stay clickable; show the stock
+     * permission toast ({@link customPanelManifestLoader#requirePanelSectionWrite}).
+     *
+     * @param {jQuery} $mount container holding the freshly injected card elements
+     * @param {string} sectionKey manifest section for this mount
+     */
+    function wireReadOnlyDenials($mount, sectionKey) {
+        $mount.on('click.pbCustomReadonly', '.pb-custom-card-readonly-toggle, .pb-custom-card-readonly-settings', function (e) {
+            e.preventDefault();
+            ns.requirePanelSectionWrite(sectionKey);
+        });
+    }
+
+    /**
      * Binds the settings cog (elements with {@code .pb-custom-card-open-settings}):
      * opens {@code ns.openSettingsModal(card)} from {@code customPanelSettingsModal.js}.
      *
@@ -230,8 +259,7 @@
     function wireCardSettings($mount) {
         $mount.find('.pb-custom-card-open-settings').on('click', function (e) {
             e.preventDefault();
-            const $btn = $(this);
-            const id = $btn.data('pb-custom-card-id');
+            const id = $(this).data('pb-custom-card-id');
             const card = ns.cardsById[id];
 
             if (card && card.settingsModal && typeof ns.openSettingsModal === 'function') {
@@ -328,6 +356,7 @@
 
         const sectionKey = String(section || '').toLowerCase();
         const cards = ns.cardsBySection[sectionKey] || [];
+        const canWrite = typeof ns.panelSectionCanWrite !== 'function' || ns.panelSectionCanWrite(sectionKey);
 
         if (cards.length === 0) {
             return;
@@ -349,13 +378,19 @@
         $mount.append($divider);
 
         cards.forEach(function (card) {
-            $mount.append(buildCardElement(card));
+            $mount.append(buildCardElement(card, canWrite));
         });
 
-        wireCardToggles($mount);
-        wireCardSettings($mount);
+        if (canWrite) {
+            wireCardToggles($mount);
+            wireCardSettings($mount);
+        } else {
+            wireReadOnlyDenials($mount, sectionKey);
+        }
         wireCardDetails($mount);
-        loadInitialCardStates($mount, cards);
+        if (canWrite) {
+            loadInitialCardStates($mount, cards);
+        }
         if (typeof $.fn.tooltip === 'function') {
             $mount.find('[data-toggle="tooltip"]').tooltip({container: 'body'});
         }

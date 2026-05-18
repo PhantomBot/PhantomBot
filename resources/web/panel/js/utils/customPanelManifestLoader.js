@@ -34,6 +34,10 @@
  * <p>Public API: {@code window.initCustomPanelNav()} — call once after panel websocket auth
  * completes (from {@code js/index.js}). Idempotent; repeat calls after the first are ignored.</p>
  *
+ * <p>Panel Users: {@code ns.panelSectionAccess} / {@code panelSectionCanWrite} /
+ * {@code requirePanelSectionWrite} mirror Settings → Panel Users
+ * section permissions for manifest {@code nav.section} and {@code cards.section}.</p>
+ *
  * @author mcawful
  */
 (function () {
@@ -51,6 +55,107 @@
     ns.MANIFEST_FETCH_TIMEOUT_MS = ns.MANIFEST_FETCH_TIMEOUT_MS || 15000;
     ns.TEXTAREA_DEFAULT_MAX_LEN = ns.TEXTAREA_DEFAULT_MAX_LEN || 480;
     ns.DEFAULT_PERMISSION_GROUP_ID = ns.DEFAULT_PERMISSION_GROUP_ID != null ? ns.DEFAULT_PERMISSION_GROUP_ID : 7;
+    ns.DEFAULT_CARD_SECTION = ns.DEFAULT_CARD_SECTION || 'games';
+    ns.READ_ONLY_PANEL_TITLE = ns.READ_ONLY_PANEL_TITLE || 'Read-only panel user (no changes allowed).';
+
+    const PANEL_SECTION_ALIASES = {
+        'keywords': 'keywords & emotes',
+        'overlay': 'stream overlay'
+    };
+
+    /**
+     * Maps manifest {@code nav.section} / {@code cards.section} keys to Panel Users section names.
+     *
+     * @param {string} section manifest section (e.g. {@code "extra"}, {@code "games"})
+     * @returns {string} normalized section name for permission lookup
+     */
+    function normalizePanelSectionName(section) {
+        const key = String(section || 'extra').toLowerCase();
+        return PANEL_SECTION_ALIASES[key] || key;
+    }
+
+    /**
+     * Panel-user access for a stock sidebar section (matches Settings → Panel Users).
+     *
+     * @param {string} section manifest section key
+     * @returns {'write'|'read'|'none'}
+     */
+    ns.panelSectionAccess = function (section) {
+        if (typeof helpers === 'undefined' || !helpers.currentPanelUserData) {
+            return 'write';
+        }
+        if (helpers.currentPanelUserData.userType === 'CONFIG') {
+            return 'write';
+        }
+        const permKey = normalizePanelSectionName(section);
+        const rows = helpers.currentPanelUserData.permission;
+        if (!Array.isArray(rows)) {
+            return 'none';
+        }
+        const row = rows.find(function (p) {
+            return p && p.section === permKey;
+        });
+        if (!row) {
+            return 'none';
+        }
+        if (row.permission === 'Full Access') {
+            return 'write';
+        }
+        if (row.permission === 'Read Only') {
+            return 'read';
+        }
+        return 'none';
+    };
+
+    /**
+     * @param {string} section manifest section key
+     * @returns {boolean} whether the user may change settings, toggles, or other writes
+     */
+    ns.panelSectionCanWrite = function (section) {
+        return ns.panelSectionAccess(section) === 'write';
+    };
+
+    /**
+     * @param {object} card manifest card entry
+     * @returns {string} normalized {@code cards.section} (defaults to {@code games})
+     */
+    ns.cardManifestSection = function (card) {
+        const s = card && card.section;
+        return s ? String(s).toLowerCase() : ns.DEFAULT_CARD_SECTION;
+    };
+
+    /**
+     * Same toast as stock {@code global.js} / websocket {@code permission} notifications when a
+     * read-only Panel User attempts a write (throttled via {@code helpers.isPermissionErrorRunning}).
+     */
+    ns.notifyPanelWriteDenied = function () {
+        if (typeof helpers === 'undefined' || typeof toastr === 'undefined') {
+            return;
+        }
+        if (helpers.isPermissionErrorRunning) {
+            return;
+        }
+        helpers.isPermissionErrorRunning = true;
+        toastr.error(
+            'You are missing the required permissions to complete this operation!',
+            'Permissions error'
+        );
+        setTimeout(function () {
+            helpers.isPermissionErrorRunning = false;
+        }, 5000);
+    };
+
+    /**
+     * @param {string} section manifest section key
+     * @returns {boolean} {@code true} when the user may write; otherwise shows the permission toast
+     */
+    ns.requirePanelSectionWrite = function (section) {
+        if (!ns.panelSectionCanWrite(section)) {
+            ns.notifyPanelWriteDenied();
+            return false;
+        }
+        return true;
+    };
 
     let stylesInjected = false;
     let ran = false;
@@ -139,6 +244,13 @@
             '}',
             '.pb-custom-card-tool-btn {',
             '    margin-bottom: 7px;',
+            '}',
+            '.pb-custom-card-readonly-toggle,',
+            '.pb-custom-card-readonly-settings {',
+            '    cursor: not-allowed;',
+            '}',
+            '.pb-custom-card-readonly-toggle .slider {',
+            '    opacity: 0.75;',
             '}',
             '/* Equal-height community cards: BS3 float rows stagger when card bodies differ in height. */',
             '.pb-custom-cards-mount.row {',
