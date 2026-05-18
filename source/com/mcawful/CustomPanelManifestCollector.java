@@ -36,6 +36,8 @@ import com.gmt2001.PathValidator;
 import com.gmt2001.util.Reflect;
 
 import tv.phantombot.RepoVersion;
+import tv.phantombot.panel.PanelUser.PanelUser;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  * Discovers {@code manifest.json} files under {@code web/panel/custom/&lt;moduleId&gt;/} (bot install
@@ -78,6 +80,10 @@ public final class CustomPanelManifestCollector {
      * {@link #ALLOWED_CARD_SECTIONS}.
      */
     private static final String DEFAULT_CARD_SECTION = "games";
+
+    /** Fail-closed filter fallback: valid empty merge shape for non-config panel users. */
+    private static final byte[] EMPTY_FILTERED_MANIFEST_UTF8 =
+            "{\"nav\":[],\"cards\":[]}".getBytes(StandardCharsets.UTF_8);
 
     /**
      * Maximum fields in a card {@code settingsModal} block (DoS guardrail), counting all fields
@@ -187,6 +193,69 @@ public final class CustomPanelManifestCollector {
     }
 
     /**
+     * Returns merged manifest bytes filtered for the logged-in {@link PanelUser}: entries whose
+     * {@code nav.section} / {@code cards.section} fail {@link PanelUserHandler#checkPanelUserSectionAccess}
+     * with read access are omitted. Config users and {@code null} (legacy panel login) receive the
+     * unfiltered merge. On filter failure for a non-config user, returns an empty {@code nav} /
+     * {@code cards} payload (fail-closed) rather than the unfiltered merge.
+     *
+     * @param mergedUtf8 full merged JSON from {@link #getCachedResponse()}
+     * @param user       authenticated panel user, or {@code null} for unfiltered output
+     * @return UTF-8 JSON bytes, never {@code null}
+     */
+    public static byte[] filterManifestBytesForPanelUser(byte[] mergedUtf8, PanelUser user) {
+        if (mergedUtf8 == null || mergedUtf8.length == 0) {
+            return user == null || user.isConfigUser() ? new byte[0] : EMPTY_FILTERED_MANIFEST_UTF8;
+        }
+        if (user == null || user.isConfigUser()) {
+            return mergedUtf8;
+        }
+
+        try {
+            JSONObject root = new JSONObject(new String(mergedUtf8, StandardCharsets.UTF_8));
+            JSONArray navIn = root.optJSONArray("nav");
+            JSONArray cardsIn = root.optJSONArray("cards");
+
+            JSONObject filtered = new JSONObject();
+            filtered.put("nav", filterManifestArrayForPanelUser(navIn, user, DEFAULT_NAV_SECTION));
+            filtered.put("cards", filterManifestArrayForPanelUser(cardsIn, user, DEFAULT_CARD_SECTION));
+            return filtered.toString().getBytes(StandardCharsets.UTF_8);
+        } catch (Exception ex) {
+            com.gmt2001.Console.warn.println("Custom panel manifest: filter for panel user failed (fail-closed): "
+                    + ex.getMessage());
+            return EMPTY_FILTERED_MANIFEST_UTF8;
+        }
+    }
+
+    private static JSONArray filterManifestArrayForPanelUser(JSONArray entriesIn, PanelUser user, String defaultSection) {
+        JSONArray out = new JSONArray();
+        if (entriesIn == null) {
+            return out;
+        }
+
+        for (int i = 0; i < entriesIn.length(); i++) {
+            JSONObject entry = entriesIn.optJSONObject(i);
+            if (entry == null) {
+                continue;
+            }
+            String section = entry.optString("section", defaultSection).trim().toLowerCase(Locale.ROOT);
+            if (panelUserCanReadSection(user, section)) {
+                out.put(entry);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * @param user            panel user (non-config)
+     * @param manifestSection {@code nav.section} or {@code cards.section} from the manifest
+     * @return {@code true} when the user may see the entry (read or write)
+     */
+    private static boolean panelUserCanReadSection(PanelUser user, String manifestSection) {
+        return PanelUserHandler.checkPanelUserSectionAccess(user, manifestSection, false);
+    }
+
+    /**
      * Returns the {@code web/panel/custom/} directories the collector should scan, in priority
      * order: bot execution directory first, Docker {@code _data} second (if applicable). Either
      * may be missing — callers must handle the empty list and individual missing roots.
@@ -220,6 +289,8 @@ public final class CustomPanelManifestCollector {
         for (Path root : roots) {
             appendFromCustomRoot(root, nav, cards, seenNav, seenCards);
         }
+
+        CustomPanelManifestRegistry.rebuildFromMergedCards(cards);
 
         JSONObject root = new JSONObject();
         root.put("nav", nav);

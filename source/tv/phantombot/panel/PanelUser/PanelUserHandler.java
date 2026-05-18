@@ -28,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import com.mcawful.CustomPanelManifestRegistry;
+
 import tv.phantombot.PhantomBot;
 import tv.phantombot.panel.WsPanelHandler;
 
@@ -1001,12 +1003,16 @@ public final class PanelUserHandler {
             return true;
         }
 
-        if (section == null || section.isBlank()) {
+        String fromManifestTable = CustomPanelManifestRegistry.panelSectionForTable(lTableName);
+        if (fromManifestTable != null) {
+            section = fromManifestTable;
+            com.gmt2001.Console.debug.println("Auto-detected section " + section + " (custom manifest table)");
+        } else if (section == null || section.isBlank()) {
             Optional<Entry<String, List<String>>> s = PANEL_SECTION_TABLES.entrySet().stream()
                     .filter(kv -> kv.getValue().contains(lTableName)).findFirst();
             if (s.isPresent()) {
                 section = s.get().getKey();
-                com.gmt2001.Console.debug.println("Auto-detected section " + (section == null ? "NULL" : section));
+                com.gmt2001.Console.debug.println("Auto-detected section " + section);
             }
         }
 
@@ -1085,8 +1091,15 @@ public final class PanelUserHandler {
                         || args[0].equalsIgnoreCase("redeemable-reload-managed"))) {
             isWriteAction = false;
         }
-        boolean res = PANEL_SECTION_SCRIPTS.containsKey(section) && PANEL_SECTION_SCRIPTS.get(section).contains(script)
-                && checkPanelUserSectionAccess(user, section, isWriteAction);
+
+        String manifestSection = CustomPanelManifestRegistry.panelSectionForScript(script);
+        boolean res;
+        if (manifestSection != null) {
+            res = checkPanelUserSectionAccess(user, manifestSection, isWriteAction);
+        } else {
+            res = PANEL_SECTION_SCRIPTS.containsKey(section) && PANEL_SECTION_SCRIPTS.get(section).contains(script)
+                    && checkPanelUserSectionAccess(user, section, isWriteAction);
+        }
         if (!res) {
             com.gmt2001.Console.err.println("Script access denied to script " + script + " with args: \""
                     + Arrays.toString(args) + "\" for user " + user.getUsername());
