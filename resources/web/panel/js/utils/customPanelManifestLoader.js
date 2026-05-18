@@ -140,9 +140,9 @@
             'You are missing the required permissions to complete this operation!',
             'Permissions error'
         );
-        setTimeout(function () {
+        helpers.sleep(5000).then(function () {
             helpers.isPermissionErrorRunning = false;
-        }, 5000);
+        });
     };
 
     /**
