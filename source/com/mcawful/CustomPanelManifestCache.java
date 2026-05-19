@@ -167,6 +167,14 @@ public final class CustomPanelManifestCache {
      * @return quoted ETag value ready to drop into the {@code ETag} header
      */
     private static String computeEtag(byte[] bytes) {
+        return computeStrongEtag(bytes);
+    }
+
+    /**
+     * @param bytes response body to fingerprint
+     * @return strong ETag header value for those bytes
+     */
+    public static String computeStrongEtag(byte[] bytes) {
         return "\"sha256-" + sha256Base64(bytes) + "\"";
     }
 }

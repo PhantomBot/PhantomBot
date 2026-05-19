@@ -514,6 +514,10 @@
     ns.openSettingsModal = function (card) {
         let sm = card && card.settingsModal;
         let fieldsFlat = collectSettingsModalFields(sm);
+        if (card && typeof ns.requirePanelSectionWrite === 'function'
+                && !ns.requirePanelSectionWrite(ns.cardManifestSection(card))) {
+            return;
+        }
 
         if (!sm || fieldsFlat.length === 0 || typeof helpers === 'undefined' || typeof helpers.getModal !== 'function') {
             return;
@@ -543,6 +547,10 @@
             let $form = buildSettingsForm(card, sm, fieldsFlat, results || {});
 
             helpers.getModal(modalId, sm.title || 'Settings', 'Save', $form, function () {
+                if (typeof ns.requirePanelSectionWrite === 'function'
+                        && !ns.requirePanelSectionWrite(ns.cardManifestSection(card))) {
+                    return;
+                }
                 let payload = collectSaveData(card.id, fieldsFlat);
                 if (payload === null) {
                     return;

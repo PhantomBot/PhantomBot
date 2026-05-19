@@ -24,6 +24,9 @@ import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import com.mcawful.CustomPanelManifestCache;
 import com.mcawful.CustomPanelManifestCollector;
 
+import tv.phantombot.panel.PanelUser.PanelUser;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -95,7 +98,11 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         if (req.method().equals(HttpMethod.GET) && CUSTOM_MANIFESTS_PATH.equals(qsd.path())) {
             try {
                 CustomPanelManifestCache.CachedResponse cached = CustomPanelManifestCollector.getCachedResponse();
-                boolean notModified = HttpServerPageHandler.sendCachedBytes(ctx, req, cached.bytes(), "custom-manifests.json", cached.etag());
+                PanelUser panelUser = PanelUserHandler.checkLoginAndGetUserB64(
+                        HttpBasicAuthenticationHandler.getAuthorizationString(req.headers()), CUSTOM_MANIFESTS_PATH);
+                byte[] body = CustomPanelManifestCollector.filterManifestBytesForPanelUser(cached.bytes(), panelUser);
+                String etag = CustomPanelManifestCache.computeStrongEtag(body);
+                boolean notModified = HttpServerPageHandler.sendCachedBytes(ctx, req, body, "custom-manifests.json", etag);
                 com.gmt2001.Console.debug.println((notModified ? "304" : "200") + " " + req.method().asciiName() + ": " + CUSTOM_MANIFESTS_PATH);
                 return;
             } catch (Throwable ex) {
