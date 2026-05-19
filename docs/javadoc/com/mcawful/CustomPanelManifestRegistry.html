@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-<title>CustomPanelManifestCache (PhantomBot JavaDoc)</title>
+<title>CustomPanelManifestRegistry (PhantomBot JavaDoc)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="description" content="declaration: package: com.mcawful, class: CustomPanelManifestCache">
+<meta name="description" content="declaration: package: com.mcawful, class: CustomPanelManifestRegistry">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../script-dir/jquery-ui.min.css" title="Style">
@@ -44,7 +44,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested-class-summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method-summary">Method</a></li>
@@ -69,33 +69,22 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.mcawful</a></div>
-<h1 title="Class CustomPanelManifestCache" class="title">Class CustomPanelManifestCache</h1>
+<h1 title="Class CustomPanelManifestRegistry" class="title">Class CustomPanelManifestRegistry</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">com.mcawful.CustomPanelManifestCache</div>
+<div class="inheritance">com.mcawful.CustomPanelManifestRegistry</div>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">CustomPanelManifestCache</span>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">CustomPanelManifestRegistry</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Memoization layer for <a href="CustomPanelManifestCollector.html" title="class in com.mcawful"><code>CustomPanelManifestCollector</code></a>'s merged JSON response. Holds
- the last-built <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a> (UTF-8 bytes + strong ETag + filesystem signature +
- last-checked timestamp) in a single <code>volatile</code> reference and rebuilds it lazily when
- the caller-supplied signature changes.
+<div class="block">Runtime index built from merged custom-panel manifests so <a href="../../tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUserHandler</code></a>
+ can resolve INIDB tables and Rhino <code>scriptPath</code> values to a stock panel section (<code>games</code>,
+ <code>extra</code>, etc.) without hard-coding community module names.
 
- <p>This file is intentionally domain-agnostic: it knows nothing about manifests, paths, or
- JSON shape. The collector hands it two callbacks — one that produces the current
- "fingerprint" of the underlying source (any string that compares-equal when content is
- unchanged) and one that produces the serialized bytes when a rebuild is needed. That
- keeps cache-invalidation policy, hashing, and ETag generation in one small, easy-to-audit
- class while the collector stays focused on validating and merging community manifests.
- Conditional <code>If-None-Match</code> / <code>304</code> handling is done in
- <a href="../gmt2001/httpwsserver/HttpServerPageHandler.html#sendCachedBytes(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,byte%5B%5D,java.lang.String,java.lang.String)"><code>HttpServerPageHandler.sendCachedBytes(io.netty.channel.ChannelHandlerContext, io.netty.handler.codec.http.FullHttpRequest, byte[], java.lang.String, java.lang.String)</code></a>.</p>
-
- <p>Concurrency: HTTP threads call <a href="#getOrRefresh(java.util.function.Supplier,java.util.function.Supplier)"><code>getOrRefresh(java.util.function.Supplier&lt;java.lang.String&gt;, java.util.function.Supplier&lt;byte[]&gt;)</code></a> freely. The cache is a single
- <code>volatile</code> reference replaced atomically; under concurrent rebuilds the worst case
- is duplicate work (both threads run the supplier), and only one of the resulting
- <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a> objects becomes the next published value — never a torn read.</p></div>
+ <p>Rebuilt whenever <a href="CustomPanelManifestCollector.html" title="class in com.mcawful"><code>CustomPanelManifestCollector</code></a> produces a new merged manifest. Nav-only
+ modules that keep settings in bespoke panel JS (no manifest <code>settingsModal</code>) rely on the
+ panel sending <code>section</code> from <code>nav.section</code> on websocket messages.</p></div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>mcawful</dd>
@@ -103,25 +92,6 @@ loadScripts(document, 'script');</script>
 </section>
 <section class="summary">
 <ul class="summary-list">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<li>
-<section class="nested-class-summary" id="nested-class-summary">
-<h2>Nested Class Summary</h2>
-<div class="caption"><span>Nested Classes</span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Class</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static final class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="CustomPanelManifestCache.CachedResponse.html" class="type-name-link" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Result of one full build: serialized bytes, an ETag derived from those bytes, the
- caller-supplied signature that produced them, and the wall-clock time the signature
- was last verified (used by the <code>CACHE_SIGNATURE_TTL_MILLIS</code> floor).</div>
-</div>
-</div>
-</section>
-</li>
 <!-- ========== METHOD SUMMARY =========== -->
 <li>
 <section class="method-summary" id="method-summary">
@@ -134,14 +104,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#computeStrongEtag(byte%5B%5D)" class="member-name-link">computeStrongEtag</a><wbr>(byte[]&nbsp;bytes)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#panelSectionForScript(java.lang.String)" class="member-name-link">panelSectionForScript</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;scriptPath)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getOrRefresh(java.util.function.Supplier,java.util.function.Supplier)" class="member-name-link">getOrRefresh</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;signatureSupplier,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;byte[]&gt;&nbsp;byteBuilder)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Returns a memoized <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a>.</div>
-</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#panelSectionForTable(java.lang.String)" class="member-name-link">panelSectionForTable</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;table)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -160,38 +127,26 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="getOrRefresh(java.util.function.Supplier,java.util.function.Supplier)">
-<h3>getOrRefresh</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></span>&nbsp;<span class="element-name">getOrRefresh</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;signatureSupplier,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;byte[]&gt;&nbsp;byteBuilder)</span></div>
-<div class="block">Returns a memoized <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a>. Recomputes the signature at most once per
- <code>CACHE_SIGNATURE_TTL_MILLIS</code>; only invokes <code>byteBuilder</code> when the
- signature actually changes. Safe under concurrent calls — the cache is a single
- <code>volatile</code> reference replaced atomically.
-
- <p>Both suppliers may be invoked on the calling thread. <code>signatureSupplier</code> runs
- first (and only after the TTL has elapsed); <code>byteBuilder</code> runs only when the
- signature differs from the previously cached one. Suppliers should never return
- <code>null</code>.</p></div>
+<section class="detail" id="panelSectionForTable(java.lang.String)">
+<h3>panelSectionForTable</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">panelSectionForTable</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;table)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>signatureSupplier</code> - produces the current source-fingerprint string; equality with
-                          the last cached value short-circuits the rebuild</dd>
-<dd><code>byteBuilder</code> - produces the freshly-serialized bytes when a rebuild is needed</dd>
+<dd><code>table</code> - INIDB table name from a panel DB request</dd>
 <dt>Returns:</dt>
-<dd>current cached response, recomputed on demand when the signature changes</dd>
+<dd>panel section to check, or <code>null</code> if unknown to custom manifests</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="computeStrongEtag(byte[])">
-<h3>computeStrongEtag</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">computeStrongEtag</span><wbr><span class="parameters">(byte[]&nbsp;bytes)</span></div>
+<section class="detail" id="panelSectionForScript(java.lang.String)">
+<h3>panelSectionForScript</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">panelSectionForScript</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;scriptPath)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>bytes</code> - response body to fingerprint</dd>
+<dd><code>scriptPath</code> - Rhino script path from a panel command or socket event</dd>
 <dt>Returns:</dt>
-<dd>strong ETag header value for those bytes</dd>
+<dd>panel section to check, or <code>null</code> if unknown to custom manifests</dd>
 </dl>
 </section>
 </li>

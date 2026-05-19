@@ -103,9 +103,17 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getCachedResponse()" class="member-name-link">getCachedResponse</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static byte[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#filterManifestBytesForPanelUser(byte%5B%5D,tv.phantombot.panel.PanelUser.PanelUser)" class="member-name-link">filterManifestBytesForPanelUser</a><wbr>(byte[]&nbsp;mergedUtf8,
+ <a href="../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns merged manifest bytes filtered for the logged-in <a href="../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a>: entries whose
+ <code>nav.section</code> / <code>cards.section</code> fail <a href="../../tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkPanelUserSectionAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,boolean)"><code>PanelUserHandler.checkPanelUserSectionAccess(tv.phantombot.panel.PanelUser.PanelUser, java.lang.String, boolean)</code></a>
+ with read access are omitted.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getCachedResponse()" class="member-name-link">getCachedResponse</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns a memoized <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a> for the merged
  manifest JSON.</div>
 </div>
@@ -137,6 +145,25 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>current cached response, recomputed on demand when the underlying manifests change</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="filterManifestBytesForPanelUser(byte[],tv.phantombot.panel.PanelUser.PanelUser)">
+<h3>filterManifestBytesForPanelUser</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">byte[]</span>&nbsp;<span class="element-name">filterManifestBytesForPanelUser</span><wbr><span class="parameters">(byte[]&nbsp;mergedUtf8,
+ <a href="../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user)</span></div>
+<div class="block">Returns merged manifest bytes filtered for the logged-in <a href="../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a>: entries whose
+ <code>nav.section</code> / <code>cards.section</code> fail <a href="../../tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkPanelUserSectionAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,boolean)"><code>PanelUserHandler.checkPanelUserSectionAccess(tv.phantombot.panel.PanelUser.PanelUser, java.lang.String, boolean)</code></a>
+ with read access are omitted. Config users and <code>null</code> (legacy panel login) receive the
+ unfiltered merge. On filter failure for a non-config user, returns an empty <code>nav</code> /
+ <code>cards</code> payload (fail-closed) rather than the unfiltered merge.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>mergedUtf8</code> - full merged JSON from <a href="#getCachedResponse()"><code>getCachedResponse()</code></a></dd>
+<dd><code>user</code> - authenticated panel user, or <code>null</code> for unfiltered output</dd>
+<dt>Returns:</dt>
+<dd>UTF-8 JSON bytes, never <code>null</code></dd>
 </dl>
 </section>
 </li>

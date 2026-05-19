@@ -50,7 +50,8 @@ $(function () {
      */
     var sendToSocket = function (message) {
         try {
-            message.section = $.currentPage().folder;
+            const cp = $.currentPage();
+            message.section = (cp && cp.panelSection) ? cp.panelSection : (cp ? cp.folder : '');
             let json = JSON.stringify(message);
 
             webSocket.send(json);
