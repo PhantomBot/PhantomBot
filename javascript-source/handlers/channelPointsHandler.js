@@ -210,7 +210,8 @@
                 data = {
                     'id': rewardID,
                     'title': rewardTitle,
-                    'command': commandConfig
+                    'command': commandConfig,
+                    'type': 'channelpoints'
                 };
                 commands.push(data);
                 $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
