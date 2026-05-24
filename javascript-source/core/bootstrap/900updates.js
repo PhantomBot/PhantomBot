@@ -850,6 +850,14 @@
         }
     });
 
+    addUpdate('3.18.0.0', 'installedv3.18.0.0', function () {
+        let commands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]'));
+        for (let i = 0; i < commands.length; i++) {
+            commands[i].type = 'channelpoints';
+        }
+        $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);

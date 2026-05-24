@@ -3471,6 +3471,47 @@ public class Helix {
         });
     }
 
+    /**
+     * Returns a list of Custom Power Up objects for the Custom Power Ups on a channel.
+     *
+     * @param id When used, this parameter filters the results and only returns reward objects for the Custom Power Ups with matching ID. Maximum: 50
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getCustomPowerUp(@Nullable List<String> id)
+            throws JSONException, IllegalArgumentException {
+        return this.getCustomPowerUpAsync(id).block();
+    }
+
+    /**
+     * Returns a list of Custom Power Up objects for the Custom Power Ups on a channel.
+     *
+     * @param id When used, this parameter filters the results and only returns reward objects for the Custom Power Ups with matching ID. Maximum: 50
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getCustomPowerUpAsync(@Nullable List<String> id)
+            throws JSONException, IllegalArgumentException {
+        if (id != null && id.size() > 50) {
+            throw new IllegalArgumentException("Limit 50 ids");
+        }
+
+        String ids = null;
+
+        if (id != null && !id.isEmpty()) {
+            ids = id.stream().limit(50).collect(Collectors.joining("&id="));
+        }
+
+        String endpoint = "/bits/custom_power_ups?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID())
+                + this.qspValid("&id", ids);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
     private String chooseModeratorId(String scope) {
         /**
          * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`

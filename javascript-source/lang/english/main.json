@@ -103,5 +103,7 @@
     "common.time.seconds": "seconds",
     "common.time.and": ", and ",
     "common.time.nostart": "looks like that has not started",
-    "common.time.expired": "looks like that has expired"
+    "common.time.expired": "looks like that has expired",
+    "common.bits": "Bits",
+    "common.channelpoints": "Channel Points"
 }
