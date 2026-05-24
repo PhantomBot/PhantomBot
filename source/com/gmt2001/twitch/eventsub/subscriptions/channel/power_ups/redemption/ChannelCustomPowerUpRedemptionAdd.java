@@ -262,7 +262,7 @@ public final class ChannelCustomPowerUpRedemptionAdd extends EventSubSubscriptio
      *
      * @return
      */
-    public PowerUpReward CustomPowerUp() {
+    public PowerUpReward customPowerUp() {
         return this.custom_power_up;
     }
 
