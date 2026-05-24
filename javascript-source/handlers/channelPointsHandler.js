@@ -25,7 +25,8 @@
 
     function subscribeEventSub() {
         let subscriptions = [
-            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd
+            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd,
+            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.power_ups.redemption.ChannelCustomPowerUpRedemptionAdd
         ];
 
         for (let i in subscriptions) {
@@ -87,7 +88,7 @@
                             active += ' === ';
                         }
 
-                        active += commands[i].id + ' - ' + commands[i].title;
+                        active += '[' + $.lang.get('common.' + commands[i].type) + '] ' + commands[i].id + ' - ' + commands[i].title;
                     }
 
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.list', active));
@@ -115,6 +116,7 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage1'));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage2', $.botName));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage3'));
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage4'));
                     } else {
                         if (commandConfig.length === 0) {
                             commandConfig = args.slice(2).join(' ');
@@ -133,6 +135,7 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.edit.usage1'));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage2', $.botName));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage3'));
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage4'));
                     } else {
                         let target = $.jsString(args[1]);
                         let cmdid = findRewardCommandIndex(target);
@@ -220,7 +223,7 @@
             }
             commandConfig = '';
             $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
-            $.say($.lang.get('channelPointsHandler.command.add.complete', data.title, data.command));
+            $.say($.lang.get('channelPointsHandler.command.add.complete', $.lang.get('common.channelpoints'), data.title, data.command));
             return;
         }
 
@@ -228,6 +231,56 @@
 
         if (cmd !== null) {
             let cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, 'channelPoints_' + rewardTitle, '');
+            let tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent', 'channelpointsevent']],
+                    {customArgs: {redemption: event.event()}});
+            if (tag !== null) {
+                $.say(tag);
+            }
+        }
+    });
+
+    /*
+     * @event powerUpRedemptions
+     * @usestransformers global twitch commandevent noevent channelpointsevent
+     */
+    $.bind('eventSubChannelCustomPowerUpRedemptionAddEvent', function (event) {
+        let rewardID = event.event().reward().id(),
+                rewardTitle = event.event().reward().title();
+
+        Packages.com.gmt2001.Console.debug.println("Power-up event " + rewardTitle + " parsed to javascript." + " ID is: " + rewardID);
+
+        if (commandConfig.length > 0) {
+            if (findRewardCommandIndex(rewardID) !== -1) {
+                commandConfig = '';
+                $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
+                $.say($.lang.get('channelPointsHandler.command.add.failed', rewardTitle));
+                return;
+            }
+
+            lock.lock();
+            let data;
+            try {
+                data = {
+                    'id': rewardID,
+                    'title': rewardTitle,
+                    'command': commandConfig,
+                    'type': 'bits'
+                };
+                commands.push(data);
+                $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+            } finally {
+                lock.unlock();
+            }
+            commandConfig = '';
+            $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
+            $.say($.lang.get('channelPointsHandler.command.add.complete', $.lang.get('common.bits'), data.title, data.command));
+            return;
+        }
+
+        let cmd = findRewardCommand(rewardID);
+
+        if (cmd !== null) {
+            let cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, 'powerUps_' + rewardTitle, '');
             let tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent', 'channelpointsevent']],
                     {customArgs: {redemption: event.event()}});
             if (tag !== null) {
