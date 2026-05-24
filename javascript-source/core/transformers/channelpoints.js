@@ -27,7 +27,10 @@
      * @cached
      */
     function cpcancel(args) {
-        if (args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
+        if ((args.customArgs.redemption.getClass().getSimpleName().equals("ChannelCustomPowerUpRedemptionAdd")
+            && args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.power_ups.redemption.ChannelCustomPowerUpRedemptionAdd.RedemptionStatus.Unfulfilled)) {
+            $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.customPowerUp().id(), args.customArgs.redemption.id());
+        } else if (args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
             $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.reward().id(), args.customArgs.redemption.id());
         }
         return {
@@ -43,10 +46,17 @@
      * @cached
      */
     function cpcost(args) {
-        return {
-            result: $.jsString(args.customArgs.redemption.reward().cost()),
-            cache: true
-        };
+        if (args.customArgs.redemption.getClass().getSimpleName().equals("ChannelCustomPowerUpRedemptionAdd")) {
+            return {
+                result: $.jsString(args.customArgs.redemption.customPowerUp().bits()),
+                cache: true
+            };
+        } else {
+            return {
+                result: $.jsString(args.customArgs.redemption.reward().cost()),
+                cache: true
+            };
+        }
     }
 
     /*
@@ -71,7 +81,10 @@
      * @cached
      */
     function cpfulfill(args) {
-        if (args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
+        if ((args.customArgs.redemption.getClass().getSimpleName().equals("ChannelCustomPowerUpRedemptionAdd")
+            && args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.power_ups.redemption.ChannelCustomPowerUpRedemptionAdd.RedemptionStatus.Unfulfilled)) {
+            $.channelpoints.updateRedemptionStatusFulfilled(args.customArgs.redemption.customPowerUp().id(), args.customArgs.redemption.id());
+        } else if (args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
             $.channelpoints.updateRedemptionStatusFulfilled(args.customArgs.redemption.reward().id(), args.customArgs.redemption.id());
         }
         return {
@@ -156,10 +169,17 @@
      * @cached
      */
     function cpredeemableid(args) {
-        return {
-            result: $.jsString(args.customArgs.redemption.reward().id()),
-            cache: true
-        };
+        if (args.customArgs.redemption.getClass().getSimpleName().equals("ChannelCustomPowerUpRedemptionAdd")) {
+            return {
+                result: $.jsString(args.customArgs.redemption.customPowerUp().id()),
+                cache: true
+            };
+        } else {
+            return {
+                result: $.jsString(args.customArgs.redemption.reward().id()),
+                cache: true
+            };
+        }
     }
 
     /*
@@ -167,6 +187,7 @@
      * @formula (cpsetenabled redeemableId:str isEnabled:bool) sets the enabled state of the redeemable
      * @labels twitch discord noevent channelpoints
      * @notes disabled redeemables are not visible to viewers
+     * @notes does not work on bits power-ups
      */
     function cpsetenabled(args) {
         let pargs = $.parseArgs(args.args, ' ', 2, false);
@@ -184,6 +205,7 @@
      * @formula (cpsetpaused redeemableId:str isPaused:bool) sets the paused state of the redeemable
      * @labels twitch discord noevent channelpoints
      * @notes paused redeemables are visible to viewers, but can not be redeemed
+     * @notes does not work on bits power-ups
      */
     function cpsetpaused(args) {
         let pargs = $.parseArgs(args.args, ' ', 2, false);
@@ -203,10 +225,17 @@
      * @cached
      */
     function cptitle(args) {
-        return {
-            result: $.jsString(args.customArgs.redemption.reward().title()),
-            cache: true
-        };
+        if (args.customArgs.redemption.getClass().getSimpleName().equals("ChannelCustomPowerUpRedemptionAdd")) {
+            return {
+                result: $.jsString(args.customArgs.redemption.customPowerUp().title()),
+                cache: true
+            };
+        } else {
+            return {
+                result: $.jsString(args.customArgs.redemption.reward().title()),
+                cache: true
+            };
+        }
     }
 
     /*
