@@ -47,7 +47,7 @@ public final class ChannelCustomPowerUpRedemptionAdd extends EventSubSubscriptio
     private String user_input;
     private String sStatus;
     private RedemptionStatus status;
-    private PowerUpReward reward;
+    private PowerUpReward custom_power_up;
     private String sRedeemed_at;
     private ZonedDateTime redeemed_at;
 
@@ -98,7 +98,7 @@ public final class ChannelCustomPowerUpRedemptionAdd extends EventSubSubscriptio
         this.user_input = e.event().optString("user_input");
         this.sStatus = e.event().getString("status");
         this.status = RedemptionStatus.valueOf(this.sStatus.substring(0, 1).toUpperCase() + this.sStatus.substring(1).toLowerCase());
-        this.reward = new PowerUpReward(e.event().getJSONObject("reward"));
+        this.custom_power_up = new PowerUpReward(e.event().getJSONObject("custom_power_up"));
         this.sRedeemed_at = e.event().getString("redeemed_at");
         this.redeemed_at = EventSub.parseDate(this.sRedeemed_at);
     }
@@ -122,14 +122,14 @@ public final class ChannelCustomPowerUpRedemptionAdd extends EventSubSubscriptio
     public ChannelCustomPowerUpRedemptionAdd(String broadcaster_user_id, String reward_id) {
         super();
         this.broadcaster_user_id = broadcaster_user_id;
-        this.reward = new PowerUpReward(reward_id);
+        this.custom_power_up = new PowerUpReward(reward_id);
     }
 
     @Override
     protected EventSubSubscription proposeSubscription() {
-        if (this.reward != null) {
+        if (this.custom_power_up != null) {
             return this.proposeSubscriptionInternal(ChannelCustomPowerUpRedemptionAdd.TYPE, ChannelCustomPowerUpRedemptionAdd.VERSION,
-                Map.of("broadcaster_user_id", this.broadcaster_user_id, "reward_id", this.reward.id()));
+                Map.of("broadcaster_user_id", this.broadcaster_user_id, "reward_id", this.custom_power_up.id()));
         }
 
         return this.proposeSubscriptionInternal(ChannelCustomPowerUpRedemptionAdd.TYPE, ChannelCustomPowerUpRedemptionAdd.VERSION,
@@ -143,8 +143,8 @@ public final class ChannelCustomPowerUpRedemptionAdd extends EventSubSubscriptio
             throw new IllegalArgumentException("broadcaster_user_id must be a valid id");
         }
 
-        if (this.reward != null && (this.reward.id() == null || this.reward.id().isBlank()
-                || !this.reward.id().matches("[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}"))) {
+        if (this.custom_power_up != null && (this.custom_power_up.id() == null || this.custom_power_up.id().isBlank()
+                || !this.custom_power_up.id().matches("[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}"))) {
             throw new IllegalArgumentException("reward_id must be a valid id");
         }
     }
@@ -262,8 +262,8 @@ public final class ChannelCustomPowerUpRedemptionAdd extends EventSubSubscriptio
      *
      * @return
      */
-    public PowerUpReward reward() {
-        return this.reward;
+    public PowerUpReward CustomPowerUp() {
+        return this.custom_power_up;
     }
 
     /**
