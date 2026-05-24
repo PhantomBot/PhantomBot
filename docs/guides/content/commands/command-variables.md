@@ -3239,6 +3239,14 @@ Yes&nbsp;&nbsp; | No
 
 **Labels Used:** twitch commandevent noevent channelpointsevent
 
+#### Hook: eventSubChannelCustomPowerUpRedemptionAddEvent
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch commandevent noevent channelpointsevent
+
 &nbsp;
 
 ### keywordHandler.js
