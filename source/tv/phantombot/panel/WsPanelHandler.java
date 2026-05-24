@@ -138,6 +138,8 @@ public class WsPanelHandler implements WsFrameHandler {
                 handleDiscordChannelList(ctx, frame, jso);
             } else if (jso.has("channelpointslist")) {
                 handleChannelPointsList(ctx, frame, jso);
+            } else if (jso.has("powerupslist")) {
+                handlePowerUpsList(ctx, frame, jso);
             } else if (jso.has("panelUser")) {
                 handlePanelUser(ctx, frame, jso);
             } else if (jso.has("channelpointslisttest")) {
@@ -405,6 +407,32 @@ public class WsPanelHandler implements WsFrameHandler {
         }
         Helix.instance().getCustomRewardAsync(null, null).doOnSuccess(json -> {
             String uniqueID = jso.has("channelpointslist") ? jso.getString("channelpointslist") : "";
+
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("query_id").value(uniqueID);
+            jsonObject.key("results").object();
+            if (json.has("data")) {
+                jsonObject.key("data").array();
+                json.getJSONArray("data").forEach(jsonObject::value);
+                jsonObject.endArray();
+            } else {
+                jsonObject.key("error").value(json.has("error") ? json.getString("error") : "UNKWN");
+                jsonObject.key("message").value(json.has("message") ? json.getString("message") : "UNKNOWN");
+                jsonObject.key("status").value(json.has("status") ? json.getInt("status") : -1);
+            }
+            jsonObject.endObject().endObject();
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        }).doOnError(com.gmt2001.Console.err::printStackTrace).subscribe();
+    }
+
+    private void handlePowerUpsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
+        Helix.instance().getCustomPowerUpAsync(null).doOnSuccess(json -> {
+            String uniqueID = jso.has("powerupslist") ? jso.getString("powerupslist") : "";
 
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("query_id").value(uniqueID);
