@@ -523,6 +523,8 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 
 _NOTE: disabled redeemables are not visible to viewers_
 
+_NOTE: does not work on bits power-ups_
+
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
@@ -541,6 +543,8 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 
 
 _NOTE: paused redeemables are visible to viewers, but can not be redeemed_
+
+_NOTE: does not work on bits power-ups_
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
