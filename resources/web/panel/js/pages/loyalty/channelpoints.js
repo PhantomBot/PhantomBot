@@ -799,12 +799,32 @@ $(function () {
             loadRedeemables(function () {
                 let commandSelector = null;
 
-                if (redeemables.length > 0) {
+                if (powerups.length > 0 || redeemables.length > 0) {
                     let options = [];
+                    for (const powerup of powerups) {
+                        let entry = {};
+                        entry._id = powerup.id;
+                        entry.name = '[Bits] ' + powerup.title;
+                        entry.value = powerup.id;
+
+                        if (findCommand(powerup.id) !== null) {
+                            entry.name += ' (Already Linked)';
+                            entry.disabled = true;
+                        }
+
+                        options.push(entry);
+                    }
+                    if (powerups.length === 0) {
+                        options.push({
+                            _id: 'NULL-BITS',
+                            name: '**Manual Bits Linking Mode**',
+                            value: 'NULL-BITS',
+                        });
+                    }
                     for (const redemption of redeemables) {
                         let entry = {};
                         entry._id = redemption.id;
-                        entry.name = redemption.title;
+                        entry.name = '[Channel Points] ' + redemption.title;
                         entry.value = redemption.id;
 
                         if (findCommand(redemption.id) !== null) {
@@ -813,6 +833,13 @@ $(function () {
                         }
 
                         options.push(entry);
+                    }
+                    if (redeemables.length === 0) {
+                        options.push({
+                            _id: 'NULL-CP',
+                            name: '**Manual Channel Points Linking Mode**',
+                            value: 'NULL-CP',
+                        });
                     }
 
                     commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redeemable', '', options, 'The linked Channel Points redeemable.');
@@ -826,7 +853,7 @@ $(function () {
                 }
 
                 // Get advance modal from our util functions in /utils/helpers.js
-                helpers.getModal('add-channelpoints-reward', 'Add Channel Points Reward', 'Save', $('<form/>', {
+                helpers.getModal('add-channelpoints-reward', 'Add Bits/Channel Points Reward', 'Save', $('<form/>', {
                     'role': 'form'
                 })
                         .append(commandSelector)
@@ -860,7 +887,8 @@ $(function () {
                         case helpers.handleInputString(redemptionResponse):
                             break;
                         default:
-                            if (redeemables.length === 0) {
+                            const id = redemptionSelect.find(':selected').val();
+                            if (id === 'NULL-BITS' || id === 'NULL-CP') {
                                 socket.updateDBValues('channelpoints_manual', {
                                     tables: ['channelPointsSettings'],
                                     keys: ['commandConfig'],
@@ -868,8 +896,8 @@ $(function () {
                                 }, function () {
                                     reloadRewards(function () {
                                         swal({
-                                            'title': 'Manual Channel Points Reward Configuration',
-                                            'text': 'PhantomBot was unable to load the list of available Channel Points redeemables.'
+                                            'title': 'Manual ' + (id === 'NULL-BITS' ? 'Bits' : 'Channel Points') + ' Reward Configuration',
+                                            'text': 'PhantomBot was unable to load the list of available ' + (id === 'NULL-BITS' ? 'Bits' : 'Channel Points') + ' redeemables.'
                                                     + 'To complete the setup of this reward, please redeem the desired redeemable to link on Twitch, '
                                                     + 'then click the Refresh button to reload the rewards list',
                                             'icon': 'warning'
@@ -883,10 +911,17 @@ $(function () {
                                 for (const command of commands) {
                                     data.push(structuredClone(command));
                                 }
+                                let redeemable = findRedeemable(id, 'channelpoints');
+                                let type = 'channelpoints';
+                                if (redeemable === null) {
+                                    redeemable = findRedeemable(id, 'bits');
+                                    type = 'bits';
+                                }
                                 data.push({
-                                    'id': redemptionSelect.find(':selected').val(),
-                                    'title': redemptionSelect.find(':selected').text(),
-                                    'command': redemptionResponse.val()
+                                    'id': redeemable.id,
+                                    'title': redeemable.title,
+                                    'command': redemptionResponse.val(),
+                                    'type': type
                                 });
                                 updateRewards(data, function () {
                                     $('#add-channelpoints-reward').modal('hide');
