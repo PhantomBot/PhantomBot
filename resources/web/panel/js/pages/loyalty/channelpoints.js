@@ -121,6 +121,7 @@ $(function () {
                 let tableData = [];
                 for (const command of commands) {
                     tableData.push([
+                        command.type === 'bits' ? 'Bits' : 'Channel Points',
                         command.title,
                         command.command,
                         $('<div/>', {
@@ -155,13 +156,14 @@ $(function () {
                     'searching': true,
                     'autoWidth': false,
                     'ordering': true,
-                    'order': [[0, 'asc']],
+                    'order': [[0, 'asc'], [1, 'asc']],
                     'data': tableData,
                     'columnDefs': [
-                        {'className': 'default-table', 'orderable': false, 'targets': [2]},
-                        {'width': '20%', 'targets': 0}
+                        {'className': 'default-table', 'orderable': false, 'targets': [3]},
+                        {'width': '20%', 'targets': 1}
                     ],
                     'columns': [
+                        {'title': 'Type'},
                         {'title': 'Linked Redeemable'},
                         {'title': 'Response'},
                         {'title': 'Actions'}
@@ -177,9 +179,9 @@ $(function () {
                         return;
                     }
 
-                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for '
-                            + command.title + '?', true,
-                            'Successfully removed the reward for ' + command.title, function () {
+                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ['
+                             + (command.type === 'bits' ? 'Bits' : 'Channel Points') + '] ' + command.title + '?', true,
+                            'Successfully removed the reward for [' + (command.type === 'bits' ? 'Bits' : 'Channel Points') + '] ' + command.title, function () {
                                 let data = [];
                                 for (const ccommand of commands) {
                                     if (ccommand.id !== command.id) {
@@ -199,13 +201,14 @@ $(function () {
                         return;
                     }
 
-                    helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
+                    helpers.getModal('edit-channelpoints-reward', 'Edit ' + (command.type === 'bits' ? 'Bits' : 'Channel Points') + ' Reward', 'Save', $('<form/>', {
                         'role': 'form'
                     })
+                            .append(helpers.getInputGroup('redemption-type', 'text', 'Redeemable Type', '', command.type === 'bits' ? 'Bits' : 'Channel Points', 'Type of the linked redeemable.', true))
                             .append(helpers.getInputGroup('redemption-id', 'text', 'Redeemable Id', '', command.id, 'Id of the linked '
-                                    + 'Channel Points redeemable.', true))
+                                    + (command.type === 'bits' ? 'Bits' : 'Channel Points') + ' redeemable.', true))
                             .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', command.title, 'Title of the linked '
-                                    + 'Channel Points redeemable. This cannot be edited.', true))
+                                    + (command.type === 'bits' ? 'Bits' : 'Channel Points') + ' redeemable. This cannot be edited.', true))
                             .append($('<div/>', {
                                 'class': 'box box-warning'
                             }).append($('<div/>', {
@@ -244,7 +247,7 @@ $(function () {
                                 }
                                 updateRewards(data, function () {
                                     $('#edit-channelpoints-reward').modal('hide');
-                                    toastr.success('Successfully edited the reward for ' + command.title);
+                                    toastr.success('Successfully edited the reward for [' + (command.type === 'bits' ? 'Bits' : 'Channel Points') + '] ' + command.title);
                                 });
                         }
                     }).modal('toggle');
