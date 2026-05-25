@@ -37,7 +37,8 @@ import tv.phantombot.event.jvm.JVMEvent;
 public final class EventBus {
     private static final EventBus instance = new EventBus();
     private static final MBassador<Event> bus = new MBassador<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default())
-            .addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default()
+            .addFeature(Feature.AsynchronousHandlerInvocation.Default().setExecutor(com.gmt2001.util.concurrent.ExecutorService.executorService()))
+            .addFeature(Feature.AsynchronousMessageDispatch.Default()
             .setNumberOfMessageDispatchers(10)).addPublicationErrorHandler(new ExceptionHandler()));
 
     /**
