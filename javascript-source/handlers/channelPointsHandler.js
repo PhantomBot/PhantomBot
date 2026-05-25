@@ -244,8 +244,8 @@
      * @usestransformers global twitch commandevent noevent channelpointsevent
      */
     $.bind('eventSubChannelCustomPowerUpRedemptionAddEvent', function (event) {
-        let rewardID = event.event().reward().id(),
-                rewardTitle = event.event().reward().title();
+        let rewardID = event.event().customPowerUp().id(),
+                rewardTitle = event.event().customPowerUp().title();
 
         Packages.com.gmt2001.Console.debug.println("Power-up event " + rewardTitle + " parsed to javascript." + " ID is: " + rewardID);
 

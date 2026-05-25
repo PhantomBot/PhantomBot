@@ -144,6 +144,8 @@ public class WsPanelHandler implements WsFrameHandler {
                 handlePanelUser(ctx, frame, jso);
             } else if (jso.has("channelpointslisttest")) {
                 handleChannelPointsListTest(ctx, frame, jso);
+            } else if (jso.has("powerupslisttest")) {
+                handlePowerUpsListTest(ctx, frame, jso);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
@@ -464,6 +466,24 @@ public class WsPanelHandler implements WsFrameHandler {
         jsonObject.key("results").object();
         jsonObject.key("data").array();
         TestData.Redeemables().forEach(jsonObject::value);
+        jsonObject.endArray();
+        jsonObject.endObject().endObject();
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    private void handlePowerUpsListTest(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
+        String uniqueID = jso.has("powerupslisttest") ? jso.getString("powerupslisttest") : "";
+
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID);
+        jsonObject.key("results").object();
+        jsonObject.key("data").array();
+        TestData.PowerUps().forEach(jsonObject::value);
         jsonObject.endArray();
         jsonObject.endObject().endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
