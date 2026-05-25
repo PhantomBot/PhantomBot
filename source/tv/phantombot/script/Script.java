@@ -144,8 +144,12 @@ public class Script {
         if (PhantomBot.getEnableRhinoDebugger()) {
             od = new ObservingDebugger();
             Context context = RhinoRuntime.getContextFactory().enterContext();
-            context.setDebugger(od, 0);
-            context.setGeneratingDebug(true);
+            try {
+                context.setDebugger(od, 0);
+                context.setGeneratingDebug(true);
+            } finally {
+                Context.exit();
+            }
         }
 
         doDestroyables();
