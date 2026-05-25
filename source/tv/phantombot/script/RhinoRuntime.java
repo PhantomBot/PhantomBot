@@ -39,7 +39,7 @@ public final class RhinoRuntime {
     /**
      * Get the Rhino ContextFactory instance.
      */
-    protected static RhinoContextFactory getContextFactory() {
+    public static RhinoContextFactory getContextFactory() {
         return FACTORY;
     }
     
@@ -87,7 +87,12 @@ public final class RhinoRuntime {
 
     public static String callGlobalExposedScriptMethod(String method, String arg) {
         Object[] obj = new Object[]{arg};
-        return ScriptableObject.callMethod(FACTORY.enterContext(), GLOBAL, method, obj).toString();
+
+        try {
+            return ScriptableObject.callMethod(FACTORY.enterContext(), GLOBAL, method, obj).toString();
+        } finally {
+            org.mozilla.javascript.Context.exit();
+        }
     }
 
     /**
