@@ -70,7 +70,7 @@ public final class TestData {
         return List.of(new JSONObject("{\r\n" + //
                 "      \"broadcaster_name\": \"CoolDude\",\r\n" + //
                 "      \"broadcaster_login\": \"cooldude\",\r\n" + //
-                "      \"broadcaster_id\": \"\" + ViewerCache.instance().broadcaster().id() + \"\",\r\n" + //
+                "      \"broadcaster_id\": \"" + ViewerCache.instance().broadcaster().id() + "\",\r\n" + //
                 "      \"id\": \"92af127c-7326-4483-a52b-b0da0be61c01\",\r\n" + //
                 "      \"image\": null,\r\n" + //
                 "      \"background_color\": \"#00E5CB\",\r\n" + //
@@ -105,7 +105,7 @@ public final class TestData {
                 new JSONObject("{\r\n" + //
                         "      \"broadcaster_name\": \"CoolDude\",\r\n" + //
                         "      \"broadcaster_login\": \"cooldude\",\r\n" + //
-                        "      \"broadcaster_id\": \"\" + ViewerCache.instance().broadcaster().id() + \"\",\r\n" + //
+                        "      \"broadcaster_id\": \"" + ViewerCache.instance().broadcaster().id() + "\",\r\n" + //
                         "      \"id\": \"92af127c-7326-4483-a52b-b0da0be69204\",\r\n" + //
                         "      \"image\": null,\r\n" + //
                         "      \"background_color\": \"#0000CB\",\r\n" + //
@@ -189,5 +189,81 @@ public final class TestData {
                 "      \"redemptions_redeemed_current_stream\": null,\r\n" + //
                 "      \"cooldown_expires_at\": null\r\n" + //
                 "    }");
+    }
+
+    /**
+     * A list of power-up objects
+     *
+     * @return the list
+     */
+    public static List<JSONObject> PowerUps() {
+        return List.of(new JSONObject("{\r\n" + //
+                "      \"broadcaster_name\": \"CoolDude\",\r\n" + //
+                "      \"broadcaster_login\": \"cooldude\",\r\n" + //
+                "      \"broadcaster_id\": \"" + ViewerCache.instance().broadcaster().id() + "\",\r\n" + //
+                "      \"id\": \"92af127c-7326-4483-a52b-b0da0be61c02\",\r\n" + //
+                "      \"image\": null,\r\n" + //
+                "      \"background_color\": \"#00E5CB\",\r\n" + //
+                "      \"is_enabled\": true,\r\n" + //
+                "      \"bits\": 50000,\r\n" + //
+                "      \"title\": \"game analysis\",\r\n" + //
+                "      \"prompt\": \"\",\r\n" + //
+                "      \"is_user_input_required\": false,\r\n" + //
+                "      \"max_per_stream_setting\": {\r\n" + //
+                "        \"is_enabled\": false,\r\n" + //
+                "        \"max_per_stream\": 0\r\n" + //
+                "      },\r\n" + //
+                "      \"max_per_user_per_stream_setting\": {\r\n" + //
+                "        \"is_enabled\": true,\r\n" + //
+                "        \"max_per_user_per_stream\": 5\r\n" + //
+                "      },\r\n" + //
+                "      \"global_cooldown_setting\": {\r\n" + //
+                "        \"is_enabled\": false,\r\n" + //
+                "        \"global_cooldown_seconds\": 0\r\n" + //
+                "      },\r\n" + //
+                "      \"is_paused\": false,\r\n" + //
+                "      \"is_in_stock\": true,\r\n" + //
+                "      \"default_image\": {\r\n" + //
+                "        \"url_1x\": \"https://static-cdn.jtvnw.net/custom-reward-images/default-1.png\",\r\n" + //
+                "        \"url_2x\": \"https://static-cdn.jtvnw.net/custom-reward-images/default-2.png\",\r\n" + //
+                "        \"url_4x\": \"https://static-cdn.jtvnw.net/custom-reward-images/default-4.png\"\r\n" + //
+                "      },\r\n" + //
+                "      \"redemptions_redeemed_current_stream\": null,\r\n" + //
+                "      \"cooldown_expires_at\": null\r\n" + //
+                "    }"),
+                new JSONObject("{\r\n" + //
+                        "      \"broadcaster_name\": \"CoolDude\",\r\n" + //
+                        "      \"broadcaster_login\": \"cooldude\",\r\n" + //
+                        "      \"broadcaster_id\": \"" + ViewerCache.instance().broadcaster().id() + "\",\r\n" + //
+                        "      \"id\": \"92af127c-7326-4483-a52b-b0da0be69203\",\r\n" + //
+                        "      \"image\": null,\r\n" + //
+                        "      \"background_color\": \"#0000CB\",\r\n" + //
+                        "      \"is_enabled\": true,\r\n" + //
+                        "      \"bits\": 1000,\r\n" + //
+                        "      \"title\": \"something cool\",\r\n" + //
+                        "      \"prompt\": \"it's happening!\",\r\n" + //
+                        "      \"is_user_input_required\": false,\r\n" + //
+                        "      \"max_per_stream_setting\": {\r\n" + //
+                        "        \"is_enabled\": true,\r\n" + //
+                        "        \"max_per_stream\": 2\r\n" + //
+                        "      },\r\n" + //
+                        "      \"max_per_user_per_stream_setting\": {\r\n" + //
+                        "        \"is_enabled\": false,\r\n" + //
+                        "        \"max_per_user_per_stream\": 0\r\n" + //
+                        "      },\r\n" + //
+                        "      \"global_cooldown_setting\": {\r\n" + //
+                        "        \"is_enabled\": true,\r\n" + //
+                        "        \"global_cooldown_seconds\": 30\r\n" + //
+                        "      },\r\n" + //
+                        "      \"is_paused\": false,\r\n" + //
+                        "      \"is_in_stock\": true,\r\n" + //
+                        "      \"default_image\": {\r\n" + //
+                        "        \"url_1x\": \"https://static-cdn.jtvnw.net/custom-reward-images/default-1.png\",\r\n" + //
+                        "        \"url_2x\": \"https://static-cdn.jtvnw.net/custom-reward-images/default-2.png\",\r\n" + //
+                        "        \"url_4x\": \"https://static-cdn.jtvnw.net/custom-reward-images/default-4.png\"\r\n" + //
+                        "      },\r\n" + //
+                        "      \"redemptions_redeemed_current_stream\": null,\r\n" + //
+                        "      \"cooldown_expires_at\": null\r\n" + //
+                        "    }"));
     }
 }
