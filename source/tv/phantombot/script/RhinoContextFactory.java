@@ -46,9 +46,7 @@ public final class RhinoContextFactory extends ContextFactory {
     @Override
     public Context enterContext() {
         try {
-            Context cx = super.enterContext();
-            setContextOptions(cx);
-            return cx;
+            return super.enterContext();
         } catch (RuntimeException e) {
             com.gmt2001.Console.err.println("Failed to enter Rhino context. Creating new context: " + e.getMessage());
             com.gmt2001.Console.err.printStackTrace(e);
