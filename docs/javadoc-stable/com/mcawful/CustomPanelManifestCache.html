@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>CustomPanelManifestCache (PhantomBot JavaDoc)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="description" content="declaration: package: com.mcawful, class: CustomPanelManifestCache">
+<meta name="generator" content="javadoc/ClassWriterImpl">
+<link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../script-dir/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../jquery-ui.overrides.css" title="Style">
+<script type="text/javascript" src="../../script.js"></script>
+<script type="text/javascript" src="../../script-dir/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="../../script-dir/jquery-ui.min.js"></script>
+</head>
+<body class="class-declaration-page">
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../";
+loadScripts(document, 'script');</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<div class="flex-box">
+<header role="banner" class="flex-header">
+<nav role="navigation">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="top-nav" id="navbar-top">
+<div class="skip-nav"><a href="#skip-navbar-top" title="Skip navigation links">Skip navigation links</a></div>
+<div class="about-language"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+<ul id="navbar-top-firstrow" class="nav-list" title="Navigation">
+<li><a href="../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="nav-bar-cell1-rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../index-all.html">Index</a></li>
+<li><a href="../../help-doc.html#class">Help</a></li>
+</ul>
+</div>
+<div class="sub-nav">
+<div>
+<ul class="sub-nav-list">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested-class-summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method-summary">Method</a></li>
+</ul>
+<ul class="sub-nav-list">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method-detail">Method</a></li>
+</ul>
+</div>
+<div class="nav-list-search"><label for="search-input">SEARCH:</label>
+<input type="text" id="search-input" value="search" disabled="disabled">
+<input type="reset" id="reset-button" value="reset" disabled="disabled">
+</div>
+</div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<span class="skip-nav" id="skip-navbar-top"></span></nav>
+</header>
+<div class="flex-content">
+<main role="main">
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.mcawful</a></div>
+<h1 title="Class CustomPanelManifestCache" class="title">Class CustomPanelManifestCache</h1>
+</div>
+<div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
+<div class="inheritance">com.mcawful.CustomPanelManifestCache</div>
+</div>
+<section class="class-description" id="class-description">
+<hr>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">CustomPanelManifestCache</span>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">Memoization layer for <a href="CustomPanelManifestCollector.html" title="class in com.mcawful"><code>CustomPanelManifestCollector</code></a>'s merged JSON response. Holds
+ the last-built <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a> (UTF-8 bytes + strong ETag + filesystem signature +
+ last-checked timestamp) in a single <code>volatile</code> reference and rebuilds it lazily when
+ the caller-supplied signature changes.
+
+ <p>This file is intentionally domain-agnostic: it knows nothing about manifests, paths, or
+ JSON shape. The collector hands it two callbacks — one that produces the current
+ "fingerprint" of the underlying source (any string that compares-equal when content is
+ unchanged) and one that produces the serialized bytes when a rebuild is needed. That
+ keeps cache-invalidation policy, hashing, and ETag generation in one small, easy-to-audit
+ class while the collector stays focused on validating and merging community manifests.
+ Conditional <code>If-None-Match</code> / <code>304</code> handling is done in
+ <a href="../gmt2001/httpwsserver/HttpServerPageHandler.html#sendCachedBytes(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,byte%5B%5D,java.lang.String,java.lang.String)"><code>HttpServerPageHandler.sendCachedBytes(io.netty.channel.ChannelHandlerContext, io.netty.handler.codec.http.FullHttpRequest, byte[], java.lang.String, java.lang.String)</code></a>.</p>
+
+ <p>Concurrency: HTTP threads call <a href="#getOrRefresh(java.util.function.Supplier,java.util.function.Supplier)"><code>getOrRefresh(java.util.function.Supplier&lt;java.lang.String&gt;, java.util.function.Supplier&lt;byte[]&gt;)</code></a> freely. The cache is a single
+ <code>volatile</code> reference replaced atomically; under concurrent rebuilds the worst case
+ is duplicate work (both threads run the supplier), and only one of the resulting
+ <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a> objects becomes the next published value — never a torn read.</p></div>
+<dl class="notes">
+<dt>Author:</dt>
+<dd>mcawful</dd>
+</dl>
+</section>
+<section class="summary">
+<ul class="summary-list">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<li>
+<section class="nested-class-summary" id="nested-class-summary">
+<h2>Nested Class Summary</h2>
+<div class="caption"><span>Nested Classes</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static final class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="CustomPanelManifestCache.CachedResponse.html" class="type-name-link" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Result of one full build: serialized bytes, an ETag derived from those bytes, the
+ caller-supplied signature that produced them, and the wall-clock time the signature
+ was last verified (used by the <code>CACHE_SIGNATURE_TTL_MILLIS</code> floor).</div>
+</div>
+</div>
+</section>
+</li>
+<!-- ========== METHOD SUMMARY =========== -->
+<li>
+<section class="method-summary" id="method-summary">
+<h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#computeStrongEtag(byte%5B%5D)" class="member-name-link">computeStrongEtag</a><wbr>(byte[]&nbsp;bytes)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getOrRefresh(java.util.function.Supplier,java.util.function.Supplier)" class="member-name-link">getOrRefresh</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;signatureSupplier,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;byte[]&gt;&nbsp;byteBuilder)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns a memoized <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a>.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+</section>
+</li>
+</ul>
+</section>
+<section class="details">
+<ul class="details-list">
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="getOrRefresh(java.util.function.Supplier,java.util.function.Supplier)">
+<h3>getOrRefresh</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful">CustomPanelManifestCache.CachedResponse</a></span>&nbsp;<span class="element-name">getOrRefresh</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;signatureSupplier,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;byte[]&gt;&nbsp;byteBuilder)</span></div>
+<div class="block">Returns a memoized <a href="CustomPanelManifestCache.CachedResponse.html" title="class in com.mcawful"><code>CustomPanelManifestCache.CachedResponse</code></a>. Recomputes the signature at most once per
+ <code>CACHE_SIGNATURE_TTL_MILLIS</code>; only invokes <code>byteBuilder</code> when the
+ signature actually changes. Safe under concurrent calls — the cache is a single
+ <code>volatile</code> reference replaced atomically.
+
+ <p>Both suppliers may be invoked on the calling thread. <code>signatureSupplier</code> runs
+ first (and only after the TTL has elapsed); <code>byteBuilder</code> runs only when the
+ signature differs from the previously cached one. Suppliers should never return
+ <code>null</code>.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>signatureSupplier</code> - produces the current source-fingerprint string; equality with
+                          the last cached value short-circuits the rebuild</dd>
+<dd><code>byteBuilder</code> - produces the freshly-serialized bytes when a rebuild is needed</dd>
+<dt>Returns:</dt>
+<dd>current cached response, recomputed on demand when the signature changes</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="computeStrongEtag(byte[])">
+<h3>computeStrongEtag</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">computeStrongEtag</span><wbr><span class="parameters">(byte[]&nbsp;bytes)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>bytes</code> - response body to fingerprint</dd>
+<dt>Returns:</dt>
+<dd>strong ETag header value for those bytes</dd>
+</dl>
+</section>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+<!-- ========= END OF CLASS DATA ========= -->
+</main>
+<footer role="contentinfo">
+<hr>
+<p class="legal-copy"><small><i>Copyright &copy; 2016-2026 phantombot.github.io/PhantomBot</i></small></p>
+</footer>
+</div>
+</div>
+</body>
+</html>

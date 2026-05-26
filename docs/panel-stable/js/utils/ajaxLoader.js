@@ -21,7 +21,8 @@ $(function () {
     let currentPageInfo = {
         folder: '',
         page: '',
-        href: ''
+        href: '',
+        panelSection: ''
     };
     /*
      * @function removes the page loader.
@@ -56,7 +57,7 @@ $(function () {
      * @param {String} folder
      * @param {String} page
      */
-    function loadPage(folder, page, href) {
+    function loadPage(folder, page, href, panelSection) {
         // Make sure the href isn't blank, then load the page.
         if (page !== '') {
             helpers.log('Starting ajax request for page: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
@@ -91,7 +92,8 @@ $(function () {
                     currentPageInfo = {
                         folder: folder,
                         page: page,
-                        href: href === undefined ? '' : href
+                        href: href === undefined ? '' : href,
+                        panelSection: panelSection || ''
                     };
                 },
                 error: function (err) {
@@ -105,11 +107,12 @@ $(function () {
         return currentPageInfo;
     }
 
-    // Handles loading of tabs.
-    $('[data-folder]').on('click', function (e) {
+    // Delegated so manifest-injected nav links work. data-page = filename; data-panel-section = Panel Users section.
+    $(document).on('click', '[data-folder]', function (e) {
         e.preventDefault();
-        // Load the page.
-        loadPage($(this).data('folder'), $(this).attr('href').substring(1), this.href);
+        const $link = $(this);
+        const page = $link.data('page') || String($link.attr('href') || '').substring(1);
+        loadPage($link.data('folder'), page, this.href, $link.data('panelSection'));
     });
 
     // Export to API.

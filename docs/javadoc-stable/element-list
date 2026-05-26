@@ -23,6 +23,7 @@ com.gmt2001.twitch.eventsub.subscriptions.channel
 com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption
 com.gmt2001.twitch.eventsub.subscriptions.channel.chat.data
 com.gmt2001.twitch.eventsub.subscriptions.channel.data
+com.gmt2001.twitch.eventsub.subscriptions.channel.power_ups.redemption
 com.gmt2001.twitch.eventsub.subscriptions.channel.prediction
 com.gmt2001.twitch.eventsub.subscriptions.stream
 com.gmt2001.twitch.tmi
@@ -32,6 +33,7 @@ com.gmt2001.util.concurrent
 com.gmt2001.wsclient
 com.gmt2001.wspinger
 com.illusionaryone
+com.mcawful
 com.scaniatv
 tv.phantombot
 tv.phantombot.cache
@@ -54,6 +56,8 @@ tv.phantombot.event.eventsub.automod.message
 tv.phantombot.event.eventsub.channel
 tv.phantombot.event.eventsub.channel.channel_points
 tv.phantombot.event.eventsub.channel.channel_points.redemption
+tv.phantombot.event.eventsub.channel.power_ups
+tv.phantombot.event.eventsub.channel.power_ups.redemption
 tv.phantombot.event.eventsub.channel.prediction
 tv.phantombot.event.eventsub.stream
 tv.phantombot.event.irc

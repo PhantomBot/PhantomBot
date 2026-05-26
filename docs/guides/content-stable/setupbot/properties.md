@@ -285,6 +285,16 @@ the password to login to the panel. default is a randomly generated password
 &nbsp;
 
 ### Misc
+#### rhinointerpretmode
+
+Data Type: _Boolean_
+
+if `true`, rhino will be running in interpret mode and won't compile bytecode on the fly. interpret mode is slower but can lead to reduced memory usage. default `false`
+
+_NOTE: A restart is required for this property to take effect_
+
+&nbsp;
+
 #### restartcmd
 
 Data Type: _String_

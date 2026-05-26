@@ -504,6 +504,16 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCustomPowerUp(java.util.List)" class="member-name-link">getCustomPowerUp</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;id)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns a list of Custom Power Up objects for the Custom Power Ups on a channel.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCustomPowerUpAsync(java.util.List)" class="member-name-link">getCustomPowerUpAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;id)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns a list of Custom Power Up objects for the Custom Power Ups on a channel.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCustomReward(java.util.List,java.lang.Boolean)" class="member-name-link">getCustomReward</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;only_manageable_rewards)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -3783,6 +3793,44 @@ loadScripts(document, 'script');</script>
 <dd><code>for_source_only</code> - When using an app token, set  to only send the message to the chat room of the specified broadcaster;
   to also send to other chats when shared chat is active. Ignored for user tokens.</dd>
 <dd><code>reply_parent_message_id</code> - The ID of the chat message being replied to.</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getCustomPowerUp(java.util.List)">
+<h3>getCustomPowerUp</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">getCustomPowerUp</span><wbr><span class="parameters">(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;id)</span>
+                            throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Returns a list of Custom Power Up objects for the Custom Power Ups on a channel.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - When used, this parameter filters the results and only returns reward objects for the Custom Power Ups with matching ID. Maximum: 50</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getCustomPowerUpAsync(java.util.List)">
+<h3>getCustomPowerUpAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</span>&nbsp;<span class="element-name">getCustomPowerUpAsync</span><wbr><span class="parameters">(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;id)</span>
+                                       throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Returns a list of Custom Power Up objects for the Custom Power Ups on a channel.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - When used, this parameter filters the results and only returns reward objects for the Custom Power Ups with matching ID. Maximum: 50</dd>
 <dt>Returns:</dt>
 <dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>

@@ -523,6 +523,8 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 
 _NOTE: disabled redeemables are not visible to viewers_
 
+_NOTE: does not work on bits power-ups_
+
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
@@ -541,6 +543,8 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 
 
 _NOTE: paused redeemables are visible to viewers, but can not be redeemed_
+
+_NOTE: does not work on bits power-ups_
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -3232,6 +3236,14 @@ Yes&nbsp;&nbsp; | No
 Defined in script: _./javascript-source/handlers/channelPointsHandler.js_
 
 #### Hook: eventSubChannelPointsCustomRewardRedemptionAdd
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch commandevent noevent channelpointsevent
+
+#### Hook: eventSubChannelCustomPowerUpRedemptionAddEvent
 
 Global&nbsp;&nbsp; | Local
 -------|-------
