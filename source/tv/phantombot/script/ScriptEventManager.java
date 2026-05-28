@@ -79,7 +79,12 @@ public final class ScriptEventManager implements Listener {
                 ScriptEventHandler e = events.get(eventName);
 
                 if (e != null) {
-                    e.handle(event);
+                    tv.phantombot.script.RhinoRuntime.getContextFactory().enterContext();
+                    try {
+                        e.handle(event);
+                    } finally {
+                        org.mozilla.javascript.Context.exit();
+                    }
                 }
 
                 com.gmt2001.Console.debug.println("Dispatched event " + eventName);

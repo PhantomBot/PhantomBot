@@ -31,12 +31,7 @@ public final class RhinoContextFactory extends ContextFactory {
     @Override
     protected Context makeContext() {
         Context cx = super.makeContext();
-        if (CaselessProperties.instance().getPropertyAsBoolean("rhinointerpretmode", false)) {
-            cx.setInterpretedMode(true);
-        }
-        if (PhantomBot.getEnableRhinoDebugger()) {
-            cx.setGeneratingDebug(true);
-        }
+        setContextOptions(cx);
         return cx;
     }
 
@@ -46,5 +41,30 @@ public final class RhinoContextFactory extends ContextFactory {
             return true;
         }
         return super.hasFeature(cx, featureIndex);
+    }
+
+    @Override
+    public Context enterContext() {
+        try {
+            return super.enterContext();
+        } catch (RuntimeException e) {
+            com.gmt2001.Console.err.println("Failed to enter Rhino context. Creating new context: " + e.getMessage());
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
+
+        return this.makeContext();
+    }
+
+    /**
+     * Set Phantombot specific context options based on configuration.
+     * @param cx Context to configure
+     */
+    private void setContextOptions(Context cx) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("rhinointerpretmode", false)) {
+            cx.setInterpretedMode(true);
+        }
+        if (PhantomBot.getEnableRhinoDebugger()) {
+            cx.setGeneratingDebug(true);
+        }
     }
 }

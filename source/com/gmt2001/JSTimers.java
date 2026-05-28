@@ -165,8 +165,11 @@ public class JSTimers {
                 if (this.isCancelled.get()) {
                     return;
                 }
+
+                tv.phantombot.script.RhinoRuntime.getContextFactory().enterContext();
                 this.callback.run();
             } finally {
+                org.mozilla.javascript.Context.exit();
                 if (!this.isInterval) {
                     this.isCancelled.set(true);
                 }
