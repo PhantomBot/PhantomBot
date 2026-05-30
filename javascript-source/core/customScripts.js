@@ -26,16 +26,12 @@
  *
  * <p>{@code init.js} only fires {@code initReady} once at boot, but most
  * modules register chat commands inside that hook. After the scan we diff
- * {@code $.bot.modules} and selectively re-invoke {@code initReady} handlers
- * for the newly-loaded scripts so their commands actually register.</p>
+ * {@code $.bot.modules} and re-invoke {@code initReady} via {@code $.bot.getHook}
+ * for newly-loaded scripts so their commands actually register.</p>
  *
  * @author mcawful
  */
 (function () {
-    function normalizeScriptName(name) {
-        return ('' + name).replace(/^\.\//, '');
-    }
-
     function snapshotLoadedModules() {
         const out = [];
         if ($.bot && $.bot.modules) {
@@ -67,27 +63,17 @@
             return 0;
         }
 
-        const hookContainer = $.bot && $.bot.hooks ? $.bot.hooks.initReady : null;
-        if (!hookContainer || !hookContainer.handlers) {
-            return 0;
-        }
-
-        // $.bot.modules keys keep the leading "./", Hook.scriptName strips it.
-        const nameSet = {};
-        for (let i = 0; i < newModuleNames.length; i++) {
-            nameSet[normalizeScriptName(newModuleNames[i])] = true;
-        }
-
         let fired = 0;
-        for (let j = 0; j < hookContainer.handlers.length; j++) {
-            const handler = hookContainer.handlers[j];
-            if (handler && nameSet[normalizeScriptName(handler.scriptName)]) {
-                try {
-                    handler.handler(null);
-                    fired++;
-                } catch (ex) {
-                    $.log.error('reloadcustom: initReady handler for ' + handler.scriptName + ' threw: ' + ex);
-                }
+        for (let i = 0; i < newModuleNames.length; i++) {
+            const hook = $.bot.getHook(newModuleNames[i], 'initReady');
+            if (!hook || typeof hook.handler !== 'function') {
+                continue;
+            }
+            try {
+                hook.handler(null);
+                fired++;
+            } catch (ex) {
+                $.log.error('reloadcustom: initReady handler for ' + newModuleNames[i] + ' threw: ' + ex);
             }
         }
         return fired;

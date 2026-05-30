@@ -380,6 +380,28 @@
     }
 
     /*
+     * @function normalizeHookScriptName
+     *
+     * @param  {String} name module key, hook scriptName, or hook scriptPath
+     * @return {String}
+     */
+    function normalizeHookScriptName(name) {
+        let s = $.replace(('' + name), '\\', '/');
+
+        if (s.indexOf('/scripts/') >= 0) {
+            s = s.substring(s.indexOf('/scripts/') + '/scripts/'.length);
+        } else if (s.indexOf('scripts/') === 0) {
+            s = s.substring('scripts/'.length);
+        }
+
+        if (s.indexOf('./') === 0) {
+            s = s.substring(2);
+        }
+
+        return s.toLowerCase();
+    }
+
+    /*
      * @function getHookIndex
      *
      * @param  {String} scriptName
@@ -389,11 +411,14 @@
     function getHookIndex(scriptName, hookName) {
         hookName = $api.formatEventName(hookName) + '';
         let hook = hooks[hookName],
-                i;
+                i,
+                want = normalizeHookScriptName(scriptName);
 
         if (hook !== undefined) {
             for (i in hook.handlers) {
-                if (hook.handlers[i].scriptName.equalsIgnoreCase(scriptName)) {
+                if (hook.handlers[i].scriptName.equalsIgnoreCase(scriptName)
+                        || normalizeHookScriptName(hook.handlers[i].scriptName) === want
+                        || normalizeHookScriptName(hook.handlers[i].scriptPath) === want) {
                     return i;
                 }
             }
@@ -429,7 +454,7 @@
     }
 
     /*
-     * @function hookName
+     * @function removeHook
      *
      * @param {String} hookName
      */
