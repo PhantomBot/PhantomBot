@@ -523,11 +523,55 @@ public class Helix {
      */
     public Mono<JSONObject> updateChannelInformationAsync(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title,
             int delay) throws JSONException, IllegalArgumentException {
+        return this.updateChannelInformationAsync(broadcaster_id, game_id, language, title, delay, null, null, null);
+    }
+
+    /**
+     * Modifies channel information for users. @paramref channelId is required. All others are optional, but at least one must be valid.
+     *
+     * @param broadcaster_id ID of the channel to be updated.
+     * @param game_id The current game ID being played on the channel. Use "0" or "" (an empty string) to unset the game.
+     * @param language The language of the channel. A language value must be either the ISO 639-1 two-letter code for a supported stream language or
+     * "other".
+     * @param title The title of the stream. Value must not be an empty string.
+     * @param delay Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
+     * 400 error.
+     * @param tags A list of channel-defined tags to apply to the channel.
+     * @param content_classification_labels A list of content classification labels to apply.
+     * @param is_branded_content Boolean flag indicating if the channel has branded content.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject updateChannelInformation(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title,
+            int delay, @Nullable List<String> tags, @Nullable org.json.JSONArray content_classification_labels, @Nullable Boolean is_branded_content) throws JSONException, IllegalArgumentException {
+        return this.updateChannelInformationAsync(broadcaster_id, game_id, language, title, delay, tags, content_classification_labels, is_branded_content).block();
+    }
+
+    /**
+     * Modifies channel information for users. @paramref channelId is required. All others are optional, but at least one must be valid.
+     *
+     * @param broadcaster_id ID of the channel to be updated.
+     * @param game_id The current game ID being played on the channel. Use "0" or "" (an empty string) to unset the game.
+     * @param language The language of the channel. A language value must be either the ISO 639-1 two-letter code for a supported stream language or
+     * "other".
+     * @param title The title of the stream. Value must not be an empty string.
+     * @param delay Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
+     * 400 error.
+     * @param tags A list of channel-defined tags to apply to the channel.
+     * @param content_classification_labels A list of content classification labels to apply.
+     * @param is_branded_content Boolean flag indicating if the channel has branded content.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> updateChannelInformationAsync(String broadcaster_id, @Nullable String game_id, @Nullable String language, @Nullable String title,
+            int delay, @Nullable List<String> tags, @Nullable org.json.JSONArray content_classification_labels, @Nullable Boolean is_branded_content) throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
 
-        if (game_id == null && (language == null || language.isBlank()) && (title == null || title.isBlank()) && delay < 0) {
+        if (game_id == null && (language == null || language.isBlank()) && (title == null || title.isBlank()) && delay < 0 && tags == null && content_classification_labels == null && is_branded_content == null) {
             throw new IllegalArgumentException("must provide one valid argument");
         }
 
@@ -548,6 +592,18 @@ public class Helix {
 
         if (delay >= 0) {
             js.key("delay").value(delay);
+        }
+
+        if (tags != null) {
+            js.key("tags").value(tags);
+        }
+
+        if (content_classification_labels != null) {
+            js.key("content_classification_labels").value(content_classification_labels);
+        }
+
+        if (is_branded_content != null) {
+            js.key("is_branded_content").value(is_branded_content);
         }
 
         js.endObject();
@@ -676,8 +732,50 @@ public class Helix {
      */
     public Mono<JSONObject> getBroadcasterSubscriptionsAsync(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
+        return this.getBroadcasterSubscriptionsAsync(broadcaster_id, user_id, first, null, after);
+    }
+
+    /**
+     * Get all of the subscriptions for a specific broadcaster.
+     *
+     * @param broadcaster_id User ID of the broadcaster. Must match the User ID in the Bearer token.
+     * @param user_id Filters results to only include potential subscriptions made by the provided user IDs. Accepts up to 100 values.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results in a multi-page response.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results in a multi-page response. This
+     * applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
+     * here is from the pagination response field of a prior query.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getBroadcasterSubscriptions(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String before, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        return this.getBroadcasterSubscriptionsAsync(broadcaster_id, user_id, first, before, after).block();
+    }
+
+    /**
+     * Get all of the subscriptions for a specific broadcaster.
+     *
+     * @param broadcaster_id User ID of the broadcaster. Must match the User ID in the Bearer token.
+     * @param user_id Filters results to only include potential subscriptions made by the provided user IDs. Accepts up to 100 values.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results in a multi-page response.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results in a multi-page response. This
+     * applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
+     * here is from the pagination response field of a prior query.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getBroadcasterSubscriptionsAsync(String broadcaster_id, @Nullable List<String> user_id, int first, @Nullable String before, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
+            throw new IllegalArgumentException("can not use before and after at the same time");
         }
 
         if (first <= 0) {
@@ -693,7 +791,7 @@ public class Helix {
         }
 
         String endpoint = "/subscriptions?broadcaster_id=" + broadcaster_id + "&first=" + first
-                + this.qspValid("&user_id", userIds) + this.qspValid("&after", after);
+                + this.qspValid("&user_id", userIds) + this.qspValid("&before", before) + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
@@ -743,6 +841,54 @@ public class Helix {
      */
     public Mono<JSONObject> getStreamsAsync(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
             @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language) throws JSONException, IllegalArgumentException {
+        return this.getStreamsAsync(first, before, after, user_id, user_login, game_id, language, null);
+    }
+
+    /**
+     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order. Across multiple pages of
+     * results, there may be duplicate or missing streams, as viewers join and leave streams.
+     *
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param user_id Returns streams broadcast by one or more specified user IDs. You can specify up to 100 IDs.
+     * @param user_login Returns streams broadcast by one or more specified user login names. You can specify up to 100 names.
+     * @param game_id Returns streams broadcasting a specified game ID. You can specify up to 100 IDs.
+     * @param language Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
+     * supported stream language or "other".
+     * @param type The type of stream to filter the list of streams by. Possible values are: "all", "live". Default is "all".
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getStreams(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
+            @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language, @Nullable String type) throws JSONException, IllegalArgumentException {
+        return this.getStreamsAsync(first, before, after, user_id, user_login, game_id, language, type).block();
+    }
+
+    /**
+     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order. Across multiple pages of
+     * results, there may be duplicate or missing streams, as viewers join and leave streams.
+     *
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param user_id Returns streams broadcast by one or more specified user IDs. You can specify up to 100 IDs.
+     * @param user_login Returns streams broadcast by one or more specified user login names. You can specify up to 100 names.
+     * @param game_id Returns streams broadcasting a specified game ID. You can specify up to 100 IDs.
+     * @param language Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
+     * supported stream language or "other".
+     * @param type The type of stream to filter the list of streams by. Possible values are: "all", "live". Default is "all".
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getStreamsAsync(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
+            @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language, @Nullable String type) throws JSONException, IllegalArgumentException {
         if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
             throw new IllegalArgumentException("can not use before and after at the same time");
         }
@@ -778,7 +924,7 @@ public class Helix {
         }
 
         String endpoint = "/streams?first=" + first + this.qspValid("&after", after) + this.qspValid("&before", before)
-                + this.qspValid("&user_id", userIds) + this.qspValid("&user_login", userLogins) + this.qspValid("&game_id", gameIds) + this.qspValid("&language", languages);
+                + this.qspValid("&user_id", userIds) + this.qspValid("&user_login", userLogins) + this.qspValid("&game_id", gameIds) + this.qspValid("&language", languages) + this.qspValid("&type", type);
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
@@ -1200,6 +1346,60 @@ public class Helix {
     public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
             @Nullable String before, @Nullable String after, @Nullable ZonedDateTime started_at, @Nullable ZonedDateTime ended_at)
             throws JSONException, IllegalArgumentException {
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_at, ended_at, null);
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips. (The seconds value is ignored.) If this is specified, ended_at also should be
+     * specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips. (Note that the seconds value is ignored.) If this is specified, started_at also must be
+     * specified; otherwise, the time period is ignored.
+     * @param is_featured A Boolean value that determines whether the response includes featured clips. If true, returns only clips that are featured. If false, returns only clips that aren’t featured. All clips are returned if this parameter is not present.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getClips(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable ZonedDateTime started_at, @Nullable ZonedDateTime ended_at, @Nullable Boolean is_featured)
+            throws JSONException, IllegalArgumentException {
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_at, ended_at, is_featured).block();
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips. (The seconds value is ignored.) If this is specified, ended_at also should be
+     * specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips. (Note that the seconds value is ignored.) If this is specified, started_at also must be
+     * specified; otherwise, the time period is ignored.
+     * @param is_featured A Boolean value that determines whether the response includes featured clips. If true, returns only clips that are featured. If false, returns only clips that aren’t featured. All clips are returned if this parameter is not present.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable ZonedDateTime started_at, @Nullable ZonedDateTime ended_at, @Nullable Boolean is_featured)
+            throws JSONException, IllegalArgumentException {
         String started_atS = null;
         String ended_atS = null;
 
@@ -1214,7 +1414,7 @@ public class Helix {
             }
         }
 
-        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_atS, ended_atS);
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_atS, ended_atS, is_featured);
     }
 
     /**
@@ -1240,12 +1440,66 @@ public class Helix {
     public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
             @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at)
             throws JSONException, IllegalArgumentException {
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_at, ended_at, null);
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips, in RFC3339 format. (The seconds value is ignored.) If this is specified, ended_at also
+     * should be specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
+     * started_at also must be specified; otherwise, the time period is ignored.
+     * @param is_featured A Boolean value that determines whether the response includes featured clips. If true, returns only clips that are featured. If false, returns only clips that aren’t featured. All clips are returned if this parameter is not present.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getClips(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at, @Nullable Boolean is_featured)
+            throws JSONException, IllegalArgumentException {
+        return this.getClipsAsync(id, broadcaster_id, game_id, first, before, after, started_at, ended_at, is_featured).block();
+    }
+
+    /**
+     * Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only). Note: The clips service returns a maximum of
+     * 1000 clips.
+     *
+     * @param id ID of the clip being queried. Limit: 100. If this is specified, you cannot use any of the other query parameters below.
+     * @param broadcaster_id ID of the broadcaster for whom clips are returned. Results are ordered by view count.
+     * @param game_id ID of the game for which clips are returned. Results are ordered by view count.
+     * @param first Maximum number of objects to return. Maximum: 100. Default: 20.
+     * @param before Cursor for backward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
+     * cursor value specified here is from the pagination response field of a prior query.
+     * @param started_at Starting date/time for returned clips, in RFC3339 format. (The seconds value is ignored.) If this is specified, ended_at also
+     * should be specified; otherwise, the ended_at date/time will be 1 week after the started_at value.
+     * @param ended_at Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
+     * started_at also must be specified; otherwise, the time period is ignored.
+     * @param is_featured A Boolean value that determines whether the response includes featured clips. If true, returns only clips that are featured. If false, returns only clips that aren’t featured. All clips are returned if this parameter is not present.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getClipsAsync(@Nullable List<String> id, @Nullable String broadcaster_id, @Nullable String game_id, int first,
+            @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at, @Nullable Boolean is_featured)
+            throws JSONException, IllegalArgumentException {
         if ((id == null || id.isEmpty()) && (broadcaster_id == null || broadcaster_id.isBlank()) && (game_id == null || game_id.isBlank())) {
             throw new IllegalArgumentException("id, broadcaster_id, or game_id");
         }
 
         if (id != null && !id.isEmpty() && ((after != null && !after.isBlank()) || (before != null && !before.isBlank())
-                || (ended_at != null && !ended_at.isBlank()) || (started_at != null && !started_at.isBlank()))) {
+                || (ended_at != null && !ended_at.isBlank()) || (started_at != null && !started_at.isBlank()) || (is_featured != null))) {
             throw new IllegalArgumentException("other parameters not allowed with clip id");
         }
 
@@ -1290,8 +1544,10 @@ public class Helix {
                 + this.qspValid("&broadcaster_id", broadcaster_id) + this.qspValid("&game_id", game_id) + this.qspValid("&after", after)
                 + this.qspValid("&before", before) + this.qspValid("&started_at", started_at) + this.qspValid("&ended_at", ended_at);
 
-        return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(HttpMethod.GET, endpoint);
+        String finalEndpoint = endpoint + (is_featured != null ? this.qspValid("&is_featured", is_featured.toString()) : "");
+
+        return this.handleQueryAsync(finalEndpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, finalEndpoint);
         });
     }
 
@@ -2654,6 +2910,70 @@ public class Helix {
     public Mono<JSONObject> getEventSubSubscriptionsAsync(@Nullable EventSubSubscription.SubscriptionStatus status,
             @Nullable String type, @Nullable String user_id, @Nullable String after)
             throws JSONException, IllegalArgumentException {
+        return this.getEventSubSubscriptionsAsync(status, type, user_id, after, null, null);
+    }
+
+    /**
+     * Gets a list of EventSub subscriptions that the client in the access token created.
+     * <p>
+     * Use the status, type, and user_id query parameters to filter the list of subscriptions that are returned.
+     * The filters are mutually exclusive; the request fails if you specify more than one filter.
+     *
+     * @param status Filter subscriptions by its status.
+     * @param type Filter subscriptions by subscription type.
+     * @param user_id Filter subscriptions by user ID. The response contains subscriptions where this ID matches a user ID that you specified in the Condition when you created the subscription.
+     * @param after The cursor used to get the next page of results.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getEventSubSubscriptions(@Nullable EventSubSubscription.SubscriptionStatus status,
+            @Nullable String type, @Nullable String user_id, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        return this.getEventSubSubscriptionsAsync(status, type, user_id, after, null, null).block();
+    }
+
+    /**
+     * Gets a list of EventSub subscriptions that the client in the access token created.
+     * <p>
+     * Use the status, type, user_id, subscription_id, and conduit_id query parameters to filter the list of subscriptions that are returned.
+     * The filters are mutually exclusive; the request fails if you specify more than one filter.
+     *
+     * @param status Filter subscriptions by its status.
+     * @param type Filter subscriptions by subscription type.
+     * @param user_id Filter subscriptions by user ID. The response contains subscriptions where this ID matches a user ID that you specified in the Condition when you created the subscription.
+     * @param after The cursor used to get the next page of results.
+     * @param subscription_id Filter subscriptions by subscription ID.
+     * @param conduit_id Filter subscriptions by conduit ID.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getEventSubSubscriptions(@Nullable EventSubSubscription.SubscriptionStatus status,
+            @Nullable String type, @Nullable String user_id, @Nullable String after, @Nullable String subscription_id, @Nullable String conduit_id)
+            throws JSONException, IllegalArgumentException {
+        return this.getEventSubSubscriptionsAsync(status, type, user_id, after, subscription_id, conduit_id).block();
+    }
+
+    /**
+     * Gets a list of EventSub subscriptions that the client in the access token created.
+     * <p>
+     * Use the status, type, user_id, subscription_id, and conduit_id query parameters to filter the list of subscriptions that are returned.
+     * The filters are mutually exclusive; the request fails if you specify more than one filter.
+     *
+     * @param status Filter subscriptions by its status.
+     * @param type Filter subscriptions by subscription type.
+     * @param user_id Filter subscriptions by user ID. The response contains subscriptions where this ID matches a user ID that you specified in the Condition when you created the subscription.
+     * @param after The cursor used to get the next page of results.
+     * @param subscription_id Filter subscriptions by subscription ID.
+     * @param conduit_id Filter subscriptions by conduit ID.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getEventSubSubscriptionsAsync(@Nullable EventSubSubscription.SubscriptionStatus status,
+            @Nullable String type, @Nullable String user_id, @Nullable String after, @Nullable String subscription_id, @Nullable String conduit_id)
+            throws JSONException, IllegalArgumentException {
             String condition = "?";
 
             if (status != null) {
@@ -2662,7 +2982,7 @@ public class Helix {
 
             if (type != null && !type.isBlank()) {
                 if (condition.length() > 1) {
-                    throw new IllegalArgumentException("can only use one of status, type, user_id");
+                    throw new IllegalArgumentException("can only use one of status, type, user_id, subscription_id, conduit_id");
                 }
 
                 condition += this.qspValid("type", type);
@@ -2670,19 +2990,67 @@ public class Helix {
 
             if (user_id != null && !user_id.isBlank()) {
                 if (condition.length() > 1) {
-                    throw new IllegalArgumentException("can only use one of status, type, user_id");
+                    throw new IllegalArgumentException("can only use one of status, type, user_id, subscription_id, conduit_id");
                 }
 
                 condition += this.qspValid("user_id", user_id);
+            }
+
+            if (subscription_id != null && !subscription_id.isBlank()) {
+                if (condition.length() > 1) {
+                    throw new IllegalArgumentException("can only use one of status, type, user_id, subscription_id, conduit_id");
+                }
+
+                condition += this.qspValid("subscription_id", subscription_id);
+            }
+
+            if (conduit_id != null && !conduit_id.isBlank()) {
+                if (condition.length() > 1) {
+                    throw new IllegalArgumentException("can only use one of status, type, user_id, subscription_id, conduit_id");
+                }
+
+                condition += this.qspValid("conduit_id", conduit_id);
             }
 
             condition += this.qspValid((condition.length() > 1 ? "&" : "") + "after", after);
 
         String endpoint = "/eventsub/subscriptions" + (condition.length() > 1 ? condition : "");
 
-        return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(HttpMethod.GET, endpoint);
+        String finalEndpoint = endpoint;
+        return this.handleQueryAsync(finalEndpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, finalEndpoint);
         });
+    }
+
+    /**
+     * Creates an EventSub subscription.
+     *
+     * @param jsonString A JSON string describing the parameters of the new subscription
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+
+
+    /**
+     * Creates an EventSub subscription.
+     *
+     * @param jsonString A JSON string describing the parameters of the new subscription
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    /**
+     * Creates an EventSub subscription.
+     *
+     * @param jsonString A JSON string describing the parameters of the new subscription
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject createEventSubSubscription(String jsonString)
+            throws JSONException, IllegalArgumentException {
+        return this.createEventSubSubscriptionAsync(jsonString).block();
     }
 
     /**
@@ -2704,6 +3072,37 @@ public class Helix {
         return this.handleMutatorAsync(endpoint + jsonString, () -> {
             return this.handleRequest(HttpMethod.POST, endpoint, jsonString);
         });
+    }
+
+    /**
+     * Deletes an EventSub subscription.
+     *
+     * @param id The ID of the subscription to delete.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+
+
+    /**
+     * Deletes an EventSub subscription.
+     *
+     * @param id The ID of the subscription to delete.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    /**
+     * Deletes an EventSub subscription.
+     *
+     * @param id The ID of the subscription to delete.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject deleteEventSubSubscription(String id)
+            throws JSONException, IllegalArgumentException {
+        return this.deleteEventSubSubscriptionAsync(id).block();
     }
 
     /**
@@ -3233,18 +3632,72 @@ public class Helix {
      */
     public Mono<JSONObject> getChattersAsync(int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
-        first = Math.max(1, Math.min(1000, first));
-
         if (ViewerCache.instance().broadcaster() == null) {
             return Mono.empty();
         }
 
-        String endpoint = "/chat/chatters?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id())
-        + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&first", first)
+        return this.getChattersAsync(ViewerCache.instance().broadcaster().id(), TwitchValidate.instance().getAPIUserID(), first, after);
+    }
+
+    /**
+     * Gets the list of users that are connected to the broadcaster’s chat session.
+     * <p>
+     * NOTE: There is a delay between when users join and leave a chat and when the list is updated accordingly.
+     *
+     * @param first The maximum number of items to return per page in the response. Minimum: 1. Maximum: 1,000
+     * @param after The cursor used to get the next page of results.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getChatters(int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        Mono<JSONObject> mono = this.getChattersAsync(first, after);
+        return mono == null ? null : mono.block();
+    }
+
+    /**
+     * Gets the list of users that are connected to the broadcaster’s chat session.
+     * <p>
+     * NOTE: There is a delay between when users join and leave a chat and when the list is updated accordingly.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose list of chatters you want to get.
+     * @param moderator_id The ID of the broadcaster or one of the broadcaster’s moderators. This ID must match the user ID in the user access token.
+     * @param first The maximum number of items to return per page in the response. Minimum: 1. Maximum: 1,000
+     * @param after The cursor used to get the next page of results.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getChatters(String broadcaster_id, String moderator_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        return this.getChattersAsync(broadcaster_id, moderator_id, first, after).block();
+    }
+
+    /**
+     * Gets the list of users that are connected to the broadcaster’s chat session.
+     * <p>
+     * NOTE: There is a delay between when users join and leave a chat and when the list is updated accordingly.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose list of chatters you want to get.
+     * @param moderator_id The ID of the broadcaster or one of the broadcaster’s moderators. This ID must match the user ID in the user access token.
+     * @param first The maximum number of items to return per page in the response. Minimum: 1. Maximum: 1,000
+     * @param after The cursor used to get the next page of results.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getChattersAsync(String broadcaster_id, String moderator_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        first = Math.max(1, Math.min(1000, first));
+
+        String endpoint = "/chat/chatters?" + this.qspValid("broadcaster_id", broadcaster_id)
+        + this.qspValid("&moderator_id", moderator_id) + this.qspValid("&first", first)
         + this.qspValid("&after", after);
 
-        return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(HttpMethod.GET, endpoint);
+        String finalEndpoint = endpoint;
+        return this.handleQueryAsync(finalEndpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, finalEndpoint);
         });
     }
 
@@ -3439,6 +3892,42 @@ public class Helix {
      * @throws IllegalArgumentException
      */
     public Mono<JSONObject> sendChatMessageAsync(boolean use_app_token, String broadcaster_id, String message, boolean for_source_only, @Nullable String reply_parent_message_id) {
+        return this.sendChatMessageAsync(use_app_token, broadcaster_id, message, for_source_only, reply_parent_message_id, null);
+    }
+
+    /**
+     * Sends a message to the broadcaster’s chat room.
+     *
+     * @param use_app_token If {@c true}, uses the app (appoauth) token to send the message, and appears as a bot; otherwise, uses the bot (oauth) token.
+     * @param broadcaster_id The ID of the broadcaster whose chat room the message will be sent to.
+     * @param message The message to send. The message is limited to a maximum of 500 characters.
+     * @param for_source_only When using an app token, set {@c true} to only send the message to the chat room of the specified broadcaster;
+     * {@c false} to also send to other chats when shared chat is active. Ignored for user tokens.
+     * @param reply_parent_message_id The ID of the chat message being replied to.
+     * @param pin If true, the message will be sent and immediately pinned. Default: false. Cannot be combined with reply_parent_message_id or for_source_only.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendChatMessage(boolean use_app_token, String broadcaster_id, String message, boolean for_source_only, @Nullable String reply_parent_message_id, @Nullable Boolean pin) {
+        return this.sendChatMessageAsync(use_app_token, broadcaster_id, message, for_source_only, reply_parent_message_id, pin).block();
+    }
+
+    /**
+     * Sends a message to the broadcaster’s chat room.
+     *
+     * @param use_app_token If {@c true}, uses the app (appoauth) token to send the message, and appears as a bot; otherwise, uses the bot (oauth) token.
+     * @param broadcaster_id The ID of the broadcaster whose chat room the message will be sent to.
+     * @param message The message to send. The message is limited to a maximum of 500 characters.
+     * @param for_source_only When using an app token, set {@c true} to only send the message to the chat room of the specified broadcaster;
+     * {@c false} to also send to other chats when shared chat is active. Ignored for user tokens.
+     * @param reply_parent_message_id The ID of the chat message being replied to.
+     * @param pin If true, the message will be sent and immediately pinned. Default: false. Cannot be combined with reply_parent_message_id or for_source_only.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendChatMessageAsync(boolean use_app_token, String broadcaster_id, String message, boolean for_source_only, @Nullable String reply_parent_message_id, @Nullable Boolean pin) {
         if (broadcaster_id == null || broadcaster_id.isBlank()) {
             throw new IllegalArgumentException("broadcaster_id");
         }
@@ -3460,6 +3949,10 @@ public class Helix {
 
         if (use_app_token) {
             js.key("for_source_only").value(for_source_only);
+        }
+
+        if (pin != null) {
+            js.key("pin").value(pin);
         }
 
         js.endObject();
