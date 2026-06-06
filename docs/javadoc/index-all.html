@@ -1742,6 +1742,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">If an operating system specific <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a> is available, returns a new instance of it</div>
 </dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#createEventSubSubscription(java.lang.String)" class="member-name-link">createEventSubSubscription(String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Creates an EventSub subscription.</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#createEventSubSubscriptionAsync(java.lang.String)" class="member-name-link">createEventSubSubscriptionAsync(String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Creates an EventSub subscription.</div>
@@ -2203,6 +2207,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/data/DeleteData.html#%3Cinit%3E(org.json.JSONObject)" class="member-name-link">DeleteData(JSONObject)</a> - Constructor for class com.gmt2001.twitch.eventsub.subscriptions.channel.data.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/data/DeleteData.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.data">DeleteData</a></dt>
 <dd>
 <div class="block">Constructor</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#deleteEventSubSubscription(java.lang.String)" class="member-name-link">deleteEventSubSubscription(String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Deletes an EventSub subscription.</div>
 </dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#deleteEventSubSubscriptionAsync(java.lang.String)" class="member-name-link">deleteEventSubSubscriptionAsync(String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
@@ -3919,7 +3927,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get all of the subscriptions for a specific broadcaster.</div>
 </dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getBroadcasterSubscriptions(java.lang.String,java.util.List,int,java.lang.String,java.lang.String)" class="member-name-link">getBroadcasterSubscriptions(String, List&lt;String&gt;, int, String, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Get all of the subscriptions for a specific broadcaster.</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#getBroadcasterSubscriptionsAsync(java.lang.String,java.util.List,int,java.lang.String)" class="member-name-link">getBroadcasterSubscriptionsAsync(String, List&lt;String&gt;, int, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Get all of the subscriptions for a specific broadcaster.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getBroadcasterSubscriptionsAsync(java.lang.String,java.util.List,int,java.lang.String,java.lang.String)" class="member-name-link">getBroadcasterSubscriptionsAsync(String, List&lt;String&gt;, int, String, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Get all of the subscriptions for a specific broadcaster.</div>
 </dd>
@@ -4109,7 +4125,19 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/twitch/api/TwitchValidate.html#getChatScopes()" class="member-name-link">getChatScopes()</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getChatters(int,java.lang.String)" class="member-name-link">getChatters(int, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets the list of users that are connected to the broadcaster’s chat session.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getChatters(java.lang.String,java.lang.String,int,java.lang.String)" class="member-name-link">getChatters(String, String, int, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets the list of users that are connected to the broadcaster’s chat session.</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#getChattersAsync(int,java.lang.String)" class="member-name-link">getChattersAsync(int, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets the list of users that are connected to the broadcaster’s chat session.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getChattersAsync(java.lang.String,java.lang.String,int,java.lang.String)" class="member-name-link">getChattersAsync(String, String, int, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Gets the list of users that are connected to the broadcaster’s chat session.</div>
 </dd>
@@ -4152,11 +4180,27 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
 </dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getClips(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Boolean)" class="member-name-link">getClips(List&lt;String&gt;, String, String, int, String, String, String, String, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getClips(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.time.ZonedDateTime,java.time.ZonedDateTime,java.lang.Boolean)" class="member-name-link">getClips(List&lt;String&gt;, String, String, int, String, String, ZonedDateTime, ZonedDateTime, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#getClipsAsync(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">getClipsAsync(List&lt;String&gt;, String, String, int, String, String, String, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
 </dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getClipsAsync(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Boolean)" class="member-name-link">getClipsAsync(List&lt;String&gt;, String, String, int, String, String, String, String, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#getClipsAsync(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.time.ZonedDateTime,java.time.ZonedDateTime)" class="member-name-link">getClipsAsync(List&lt;String&gt;, String, String, int, String, String, ZonedDateTime, ZonedDateTime)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getClipsAsync(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.time.ZonedDateTime,java.time.ZonedDateTime,java.lang.Boolean)" class="member-name-link">getClipsAsync(List&lt;String&gt;, String, String, int, String, String, ZonedDateTime, ZonedDateTime, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
 </dd>
@@ -4371,7 +4415,19 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/script/ScriptEventManager.html#getEventNames()" class="member-name-link">getEventNames()</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptEventManager.html" title="class in tv.phantombot.script">ScriptEventManager</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getEventSubSubscriptions(com.gmt2001.twitch.eventsub.EventSubSubscription.SubscriptionStatus,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">getEventSubSubscriptions(EventSubSubscription.SubscriptionStatus, String, String, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets a list of EventSub subscriptions that the client in the access token created.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getEventSubSubscriptions(com.gmt2001.twitch.eventsub.EventSubSubscription.SubscriptionStatus,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">getEventSubSubscriptions(EventSubSubscription.SubscriptionStatus, String, String, String, String, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets a list of EventSub subscriptions that the client in the access token created.</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#getEventSubSubscriptionsAsync(com.gmt2001.twitch.eventsub.EventSubSubscription.SubscriptionStatus,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">getEventSubSubscriptionsAsync(EventSubSubscription.SubscriptionStatus, String, String, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets a list of EventSub subscriptions that the client in the access token created.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getEventSubSubscriptionsAsync(com.gmt2001.twitch.eventsub.EventSubSubscription.SubscriptionStatus,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">getEventSubSubscriptionsAsync(EventSubSubscription.SubscriptionStatus, String, String, String, String, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Gets a list of EventSub subscriptions that the client in the access token created.</div>
 </dd>
@@ -5321,12 +5377,20 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets information about active streams.</div>
 </dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getStreams(int,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,java.lang.String)" class="member-name-link">getStreams(int, String, String, List&lt;String&gt;, List&lt;String&gt;, List&lt;String&gt;, List&lt;String&gt;, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets information about active streams.</div>
+</dd>
 <dt><a href="com/gmt2001/TwitchAPIv5.html#GetStreams(java.lang.String)" class="member-name-link">GetStreams(String)</a> - Method in class com.gmt2001.<a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">TwitchAPIv5</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a streams object array.</div>
 </dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#getStreamsAsync(int,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List)" class="member-name-link">getStreamsAsync(int, String, String, List&lt;String&gt;, List&lt;String&gt;, List&lt;String&gt;, List&lt;String&gt;)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets information about active streams.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#getStreamsAsync(int,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,java.lang.String)" class="member-name-link">getStreamsAsync(int, String, String, List&lt;String&gt;, List&lt;String&gt;, List&lt;String&gt;, List&lt;String&gt;, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Gets information about active streams.</div>
 </dd>
@@ -9802,7 +9866,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sends a message to the broadcaster’s chat room.</div>
 </dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#sendChatMessage(boolean,java.lang.String,java.lang.String,boolean,java.lang.String,java.lang.Boolean)" class="member-name-link">sendChatMessage(boolean, String, String, boolean, String, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Sends a message to the broadcaster’s chat room.</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#sendChatMessageAsync(boolean,java.lang.String,java.lang.String,boolean,java.lang.String)" class="member-name-link">sendChatMessageAsync(boolean, String, String, boolean, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Sends a message to the broadcaster’s chat room.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#sendChatMessageAsync(boolean,java.lang.String,java.lang.String,boolean,java.lang.String,java.lang.Boolean)" class="member-name-link">sendChatMessageAsync(boolean, String, String, boolean, String, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Sends a message to the broadcaster’s chat room.</div>
 </dd>
@@ -11522,7 +11594,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Modifies channel information for users.</div>
 </dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#updateChannelInformation(java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,java.util.List,org.json.JSONArray,java.lang.Boolean)" class="member-name-link">updateChannelInformation(String, String, String, String, int, List&lt;String&gt;, JSONArray, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Modifies channel information for users.</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#updateChannelInformationAsync(java.lang.String,java.lang.String,java.lang.String,java.lang.String,int)" class="member-name-link">updateChannelInformationAsync(String, String, String, String, int)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Modifies channel information for users.</div>
+</dd>
+<dt><a href="tv/phantombot/twitch/api/Helix.html#updateChannelInformationAsync(java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,java.util.List,org.json.JSONArray,java.lang.Boolean)" class="member-name-link">updateChannelInformationAsync(String, String, String, String, int, List&lt;String&gt;, JSONArray, Boolean)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Modifies channel information for users.</div>
 </dd>
