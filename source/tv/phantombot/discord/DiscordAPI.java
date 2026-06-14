@@ -267,7 +267,9 @@ public class DiscordAPI extends DiscordUtil {
         }
 
         this.ready = false;
-        DiscordAPI.gateway.logout();
+        if (DiscordAPI.gateway != null) {
+            DiscordAPI.gateway.logout();
+        }
 
         this.connect();
     }
@@ -337,7 +339,10 @@ public class DiscordAPI extends DiscordUtil {
      * @return
      */
     public static Guild getGuild() {
-        return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId()).block(Duration.ofSeconds(GUILDIDTIMEOUT));
+        if (DiscordAPI.gateway != null) {
+            return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId()).block(Duration.ofSeconds(GUILDIDTIMEOUT));
+        }
+        return null;
     }
 
     /**

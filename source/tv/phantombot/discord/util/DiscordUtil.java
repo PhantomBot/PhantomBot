@@ -600,6 +600,10 @@ public class DiscordUtil {
      * @param emoji The emoji unicode
      */
     public void addReaction(Message message, String emoji) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to add reaction, guild was null");
+            return;
+        }
         DiscordAPI.getGuild().getEmojis().collectList().subscribe(guildEmojis -> {
             Emoji result = null;
 
@@ -631,6 +635,10 @@ public class DiscordUtil {
      * @param emojis The emoji unicodes
      */
     public void addReactions(Message message, String... emojis) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to add reactions, guild was null");
+            return;
+        }
         DiscordAPI.getGuild().getEmojis().collectList().subscribe(guildEmojis -> {
             for (String emoji : emojis) {
                 Emoji result = null;
@@ -693,6 +701,10 @@ public class DiscordUtil {
     }
 
     public Mono<GuildMessageChannel> getChannelAsync(String channelName, Predicate<? super GuildChannel> filter) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get channel, guild was null");
+            return Mono.empty();
+        }
         String schannelName = sanitizeChannelName(channelName);
         try {
             return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getType() != Channel.Type.UNKNOWN).filter(channel -> DiscordUtil.channelName(channel).equalsIgnoreCase(schannelName)
@@ -714,6 +726,10 @@ public class DiscordUtil {
     }
 
     public Flux<GuildChannel> getAllChannelInfoAsync(Map<String, Map<String, String>> data) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get channel info, guild was null");
+            return Flux.empty();
+        }
         return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getType() != Channel.Type.UNKNOWN).doOnNext(channel -> {
             if (null != channel.getType()) {
                 switch (channel.getType()) {
@@ -777,6 +793,10 @@ public class DiscordUtil {
     }
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get channel by ID, guild was null");
+            return Mono.empty();
+        }
         try {
             return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getType() != Channel.Type.UNKNOWN).filter(channel -> DiscordUtil.channelIdAsString(channel).equals(channelId)).take(1).single().map(c -> (GuildMessageChannel) c);
         } catch (NoSuchElementException ex) {
@@ -796,6 +816,10 @@ public class DiscordUtil {
      * @return
      */
     public Mono<User> getUserAsync(String userName) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get user, guild was null");
+            return Mono.empty();
+        }
         Flux<Member> members = DiscordAPI.getGuild().getMembers();
 
         if (PhantomBot.getEnableDebugging()) {
@@ -827,6 +851,10 @@ public class DiscordUtil {
      * @return
      */
     public Mono<User> getUserByIdAsync(long userId) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get user by ID, guild was null");
+            return Mono.empty();
+        }
         try {
             return DiscordAPI.getGuild().getMembers().filter(user -> user.getId().asLong() == userId).take(1).single().map(m -> (User) m);
         } catch (NoSuchElementException ex) {
@@ -853,6 +881,10 @@ public class DiscordUtil {
      */
     @Deprecated(since = "3.10.0.0", forRemoval = true)
     public Mono<User> getUserWithDiscriminatorAsync(String userName, String discriminator) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get user with discriminator, guild was null");
+            return Mono.empty();
+        }
         try {
             return DiscordAPI.getGuild().getMembers().filter(user -> user.getDisplayName().equalsIgnoreCase(userName)
                     && user.getDiscriminator().equalsIgnoreCase(discriminator)).take(1).single().map(m -> (User) m);
@@ -875,6 +907,10 @@ public class DiscordUtil {
      * @return a Flux containing matching roles
      */
     public Flux<Role> getRolesAsync(String... roleNames) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get roles, guild was null");
+            return Flux.empty();
+        }
         Flux<Role> roles = DiscordAPI.getGuild().getRoles().transform(OrderUtil::orderRoles);
 
         if (PhantomBot.getEnableDebugging()) {
@@ -928,6 +964,10 @@ public class DiscordUtil {
      * @return
      */
     public Mono<Role> getRoleByIDAsync(String id) {
+            if (DiscordAPI.getGuild() == null) {
+                com.gmt2001.Console.warn.println("Unable to get role by ID, guild was null");
+                return Mono.empty();
+            }
         try {
             return DiscordAPI.getGuild().getRoles().filter(role -> role.getId().asString().equalsIgnoreCase(id)).take(1).single();
         } catch (NoSuchElementException ex) {
@@ -987,6 +1027,10 @@ public class DiscordUtil {
      * @param roles
      */
     public void editUserRoles(User user, Role... roles) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to edit user roles, guild was null");
+            return;
+        }
         this.validateParams(user, roles);
 
         user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
@@ -1024,6 +1068,10 @@ public class DiscordUtil {
      * @param user
      */
     public void addRole(Role role, User user) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to add role, guild was null");
+            return;
+        }
         this.validateParams(user, role);
 
         user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
@@ -1071,6 +1119,10 @@ public class DiscordUtil {
      * @param user
      */
     public void removeRole(Role role, User user) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to remove role, guild was null");
+            return;
+        }
         this.validateParams(user, role);
 
         user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
@@ -1103,6 +1155,10 @@ public class DiscordUtil {
      * @param roleName
      */
     public void createRole(String roleName) {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to create role, guild was null");
+            return;
+        }
         DiscordAPI.getGuild().createRole(RoleCreateSpec.create().withName(roleName)
         ).doOnError(e -> {
             com.gmt2001.Console.err.println("Unable to create role" + roleName + " (" + DiscordAPI.getGuild().getName() + ")");
@@ -1142,6 +1198,10 @@ public class DiscordUtil {
     }
 
     public Mono<List<Role>> getGuildRolesAsync() {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get guild roles, guild was null");
+            return Mono.empty();
+        }
         return Optional.ofNullable(Optional.ofNullable(DiscordAPI.getGuild()).map(Guild::getRoles).orElseGet(() -> Flux.<Role>empty())).map(Flux<Role>::collectList).orElseGet(() -> {
             return Flux.<Role>empty().collectList();
         });
@@ -1359,6 +1419,10 @@ public class DiscordUtil {
     }
 
     public Mono<List<User>> getUsersAsync() {
+        if (DiscordAPI.getGuild() == null) {
+            com.gmt2001.Console.warn.println("Unable to get users, guild was null");
+            return Mono.empty();
+        }
         return DiscordAPI.getGuild().getMembers().map(m -> (User) m).collectList();
     }
 
