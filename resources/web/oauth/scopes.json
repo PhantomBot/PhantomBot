@@ -88,6 +88,10 @@
             "desc": "Perform moderation actions in a channel.",
             "tooltip": "Used to watch for moderation actions in PubSub."
         },
+        "channel:read:ads": {
+            "desc": "Read the ads schedule and details on your channel.",
+            "tooltip": "Used to watch for ad start notifications in EventSub and get ad information."
+        },
         "channel:read:hype_train": {
             "desc": "Fetch information about current/past hype trains.",
             "tooltip": "Used to watch for hype train notifications in EventSub."

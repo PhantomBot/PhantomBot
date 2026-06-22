@@ -4005,6 +4005,24 @@ public class Helix {
         });
     }
 
+    /**
+     * Gets the ad schedule for the broadcaster's channel.
+     * 
+     * @note If the broadcaster does not have ads enabled, the response will have integer {@code 0} for all fields in the data array element
+     * @return A JSONObject with the response. {@link Mono.empty()} if the broadcaster is not available in {@link ViewerCache}.
+     * @throws JSONException
+     */
+    public Mono<JSONObject> getAdScheduleAsync() {
+        if (ViewerCache.instance().broadcaster() == null) {
+            return Mono.empty();
+        }
+        String endpoint = "/channels/ads?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id());
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
     private String chooseModeratorId(String scope) {
         /**
          * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`
