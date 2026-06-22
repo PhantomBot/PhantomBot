@@ -20,6 +20,7 @@ com.gmt2001.twitch.eventsub
 com.gmt2001.twitch.eventsub.subscriptions
 com.gmt2001.twitch.eventsub.subscriptions.automod.message
 com.gmt2001.twitch.eventsub.subscriptions.channel
+com.gmt2001.twitch.eventsub.subscriptions.channel.ad_break
 com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption
 com.gmt2001.twitch.eventsub.subscriptions.channel.chat.data
 com.gmt2001.twitch.eventsub.subscriptions.channel.data
@@ -54,6 +55,7 @@ tv.phantombot.event.eventsub
 tv.phantombot.event.eventsub.automod
 tv.phantombot.event.eventsub.automod.message
 tv.phantombot.event.eventsub.channel
+tv.phantombot.event.eventsub.channel.ad_break
 tv.phantombot.event.eventsub.channel.channel_points
 tv.phantombot.event.eventsub.channel.channel_points.redemption
 tv.phantombot.event.eventsub.channel.power_ups
