@@ -319,14 +319,16 @@
         let result = $.inidb.query(query, replacements);
 
         let ret = [];
+        let resSize = result.size();
 
-        if (result.size() > 0) {
-            for (let r = 0; r < result.size(); r++) {
+        if (resSize > 0) {
+            for (let r = 0; r < resSize; r++) {
                 let jrow = result.get(r);
                 let row = [];
+                let rowSize = jrow.size();
 
-                if (jrow.size() > 0) {
-                    for (let c = 0; c < jrow.size(); c++) {
+                if (rowSize > 0) {
+                    for (let c = 0; c < rowSize; c++) {
                         row.push($.jsString(jrow.get(c)));
                     }
                 }
