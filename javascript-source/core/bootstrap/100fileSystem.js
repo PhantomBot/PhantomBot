@@ -43,7 +43,8 @@
 
         try {
             let jlines = Packages.com.gmt2001.JSFileSystem.ReadFileAsLines($.javaString(path));
-            for (let i = 0; i < jlines.size(); ++i) {
+            let size = jlines.size();
+            for (let i = 0; i < size; ++i) {
                 lines.push($.jsString(jlines.get(i)));
             }
         } catch (e) {
@@ -269,7 +270,8 @@
         try {
             let ret = [];
             let files = Packages.com.gmt2001.JSFileSystem.FindFilesInDirectory($.javaString(directory), $.javaString(pattern));
-            for (let i = 0; i < files.size(); i++) {
+            let size = files.size();
+            for (let i = 0; i < size; i++) {
                 ret.push($.jsString(files.get(i)));
             }
             return ret;
