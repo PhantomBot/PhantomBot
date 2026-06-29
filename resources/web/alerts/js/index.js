@@ -41,7 +41,11 @@ $(function () {
         queueProcessing = false,
         playTimeout,
         fadeTime,
-        hasCustomDuration = false;
+        hasCustomDuration = false,
+        audioCtx = null,
+        gainNode = null,
+        audioSource = null,
+        videoSource = null;
 
     imgEl.onload = () => printDebug('GIF loaded');
     imgEl.onerror = (e) => printDebug('Error: GIF failed to load: ' + e, true);
@@ -76,6 +80,49 @@ $(function () {
     const PROVIDER_FFZ = 'ffz';
     const PROVIDER_BTTV = 'bttv';
     const PROVIDER_SEVENTV = 'sevenTv';
+
+    /**
+     * Helper to set element volume, properly handling volume > 1.0 using a GainNode.
+     * @param {HTMLMediaElement} element
+     * @param {Number|String} volume
+     */
+    function applyVolume(element, volume) {
+        let vol = parseFloat(volume);
+        if (isNaN(vol)) vol = 1.0;
+
+        element.volume = Math.min(vol, 1.0);
+
+        if (vol > 1.0) {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                gainNode = audioCtx.createGain();
+                gainNode.connect(audioCtx.destination);
+            }
+            if (element === audioEl) {
+                if (!audioSource) {
+                    audioSource = audioCtx.createMediaElementSource(audioEl);
+                }
+                audioSource.disconnect();
+                audioSource.connect(gainNode);
+            } else if (element === videoEl) {
+                if (!videoSource) {
+                    videoSource = audioCtx.createMediaElementSource(videoEl);
+                }
+                videoSource.disconnect();
+                videoSource.connect(gainNode);
+            }
+            gainNode.gain.value = vol;
+        } else {
+            if (element === audioEl && audioSource) {
+                audioSource.disconnect();
+                audioSource.connect(audioCtx.destination);
+            } else if (element === videoEl && videoSource) {
+                videoSource.disconnect();
+                videoSource.connect(audioCtx.destination);
+            }
+        }
+    }
 
     /**
      * Set the bit for the given playback type to indicate it's playing.
@@ -489,7 +536,7 @@ $(function () {
         // If no audio, we're done (gif only)
         if (!audioUrl) return;
 
-        audioEl.volume = gifVolume
+        applyVolume(audioEl, gifVolume);
         audioEl.src = audioUrl;
         playAudio();
     }
@@ -564,7 +611,13 @@ $(function () {
 
             audioEl.removeAttribute('src');
             audioEl.load();
+
+            if (audioSource && audioCtx) {
+                audioSource.disconnect();
+                audioSource.connect(audioCtx.destination);
+            }
             audioEl.volume = 1;
+
             clearPlayingBit(PLAYBACK_TYPE.AUDIO);
         } catch (e) {
             printDebug('Error: audio stop failed:' + e, true);
@@ -654,7 +707,13 @@ $(function () {
             videoEl.removeAttribute('src');
             videoEl.removeAttribute('style')
             videoEl.load();
+
+            if (videoSource && audioCtx) {
+                videoSource.disconnect();
+                videoSource.connect(audioCtx.destination);
+            }
             videoEl.volume = 1;
+
             videoEl.style.display = "none";
             clearPlayingBit(PLAYBACK_TYPE.VIDEO);
         } catch (e) {
@@ -717,12 +776,15 @@ $(function () {
 
         // Create a new audio file.
         audioEl.src = MEDIA_URL_BASE + encodeURIComponent(chooseBestCandidate(json.audio_panel_hook));
-        // Set the volume.
-        audioEl.volume = getOptionSetting('audioHookVolume', getOptionSetting('audio-hook-volume', '1'));
+
+        let finalVolume = getOptionSetting('audioHookVolume', getOptionSetting('audio-hook-volume', '1'));
 
         if (json.hasOwnProperty('audio_panel_volume') && json.audio_panel_volume >= 0.0) {
-            audioEl.volume = json.audio_panel_volume;
+            finalVolume = json.audio_panel_volume;
         }
+
+        // Set the volume.
+        applyVolume(audioEl, finalVolume);
 
         // Play the audio.
         playAudio();
@@ -893,7 +955,7 @@ $(function () {
             volume = json.volume;
         }
 
-        videoEl.volume = volume;
+        applyVolume(videoEl, volume);
         videoEl.muted = false;
         videoEl.src = defaultPath + encodeURIComponent(filename);
         videoEl.style.display = "block";
