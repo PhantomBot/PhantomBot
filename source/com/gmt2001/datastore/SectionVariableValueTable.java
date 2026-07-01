@@ -235,7 +235,6 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * @param name the table name
      */
     private void createTable(String name) {
-        name = normalizeTableName(name);
         Datastore2.instance().dslContext().createTableIfNotExists(name)
                 .column(this.SECTION)
                 .column(this.VARIABLE)
