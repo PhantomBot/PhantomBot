@@ -68,7 +68,7 @@ public final class AdBreakBegin extends EventSubSubscriptionType {
         this.requester_user_id = e.event().getString("requester_user_id");
         this.requester_user_login = e.event().getString("requester_user_login");
         this.requester_user_name = e.event().getString("requester_user_name");
-        this.duration_seconds = e.event().getInt("duration");
+        this.duration_seconds = e.event().getInt("duration_seconds");
         this.is_automatic = e.event().getBoolean("is_automatic");
         this.sStarted_at = e.event().getString("started_at");
         this.duration = Duration.ofSeconds(this.duration_seconds);
