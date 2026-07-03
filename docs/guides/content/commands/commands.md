@@ -258,6 +258,7 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./handlers/wordCounter.js | !wordcounter add [word] | - Adds a word that will be counted every time someone says it |
 | ./handlers/wordCounter.js | !wordcounter remove [word] | - Removes the given word which will no longer be counted every time someone says it |
 | ./handlers/wordCounter.js | !count [word] | - Tells you how many times that word as been said in chat. |
+| ./handlers/adsAnnounceHandler.js | !adsannouncestarttoggle | - Toggles the ads announcements. |
 | ./handlers/clipHandler.js | !clipstoggle | - Toggles the clips announcements. |
 | ./handlers/clipHandler.js | !clipsmessage | - Sets a message for when someone creates a clip. |
 | ./handlers/clipHandler.js | !lastclip | - Displays information about the last clip captured. |
