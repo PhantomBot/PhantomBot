@@ -9,7 +9,7 @@ It's very global, so you might need to take some extra steps to get it to work f
 
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
 2. Check out your fork and open it in your favorite IDE.
-2. Set the project Java SDK to [11.0.4](http://www.oracle.com/technetwork/java/javase/overview/index.html).
+2. Set the project Java SDK to [17](http://www.oracle.com/technetwork/java/javase/overview/index.html).
 3. Import `build.xml` into your [ANT](http://ant.apache.org/) task manager.
 
 DONE! Happy coding <3
@@ -21,7 +21,7 @@ You can get JetBrains IntelliJ [here](https://www.jetbrains.com/idea/).
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
 2. Open up IntelliJ, so you have the start screen.  
   From there you can check out (Check out from Version Control) your fork and open it up.
-3. Open up a file from `./source/` where IntelliJ will ask you for a project SDK. Use SDK [11.0.4](http://www.oracle.com/technetwork/java/javase/overview/index.html).
+3. Open up a file from `./source/` where IntelliJ will ask you for a project SDK. Use SDK [17](http://www.oracle.com/technetwork/java/javase/overview/index.html).
 4. Next up mark the directories `./source` and `./javascript-source` as "Sources Root".  
   *"Mark Directory As" in the context menu.*
 5. Import `build.xml` into the ANT task manager.  
@@ -43,7 +43,7 @@ You can get Netbeans [here](https://netbeans.org/downloads/).
 8. Click on the first *"Browse"* button. Select the directory you cloned to and 
   click *"Open"*. Then enter a project name. Click 2 times next. 
 9. Press the first *"Add Folder"* button and select the *"javascript-source"* folder.
-  Set the *"Source Level"* to *"JDK 1.8"* and the *"Encoding"* to *"UTF-8"*. Next page! 
+  Set the *"Source Level"* to *"JDK 17"* and the *"Encoding"* to *"UTF-8"*. Next page! 
 10. Click on *"Add JAR/Folder"*, go the `./libraries` folder and select every jar file (Ctrl + A). 
   Press the "Finish" button and we're finished!
 
