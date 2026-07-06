@@ -500,9 +500,9 @@
     });
 
     /*
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function () {
+    $.bind('discordReady', function () {
         $.discord.registerCommand('./discord/handlers/streamHandler.js', 'streamhandler', 1);
         $.discord.registerSubCommand('streamhandler', 'toggleonline', 1);
         $.discord.registerSubCommand('streamhandler', 'toggleonlinepublish', 1);

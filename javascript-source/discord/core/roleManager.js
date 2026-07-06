@@ -340,9 +340,9 @@
     });
 
     /*
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/core/roleManager.js', 'rolemanager', 1);
 
         setInterval(roleUpdateCheck, 3e4);

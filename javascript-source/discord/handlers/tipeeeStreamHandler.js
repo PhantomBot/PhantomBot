@@ -161,9 +161,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/handlers/tipeeeStreamHandler.js', 'tipeeestreamhandler', 1);
         $.discord.registerSubCommand('tipeeestreamhandler', 'toggle', 1);
         $.discord.registerSubCommand('tipeeestreamhandler', 'message', 1);

@@ -131,9 +131,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/games/slotMachine.js', 'slot', 0);
         $.discord.registerSubCommand('slot', 'rewards', 1);
 

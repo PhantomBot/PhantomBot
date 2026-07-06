@@ -136,9 +136,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/handlers/followHandler.js', 'followhandler', 1);
         $.discord.registerSubCommand('followhandler', 'toggle', 1);
         $.discord.registerSubCommand('followhandler', 'message', 1);
