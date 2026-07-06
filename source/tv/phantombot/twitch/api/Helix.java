@@ -4035,9 +4035,9 @@ public class Helix {
      * @throws JSONException
      * @throws IllegalArgumentException
      */
-    public JSONObject getGames()
+    public JSONObject getGames(@Nullable List<String> id, @Nullable List<String> name, @Nullable List<String> igdb_id)
             throws JSONException, IllegalArgumentException {
-        return this.getGamesAsync(null, null, null).block();
+        return this.getGamesAsync(id, name, igdb_id).block();
     }
 
     /**
