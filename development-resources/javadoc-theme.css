@@ -13,19 +13,23 @@
 
 :root {
   /* Mostly used on links & buttons */
-  --primary-color: #4186f5;
+  --primary-color: #6441a5;
   /* Used in fields, parameters, types, etc. */
   --secondary-color: #ffffff;
   /* Used specifically for descriptions and text */
-  --description-color: #949494;
+  --description-color: #ccc;
   /* Hover color for links */
-  --hover-color: #76a6f4;
+  --hover-color: #23527c;
+  --nav-list-bgcolor: rgba(0,0,0,.17);
+  --nav-list-active-bgcolor: rgba(0,0,0,.23);
+  --nav-list-padding: 10px 15px;
   /* Color for Top Navigation and Cards */
-  --bg-900-color: #121212;
-  /* Color used in the body's background */
-  --bg-800-color: #171717;
+  --bg-topnav-color: #6441a5;
+  --bg-900-color: #212121;
+  /* Color used in the body's background  */
+  --bg-800-color: #1b1b1b;
   /* Mostly used for the odd row in tables */
-  --bg-700-color: #1c1c1c;
+  --bg-700-color: #1b1b1b;
   /* Mostly used for the even row in tables and used for the searchbar */
   --bg-600-color: #212121;
 }
@@ -203,7 +207,7 @@ button {
   overflow-x: auto;
 }
 .top-nav {
-  background-color: var(--bg-900-color);
+  background-color: var(--bg-topnav-color);
   color: var(--secondary-color);
   float: left;
   padding: 0;
@@ -248,9 +252,10 @@ ul.sub-nav-list {
 ul.nav-list li {
   list-style: none;
   float: left;
-  padding: 5px 6px;
+  padding: var(--nav-list-padding);
   text-transform: uppercase;
   color: var(--description-color);
+  background-color: var(--nav-list-bgcolor);
 }
 
 #navbar-toggle-button {
@@ -293,10 +298,12 @@ ul.sub-nav-list li {
 
 .nav-bar-cell1-rev {
   color: var(--secondary-color) !important;
-  margin: auto 5px;
+  font-weight: bold;
+  background-color: var(--nav-list-active-bgcolor) !important;
+  /*margin: auto 5px;
   background-color: var(--primary-color);
   border-radius: 5px;
-  margin-bottom: 8px;
+  margin-bottom: 8px;*/
 }
 .skip-nav {
   position: absolute;
