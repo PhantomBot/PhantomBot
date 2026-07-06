@@ -431,6 +431,7 @@
             source="${java.source.level}"
             windowtitle="PhantomBot JavaDoc"
             additionalparam="--allow-script-in-comments"
+            encoding="UTF-8"
             docencoding="utf8"
             charset="utf8">
             <classpath>
