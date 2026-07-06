@@ -715,9 +715,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         if ($.bot.isModuleEnabled('./discord/core/moderation.js')) {
             $.discord.registerCommand('./discord/core/moderation.js', 'moderation', 1);
             $.discord.registerSubCommand('moderation', 'links', 1);

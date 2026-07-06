@@ -155,9 +155,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/handlers/streamlabsHandler.js', 'streamlabshandler', 1);
         $.discord.registerSubCommand('streamlabshandler', 'toggle', 1);
         $.discord.registerSubCommand('streamlabshandler', 'message', 1);

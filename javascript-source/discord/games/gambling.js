@@ -170,9 +170,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./games/gambling.js', 'gamble', 0);
         $.discord.registerCommand('./games/gambling.js', 'gambling', 1);
         $.discord.registerSubCommand('gambling', 'setmax', 1);

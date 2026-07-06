@@ -137,9 +137,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function () {
+    $.bind('discordReady', function () {
         $.discord.registerCommand('./discord/handlers/keywordHandler.js', 'keyword', 1);
         $.discord.registerSubCommand('keyword', 'add', 1);
         $.discord.registerSubCommand('keyword', 'edit', 1);

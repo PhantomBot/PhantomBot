@@ -289,10 +289,22 @@
                         if (hookIndex !== -1) {
                             $.bot.getHook(module.scriptName, 'initReady').handler();
                         }
+                    } catch (ex) {
+                        $.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex.message);
+                        $.consoleLn("Sending stack trace to error log...");
+                        Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
+                    }
+
+                    hookIndex = $.bot.getHookIndex(module.scriptName, 'discordReady');
+
+                    try {
+                        if (hookIndex !== -1 && $.discordAPI.isReady()) {
+                            $.bot.getHook(module.scriptName, 'discordReady').handler();
+                        }
 
                         say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', module.getModuleName()));
                     } catch (ex) {
-                        $.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex.message);
+                        $.log.error('[DISCORD] Unable to call discordReady for enabled module (' + module.scriptName + '): ' + ex.message);
                         $.consoleLn("Sending stack trace to error log...");
                         Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
@@ -452,9 +464,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/core/misc.js', 'module', 1);
         $.discord.registerCommand('./discord/core/misc.js', 'setgame', 1);
         $.discord.registerCommand('./discord/core/misc.js', 'setstream', 1);

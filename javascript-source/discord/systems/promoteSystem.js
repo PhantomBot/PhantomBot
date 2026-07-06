@@ -473,9 +473,9 @@
     }
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function () {
+    $.bind('discordReady', function () {
         $.discord.registerCommand('./discord/systems/promoteSystem.js', 'promote', 0);
         $.discord.registerCommand('./discord/systems/promoteSystem.js', 'promoteadm', 1);
         $.discord.registerSubCommand('promote', 'add', 0);

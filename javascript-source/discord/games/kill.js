@@ -91,9 +91,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/games/kill.js', 'kill', 0);
 
         if (otherMessageCount === 0 && selfMessageCount === 0) {

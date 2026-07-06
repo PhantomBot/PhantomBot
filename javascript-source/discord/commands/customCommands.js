@@ -294,9 +294,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function () {
+    $.bind('discordReady', function () {
         $.discord.registerCommand('./discord/commands/customCommands.js', 'addcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'delcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'editcom', 1);

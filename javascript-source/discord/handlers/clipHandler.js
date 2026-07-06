@@ -156,9 +156,9 @@
     });
 
     /*
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function () {
+    $.bind('discordReady', function () {
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'clipstoggle', 1);
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'clipsmessage', 1);
         $.discord.registerCommand('./discord/handlers/clipHandler.js', 'clipschannel', 1);

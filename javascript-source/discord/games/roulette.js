@@ -68,9 +68,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/games/roulette.js', 'roulette', 0);
 
         if (responseCountWin === 0 && responseCountLost === 0) {
