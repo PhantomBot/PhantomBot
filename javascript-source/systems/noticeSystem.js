@@ -1065,6 +1065,9 @@
                 try {
                     noticeLock.lock();
                     noticeGroups[selectedGroup].gamesToggle = !noticeGroups[selectedGroup].gamesToggle;
+                    if (!noticeGroups[selectedGroup].gamesToggle) {
+                        noticeGroups[selectedGroup].games = [];
+                    }
                     $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
 
                     if (noticeGroups[selectedGroup].gamesToggle) {
