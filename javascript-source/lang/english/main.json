@@ -29,6 +29,7 @@
     "console.received.slowmode.start": "Received a start slow mode ($1) notification from jtv",
     "console.received.subscriberonly.end": "Received an end subscribers-only mode notification from jtv",
     "console.received.subscriberonly.start": "Received a start subscribers-only mode notification from jtv",
+    "game.404": "That game does not exist or is not available on Twitch.",
     "init.cmsgset": "Connected message set!",
     "init.module.404": "That module does not exist or is not loaded!",
     "init.module.check.disabled": "Module $1 is currently disabled!",
