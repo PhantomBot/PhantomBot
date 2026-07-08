@@ -264,7 +264,7 @@
                     && $.bot.isModuleEnabled('./systems/noticeSystem.js')
                     && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)) {
                     if ((timer.noticeOfflineToggle || $.isOnline($.channelName)) &&
-                            (!timer.gamesToggle || timer.games.indexOf($.getGame($.channelName)) !== -1)) {
+                            (!timer.gamesToggle || timer.games.indexOf($.jsString($.getGame($.channelName))) !== -1)) {
                         res = sendNotice(idx);
                     } else if (!timer.noticeOfflineToggle) {
                         lastTimeNoticesSent[idx] = $.systemTime();
