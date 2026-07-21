@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.gmt2001.util.Reflect;
 import com.illusionaryone.Logger;
+import tv.phantombot.CaselessProperties;
 
 /**
  * Catches exceptions which have not been caught elsewhere
