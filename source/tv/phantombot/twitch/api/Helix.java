@@ -59,6 +59,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus;
+import tv.phantombot.twitch.api.Helix.PredictionStatus;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
@@ -4017,6 +4019,61 @@ public class Helix {
             return Mono.empty();
         }
         String endpoint = "/channels/ads?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id());
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
+    /**
+     * Gets information about games.
+     * 
+     * @param id The IDs of the games to get information about.
+     * @param name The names of the games to get information about. This parameter requires an exact match of the game name. If you specify a name that does not match any games or is only a partial match, the response is empty.
+     * @param igdb_id The IGDB IDs of the games to get information about.
+     * @return A Mono with the response.
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getGames(@Nullable List<String> id, @Nullable List<String> name, @Nullable List<String> igdb_id)
+            throws JSONException, IllegalArgumentException {
+        return this.getGamesAsync(id, name, igdb_id).block();
+    }
+
+    /**
+     * Gets information about games.
+     * 
+     * @param id The IDs of the games to get information about.
+     * @param name The names of the games to get information about. This parameter requires an exact match of the game name. If you specify a name that does not match any games or is only a partial match, the response is empty.
+     * @param igdb_id The IGDB IDs of the games to get information about.
+     * @return A Mono with the response.
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getGamesAsync(@Nullable List<String> id, @Nullable List<String> name, @Nullable List<String> igdb_id) throws JSONException, IllegalArgumentException {
+        if ((id == null || id.isEmpty()) && (name == null || name.isEmpty()) && (igdb_id == null || igdb_id.isEmpty())) {
+            throw new IllegalArgumentException("Either ids, names, or igdb_ids must be provided");
+        }
+        
+        String ids = null;
+        String names = null;
+        String igdb_ids = null;
+
+        if (id != null && !id.isEmpty()) {
+            ids = id.stream().limit(100).collect(Collectors.joining("&id="));
+        }
+
+        if (name != null && !name.isEmpty()) {
+            names = name.stream().limit(100).map(s -> this.uriEncode(s)).collect(Collectors.joining("&name="));
+        }
+
+        if (igdb_id != null && !igdb_id.isEmpty()) {
+            igdb_ids = igdb_id.stream().limit(100).collect(Collectors.joining("&igdb_id="));
+        }
+
+        String endpoint = "/games?" + this.qspValid("id", ids)
+                + this.qspValid("&name", names)
+                + this.qspValid("&igdb_id", igdb_ids);
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);

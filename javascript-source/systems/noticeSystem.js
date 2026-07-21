@@ -79,7 +79,7 @@
                     }
 
                     if (noticeGroup.noticeOfflineToggle === undefined || noticeGroup.noticeOfflineToggle === null) {
-                        noticeGroup.noticeOfflineToggle = false;;
+                        noticeGroup.noticeOfflineToggle = false;
                         inconsistent = true;
                     }
 
@@ -104,6 +104,16 @@
 
                     if (noticeGroup.disabled === undefined || noticeGroup.disabled === null) {
                         noticeGroup.disabled = [];
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.gamesToggle === undefined || noticeGroup.gamesToggle === null) {
+                        noticeGroup.gamesToggle = false;
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.games === undefined || noticeGroup.games === null) {
+                        noticeGroup.games = [];
                         inconsistent = true;
                     }
 
@@ -253,7 +263,8 @@
             if (timer.noticeToggle
                     && $.bot.isModuleEnabled('./systems/noticeSystem.js')
                     && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)) {
-                    if (timer.noticeOfflineToggle || $.isOnline($.channelName)) {
+                    if ((timer.noticeOfflineToggle || $.isOnline($.channelName)) &&
+                            (!timer.gamesToggle || timer.games.indexOf($.jsString($.getGame($.channelName))) !== -1)) {
                         res = sendNotice(idx);
                     } else if (!timer.noticeOfflineToggle) {
                         lastTimeNoticesSent[idx] = $.systemTime();
@@ -801,7 +812,11 @@
                         formatGroupName(selectedGroup), noticeGroups.length, noticeGroups[selectedGroup].noticeToggle,
                         noticeGroups[selectedGroup].intervalMin, noticeGroups[selectedGroup].intervalMax,
                         noticeGroups[selectedGroup].reqMessages, noticeGroups[selectedGroup].messages.length,
-                        noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle));
+                        noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle,
+                        noticeGroups[selectedGroup].gamesToggle));
+                    if (noticeGroups[selectedGroup].gamesToggle) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config-games', noticeGroups[selectedGroup].games.join(' == ')));
+                    }
                     return;
                 } finally {
                     noticeLock.unlock();
@@ -856,7 +871,9 @@
                         noticeToggle: false,
                         noticeOfflineToggle: false,
                         messages: [],
-                        disabled: []
+                        disabled: [],
+                        gamesToggle: false,
+                        games: []
                     });
 
                     noticeTimeoutIds.push(null);
@@ -1036,6 +1053,111 @@
                     noticeLock.unlock();
                 }
             }
+
+            /**
+             * @commandpath notice togglegames - Toggles on and off if notices of the currently selected group will be sent only when the current game is in the list of games for that group
+             */
+            if ($.equalsIgnoreCase(action, 'togglegames')) {
+                if (!checkForNoticesGroups(sender)) {
+                    return;
+                }
+
+                try {
+                    noticeLock.lock();
+                    noticeGroups[selectedGroup].gamesToggle = !noticeGroups[selectedGroup].gamesToggle;
+                    if (!noticeGroups[selectedGroup].gamesToggle) {
+                        noticeGroups[selectedGroup].games = [];
+                    }
+                    $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+
+                    if (noticeGroups[selectedGroup].gamesToggle) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-enabled.games', formatGroupName(selectedGroup)));
+                    } else {
+                        $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-disabled.games', formatGroupName(selectedGroup)));
+                    }
+
+                    return;
+                } finally {
+                    noticeLock.unlock();
+                }
+            }
+
+            /**
+             * @commandpath notice addgame - Adds a game to the list of games for the currently selected group
+             */
+            if ($.equalsIgnoreCase(action, 'addgame')) {
+                if (!checkForNoticesGroups(sender)) {
+                    return;
+                }
+
+                if (args.length < 2) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-addgame-usage'));
+                    return;
+                }
+
+                let game = args.slice(1).join(' ');
+                if (game.length === 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-addgame-usage'));
+                    return;
+                }
+
+                let result = $.helix.SearchCategories(game, 1, null);
+                if (result.getJSONArray('data').length() === 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('game.404', game));
+                    return;
+                } else {
+                    game = result.getJSONArray('data').getJSONObject(0).getString('name');
+                }
+
+                try {
+                    noticeLock.lock();
+                    noticeGroups[selectedGroup].games.push(game);
+                    $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-addgame-success', formatGroupName(selectedGroup), game));
+
+                    return;
+                } finally {
+                    noticeLock.unlock();
+                }
+            }
+
+            /**
+             * @commandpath notice removegame - Removes a game from the list of games for the currently selected group
+             */
+            if ($.equalsIgnoreCase(action, 'removegame')) {
+                if (!checkForNoticesGroups(sender)) {
+                    return;
+                }
+
+                if (args.length < 2) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegame-usage'));
+                    return;
+                }
+
+                let game = args.slice(1).join(' ');
+                if (game.length === 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegame-usage'));
+                    return;
+                }
+
+                try {
+                    noticeLock.lock();
+                    let gameIndex = noticeGroups[selectedGroup].games.indexOf(game);
+                    if (gameIndex === -1) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegame-404', game, formatGroupName(selectedGroup)));
+                        return;
+                    }
+                    noticeGroups[selectedGroup].games.splice(gameIndex, 1);
+                    $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegame-success', game, formatGroupName(selectedGroup)));
+
+                    return;
+                } finally {
+                    noticeLock.unlock();
+                }
+            }
         }
     });
 
@@ -1077,7 +1199,9 @@
                         noticeToggle: (params['noticeToggle'] === null || params['noticeToggle'] === undefined) ? false : !!params['noticeToggle'],
                         noticeOfflineToggle: (params['noticeOfflineToggle'] === null || params['noticeOfflineToggle'] === undefined) ? false : !!params['noticeOfflineToggle'],
                         messages: [],
-                        disabled: []
+                        disabled: [],
+                        gamesToggle: (params['gamesToggle'] === null || params['gamesToggle'] === undefined) ? false : !!params['gamesToggle'],
+                        games: []
                     });
                     noticeTimeoutIds.push(null);
                     messageCounts.push(0);
@@ -1133,6 +1257,7 @@
                     tmp = JSON.parse($.getIniDbString('notices', groupIdx));
                     noticeGroups[groupIdx].messages = tmp.messages;
                     noticeGroups[groupIdx].disabled = tmp.disabled;
+                    noticeGroups[groupIdx].games = tmp.games;
 
                     if (args.length > 2 && $.jsString(args[2]) === 'true') {
                         stopNoticeTimer(groupIdx);

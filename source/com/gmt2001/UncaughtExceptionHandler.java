@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.gmt2001.util.Reflect;
 import com.illusionaryone.Logger;
+import tv.phantombot.CaselessProperties;
 
 /**
  * Catches exceptions which have not been caught elsewhere
@@ -66,7 +67,11 @@ public final class UncaughtExceptionHandler implements Thread.UncaughtExceptionH
 
                 e.printStackTrace(ptrace);
 
-                if (e.getClass().equals(java.lang.OutOfMemoryError.class)) {
+                /**
+                 * @botproperty dumpheaponoom - If `false`, PhantomBot will not attempt to create a heap dump when an `OutOfMemoryError` occurs. Defaults to `true`.
+                 * @botpropertycatsort dumpheaponoom 900 900 Debug
+                 */
+                if (e.getClass().equals(java.lang.OutOfMemoryError.class) && CaselessProperties.instance().getPropertyAsBoolean("dumpheaponoom", true)) {
                     Reflect.dumpHeap();
                     com.gmt2001.Console.err.println("OutOfMemoryError: Heap Dump Created");
                 }

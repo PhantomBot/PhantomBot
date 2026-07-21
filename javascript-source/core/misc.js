@@ -102,8 +102,17 @@
      * @function say
      * @export $
      * @param {string} message
+     * @param {number} delay
      */
-    function say(message) {
+    function say(message, delay) {
+        if (delay !== undefined && delay !== null && !isNaN(delay)) {
+            if (delay > 0) {
+                setTimeout(function () {
+                    say(message);
+                }, delay);
+                return;
+            }
+        }
         if (message === undefined || message === null) {
             return;
         }
