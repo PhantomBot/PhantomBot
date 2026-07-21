@@ -339,8 +339,9 @@ public class DiscordAPI extends DiscordUtil {
      * @return
      */
     public static Guild getGuild() {
-        if (DiscordAPI.gateway != null) {
-            return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId())
+        Snowflake guildId = DiscordAPI.getGuildId();
+        if (DiscordAPI.gateway != null && guildId.asLong() > 0L) {
+            return DiscordAPI.gateway.getGuildById(guildId)
                 .timeout(Duration.ofMillis((GUILDIDTIMEOUT * 1000) + 500))
                 .doOnError(java.util.concurrent.TimeoutException.class, e -> com.gmt2001.Console.err.println("[Discord] Timeout while getting Guild"))
                 .onErrorResume(java.util.concurrent.TimeoutException.class, e -> Mono.empty())
