@@ -376,7 +376,7 @@ public class DiscordAPI extends DiscordUtil {
                     }
                 })
                 .filter(g -> {
-                    if (targetGuildId >= 0L) {
+                    if (targetGuildId > 0L) {
                         return targetGuildId == getGuildId(g);
                     }
 
