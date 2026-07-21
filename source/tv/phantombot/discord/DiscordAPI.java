@@ -343,7 +343,7 @@ public class DiscordAPI extends DiscordUtil {
             return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId())
                 .timeout(Duration.ofMillis((GUILDIDTIMEOUT * 1000) + 500))
                 .doOnError(java.util.concurrent.TimeoutException.class, e -> com.gmt2001.Console.err.println("[Discord] Timeout while getting Guild"))
-                .onErrorReturn((Guild) null)
+                .onErrorResume(java.util.concurrent.TimeoutException.class, e -> Mono.empty())
                 .block();
         }
         return null;
@@ -473,7 +473,7 @@ public class DiscordAPI extends DiscordUtil {
             })
             .timeout(Duration.ofSeconds(GUILDIDTIMEOUT))
             .doOnError(java.util.concurrent.TimeoutException.class, e -> com.gmt2001.Console.err.println("[Discord] Timeout while getting Guild ID"))
-            .onErrorReturn(Snowflake.of(0L))
+            .onErrorReturn(java.util.concurrent.TimeoutException.class, Snowflake.of(0L))
             .block();
     }
 
