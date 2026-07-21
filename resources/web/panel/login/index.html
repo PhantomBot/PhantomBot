@@ -378,7 +378,7 @@
                 if (params.get("message") !== null && params.get("message").length > 0) {
                     $('#info-box').removeClass('hide');
                     $('#alert-br').removeClass('hide');
-                    $('#info-box').html(params.get("message"));
+                    $('#info-box').text(params.get("message"));
                 }
 
                 function checkAlreadyLoggedIn() {
