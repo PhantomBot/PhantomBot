@@ -125,6 +125,9 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./systems/noticeSystem.js | !notice toggle | - Toggles the currently selected notice group on and off |
 | ./systems/noticeSystem.js | !notice toggleoffline | - Toggles on and off if notices of the currently selected group will be sent in chat if the channel is offline |
 | ./systems/noticeSystem.js | !notice toggleshuffle | - Toggles on and off if notices of the currently selected group will be sent in random order |
+| ./systems/noticeSystem.js | !notice togglegames | - Toggles on and off if notices of the currently selected group will be sent only when the current game is in the list of games for that group |
+| ./systems/noticeSystem.js | !notice addgame | - Adds a game to the list of games for the currently selected group |
+| ./systems/noticeSystem.js | !notice removegame | - Removes a game from the list of games for the currently selected group |
 | ./systems/queueSystem.js | !queue open [max size] [title] | - Opens a new queue. Max size is optional. |
 | ./systems/queueSystem.js | !queue close | - Closes the current queue that is opened. |
 | ./systems/queueSystem.js | !queue clear | - Closes and resets the current queue. |

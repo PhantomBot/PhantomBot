@@ -652,6 +652,14 @@ if `true`, information about each http request sent by httpclient is sent to the
 
 &nbsp;
 
+#### dumpheaponoom
+
+Data Type: _Boolean_
+
+if `false`, phantombot will not attempt to create a heap dump when an `outofmemoryerror` occurs. defaults to `true`.
+
+&nbsp;
+
 #### pathvalidatedebug
 
 Data Type: _Boolean_
