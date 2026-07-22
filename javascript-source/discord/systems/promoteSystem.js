@@ -2,10 +2,6 @@
 
 /**
  * promoteSystem.js
- *
- * TODO:
- * - Add controls to the Beta Panel once that is the formal release.
- *
  */
 (function () {
     var showStats = $.getSetIniDbBoolean('promotesettings', 'showstats', true);

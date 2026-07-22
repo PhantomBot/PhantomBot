@@ -96,6 +96,7 @@ import tv.phantombot.event.discord.useraudiochannel.DiscordUserAudioChannelPartE
 public class DiscordAPI extends DiscordUtil {
 
     private final Object mutex = new Object();
+    private static final int CONNECTTIMEOUT = 30;
     private static final int GUILDIDTIMEOUT = 5;
     private static final int PROCESSMESSAGETIMEOUT = 5;
     private static final int ISADMINTIMEOUT = 3;
@@ -153,12 +154,13 @@ public class DiscordAPI extends DiscordUtil {
      */
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
-            DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordClientBuilder.create(token)
-                                                                                                            .onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.backoff(10, Duration.ofSeconds(1)) 
-                                                                                                                                                                                .maxBackoff(Duration.ofMinutes(15))
-                                                                                                                                                                                .jitter(0.5)
-                                                                                                                                                        )
-                                                                                                                            );
+            DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordClientBuilder
+                .create(token)
+                .onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.backoff(10, Duration.ofSeconds(1)) 
+                                                                                    .maxBackoff(Duration.ofMinutes(15))
+                                                                                    .jitter(0.5)
+                                                            )
+                                );
 
             if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
                 DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordAPI.builder.setReactorResources(ReactorResources.builder().httpClient(ReactorResources.DEFAULT_HTTP_CLIENT.get().resolver(DefaultAddressResolverGroup.INSTANCE)).build());
@@ -204,6 +206,10 @@ public class DiscordAPI extends DiscordUtil {
          * @botproperty discord_restore_presence - If `true`, the bots current Discord activity (_Playing foo_) is restored on startup. Default `true`
          * @botpropertycatsort discord_restore_presence 50 200 Discord
          */
+        /**
+         * @botproperty discord_connect_timeout - The timeout for connecting to Discord, in seconds. Default `30`
+         * @botpropertycatsort discord_connect_timeout 50 300 Discord
+         */
         DiscordAPI.selfId = null;
         com.gmt2001.Console.debug.println("IntentSet: " + this.connectIntents.toString());
         DiscordAPI.client.gateway()
@@ -225,7 +231,7 @@ public class DiscordAPI extends DiscordUtil {
                 .setEnabledIntents(this.connectIntents)
                 .withEventDispatcher(this::subscribeToEvents)
                 .login(DefaultGatewayClient::new)
-                .timeout(Duration.ofSeconds(30))
+                .timeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("discord_connect_timeout", CONNECTTIMEOUT)))
                 .doOnSuccess(cgateway -> {
                     com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
                     synchronized (this.mutex) {
@@ -341,8 +347,12 @@ public class DiscordAPI extends DiscordUtil {
     public static Guild getGuild() {
         Snowflake guildId = DiscordAPI.getGuildId();
         if (DiscordAPI.gateway != null && guildId.asLong() > 0L) {
+            /**
+             * @botproperty discord_guild_timeout - The timeout for getting the guild, in seconds. Default `5`
+             * @botpropertycatsort discord_guild_timeout 50 300 Discord
+             */
             return DiscordAPI.gateway.getGuildById(guildId)
-                .timeout(Duration.ofMillis((GUILDIDTIMEOUT * 1000) + 500))
+                .timeout(Duration.ofMillis((CaselessProperties.instance().getPropertyAsInt("discord_guild_timeout", GUILDIDTIMEOUT) * 1000) + 500))
                 .doOnError(java.util.concurrent.TimeoutException.class, e -> com.gmt2001.Console.err.println("[Discord] Timeout while getting Guild"))
                 .onErrorResume(java.util.concurrent.TimeoutException.class, e -> Mono.empty())
                 .block();
@@ -366,6 +376,10 @@ public class DiscordAPI extends DiscordUtil {
                 com.gmt2001.Console.warn.println("Detected discord__guildid=0. Will print Guild IDs, then select first Guild");
         }
 
+        /**
+         * @botproperty discord_guildid_timeout - The timeout for getting the guild ID, in seconds. Default `5`
+         * @botpropertycatsort discord_guildid_timeout 50 300 Discord
+         */
         return DiscordAPI.gatewayMono
             .switchIfEmpty(Mono.error(new IllegalStateException("Gateway was not initialized")))
             .flatMap(gateway -> 
@@ -383,7 +397,7 @@ public class DiscordAPI extends DiscordUtil {
                     return true;
                 })
                 .next()
-                .timeout(Duration.ofSeconds(DiscordAPI.GUILDIDTIMEOUT))
+                .timeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("discord_guildid_timeout", GUILDIDTIMEOUT)))
                 .doOnNext(guild -> {
                                 Snowflake snowflake = guild.getId();
                                 com.gmt2001.Console.out.println("[Discord] Guild ID updated to " + snowflake.asLong() + ": " + guild.getName());
@@ -472,7 +486,7 @@ public class DiscordAPI extends DiscordUtil {
                     com.gmt2001.Console.err.println("[Discord] Failed to get a valid Guild ID");
                 }
             })
-            .timeout(Duration.ofSeconds(GUILDIDTIMEOUT))
+            .timeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("discord_guildid_timeout", GUILDIDTIMEOUT)))
             .doOnError(java.util.concurrent.TimeoutException.class, e -> com.gmt2001.Console.err.println("[Discord] Timeout while getting Guild ID"))
             .onErrorReturn(java.util.concurrent.TimeoutException.class, Snowflake.of(0L))
             .block();
