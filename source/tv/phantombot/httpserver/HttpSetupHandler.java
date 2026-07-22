@@ -57,7 +57,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
         this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
                 CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
         this.token = PhantomBot.generateRandomString(TOKENLEN);
-        this.authHandlerToken = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "Token", this.token, "/panel/login/?message=A+login+for+the+Setup+page+is+available+in+the+console");
+        this.authHandlerToken = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "Token", this.token, "/panel/login/?message=%0AA+login+for+the+Setup+page+is+available+in+the+console");
     }
 
     @Override
@@ -86,10 +86,10 @@ public class HttpSetupHandler implements HttpRequestHandler {
                 && !this.authHandlerToken.checkAuthorization(ctx, req)) {
             String extra = "";
             if (this.authHandler.isAuthorized(ctx, req)) {
-                extra = "The+panel+login+is+disabled+for+the+Setup+page%3Cbr+%2F%3E";
+                extra = "The+panel+login+is+disabled+for+the+Setup+page%0A";
             }
             this.token = PhantomBot.generateRandomString(TOKENLEN);
-            this.authHandlerToken = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "Token", this.token, "/panel/login/?message=" + extra + "A+login+for+the+Setup+page+is+available+in+the+console");
+            this.authHandlerToken = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "Token", this.token, "/panel/login/?message=" + extra + "%0AA+login+for+the+Setup+page+is+available+in+the+console");
 
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("User for Setup Login: Token");

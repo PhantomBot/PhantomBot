@@ -378,7 +378,12 @@
                 if (params.get("message") !== null && params.get("message").length > 0) {
                     $('#info-box').removeClass('hide');
                     $('#alert-br').removeClass('hide');
-                    $('#info-box').text(params.get("message"));
+                    let lines = params.get("message").split('\n');
+                    $('#info-box').empty();
+                    for (let i = 0; i < lines.length; i++) {
+                        if (i > 0) $('#info-box').append($('<br/>'));
+                        $('#info-box').append(document.createTextNode(lines[i]));
+                    }
                 }
 
                 function checkAlreadyLoggedIn() {
