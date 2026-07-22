@@ -352,6 +352,30 @@ _NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
+#### discord_connect_timeout
+
+Data Type: _Int_
+
+the timeout for connecting to discord, in seconds. default `30`
+
+&nbsp;
+
+#### discord_guild_timeout
+
+Data Type: _Int_
+
+the timeout for getting the guild, in seconds. default `5`
+
+&nbsp;
+
+#### discord_guildid_timeout
+
+Data Type: _Int_
+
+the timeout for getting the guild id, in seconds. default `5`
+
+&nbsp;
+
 #### discord_restore_presence
 
 Data Type: _Boolean_
@@ -649,6 +673,14 @@ if `true`, prints debugging info about dns resolution to the debug log. default 
 Data Type: _Boolean_
 
 if `true`, information about each http request sent by httpclient is sent to the debug log. default `false`
+
+&nbsp;
+
+#### dumpheaponoom
+
+Data Type: _Boolean_
+
+if `false`, phantombot will not attempt to create a heap dump when an `outofmemoryerror` occurs. defaults to `true`.
 
 &nbsp;
 
