@@ -547,19 +547,19 @@ _NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
-#### httpclientssltimeout
-
-Data Type: _Int_
-
-the timeout, in seconds, for the ssl handshake of an https request to complete. default `10`
-
-&nbsp;
-
 #### httpclienttimeout
 
 Data Type: _Int_
 
 the timeout, in seconds, for an http request to complete. default `10`
+
+&nbsp;
+
+#### httpclientssltimeout
+
+Data Type: _Int_
+
+the timeout, in seconds, for the ssl handshake of an https request to complete. default `10`
 
 &nbsp;
 
