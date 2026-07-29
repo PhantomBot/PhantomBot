@@ -33,6 +33,7 @@ import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.DnsServerAddressStreamProviders;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.internal.StringUtil;
+import tv.phantombot.CaselessProperties;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.ChannelFactory;
@@ -58,7 +59,13 @@ public final class CompositeAddressResolverGroup extends AddressResolverGroup<In
 
     private CompositeAddressResolverGroup() {
         DnsNameResolverBuilder idnsResolverBuilder = new DnsNameResolverBuilder().nameServerProvider(DnsServerAddressStreamProviders.platformDefault());
-
+        /**
+         * @botproperty httpforceipv4 - Boolean (true/false) to indicate to force HTTP client to IPv4 to be preferred connection over IPv6.  Default false.
+         * @botpropertycatsort httpforceipv4 120 700 HTTP/WS
+         */
+        if (CaselessProperties.instance().getPropertyAsBoolean("httpforceipv4", false)) {
+            idnsResolverBuilder.resolvedAddressTypes(io.netty.resolver.ResolvedAddressTypes.IPV4_PREFERRED);
+        }
         this.dnsResolverBuilder = idnsResolverBuilder;
     }
 
