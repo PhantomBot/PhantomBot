@@ -68,6 +68,10 @@ public final class HttpClient {
      */
     public static HttpClientResponse request(HttpMethod method, URI url, HttpHeaders requestHeaders, String requestBody) {
         reactor.netty.http.client.HttpClient client;
+        /**
+         * @botproperty httpforceipv4 - Boolean (true/false) to indicate to force HTTP client to IPv4 to be preferred connection over IPv6.  Default false.
+         * @botpropertycatsort httpforceipv4 100 720 HTTP/WS
+         */
         if (CaselessProperties.instance().getPropertyAsBoolean("httpforceipv4", false)) {
             client = reactor.netty.http.client.HttpClient.create().resolver(spec -> {
                 spec.resolvedAddressTypes(ResolvedAddressTypes.IPV4_PREFERRED);
