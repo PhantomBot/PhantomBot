@@ -563,6 +563,14 @@ the timeout, in seconds, for an http request to complete. default `10`
 
 &nbsp;
 
+#### httpforceipv4
+
+Data Type: _Boolean_
+
+boolean (true/false) to indicate to force http client to ipv4 to be preferred connection over ipv6.  default false.
+
+&nbsp;
+
 #### bindip
 
 Data Type: _String_
@@ -715,12 +723,3 @@ _NOTE: A restart is required for this property to take effect_
 Data Type: _Boolean_
 
 if `true`, requests at the webserver are logged in `./logs/request`. default `false`
-
-&nbsp;
-
-### Uncategorized
-#### httpforceipv4
-
-Data Type: _Boolean_
-
-No definition
