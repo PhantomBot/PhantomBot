@@ -715,3 +715,12 @@ _NOTE: A restart is required for this property to take effect_
 Data Type: _Boolean_
 
 if `true`, requests at the webserver are logged in `./logs/request`. default `false`
+
+&nbsp;
+
+### Uncategorized
+#### httpforceipv4
+
+Data Type: _Boolean_
+
+No definition
