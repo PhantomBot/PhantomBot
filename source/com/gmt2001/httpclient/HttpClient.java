@@ -35,6 +35,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.resolver.DefaultAddressResolverGroup;
+import io.netty.resolver.ResolvedAddressTypes;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
 import reactor.netty.http.Http11SslContextSpec;
@@ -66,7 +67,16 @@ public final class HttpClient {
      * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse request(HttpMethod method, URI url, HttpHeaders requestHeaders, String requestBody) {
-        reactor.netty.http.client.HttpClient client = reactor.netty.http.client.HttpClient.create();
+        reactor.netty.http.client.HttpClient client;
+        if (CaselessProperties.instance().getPropertyAsBoolean("httpforceipv4", false)) {
+            client = reactor.netty.http.client.HttpClient.create().resolver(spec -> {
+                spec.resolvedAddressTypes(ResolvedAddressTypes.IPV4_PREFERRED);
+                spec.disableRecursionDesired(false);
+            });
+        } else {
+            client = reactor.netty.http.client.HttpClient.create();
+        }
+
         /**
          * @botproperty httpclientssltimeout - The timeout, in seconds, for the SSL handshake of an HTTPS request to complete. Default `10`
          * @botpropertycatsort httpclientssltimeout 100 710 HTTP/WS
