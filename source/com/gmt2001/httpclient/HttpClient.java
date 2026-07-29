@@ -70,7 +70,7 @@ public final class HttpClient {
 
         /**
          * @botproperty httpclientssltimeout - The timeout, in seconds, for the SSL handshake of an HTTPS request to complete. Default `10`
-         * @botpropertycatsort httpclientssltimeout 100 710 HTTP/WS
+         * @botpropertycatsort httpclientssltimeout 110 700 HTTP/WS
          */
         if (url.getScheme() != null && url.getScheme().equals("https")) {
             client = client.secure(spec -> spec.sslContext(Http11SslContextSpec.forClient())
