@@ -240,17 +240,16 @@
                         }
                         modalGroupData = JSON.parse(modalGroupData);
                         openGroupModal(modalGroupData, function (result) {
-                            socket.updateDBValue('timer_group_edit_update', 'notices', groupId, JSON.stringify({
-                                name: result.groupName,
-                                noticeToggle: result.noticeToggle,
-                                noticeOfflineToggle: result.noticeOfflineToggle,
-                                intervalMin: result.noticeIntervalMin,
-                                intervalMax: result.noticeIntervalMax,
-                                reqMessages: result.noticeReqMsg,
-                                shuffle: result.groupShuffle,
-                                messages: modalGroupData.messages,
-                                disabled: modalGroupData.disabled
-                            }), function () {
+                            let newData = JSON.parse(JSON.stringify(modalGroupData));
+                            newData.name = result.groupName;
+                            newData.noticeToggle = result.noticeToggle;
+                            newData.noticeOfflineToggle = result.noticeOfflineToggle;
+                            newData.intervalMin = result.noticeIntervalMin;
+                            newData.intervalMax = result.noticeIntervalMax;
+                            newData.reqMessages = result.noticeReqMsg;
+                            newData.shuffle = result.groupShuffle;
+
+                            socket.updateDBValue('timer_group_edit_update', 'notices', groupId, JSON.stringify(newData), function () {
                                 socket.wsEvent('timer_group_edit_ws', './systems/noticeSystem.js', null,
                                         ['reloadGroup', groupId, (modalGroupData.intervalMin !== result.noticeIntervalMin || modalGroupData.intervalMax !== result.noticeIntervalMax) ? 'true' : 'false'], function () {
                                     // Update group name in table.
