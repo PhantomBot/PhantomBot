@@ -30,7 +30,8 @@
                 intervalMin = modalGroupData === null ? '10' : modalGroupData.intervalMin,
                 intervalMax = modalGroupData === null ? '' : (intervalMin === modalGroupData.intervalMax ? '' : modalGroupData.intervalMax),
                 reqMessages = modalGroupData === null ? '0' : modalGroupData.reqMessages,
-                shuffle = modalGroupData === null ? 'No' : (helpers.isTrue(modalGroupData.shuffle) ? 'Yes' : 'No');
+                shuffle = modalGroupData === null ? 'No' : (helpers.isTrue(modalGroupData.shuffle) ? 'Yes' : 'No'),
+                gamesToggle = modalGroupData === null ? 'No' : (helpers.isTrue(modalGroupData.gamesToggle) ? 'Yes' : 'No');
 
         helpers.getModal(idPrefix + 'group-modal', title, 'Save',
                 $('<form/>', {'role': 'form'})
@@ -57,7 +58,9 @@
                 // Append required messages.
                 .append(helpers.getInputGroup(idPrefix + 'notice-req-messages', 'number', 'Timer Required Messages', '', reqMessages, 'Wait for at least this amount of messages before posting another message from this group in chat.'))
                 // Append shuffle.
-                .append(helpers.getDropdownGroup(idPrefix + 'group-shuffle', 'Shuffle', shuffle, ['Yes', 'No'], "If the group's messages should be said in random order.")),
+                .append(helpers.getDropdownGroup(idPrefix + 'group-shuffle', 'Shuffle', shuffle, ['Yes', 'No'], "If the group's messages should be said in random order."))
+                // Append games toggle.
+                .append(helpers.getDropdownGroup(idPrefix + 'group-games-toggle', 'Only Specific Games', gamesToggle, ['Yes', 'No'], "If the group's messages will be sent only when the current game is in the specified list of games. If disabled, the list of games will be cleared.")),
                 // Callback once the user clicks save.
                         function () {// Callback once we click the save button.
                             const $groupName = $('#' + idPrefix + 'group-name'),
@@ -66,7 +69,8 @@
                                     $noticeIntervalMin = $('#' + idPrefix + 'notice-interval-min'),
                                     $noticeIntervalMax = $('#' + idPrefix + 'notice-interval-max'),
                                     $noticeReqMsg = $('#' + idPrefix + 'notice-req-messages'),
-                                    $groupShuffle = $('#' + idPrefix + 'group-shuffle');
+                                    $groupShuffle = $('#' + idPrefix + 'group-shuffle'),
+                                    $groupGamesToggle = $('#' + idPrefix + 'group-games-toggle');
 
                             // Handle each input to make sure they have a value.
                             switch (false) {
@@ -110,12 +114,13 @@
                                         noticeIntervalMin: Number($noticeIntervalMin.val()),
                                         noticeIntervalMax: Number($noticeIntervalMax.val() || $noticeIntervalMin.val()),
                                         noticeReqMsg: Number($noticeReqMsg.val()),
-                                        groupShuffle: $groupShuffle.find(':selected').text() === 'Yes'
+                                        groupShuffle: $groupShuffle.find(':selected').text() === 'Yes',
+                                        gamesToggle: $groupGamesToggle.find(':selected').text() === 'Yes'
                                     });
                             }
                         }
-                ).modal('toggle');
-            }
+            ).modal('toggle');
+    }
 
     function select(resultsLength) {
         if (selected === null) {
@@ -155,28 +160,41 @@
                         groupName,
                         $('<div/>', {
                             'class': 'btn-group'
-                        }).append($('<button/>', {
-                            'type': 'button',
-                            'class': 'btn btn-xs btn-danger btn-group-delete',
-                            'style': 'float: right',
-                            'data-group-id': groupId,
-                            'data-group-name': groupName,
-                            'html': $('<i/>', {'class': 'fa fa-trash'})
-                        })).append($('<button/>', {
-                            'type': 'button',
-                            'class': 'btn btn-xs btn-warning btn-group-settings',
-                            'style': 'float: right',
-                            'data-group-id': groupId,
-                            'data-group-name': groupName,
-                            'html': $('<i/>', {'class': 'fa fa-cog'})
-                        })).append($('<button/>', {
-                            'type': 'button',
-                            'class': 'btn btn-xs btn-success btn-group-edit',
-                            'style': 'float: right',
-                            'data-group-id': groupId,
-                            'data-group-name': groupName,
-                            'html': $('<i/>', {'class': 'fa fa-edit'})
-                        })).html()
+                        }).append([
+                            $('<button/>', {
+                                'type': 'button',
+                                'class': 'btn btn-xs btn-warning btn-group-settings',
+                                'style': 'width: 20px;',
+                                'data-group-id': groupId,
+                                'data-group-name': groupName,
+                                'html': $('<i/>', {'class': 'fa fa-cog'})
+                            }),
+                            $('<button/>', {
+                                'type': 'button',
+                                'class': 'btn btn-xs btn-danger btn-group-delete',
+                                'style': 'float: width: 20px; position: relative; left: -1px;',
+                                'data-group-id': groupId,
+                                'data-group-name': groupName,
+                                'html': $('<i/>', {'class': 'fa fa-trash'})
+                            }),
+                            $('<br/>'),
+                            $('<button/>', {
+                                'type': 'button',
+                                'class': 'btn btn-xs btn-success btn-group-edit',
+                                'style': 'width: 20px; position: relative; left: -1px; top: -1px;',
+                                'data-group-id': groupId,
+                                'data-group-name': groupName,
+                                'html': $('<i/>', {'class': 'fa fa-edit', 'style': 'position: relative; left: -1px;'})
+                            }),
+                            $('<button/>', {
+                                'type': 'button',
+                                'class': 'btn btn-xs btn-info btn-group-games',
+                                'style': 'width: 20px; position: relative; left: -1px; top: -1px;',
+                                'data-group-id': groupId,
+                                'data-group-name': groupName,
+                                'html': $('<i/>', {'class': 'fa fa-gamepad', 'style': 'position: relative; left: -2px;'})
+                            })
+                        ]).html()
                     ]);
                 }
 
@@ -248,6 +266,11 @@
                             newData.intervalMax = result.noticeIntervalMax;
                             newData.reqMessages = result.noticeReqMsg;
                             newData.shuffle = result.groupShuffle;
+                            newData.gamesToggle = result.gamesToggle;
+
+                            if (!helpers.isTrue(result.gamesToggle)) {
+                                newData.games = [];
+                            }
 
                             socket.updateDBValue('timer_group_edit_update', 'notices', groupId, JSON.stringify(newData), function () {
                                 socket.wsEvent('timer_group_edit_ws', './systems/noticeSystem.js', null,
@@ -272,6 +295,204 @@
                 table.on('click', '.btn-group-edit', function () {
                     const groupId = Number($(this).data('groupId'));
                     showGroupMessages(groupId);
+                });
+
+                // On games button.
+                table.on('click', '.btn-group-games', function () {
+                    const groupId = Number($(this).data('groupId'));
+                    socket.getDBValue('timer_group_games_toggle_get', 'notices', groupId, function (e) {
+                        let modalGroupData = e.notices;
+                        if (modalGroupData === null) {
+                            run(); // group doesn't exist anymore => reload
+                        }
+                        modalGroupData = JSON.parse(modalGroupData);
+
+                        if (!helpers.isTrue(modalGroupData.gamesToggle)) {
+                            toastr.warning('The "Only Specific Games" option is disabled for this group. Please enable it first in the group settings.');
+                            return;
+                        }
+
+                        if (!modalGroupData.hasOwnProperty('games')) {
+                            modalGroupData.games = [];
+                        }
+
+                        let tableData = [];
+                        for (let i = 0; i < modalGroupData.games.length; i++) {
+                            tableData.push([
+                                i,
+                                modalGroupData.games[i],
+                                $('<div/>', {
+                                    'class': 'btn-group'
+                                }).append($('<button/>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-xs btn-danger btn-group-delete',
+                                    'style': 'float: right',
+                                    'data-game-id': i,
+                                    'data-game-name': modalGroupData.games[i],
+                                    'html': $('<i/>', {'class': 'fa fa-trash'})
+                                })).html()
+                            ]);
+                        }
+
+                        const gamesTableElm = $('<table/>', {
+                            'id': 'games-table',
+                            'class': 'table table-bordered table-hover'
+                        });
+                        const gamesTable = gamesTableElm.DataTable({
+                            'searching': true,
+                            'autoWidth': false,
+                            'data': tableData,
+                            'columnDefs': [
+                                {'className': 'default-table', 'width': '70px', 'orderable': false, 'targets': 2},
+                                {'width': '3%', 'targets': 0}
+                            ],
+                            'columns': [
+                                {'title': 'Id'},
+                                {'title': 'Name'},
+                                {'title': 'Actions'}
+                            ]
+                        });
+                        gamesTable.on('click', '.btn-group-delete', function () {
+                            const gameId = Number($(this).data('gameId'));
+                            // Ask the user if he want to remove the game.
+                            helpers.getConfirmDeleteModal('timer_modal_remove_game',
+                                    'Are you sure you want to delete the game "' + $(this).data('gameName') + '"?', true,
+                                    'You\'ve successfully removed the game "' + $(this).data('gameName') + '"!', function () {
+                                        modalGroupData.games.splice(gameId, 1);
+                                        tableData = [];
+                                        for (let i = 0; i < modalGroupData.games.length; i++) {
+                                            tableData.push([
+                                                i,
+                                                modalGroupData.games[i],
+                                                $('<div/>', {
+                                                    'class': 'btn-group'
+                                                }).append($('<button/>', {
+                                                    'type': 'button',
+                                                    'class': 'btn btn-xs btn-danger btn-group-delete',
+                                                    'style': 'float: right',
+                                                    'data-game-id': i,
+                                                    'data-game-name': modalGroupData.games[i],
+                                                    'html': $('<i/>', {'class': 'fa fa-trash'})
+                                                })).html()
+                                            ]);
+                                        }
+                                        gamesTable.clear().rows.add(tableData).invalidate().draw(false);
+                                });
+                            });
+                        const searchGameSelectElm = $('<select/>', {
+                            'class': 'form-control',
+                            'id': 'add-game',
+                            'placeholder': 'Search for a Game or Category',
+                            'data-str': 'text'
+                        });
+                        const searchGameElm = $('<div/>', {
+                            'class': 'form-group'
+                        }).append($('<label/>', {
+                            'html': $('<b/>', {
+                                'text': 'Add Game'
+                            })
+                        })).append($('<button/>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-xs btn-success btn-add-game',
+                                    'style': 'float: right',
+                                    'html': $('<i/>', {'class': 'fa fa-plus'})
+                                })).append(searchGameSelectElm);
+
+                        searchGameElm.on('click', '.btn-add-game', function () {
+                            const gameName = searchGameSelectElm.val();
+                            if (gameName === null || gameName.length === 0 || modalGroupData.games.includes(gameName)) {
+                                return;
+                            }
+                            modalGroupData.games.push(gameName);
+                            tableData = [];
+                            for (let i = 0; i < modalGroupData.games.length; i++) {
+                                tableData.push([
+                                    i,
+                                    modalGroupData.games[i],
+                                    $('<div/>', {
+                                        'class': 'btn-group'
+                                    }).append($('<button/>', {
+                                        'type': 'button',
+                                        'class': 'btn btn-xs btn-danger btn-group-delete',
+                                        'style': 'float: right',
+                                        'data-game-id': i,
+                                        'data-game-name': modalGroupData.games[i],
+                                        'html': $('<i/>', {'class': 'fa fa-trash'})
+                                    })).html()
+                                ]);
+                            }
+                            gamesTable.clear().rows.add(tableData).invalidate().draw(false);
+                        });
+
+                        let games = {};
+                        let isDoneGames = false;
+                        function getGames(params) {
+                            isDoneGames = false;
+                            socket.doRemote('games', 'games', {
+                                'search': params.data.q
+                            }, function (e) {
+                                if (e.results && e.results.length > 0 && !e.results[0].errors) {
+                                    games = e;
+                                } else {
+                                    games = false;
+                                }
+                                isDoneGames = true;
+                            });
+                        }
+
+                        async function checkIfGamesDoneAsync() {
+                            return isDoneGames;
+                        }
+
+                        // Input check for strings.
+                        $('input[data-str="text"]').on('input', function () {
+                            helpers.handleInputString($(this));
+                        });
+                        helpers.getModal('games-group-modal', "Edit Games", 'Save',
+                            $('<form/>', {'role': 'form'})
+                            .append($('<div/>', {
+                                'class': 'box-body',
+                                'html': 'When the "Only Specific Games" option is enabled, the group\'s messages will only be sent when the current game is in the specified list of games.'
+                            }))
+                            .append(searchGameElm)
+                            .append(gamesTableElm),
+                            // Callback once the user clicks save.
+                                    function () {// Callback once we click the save button.
+                                        socket.updateDBValue('timer_group_games_list_update', 'notices', groupId, JSON.stringify(modalGroupData), function () {
+                                            socket.wsEvent('timer_group_games_list_ws', './systems/noticeSystem.js', null,
+                                                    ['reloadGroup', String(groupId)], function () {
+                                                // Close the modal.
+                                                $('#games-group-modal').modal('hide');
+                                                // Alert the user.
+                                                toastr.success('Successfully updated the games list!');
+                                            });
+                                        });
+                                    }
+                            ).modal('toggle');
+
+                        setTimeout(function () {
+                            searchGameSelectElm.select2({
+                                ajax: {
+                                    delay: 500,
+                                    transport: async function(params, success, failure) {
+                                        getGames(params);
+
+                                        await helpers.promisePoll(() => checkIfGamesDoneAsync(), {pollIntervalMs: 100});
+
+                                        if (games === false) {
+                                            failure('500');
+                                        } else {
+                                            success(games);
+                                        }
+                                    }
+                                },
+                                dropdownParent: $('#games-group-modal'),
+                                minimumInputLength: 1,
+                                tags: false,
+                                width: '100%'
+                            });
+                        }, 500);
+                    });
                 });
 
                 select(results.length);
