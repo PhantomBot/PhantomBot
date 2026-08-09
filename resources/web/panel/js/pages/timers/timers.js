@@ -117,6 +117,24 @@
                 ).modal('toggle');
             }
 
+    function select(resultsLength) {
+        if (selected === null) {
+            if (resultsLength > 0) {
+                showGroupMessages(0);
+            } else {
+                showGroupMessages(null);
+            }
+        } else {
+            if (resultsLength === 0) {
+                showGroupMessages(null);
+            } else if (selected >= resultsLength || selected < 0) {
+                showGroupMessages(resultsLength - 1);
+            } else {
+                showGroupMessages(selected);
+            }
+        }
+    }
+
     // Function that queries all of the data we need.
     function run() {
         // Check if the module is enabled.
@@ -166,6 +184,7 @@
                 // if the table exists, destroy it.
                 if ($.fn.DataTable.isDataTable('#groups-table')) {
                     $groupTable.DataTable().clear().rows.add(tableData).invalidate().draw(false);
+                    select(results.length);
                     return;
                 }
 
@@ -198,6 +217,11 @@
                                 socket.wsEvent('timer_group_remove_ws', './systems/noticeSystem.js', null,
                                         ['removeGroup', groupId], function () {
                                     // Reload the table.
+                                    if ($(this).data('groupId') === selected) {
+                                        selected = null;
+                                    } else if (selected > $(this).data('groupId')) {
+                                        selected--;
+                                    }
                                     run();
                                 });
                             }
@@ -251,21 +275,7 @@
                     showGroupMessages(groupId);
                 });
 
-                if (selected === null) {
-                    if (results.length > 0) {
-                        showGroupMessages(0);
-                    } else {
-                        showGroupMessages(null);
-                    }
-                } else {
-                    if (selected >= results.length) {
-                        showGroupMessages(results.length - 1);
-                    } else if (selected < 0) {
-                        showGroupMessages(results.length + (selected % results.length));
-                    } else {
-                        showGroupMessages(selected);
-                    }
-                }
+                select(results.length);
             });
         });
     }
