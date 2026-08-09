@@ -832,7 +832,7 @@
                 }
 
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-usage', noticeGroups.length - 1));
                     return;
                 }
 
