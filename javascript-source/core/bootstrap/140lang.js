@@ -103,7 +103,7 @@
             return '';
         }
 
-        for (i = 1; i < arguments.length; i++) {
+        for (i = arguments.length; i > 0; i--) {
             while (string.indexOf("$" + i) >= 0) {
                 string = string.replace("$" + i, arguments[i]);
             }

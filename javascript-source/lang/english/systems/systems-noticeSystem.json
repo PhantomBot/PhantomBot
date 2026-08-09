@@ -2,6 +2,7 @@
     "noticesystem.notice-usage": "Usage: !notice [status / add / get / list / remove / edit / toggleid / insert / interval / req / toggle / toggleoffline / toggleshuffle / togglegames / addgame / removegame / selectgroup / addgroup / removegroup / renamegroup]",
     "noticesystem.notice-config": "Notice Settings - [Selected Group: $1 / Number of Groups: $2 / Notice Toggle: $3 / Interval Min: $4 / Interval Max: $5 / Message Trigger: $6 / Messages in Group: $7 / Say Notice in Offline Chat: $8 / Shuffle Messages: $9 / Specific Games Only: $10]",
     "noticesystem.notice-config-games": "Notice enabled for games - $1",
+    "noticesystem.notice-config-games-none": "There are currently no games specified for this notice group. Use !notice addgame [game name] to add a game to this group.",
     "noticesystem.notice-no-notices": "There are no notices in group $1 - Create one with !notice add",
     "noticesystem.notice-get-usage": "Usage: !notice get [notice id] - Notice ids in group $1 go from 0 to $2",
     "noticesystem.notice-list": "Notices in group $1: $2",

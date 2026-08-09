@@ -264,7 +264,7 @@
                     && $.bot.isModuleEnabled('./systems/noticeSystem.js')
                     && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)) {
                     if ((timer.noticeOfflineToggle || $.isOnline($.channelName)) &&
-                            (!timer.gamesToggle || timer.games.indexOf($.jsString($.getGame($.channelName))) !== -1)) {
+                            (!timer.gamesToggle || timer.games.length === 0 || timer.games.indexOf($.jsString($.getGame($.channelName))) !== -1)) {
                         res = sendNotice(idx);
                     } else if (!timer.noticeOfflineToggle) {
                         lastTimeNoticesSent[idx] = $.systemTime();
@@ -815,7 +815,11 @@
                         noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle,
                         noticeGroups[selectedGroup].gamesToggle));
                     if (noticeGroups[selectedGroup].gamesToggle) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config-games', noticeGroups[selectedGroup].games.join(' == ')));
+                        if (noticeGroups[selectedGroup].games.length === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config-games-none'));
+                        } else {
+                            $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config-games', noticeGroups[selectedGroup].games.join(' == ')));
+                        }
                     }
                     return;
                 } finally {
@@ -832,7 +836,7 @@
                 }
 
                 if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-usage', noticeGroups.length - 1));
                     return;
                 }
 

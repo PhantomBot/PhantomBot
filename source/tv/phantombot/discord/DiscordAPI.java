@@ -550,8 +550,6 @@ public class DiscordAPI extends DiscordUtil {
                 DiscordAPI.lastDisconnectReason = "Disconnected";
                 DiscordAPI.instance().connectionState = ConnectionState.DISCONNECTED;
                 DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(30);
-                guildIdSink.tryEmitError(new Error());
-                gatewaySink.tryEmitError(new Error());
             }
             if (event.getStatus().getCode() > 1000) {
                 if (event.getStatus().getCode() == 4014) {
@@ -566,6 +564,8 @@ public class DiscordAPI extends DiscordUtil {
                     synchronized (DiscordAPI.instance().mutex) {
                         DiscordAPI.lastDisconnectReason = "IntentsRejected";
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
+                        guildIdSink.tryEmitError(new Error("Discord Disconnected: IntentsRejected"));
+                        gatewaySink.tryEmitError(new Error("Discord Disconnected: IntentsRejected"));
                     }
                 } else if (event.getStatus().getCode() == 4004) {
                     com.gmt2001.Console.err.println("Discord rejected bot token (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + ")...");
@@ -577,10 +577,16 @@ public class DiscordAPI extends DiscordUtil {
                     synchronized (DiscordAPI.instance().mutex) {
                         DiscordAPI.lastDisconnectReason = "TokenRejected";
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
+                        guildIdSink.tryEmitError(new Error("Discord Disconnected: TokenRejected"));
+                        gatewaySink.tryEmitError(new Error("Discord Disconnected: TokenRejected"));
                     }
                 } else {
                     com.gmt2001.Console.err.println("Discord connection closed with status " + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : ""));
                 }
+            }
+            synchronized (DiscordAPI.instance().mutex) {
+                guildIdSink.tryEmitError(new Error("Discord Disconnected"));
+                gatewaySink.tryEmitError(new Error("Discord Disconnected"));
             }
         }
 
@@ -599,8 +605,8 @@ public class DiscordAPI extends DiscordUtil {
                 synchronized (DiscordAPI.instance().mutex) {
                     DiscordAPI.lastDisconnectReason = disconnectReason;
                     DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
-                    guildIdSink.tryEmitError(new Error());
-                    guildIdSink.tryEmitError(new Error());
+                    guildIdSink.tryEmitError(new Error("Discord Disconnected: NotInGuild"));
+                    gatewaySink.tryEmitError(new Error("Discord Disconnected: NotInGuild"));
                 }
                 return;
             }
