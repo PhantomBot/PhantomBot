@@ -38,14 +38,70 @@
         }
     });
 
+    function transformers() {
+        /*
+         * @localtransformer name
+         * @formula (name) The clip creator's name
+         * @cached
+         */
+        function name(args) {
+            return {
+                result: args.event.getCreator(),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer url
+         * @formula (url) The clip's URL
+         * @cached
+         */
+        function url(args) {
+            return {
+                result: args.event.getClipURL(),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer title
+         * @formula (title) The clip's title
+         * @cached
+         */
+        function title(args) {
+            return {
+                result: args.event.getClipTitle(),
+                cache: true
+            };
+        }
+
+        /*
+         * @localtransformer game
+         * @formula (game) The clip's game
+         * @cached
+         */
+        function game(args) {
+            return {
+                result: $.helix.getGames(Packages.java.util.List.of(args.event.getGameID()), null, null).getJSONArray("data").getJSONObject(0).getString("name"),
+                cache: true
+            };
+        }
+
+        return {
+            name: name,
+            url: url,
+            title: title,
+            game: game,
+            embedurl: url
+        };
+    }
+
     /*
      * @event twitchClip
+     * @usestransformers local global discord noevent
      */
     $.bind('twitchClip', function (event) {
-        var creator = event.getCreator(),
-                url = event.getClipURL(),
-                title = event.getClipTitle(),
-                clipThumbnail = event.getThumbnailObject().getString("medium"),
+        var clipThumbnail = event.getThumbnailObject().getString("medium"),
                 s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
@@ -57,21 +113,10 @@
             clipThumbnail = $.twitchcache.getLogoLink();
         }
 
-        if (s.match(/\(name\)/g)) {
-            s = $.replace(s, '(name)', creator);
-        }
-
-        if (s.match(/\(url\)/g)) {
-            s = $.replace(s, '(url)', url);
-        }
-
-        if (s.match(/\(title\)/g)) {
-            s = $.replace(s, '(title)', title);
-        }
-
-        if (s.match(/\(embedurl\)/g)) {
-            s = $.replace(s, '(embedurl)', url);
-        }
+        let s = $.transformers.tags(event, message, ['discord', 'noevent'], {
+            platform: 'discord',
+            localTransformers: transformers()
+        });
 
         if (message.indexOf('(embedurl)') !== -1) {
             $.discord.say(channelName, s);

@@ -210,7 +210,7 @@ public final class TwitchCache implements Listener {
                                         thumbnails.put("tiny", clip.getString("thumbnail_url"));
 
                                         EventBus.instance().postAsync(new TwitchClipEvent(clip.getString("url"), clip.getString("creator_name"),
-                                                clip.getString("title"), thumbnails));
+                                                clip.getString("title"), thumbnails, clip.getString("game_id")));
                                     }
                                 } catch (NullPointerException | JSONException | DateTimeParseException ex) {
                                 }

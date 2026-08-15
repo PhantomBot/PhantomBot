@@ -17,8 +17,6 @@
 
 /* global toastr */
 
-// TODO: disabled aliases are not disabled
-
 // Function that querys all of the data we need.
 $(function () {
     const getDisabledIconAttr = function (disabled) {

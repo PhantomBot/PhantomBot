@@ -78,6 +78,23 @@
         return s.replace(/(\@everyone|\@here|<@&\d+>|<@\d+>|<#\d+>)/ig, '');
     }
 
+    function transformers() {
+        /*
+         * @localtransformer name
+         * @formula (name) The broadcaster's name
+         * @cached
+         */
+        function name() {
+            return {
+                result: $.viewer.broadcaster().name(),
+                cache: true
+            };
+        }
+        return {
+            name: name
+        };
+    }
+
     /*
      * @event twitchOffline
      */
@@ -144,11 +161,10 @@
                 // Get max chatters.
                 var maxChatters = Math.max.apply(null, chatters);
 
-                var s = offlineMessage;
-
-                if (s.match(/\(name\)/)) {
-                    s = $.replace(s, '(name)', $.viewer.broadcaster().name());
-                }
+                let s = $.transformers.tags(event, offlineMessage, ['discord', 'noevent'], {
+                    platform: 'discord',
+                    localTransformers: transformers()
+                });
 
                 // Only say this when there is a mention.
                 if (s.indexOf('@') !== -1) {
@@ -193,6 +209,7 @@
 
     /*
      * @event twitchOnline
+     * @usestransformers local global discord noevent
      */
     $.bind('twitchOnline', function (event) {
         // Wait a minute for Twitch to generate a real thumbnail and make sure again that we are online.
@@ -209,11 +226,10 @@
                 }
 
                 if (onlineToggle === true && channelName !== '') {
-                    var s = onlineMessage;
-
-                    if (s.match(/\(name\)/)) {
-                        s = $.replace(s, '(name)', $.viewer.broadcaster().name());
-                    }
+                    let s = $.transformers.tags(event, onlineMessage, ['discord', 'noevent'], {
+                    platform: 'discord',
+                    localTransformers: transformers()
+                });
 
                     // Only say this when there is a mention.
                     if (s.indexOf('@') !== -1) {
@@ -275,17 +291,17 @@
 
     /*
      * @event twitchGameChange
+     * @usestransformers local global discord noevent
      */
     $.bind('twitchGameChange', function (event) {
         if (gameToggle === false || $.jsString(channelName) === '' || $.isOnline($.channelName) === false) {
             return;
         }
 
-        var s = gameMessage;
-
-        if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', $.viewer.broadcaster().name());
-        }
+        let s = $.transformers.tags(event, gameMessage, ['discord', 'noevent'], {
+            platform: 'discord',
+            localTransformers: transformers()
+        });
 
         // Only say this when there is a mention.
         if (s.indexOf('@') !== -1) {
