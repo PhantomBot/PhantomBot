@@ -2,8 +2,6 @@ name: Build/Upload Release
 on:
   release:
     types: [published]
-permissions:
-  contents: write
 jobs:
   buildtest:
     name: Test Build on ubuntu-latest with JDK 17
@@ -149,9 +147,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [updateremotepanel, updateguides, javadoc]
     steps:
+    - name: Create GitHub App Token
+      uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ secrets.BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
     - name: Checkout Repository
       uses: actions/checkout@v7
       with:
+        token: ${{ steps.app-token.outputs.token }}
         ref: 'master'
     - name: Prep Artifact Dir
       run: mkdir -p /tmp/docartifacts

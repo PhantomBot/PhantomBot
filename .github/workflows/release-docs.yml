@@ -18,9 +18,6 @@ on:
         default: true
         type: boolean
 
-permissions:
-  contents: write
-
 jobs:
   updateremotepanel:
     name: Update Remote Panel (Stable)
@@ -105,9 +102,16 @@ jobs:
       && !(needs.updateremotepanel.result == 'skipped' && needs.updateguides.result == 'skipped' && needs.javadoc.result == 'skipped')
     needs: [updateremotepanel, updateguides, javadoc]
     steps:
+    - name: Create GitHub App Token
+      uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ secrets.BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
     - name: Checkout Repository
       uses: actions/checkout@v7
       with:
+        token: ${{ steps.app-token.outputs.token }}
         ref: 'master'
     - name: Prep Artifact Dir
       run: mkdir -p /tmp/docartifacts

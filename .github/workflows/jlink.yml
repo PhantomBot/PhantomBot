@@ -3,9 +3,6 @@ name: Build JLink Binaries
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   updatejlink:
     name: Update JLink Builds
@@ -113,8 +110,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: updatejlink
     steps:
+    - name: Create GitHub App Token
+      uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ secrets.BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
     - name: Checkout Repository
       uses: actions/checkout@v7
+      with:
+        token: ${{ steps.app-token.outputs.token }}
     - name: Download Artifacts
       uses: actions/download-artifact@v8
       with:
