@@ -25,6 +25,23 @@ public class TwitchClipEvent extends TwitchEvent {
     private final String creator;
     private final String clipTitle;
     private final JSONObject thumbnailObj;
+    private final String gameid;
+
+    /**
+     * Class constructor.
+     *
+     * @param clipURL
+     * @param creator
+     * @param clipTitle
+     * @param thumbnailObj
+     */
+    public TwitchClipEvent(String clipURL, String creator, String clipTitle, JSONObject thumbnailObj, String gameid) {
+        this.clipURL = clipURL;
+        this.creator = creator;
+        this.clipTitle = clipTitle;
+        this.thumbnailObj = thumbnailObj;
+        this.gameid = gameid;
+    }
 
     /**
      * Class constructor.
@@ -35,10 +52,7 @@ public class TwitchClipEvent extends TwitchEvent {
      * @param thumbnailObj
      */
     public TwitchClipEvent(String clipURL, String creator, String clipTitle, JSONObject thumbnailObj) {
-        this.clipURL = clipURL;
-        this.creator = creator;
-        this.clipTitle = clipTitle;
-        this.thumbnailObj = thumbnailObj;
+        this(clipURL, creator, clipTitle, thumbnailObj, null);
     }
 
     /**
@@ -75,5 +89,14 @@ public class TwitchClipEvent extends TwitchEvent {
      */
     public JSONObject getThumbnailObject() {
         return this.thumbnailObj;
+    }
+
+    /**
+     * Method that returns the game ID. This may be null if not provided.
+     *
+     * @return gameid
+     */
+    public String getGameID() {
+        return this.gameid;
     }
 }
