@@ -18,6 +18,9 @@ on:
         default: true
         type: boolean
 
+permissions:
+  contents: write
+
 jobs:
   updateremotepanel:
     name: Update Remote Panel (Stable)
@@ -105,7 +108,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.GH_TOKEN }}
         ref: 'master'
     - name: Prep Artifact Dir
       run: mkdir -p /tmp/docartifacts
