@@ -234,10 +234,10 @@ jobs:
     steps:
     - name: Create GitHub App Token
       uses: actions/create-github-app-token@v3
-        id: app-token
-        with:
-          client-id: ${{ secrets.BOT_CLIENT_ID }}
-          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+      id: app-token
+      with:
+        client-id: ${{ secrets.BOT_CLIENT_ID }}
+        private-key: ${{ secrets.BOT_PRIVATE_KEY }}
     - name: Checkout Repository
       uses: actions/checkout@v7
       with:
