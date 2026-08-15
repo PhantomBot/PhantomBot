@@ -2884,6 +2884,80 @@ _These command tags are only available in the scripts which defined them_
 
 _Some scripts may also restrict the use of global command tags_
 
+### discord / clipHandler.js
+
+#### name
+
+Defined in script: _./javascript-source/discord/handlers/clipHandler.js_
+
+**Formulas:**
+
+- `(name)` - The clip creator's name
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### url
+
+Defined in script: _./javascript-source/discord/handlers/clipHandler.js_
+
+**Formulas:**
+
+- `(url)` - The clip's URL
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### title
+
+Defined in script: _./javascript-source/discord/handlers/clipHandler.js_
+
+**Formulas:**
+
+- `(title)` - The clip's title
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### game
+
+Defined in script: _./javascript-source/discord/handlers/clipHandler.js_
+
+**Formulas:**
+
+- `(game)` - The clip's game
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### discord / streamHandler.js
+
+#### name
+
+Defined in script: _./javascript-source/discord/handlers/streamHandler.js_
+
+**Formulas:**
+
+- `(name)` - The broadcaster's name
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### subscribeHandler.js
 
 #### amount
@@ -3217,6 +3291,20 @@ Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### discord / clipHandler.js
+
+Defined in script: _./javascript-source/discord/handlers/clipHandler.js_
+
+#### Hook: twitchClip
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** discord noevent
+
+&nbsp;
+
 ### discord / keywordHandler.js
 
 Defined in script: _./javascript-source/discord/handlers/keywordHandler.js_
@@ -3228,6 +3316,28 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | No
 
 **Labels Used:** discord commandevent keywordevent noevent
+
+&nbsp;
+
+### discord / streamHandler.js
+
+Defined in script: _./javascript-source/discord/handlers/streamHandler.js_
+
+#### Hook: twitchOnline
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** discord noevent
+
+#### Hook: twitchGameChange
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** discord noevent
 
 &nbsp;
 
