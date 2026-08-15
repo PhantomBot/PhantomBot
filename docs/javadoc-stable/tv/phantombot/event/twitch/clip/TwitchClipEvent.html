@@ -100,6 +100,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Class constructor.</div>
 </div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,org.json.JSONObject,java.lang.String)" class="member-name-link">TwitchClipEvent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clipURL,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;creator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clipTitle,
+ <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&nbsp;thumbnailObj,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;gameid)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Class constructor.</div>
+</div>
 </div>
 </section>
 </li>
@@ -129,9 +137,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that returns the clip creator.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getThumbnailObject()" class="member-name-link">getThumbnailObject</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getGameID()" class="member-name-link">getGameID</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Method that returns the game ID.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getThumbnailObject()" class="member-name-link">getThumbnailObject</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that returns the object of thumnails.</div>
 </div>
 </div>
@@ -151,6 +164,24 @@ loadScripts(document, 'script');</script>
 <section class="constructor-details" id="constructor-detail">
 <h2>Constructor Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,org.json.JSONObject,java.lang.String)">
+<h3>TwitchClipEvent</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TwitchClipEvent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clipURL,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;creator,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clipTitle,
+ <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&nbsp;thumbnailObj,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;gameid)</span></div>
+<div class="block">Class constructor.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>clipURL</code> - </dd>
+<dd><code>creator</code> - </dd>
+<dd><code>clipTitle</code> - </dd>
+<dd><code>thumbnailObj</code> - </dd>
+</dl>
+</section>
+</li>
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,org.json.JSONObject)">
 <h3>TwitchClipEvent</h3>
@@ -217,6 +248,17 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>thumbnailObj</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getGameID()">
+<h3>getGameID</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getGameID</span>()</div>
+<div class="block">Method that returns the game ID. This may be null if not provided.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>gameid</dd>
 </dl>
 </section>
 </li>
