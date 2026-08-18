@@ -51,6 +51,7 @@ public final class HttpClient {
     private static final String DEFAULT_USER_AGENT = "PhantomBot/2022";
     private static final int TIMEOUT_TIME = 10;
     private static final int SSL_TIMEOUT_TIME = 10;
+    private static final Http11SslContextSpec DEFAULT_SSL_CONTEXT_SPEC = Http11SslContextSpec.forClient();
 
     private HttpClient() {
     }
@@ -73,7 +74,7 @@ public final class HttpClient {
          * @botpropertycatsort httpclientssltimeout 110 700 HTTP/WS
          */
         if (url.getScheme() != null && url.getScheme().equals("https")) {
-            client = client.secure(spec -> spec.sslContext(Http11SslContextSpec.forClient())
+            client = client.secure(spec -> spec.sslContext(DEFAULT_SSL_CONTEXT_SPEC)
                 .handshakeTimeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("httpclientssltimeout", SSL_TIMEOUT_TIME)))
                 .closeNotifyFlushTimeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("httpclientssltimeout", SSL_TIMEOUT_TIME)))
                 .closeNotifyReadTimeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("httpclientssltimeout", SSL_TIMEOUT_TIME))));
