@@ -43,6 +43,14 @@ import tv.phantombot.CaselessProperties;
  * @author gmt2001
  */
 public final class WSClient {
+    private static final SslContext DEFAULT_SSL_CTX;
+    static {
+        try {
+            DEFAULT_SSL_CTX = SslContextBuilder.forClient().build();
+        } catch (SSLException e) {
+            throw new RuntimeException("Failed to initialize default SSL context", e);
+        }
+    }
 
     /**
      * The URI to connect to
@@ -129,11 +137,11 @@ public final class WSClient {
             this.handler = handler;
             this.pinger = pinger;
             if ("wss".equalsIgnoreCase(scheme)) {
-                this.sslCtx = SslContextBuilder.forClient().build();
+                this.sslCtx = DEFAULT_SSL_CTX;
             } else {
                 this.sslCtx = null;
             }
-        } catch (IllegalArgumentException | SSLException ex) {
+        } catch (IllegalArgumentException ex) {
             group.shutdownGracefully();
             throw ex;
         }
