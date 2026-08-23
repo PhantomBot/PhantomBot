@@ -102,6 +102,7 @@
      */
     $.bind('twitchClip', function (event) {
         var clipThumbnail = event.getThumbnailObject().getString("medium"),
+                url = event.getClipURL(),
                 s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
