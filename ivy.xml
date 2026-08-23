@@ -53,18 +53,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="com.h2database" name="h2" rev="2.4.240"/>
         <dependency org="com.h2database" name="h2" rev="2.1.214" conf="lib.extra->default"/>
         <dependency org="com.h2database" name="h2" rev="1.4.200" conf="lib.extra->default"/>
-        <dependency org="org.jooq" name="jooq" rev="3.19.29"/>
-        <dependency org="org.mariadb.jdbc" name="mariadb-java-client" rev="3.5.7"/>
-        <dependency org="com.mysql" name="mysql-connector-j" rev="9.5.0"/>
-        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.51.1.0"/>
+        <dependency org="org.jooq" name="jooq" rev="3.19.37"/>
+        <dependency org="org.mariadb.jdbc" name="mariadb-java-client" rev="3.5.10"/>
+        <dependency org="com.mysql" name="mysql-connector-j" rev="26.7.0"/>
+        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.53.2.1"/>
         <!-- Utility -->
-        <dependency org="commons-codec" name="commons-codec" rev="1.20.0"/>
-        <dependency org="commons-io" name="commons-io" rev="2.21.0"/>
+        <dependency org="commons-codec" name="commons-codec" rev="1.22.1"/>
+        <dependency org="commons-io" name="commons-io" rev="2.22.0"/>
         <dependency org="org.apache.commons" name="commons-text" rev="1.15.0"/>
-        <dependency org="org.json" name="json" rev="20251224"/>
+        <dependency org="org.json" name="json" rev="20260814"/>
         <dependency org="org.mozilla" name="rhino" rev="1.9.1"/>
         <dependency org="org.mozilla" name="rhino-tools" rev="1.9.1"/>
-        <dependency org="org.slf4j" name="slf4j-nop" rev="2.0.17"/>
+        <dependency org="org.slf4j" name="slf4j-nop" rev="2.0.18"/>
         <!-- Conflict Resolvers -->
         <conflict org="com.h2database" manager="all"/>
     </dependencies>
