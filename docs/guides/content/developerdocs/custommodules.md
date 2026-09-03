@@ -25,7 +25,7 @@ Pick a stable **`moduleId`** (short, filesystem-safe) and use the **same** name 
 
 1. Add `scripts/custom/yourModule.js` (and lang under `scripts/lang/custom/` if needed).
 2. Register commands inside `$.bind('initReady', function () { ... })` and call `$.registerChatCommand('./custom/.../yourModule.js', 'cmdname', perm);` (see the [registerChatCommand](guide=content/developerdocs/registerchatcommand "##guide_link") guide).
-3. Reload scripts without restarting: run **`!reloadcustom`** in chat (caster), or refresh the web panel (the panel issues a silent reload after loading manifests).
+3. Reload scripts without restarting: run **`!reloadcustom`** in chat (caster), or refresh the web panel while logged in as the config panel user (the panel issues a silent reload after loading manifests; Panel Users created under **Settings → Panel Users** do not trigger it).
 
 ## Module with panel UI (manifest)
 
@@ -39,8 +39,9 @@ At least one of **`nav`** or **`cards`** must be present (non-empty) when the fi
 manifest.json
 │
 ├── nav[]                              optional — sidebar links
-│   └── each entry                     { label, folder, page, hash?, section? }
+│   └── each entry                     { label, folder, page, hash?, section?, scripts? }
 │                                      section: extra | alerts | giveaways | audio
+│                                      scripts: bot script paths your page targets with socket.wsEvent
 │
 └── cards[]                            optional — Games page
     └── each entry                     { id, title, description?, section?, scriptPath? }
@@ -117,13 +118,13 @@ Custom modules use the same **Settings → Panel Users** sections as stock panel
 
 | Panel Users access on the section | Custom `nav` / `cards` in that section |
 | --- | --- |
-| **Full Access** | Visible; settings, toggles, saves, and custom page writes allowed. Websocket checks use the manifest **`section`** (e.g. `extra` or `games`) on each panel message. |
+| **Full Access** | Visible; settings, toggles, saves, and custom page writes allowed. Websocket checks use the manifest **`section`** (e.g. `extra` or `games`) on each panel message; scripts targeted with **`socket.wsEvent`** must be indexed via **`cards.scriptPath`** or **`nav.scripts`**. |
 | **Read Only** | Visible; viewing and read-only details allowed. Writes are blocked on the server. In the UI, **Games** card toggles/settings are disabled; clicks show the stock **Permissions error** toast. **Custom nav pages** must implement the same pattern in their own page JS (see below)—the manifest does not wire your buttons. |
 | **No access** (section not granted) | Omitted from **`custom-manifests.json`** for that user; sidebar block is hidden like stock pages. |
 
 Set **`nav.section`** to `extra`, `alerts`, `giveaways`, or `audio`. Set **`cards.section`** to `games` (only supported card section today).
 
-The bot rebuilds an internal index whenever manifests change: every **`settingsModal`** field **`table`** (and **`cards.scriptPath`**) is mapped to that entry’s **`section`** for Panel User websocket checks—no module-specific names are compiled into PhantomBot.
+The bot rebuilds an internal index whenever manifests change: every **`settingsModal`** field **`table`**, every **`cards.scriptPath`**, and every path in **`nav.scripts`** is mapped to that entry’s **`section`** for Panel User websocket checks—no module-specific names are compiled into PhantomBot. DB queries and **`socket.sendCommand`** fall back to the **`section`** the page sends, but **`socket.wsEvent`** against a custom script is only allowed for non-config Panel Users when that script is indexed this way.
 
 **Websocket `section`:** `socket.getDBValues`, `socket.updateDBValues`, `socket.sendCommand`, and related panel APIs attach **`message.section`** from the active page. For manifest nav, that value comes from **`nav.section`** (`data-panel-section` on the sidebar link). Users should open your page through that link so section checks match **Settings → Panel Users**.
 
@@ -152,7 +153,7 @@ Recommended pattern for read-only users:
 
 Use the same **`section`** string as in your manifest (`extra`, etc.). You can read the active value with **`$.currentPage().panelSection`** after the user navigates via the manifest link.
 
-Optional: declare a minimal **`settingsModal`** on a **Games** card (or any card) listing your INIDB **`table`** names so the server indexes them to a section even when the primary UI is a **nav** page.
+Optional: declare a minimal **`settingsModal`** on a **Games** card (or any card) listing your INIDB **`table`** names so the server indexes them to a section even when the primary UI is a **nav** page. If your page calls **`socket.wsEvent`** against your bot script, list that script in **`nav.scripts`**; otherwise the call is denied for every non-config Panel User.
 
 ### `nav` entries (sidebar links)
 
@@ -163,6 +164,7 @@ Optional: declare a minimal **`settingsModal`** on a **Games** card (or any card
 | `page` | Yes | **Single** filename only: `something.html`. Same safe character set; no `/`, `..`, `\`, or reserved URI delimiters. |
 | `hash` | No | Optional; merged output always uses `#` + `page`. If you set `hash`, the fragment (with or without `#`) must equal `page` or the nav row is skipped. |
 | `section` | No | **`extra`** (default), **`alerts`**, **`giveaways`**, or **`audio`**. Any other value is logged and treated as **`extra`**. |
+| `scripts` | No | Array of up to **10** bot script paths (same shape rules as **`cards.scriptPath`**, e.g. `./custom/mymod.js`). Indexed to this entry’s **`section`** so **`socket.wsEvent`** calls from your page pass Panel User checks. Any invalid entry skips the whole nav row with a warn-log. |
 
 **Section hints:** **`extra`** is the general catch-all; **`alerts`**, **`giveaways`**, and **`audio`** match those submenu themes. Other built-in areas (Commands, Moderation, Loyalty, single-page panels like Dashboard, etc.) are **not** valid `nav` targets—there is no submenu to attach to. **`Games`** is for **`cards`**, not **`nav`**.
 
@@ -184,7 +186,7 @@ Duplicate **`section` + `id`** across manifests are deduplicated (**first wins**
 
 ### `settingsModal` field rows (all types)
 
-Every row needs **`id`**, **`type`**, **`label`**, **`table`**, and **`key`** (INIDB). Optional **`help`** on any type (length capped server-side).
+Every row needs **`id`**, **`type`**, **`label`**, **`table`**, and **`key`** (INIDB). Optional **`help`** on any type (length capped server-side). **`key`** values must be unique across the whole modal, even across different tables, because the panel reads loaded values by key alone; they also may not be `table` or `value`, which the panel’s DB result resolver reserves.
 
 ### `settingsModal` field `type` values
 
@@ -192,12 +194,12 @@ Allowed **`type`** strings (each row in `fields[]`, including rows nested under 
 
 | `type` | Purpose | Extra keys |
 | --- | --- | --- |
-| **`number`** | Numeric input. | Optional **`min`**, **`max`** (validated on save). Default display value falls back to **`min`** or `0` when the DB value is empty. |
+| **`number`** | Numeric input. | Optional **`min`**, **`max`**: integer JSON numbers (quoted or fractional values are rejected) with **`min`** ≤ **`max`**; validated on save. When **`min`** is omitted the panel enforces a floor of **0** (stock number validation), so set **`min`** explicitly to allow negatives. Default display value falls back to **`min`** or `0` when the DB value is empty. |
 | **`text`** | Single-line string. | — |
 | **`textarea`** | Multi-line string. | Set **`unlimited`**: `true` to skip the default max length; otherwise a default cap applies in the panel. |
 | **`boolean`** | Two-choice dropdown stored as boolean in INIDB. | Optional **`options`**: exactly **two** unique non-empty strings `[trueLabel, falseLabel]` (e.g. `["Enabled","Disabled"]`). If omitted, defaults to **Yes / No**. |
 | **`toggle`** | Single inline checkbox; wire-compatible with boolean storage. | Prefer **`boolean`** when a labeled dropdown reads better; use **`toggle`** for a compact switch. |
-| **`checkboxgroup`** | 2–12 related booleans in one fieldset; one shared **`table`** on the parent field, each inner checkbox has its own **`key`**. | **`checkboxes`**: array of `{ id, label, key, help? }`. Inner **`id`** values must be unique **within the whole modal** (not just within the group). |
+| **`checkboxgroup`** | 2–12 related booleans in one fieldset; one shared **`table`** on the parent field, each inner checkbox has its own **`key`**. | **`checkboxes`**: array of `{ id, label, key, help? }`. Inner **`id`** and **`key`** values must be unique **within the whole modal** (not just within the group). |
 | **`dropdown`** | String choice from a fixed list. | **`options`**: non-empty array of strings (each option length capped server-side). |
 | **`permission`** | PhantomBot permission group selector. | Stored as group id; panel uses the default group when the value is missing or invalid. |
 
@@ -210,10 +212,10 @@ When manifest content actually renders, the panel inserts a small separator: a *
 ### Troubleshooting
 
 - **Link but 404:** Confirm `web/panel/pages/custom/<moduleId>/<page>.html` exists on the machine (or Docker volume) the bot serves.
-- **No link:** Valid JSON at `web/panel/custom/<moduleId>/manifest.json`; `folder`/`page` pass validation; check console for **`Custom panel manifest skipped nav`** lines.
+- **No link:** Valid JSON at `web/panel/custom/<moduleId>/manifest.json`; `folder`/`page` pass validation; check console for **`Custom panel manifest skipped nav`** lines (including `invalid scripts entry` when **`nav.scripts`** contains a malformed path).
 - **No card:** `section` must be `games`; `id` safe and unique; console may show **`skipped card`** with a reason (`invalid id`, `invalid scriptPath`, modal validation, etc.).
 - **Toggle no-op:** `scriptPath` must match what the `module` command expects (e.g. `./games/foo.js`). Bare `./foo.js` is rejected.
-- **Commands missing after drop:** Run **`!reloadcustom`** (caster); register commands inside **`$.bind('initReady', ...)`** so the reload fan-out can re-run them.
+- **Commands missing after drop:** Run **`!reloadcustom`** (caster); register commands inside **`$.bind('initReady', ...)`** so the reload fan-out can re-run them. Installs that first registered the command on a build where it defaulted to Administrator keep that persisted permission; run **`!permcom reloadcustom 0`** once to move it to caster.
 - **Read-only user can still “succeed” in UI:** Use **`requirePanelSectionWrite`** before showing success dialogs; avoid **`helpers.getConfirmDeleteModal`** success text on async websocket actions (it runs before the server responds). Prefer **`toastr`** on command callback for deletes.
 - **Wrong section / denied writes:** Open the page from the manifest sidebar link so **`$.currentPage().panelSection`** matches **`nav.section`**. Index INIDB tables in **`settingsModal`** if you rely on table-based checks.
 - **Docker:** Put files under the **host** path you bind to **`/opt/PhantomBot_data`**; symlinks from the image point `./web/panel/.../custom` (and related paths) at that volume.
