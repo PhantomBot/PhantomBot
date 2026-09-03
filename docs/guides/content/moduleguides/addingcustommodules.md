@@ -27,18 +27,19 @@ The **moduleId** is a short folder name the author chose (for example `my-game`)
 
 ### If you use Docker
 
-When the bot runs in a container with a **data volume** (often mounted at `/opt/PhantomBot_data` on the container), copy files into the **same paths on the host** under that volume—for example `<your host data>/scripts/custom/...` and `<your host data>/web/panel/custom/...`. The official Docker image exposes those paths under the data volume automatically; you do **not** need to edit files inside the container image.
+When the bot runs in a container with a **data volume** (often mounted at `/opt/PhantomBot_data` on the container), copy files into the **same paths on the host** under that volume—for example `<your host data>/scripts/custom/...` and `<your host data>/web/panel/custom/...`. The official Docker image exposes those paths under the data volume automatically; you do **not** need to edit files inside the container image. Two exceptions: language files go under `<your host data>/scripts/lang/` and Discord scripts under `<your host data>/scripts/discord/` (the image maps the bot's `.../custom` folders to those).
 
 ## After you copy the files
 
 1. **Restart the bot** if the module’s README says to, or if you replaced an existing script and want a clean load. Many setups only need the next steps.
-2. Open the **web panel** in your browser and do a **hard refresh** (for example **Ctrl+Shift+R** on Windows) so the browser does not use an old cached page.
+2. Open the **web panel** in your browser and do a **hard refresh** (for example **Ctrl+Shift+R** on Windows) so the browser does not use an old cached page. When you are logged in with the main panel account, this refresh also makes the bot scan for newly added scripts.
 3. If the module is **chat-only** and new commands do not appear, the broadcaster (or someone with permission) can run **`!reloadcustom`** in the channel so the bot picks up new scripts without a full restart.
 
 ## How to check that it worked
 
 - **Panel:** Look for a new item under **Extra**, **Alerts**, **Giveaways**, or **Audio**, or a new card on **Games**, depending on what the module adds.
 - **Chat:** Try the commands listed in the module README.
+- **Panel Users:** accounts created under **Settings → Panel Users** only see a module's pages or cards when they have access to that section (**Extra**, **Games**, and so on).
 
 If a sidebar link appears but the page is **blank or “Not found”**, the HTML/JS files are probably in the wrong folder or missing—compare your tree to the author’s README.
 
