@@ -291,9 +291,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/handlers/subscribeHandler.js', 'subscribehandler', 1);
         $.discord.registerSubCommand('subscribehandler', 'subtoggle', 1);
         $.discord.registerSubCommand('subscribehandler', 'giftsubtoggle', 1);

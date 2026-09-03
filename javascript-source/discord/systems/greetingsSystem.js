@@ -188,9 +188,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/systems/greetingsSystem.js', 'greetingssystem', 1);
         $.discord.registerSubCommand('greetingssystem', 'jointoggle', 1);
         $.discord.registerSubCommand('greetingssystem', 'partoggle', 1);

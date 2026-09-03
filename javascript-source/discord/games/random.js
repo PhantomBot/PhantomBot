@@ -53,9 +53,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/games/random.js', 'random', 0);
 
         if (responseCount === 0) {

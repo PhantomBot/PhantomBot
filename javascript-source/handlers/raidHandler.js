@@ -57,12 +57,6 @@
             raidObj.lastRaidTime = $.systemTime();
             // Last raid viewers.
             raidObj.lastRaidViewers = viewers;
-            // Push this raid to the raids array.
-            //raidObj.raids.push({
-            //    time: $.systemTime(),
-            //    viewers: viewers,
-            //    username: username
-            //});
         } else {
             // Increase total raids.
             raidObj.totalRaids = '1';
@@ -72,14 +66,6 @@
             raidObj.lastRaidTime = $.systemTime();
             // Last raid viewers.
             raidObj.lastRaidViewers = viewers;
-            // Create new raid array.
-            //raidObj.raids = [];
-            // Push this raid to the raids array.
-            //raidObj.raids.push({
-            //    time: $.systemTime(),
-            //    viewers: viewers,
-            //    username: username
-            //});
         }
 
         // Save the new object.

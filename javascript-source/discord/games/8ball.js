@@ -62,9 +62,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/games/8ball.js', '8ball', 0);
 
         if (responseCount === 0) {

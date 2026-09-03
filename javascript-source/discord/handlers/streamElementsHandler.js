@@ -156,9 +156,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/handlers/streamElementsHandler.js', 'streamelementshandler', 1);
         $.discord.registerSubCommand('streamelementshandler', 'toggle', 1);
         $.discord.registerSubCommand('streamelementshandler', 'message', 1);

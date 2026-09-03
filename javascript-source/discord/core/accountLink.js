@@ -160,9 +160,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function () {
+    $.bind('discordReady', function () {
         $.discord.registerCommand('./discord/core/accountLink.js', 'account', 0);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);

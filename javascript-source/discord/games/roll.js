@@ -115,9 +115,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/games/roll.js', 'roll', 0);
         $.discord.registerSubCommand('roll', 'rewards', 1);
         loadRewards();

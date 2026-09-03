@@ -1423,16 +1423,13 @@ public final class PhantomBot implements Listener {
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
                             this.getDataStore().del("settings", "newrelease_info");
                         } else {
-                            try {
-                                Thread.sleep(6000);
+                            ExecutorService.schedule(() -> {
                                 this.print("");
                                 this.print("New PhantomBot Nightly Build Detected: " + latestNightly);
                                 this.print("Download Link: https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly-bot.zip");
                                 this.print("A reminder will be provided in 24 hours!");
                                 this.print("");
-                            } catch (InterruptedException ex) {
-                                com.gmt2001.Console.err.printStackTrace(ex);
-                            }
+                            }, 6000, TimeUnit.MILLISECONDS);
 
                             if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
                                 this.getDataStore().set("settings", "newrelease_info", "nightly-" + latestNightly + "|https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly-bot.zip");
@@ -1441,17 +1438,14 @@ public final class PhantomBot implements Listener {
                     } else {
                         String[] newVersionInfo = GitHubAPIv3.CheckNewRelease();
                         if (newVersionInfo != null) {
-                            try {
-                                Thread.sleep(6000);
+                            ExecutorService.schedule(() -> {
                                 this.print("");
                                 this.print("New PhantomBot Release Detected: " + newVersionInfo[0]);
                                 this.print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
                                 this.print("Download Link: " + newVersionInfo[1]);
                                 this.print("A reminder will be provided in 24 hours!");
                                 this.print("");
-                            } catch (InterruptedException ex) {
-                                com.gmt2001.Console.err.printStackTrace(ex);
-                            }
+                            }, 6000, TimeUnit.MILLISECONDS);
 
                             if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
                                 this.getDataStore().set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);

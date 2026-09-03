@@ -600,7 +600,7 @@ public class DiscordUtil {
      * @param emoji The emoji unicode
      */
     public void addReaction(Message message, String emoji) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to add reaction, guild was null");
             return;
         }
@@ -635,7 +635,7 @@ public class DiscordUtil {
      * @param emojis The emoji unicodes
      */
     public void addReactions(Message message, String... emojis) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to add reactions, guild was null");
             return;
         }
@@ -701,7 +701,7 @@ public class DiscordUtil {
     }
 
     public Mono<GuildMessageChannel> getChannelAsync(String channelName, Predicate<? super GuildChannel> filter) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get channel, guild was null");
             return Mono.empty();
         }
@@ -726,7 +726,7 @@ public class DiscordUtil {
     }
 
     public Flux<GuildChannel> getAllChannelInfoAsync(Map<String, Map<String, String>> data) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get channel info, guild was null");
             return Flux.empty();
         }
@@ -793,7 +793,7 @@ public class DiscordUtil {
     }
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get channel by ID, guild was null");
             return Mono.empty();
         }
@@ -816,7 +816,7 @@ public class DiscordUtil {
      * @return
      */
     public Mono<User> getUserAsync(String userName) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get user, guild was null");
             return Mono.empty();
         }
@@ -851,7 +851,7 @@ public class DiscordUtil {
      * @return
      */
     public Mono<User> getUserByIdAsync(long userId) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get user by ID, guild was null");
             return Mono.empty();
         }
@@ -881,7 +881,7 @@ public class DiscordUtil {
      */
     @Deprecated(since = "3.10.0.0", forRemoval = true)
     public Mono<User> getUserWithDiscriminatorAsync(String userName, String discriminator) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get user with discriminator, guild was null");
             return Mono.empty();
         }
@@ -907,7 +907,7 @@ public class DiscordUtil {
      * @return a Flux containing matching roles
      */
     public Flux<Role> getRolesAsync(String... roleNames) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get roles, guild was null");
             return Flux.empty();
         }
@@ -964,7 +964,7 @@ public class DiscordUtil {
      * @return
      */
     public Mono<Role> getRoleByIDAsync(String id) {
-            if (DiscordAPI.getGuild() == null) {
+            if (DiscordAPI.getGuildId().asLong() == 0) {
                 com.gmt2001.Console.warn.println("Unable to get role by ID, guild was null");
                 return Mono.empty();
             }
@@ -1003,7 +1003,12 @@ public class DiscordUtil {
 
     public Mono<Role[]> getUserRolesAsync(User user) {
         this.validateParams(user);
-        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(Role[]::new))).onErrorReturn(new Role[0]);
+        Snowflake guildId = DiscordAPI.getGuildId();
+        if (guildId.asLong() == 0) {
+            com.gmt2001.Console.warn.println("Unable to get user roles, guild was null");
+            return Mono.just(new Role[0]);
+        }
+        return user.asMember(guildId).flatMap(m -> m.getRoles().collectList().map(roles -> roles.isEmpty() ? new Role[0] : roles.toArray(Role[]::new))).onErrorReturn(new Role[0]);
     }
 
     /**
@@ -1027,11 +1032,12 @@ public class DiscordUtil {
      * @param roles
      */
     public void editUserRoles(User user, Role... roles) {
-        if (DiscordAPI.getGuild() == null) {
+        this.validateParams(user, roles);
+
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to edit user roles, guild was null");
             return;
         }
-        this.validateParams(user, roles);
 
         user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             Set<Snowflake> rolesSf = new HashSet<>();
@@ -1068,11 +1074,12 @@ public class DiscordUtil {
      * @param user
      */
     public void addRole(Role role, User user) {
-        if (DiscordAPI.getGuild() == null) {
+        this.validateParams(user, role);
+
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to add role, guild was null");
             return;
         }
-        this.validateParams(user, role);
 
         user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             m.addRole(role.getId()).doOnError(e -> {
@@ -1119,11 +1126,12 @@ public class DiscordUtil {
      * @param user
      */
     public void removeRole(Role role, User user) {
-        if (DiscordAPI.getGuild() == null) {
+        this.validateParams(user, role);
+
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to remove role, guild was null");
             return;
         }
-        this.validateParams(user, role);
 
         user.asMember(DiscordAPI.getGuildId()).doOnSuccess(m -> {
             m.removeRole(role.getId()).doOnError(e -> {
@@ -1155,7 +1163,7 @@ public class DiscordUtil {
      * @param roleName
      */
     public void createRole(String roleName) {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to create role, guild was null");
             return;
         }
@@ -1198,7 +1206,7 @@ public class DiscordUtil {
     }
 
     public Mono<List<Role>> getGuildRolesAsync() {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get guild roles, guild was null");
             return Mono.empty();
         }
@@ -1224,8 +1232,14 @@ public class DiscordUtil {
 
     public Mono<Boolean> isAdministratorAsync(User user) {
         this.validateParams(user);
+        Snowflake guildId = DiscordAPI.getGuildId();
 
-        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR)).onErrorReturn(false);
+        if (guildId.asLong() == 0) {
+            com.gmt2001.Console.warn.println("Unable to check administrator status, guild was null");
+            return Mono.just(false);
+        }
+
+        return user.asMember(guildId).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR)).onErrorReturn(false);
     }
 
     /**
@@ -1419,7 +1433,7 @@ public class DiscordUtil {
     }
 
     public Mono<List<User>> getUsersAsync() {
-        if (DiscordAPI.getGuild() == null) {
+        if (DiscordAPI.getGuildId().asLong() == 0) {
             com.gmt2001.Console.warn.println("Unable to get users, guild was null");
             return Mono.empty();
         }

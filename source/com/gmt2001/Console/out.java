@@ -39,7 +39,9 @@ public final class out {
 
     public static void println() {
         System.out.println();
-    }public static void println(Object o) {
+    }
+
+    public static void println(Object o) {
         println(o, false);
     }
 

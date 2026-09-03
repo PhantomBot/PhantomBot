@@ -321,9 +321,9 @@
     });
 
     /*
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/core/commandCoolDown.js', 'coolcom', 1);
 
         $.discord.registerCommand('./discord/core/commandCoolDown.js', 'cooldown', 1);

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <!-- Unraid installation through custom Community App template -->
+  <!--  -->
+  <!-- 1. Create folder /boot/config/plugins/community.applications/private/phantombot -->
+  <!-- 2. Copy this file to /boot/config/plugins/community.applications/private/phantombot/unraid.xml -->
+  <!-- 3. Go to Community Applications on your Unraid server and select the Private Apps section -->
+  <!-- 4. Install the PhantomBot app -->
+  <!-- 5. Perform first-run setup  -->
+  <Name>PhantomBot</Name>
+  <Repository>ghcr.io/phantombot/phantombot:latest</Repository>
+  <Registry>https://ghcr.io/phantombot/phantombot</Registry>
+  <Network>br0</Network>
+  <MyIP>192.168.0.94</MyIP>
+  <Shell>sh</Shell>
+  <Privileged>true</Privileged>
+  <Support>https://github.com/phantombot/PhantomBot</Support>
+  <Project>https://github.com/phantombot/PhantomBot</Project>
+  <Overview>PhantomBot is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more. PhantomBot can also be integrated with many services such as Discord, Twitter, TipeeeStream, StreamLabs and StreamElements!&#xD;
+&#xD;
+Additional functionality is enabled through the use of third-party modules.
+</Overview>
+  <Category>GameServers</Category>
+  <WebUI>http://[IP]:[PORT:25000]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/PhantomBot/PhantomBot/refs/heads/master/unraid.xml</TemplateURL>
+  <Icon>https://phantombot.github.io/PhantomBot/common/images/logo.png</Icon>
+  <License>GPLv3</License>
+  <DonateText>Sponsor this project</DonateText>
+  <DonateLink>https://github.com/sponsors/gmt2001</DonateLink>
+  <Config Name="BasePort" Target="25000" Default="2500" Mode="tcp" Description="Web Port" Type="Port" Display="always" Required="true" Mask="false">25000</Config>
+  <Config Name="AppData" Target="/opt/PhantomBot_data" Default="" Mode="rw" Description="Config/data storage path" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/phantombot/</Config>
+  <Config Name="PanelUser" Target="PHANTOMBOT_PANELUSER" Default="Admin" Mode="" Description="Web Panel superuser username" Type="Variable" Display="always" Required="true" Mask="false">Admin</Config>
+  <Config Name="PanelPassword" Target="PHANTOMBOT_PANELPASSWORD" Default="changeme" Mode="" Description="Web Panel superuser password" Type="Variable" Display="always" Required="true" Mask="true">changeme</Config>
+</Container>

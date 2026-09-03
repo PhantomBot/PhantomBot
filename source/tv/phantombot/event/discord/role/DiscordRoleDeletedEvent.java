@@ -30,7 +30,6 @@ public class DiscordRoleDeletedEvent extends DiscordRoleEvent {
      * @param role
      */
     public DiscordRoleDeletedEvent(Role role) {
-        // Not proper, fix this later.
         super(role);
     }
 }

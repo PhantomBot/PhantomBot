@@ -147,10 +147,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [updateremotepanel, updateguides, javadoc]
     steps:
+    - name: Create GitHub App Token
+      uses: actions/create-github-app-token@v3
+      id: app-token
+      with:
+        client-id: ${{ secrets.BOT_CLIENT_ID }}
+        private-key: ${{ secrets.BOT_PRIVATE_KEY }}
     - name: Checkout Repository
       uses: actions/checkout@v7
       with:
-        token: ${{ secrets.GH_TOKEN }}
+        token: ${{ steps.app-token.outputs.token }}
         ref: 'master'
     - name: Prep Artifact Dir
       run: mkdir -p /tmp/docartifacts
@@ -162,7 +168,7 @@ jobs:
     - name: Copy Files
       run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::update $p; rm -rf $p; cp -rv $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
     - name: Commit Changes
-      uses: EndBug/add-and-commit@v10
+      uses: EndBug/add-and-commit@v11
       with:
         message: Updated GitHub Pages (Stable)
         default_author: github_actions
@@ -432,13 +438,13 @@ jobs:
         version: latest
     - name: Login to DockerHub Registry
       if: contains(needs.workflowvars.outputs.dockermissing, 'no')
-      uses: docker/login-action@v4
+      uses: docker/login-action@v4.6.0
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_CLITOKEN }}
         logout: true
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v4
+      uses: docker/login-action@v4.6.0
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}

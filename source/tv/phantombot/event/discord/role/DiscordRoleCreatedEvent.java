@@ -30,7 +30,6 @@ public class DiscordRoleCreatedEvent extends DiscordRoleEvent {
      * @param role
      */
     public DiscordRoleCreatedEvent(Role role) {
-        // Not proper, fix this later.
         super(role);
     }
 }

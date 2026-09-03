@@ -27,37 +27,35 @@
      * @usestransformers global discord commandevent keywordevent noevent
      */
     $.bind('discordChannelMessage', function (event) {
-        var message = event.getMessage().toLowerCase(),
+        var message = event.getMessage(),
                 channel = event.getDiscordChannel(),
+                messagePartsLower = message.toLowerCase().split(' '),
                 keys = $.inidb.GetKeyList('discordKeywords', ''),
                 i;
 
-        for (i in keys) {
-            // Some users use special symbols that may break regex so this will fix that.
-            let sent = false;
-            try {
-                if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
-                    var kevent1 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
-                            event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                    var tag = $.transformers.tags(kevent1, $.getIniDbString('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
-                    if (tag !== null) {
-                        $.discord.say(channel, tag);
-                    }
-                    sent = true;
+        if (message.startsWith('!keyword')) {
+            return;
+        }
+
+        function executeKeyword(keyword, response, event) {
+            var cmdEvent = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
+                            event.getDiscordMessage(), 'keyword_' + keyword, response, event.isAdmin());
+            var tag = $.transformers.tags(cmdEvent, response, ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
+            if (tag !== null) {
+                $.discord.say(channel, tag);
+            }
+        }
+
+        for (var i = 0; i < keys.length; i++) {
+            var str = '',
+                    caseAdjustedMessageParts = messagePartsLower;
+            for (var idx = 0; idx < caseAdjustedMessageParts.length; idx++) {
+                // Create a string to match on the keyword.
+                str += (caseAdjustedMessageParts[idx] + ' ');
+                // Either match on the exact word or phrase if it contains it.
+                if ((keys[i].includes(' ') && str.includes(keys[i])) || (caseAdjustedMessageParts[idx] + '') === (keys[i] + '')) {
+                    executeKeyword(keys[i], $.inidb.get('discordKeywords', keys[i]), event);
                     break;
-                }
-            } catch (e) {
-                try {
-                    if (!sent && message.includes(keys[i]) && !message.includes('!keyword')) {
-                        var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
-                                event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                        var tag = $.transformers.tags(kevent2, $.getIniDbString('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
-                        if (tag !== null) {
-                            $.discord.say(channel, tag);
-                        }
-                        break;
-                    }
-                } catch (e) {
                 }
             }
         }
@@ -137,9 +135,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function () {
+    $.bind('discordReady', function () {
         $.discord.registerCommand('./discord/handlers/keywordHandler.js', 'keyword', 1);
         $.discord.registerSubCommand('keyword', 'add', 1);
         $.discord.registerSubCommand('keyword', 'edit', 1);

@@ -19,6 +19,7 @@ package com.gmt2001.httpclient;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +37,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
+import reactor.netty.http.Http11SslContextSpec;
 import reactor.netty.http.client.HttpClient.RequestSender;
 import tv.phantombot.CaselessProperties;
 
@@ -48,6 +50,8 @@ public final class HttpClient {
 
     private static final String DEFAULT_USER_AGENT = "PhantomBot/2022";
     private static final int TIMEOUT_TIME = 10;
+    private static final int SSL_TIMEOUT_TIME = 10;
+    private static final Http11SslContextSpec DEFAULT_SSL_CONTEXT_SPEC = Http11SslContextSpec.forClient();
 
     private HttpClient() {
     }
@@ -64,8 +68,16 @@ public final class HttpClient {
      */
     public static HttpClientResponse request(HttpMethod method, URI url, HttpHeaders requestHeaders, String requestBody) {
         reactor.netty.http.client.HttpClient client = reactor.netty.http.client.HttpClient.create();
+
+        /**
+         * @botproperty httpclientssltimeout - The timeout, in seconds, for the SSL handshake of an HTTPS request to complete. Default `10`
+         * @botpropertycatsort httpclientssltimeout 110 700 HTTP/WS
+         */
         if (url.getScheme() != null && url.getScheme().equals("https")) {
-            client = client.secure();
+            client = client.secure(spec -> spec.sslContext(DEFAULT_SSL_CONTEXT_SPEC)
+                .handshakeTimeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("httpclientssltimeout", SSL_TIMEOUT_TIME)))
+                .closeNotifyFlushTimeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("httpclientssltimeout", SSL_TIMEOUT_TIME)))
+                .closeNotifyReadTimeout(Duration.ofSeconds(CaselessProperties.instance().getPropertyAsInt("httpclientssltimeout", SSL_TIMEOUT_TIME))));
         }
 
         /**

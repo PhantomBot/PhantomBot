@@ -198,9 +198,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/handlers/bitsHandler.js', 'bitshandler', 1);
         $.discord.registerSubCommand('bitshandler', 'toggle', 1);
         $.discord.registerSubCommand('bitshandler', 'message', 1);

@@ -87,9 +87,9 @@
     });
 
     /**
-     * @event initReady
+     * @event discordReady
      */
-    $.bind('initReady', function() {
+    $.bind('discordReady', function() {
         $.discord.registerCommand('./discord/custom/topCommand.js', 'top', 0);
         $.discord.registerCommand('./discord/custom/topCommand.js', 'toptime', 0);
         $.discord.registerCommand('./discord/custom/topCommand.js', 'topamount', 1);
