@@ -98,8 +98,10 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         if (req.method().equals(HttpMethod.GET) && CUSTOM_MANIFESTS_PATH.equals(qsd.path())) {
             try {
                 CustomPanelManifestCache.CachedResponse cached = CustomPanelManifestCollector.getCachedResponse();
-                PanelUser panelUser = PanelUserHandler.checkLoginAndGetUserB64(
-                        HttpBasicAuthenticationHandler.getAuthorizationString(req.headers()), CUSTOM_MANIFESTS_PATH);
+                // Authentication already ran in HttpBasicAuthenticationHandler; resolve the user without
+                // re-checking the login, which would also write a second last-login update to the DB.
+                PanelUser panelUser = PanelUserHandler.getAuthenticatedUserB64(
+                        HttpBasicAuthenticationHandler.getAuthorizationString(req.headers()));
                 byte[] body = CustomPanelManifestCollector.filterManifestBytesForPanelUser(cached.bytes(), panelUser);
                 String etag = CustomPanelManifestCache.computeStrongEtag(body);
                 boolean notModified = HttpServerPageHandler.sendCachedBytes(ctx, req, body, "custom-manifests.json", etag);
