@@ -132,6 +132,11 @@ public final class CustomPanelManifestCollector {
     private static final int MAX_NAV_PAGE_LEN = 128;
 
     /**
+     * Maximum number of bot script paths a single {@code nav} entry may list in {@code scripts}.
+     */
+    private static final int MAX_NAV_SCRIPTS = 10;
+
+    /**
      * Minimum legal length of {@code card.scriptPath}. The bot's {@code module} command works
      * with {@code ./<dir>/<file>.js}-shape paths, and the shortest legal value of that shape —
      * {@code ./a/b.js} — is exactly 8 characters.
@@ -156,6 +161,14 @@ public final class CustomPanelManifestCollector {
      * Allowed {@code settingsModal.fields[].type} values for declarative game-card settings UI.
      */
     private static final Set<String> SETTINGS_FIELD_TYPES = Set.of("number", "text", "textarea", "boolean", "toggle", "checkboxgroup", "dropdown", "permission");
+
+    /**
+     * INIDB key names a settings field may not use. The panel's {@code getDBValues} result
+     * resolver ({@code index.js}, {@code storeKey} branch) identifies the queried key as the one
+     * result property that is not {@code table} or {@code value}, so a field keyed by either
+     * name could never be read back.
+     */
+    private static final Set<String> RESERVED_FIELD_KEYS = Set.of("table", "value");
 
     /**
      * Maximum number of inline checkboxes a single {@code checkboxgroup} field can declare.
@@ -290,7 +303,7 @@ public final class CustomPanelManifestCollector {
             appendFromCustomRoot(root, nav, cards, seenNav, seenCards);
         }
 
-        CustomPanelManifestRegistry.rebuildFromMergedCards(cards);
+        CustomPanelManifestRegistry.rebuild(nav, cards);
 
         JSONObject root = new JSONObject();
         root.put("nav", nav);
@@ -394,12 +407,14 @@ public final class CustomPanelManifestCollector {
     /**
      * Validates each entry in a manifest's {@code nav} array and copies the survivors into
      * {@code navOut} as canonical JSON objects ({@code label}, {@code folder}, {@code page},
-     * {@code hash}, {@code section}). Entries are dropped (with a warn-log) when:
+     * {@code hash}, {@code section}, optional {@code scripts}). Entries are dropped (with a
+     * warn-log) when:
      *
      * <ul>
      *   <li>{@code label}, {@code folder}, or {@code page} is missing,</li>
      *   <li>{@code folder} or {@code page} fails path/URI safety checks, or non-empty {@code hash}
-     *       does not match {@code page}, or</li>
+     *       does not match {@code page},</li>
+     *   <li>{@code scripts} is present but invalid (see {@link #optValidatedNavScripts}), or</li>
      *   <li>the {@code folder + page} key has already been seen across all manifests.</li>
      * </ul>
      *
@@ -455,6 +470,12 @@ public final class CustomPanelManifestCollector {
 
             hash = '#' + page;
 
+            JSONArray scripts = optValidatedNavScripts(entry, manifest);
+
+            if (scripts == null) {
+                continue;
+            }
+
             String key = folder + '\0' + page;
 
             if (!seen.add(key)) {
@@ -467,8 +488,57 @@ public final class CustomPanelManifestCollector {
             out.put("page", page);
             out.put("hash", hash);
             out.put("section", section);
+            if (scripts.length() > 0) {
+                out.put("scripts", scripts);
+            }
             navOut.put(out);
         }
+    }
+
+    /**
+     * Validates the optional {@code nav[].scripts} array: bot script paths (same shape rules as
+     * {@code cards.scriptPath}, see {@link #isSafeScriptPath}) that
+     * {@link CustomPanelManifestRegistry} maps to this entry's {@code section}, so
+     * {@code socket.wsEvent} calls from a nav-only module's page pass Panel User checks. Without
+     * it, a custom script is unknown to the stock section lists and every such call is denied
+     * for non-config panel users. Duplicates are collapsed; order is preserved.
+     *
+     * @param entry    raw nav entry
+     * @param manifest source manifest path for logging
+     * @return canonical array (empty when the key is absent), or {@code null} after a warn-skip
+     *         when the key is present but not an array of at most {@link #MAX_NAV_SCRIPTS}
+     *         valid paths
+     */
+    private static JSONArray optValidatedNavScripts(JSONObject entry, Path manifest) {
+        JSONArray out = new JSONArray();
+
+        if (!entry.has("scripts") || entry.isNull("scripts")) {
+            return out;
+        }
+
+        JSONArray scriptsIn = entry.optJSONArray("scripts");
+
+        if (scriptsIn == null || scriptsIn.length() > MAX_NAV_SCRIPTS) {
+            warnSkip(manifest, "nav (scripts must be an array of at most " + MAX_NAV_SCRIPTS + " paths)");
+            return null;
+        }
+
+        Set<String> seenScripts = new HashSet<>();
+
+        for (int i = 0; i < scriptsIn.length(); i++) {
+            String scriptPath = scriptsIn.optString(i, "").trim();
+
+            if (!isSafeScriptPath(scriptPath)) {
+                warnSkip(manifest, "nav (invalid scripts entry)");
+                return null;
+            }
+
+            if (seenScripts.add(scriptPath)) {
+                out.put(scriptPath);
+            }
+        }
+
+        return out;
     }
 
     /**
@@ -648,6 +718,7 @@ public final class CustomPanelManifestCollector {
         out.put("title", title);
 
         Set<String> fieldIds = new HashSet<>();
+        Set<String> fieldKeys = new HashSet<>();
 
         if (hasSections) {
             if (sectionsIn.length() < 1 || sectionsIn.length() > MAX_SETTINGS_MODAL_SECTIONS) {
@@ -685,7 +756,7 @@ public final class CustomPanelManifestCollector {
                     return null;
                 }
 
-                JSONArray secFieldsOut = validateSettingsModalFieldsArray(secFieldsIn, manifest, fieldIds);
+                JSONArray secFieldsOut = validateSettingsModalFieldsArray(secFieldsIn, manifest, fieldIds, fieldKeys);
 
                 if (secFieldsOut == null) {
                     return null;
@@ -722,7 +793,7 @@ public final class CustomPanelManifestCollector {
                 return null;
             }
 
-            JSONArray fieldsOut = validateSettingsModalFieldsArray(fieldsIn, manifest, fieldIds);
+            JSONArray fieldsOut = validateSettingsModalFieldsArray(fieldsIn, manifest, fieldIds, fieldKeys);
 
             if (fieldsOut == null) {
                 return null;
@@ -740,9 +811,10 @@ public final class CustomPanelManifestCollector {
      * @param fieldsIn raw JSON array of field objects
      * @param manifest manifest path for logging
      * @param fieldIds accumulator for unique {@code id}s across the whole modal; mutated in place
+     * @param fieldKeys accumulator for unique INIDB {@code key}s across the whole modal; mutated in place
      * @return canonical JSON array or {@code null} when invalid
      */
-    private static JSONArray validateSettingsModalFieldsArray(JSONArray fieldsIn, Path manifest, Set<String> fieldIds) {
+    private static JSONArray validateSettingsModalFieldsArray(JSONArray fieldsIn, Path manifest, Set<String> fieldIds, Set<String> fieldKeys) {
         JSONArray fieldsOut = new JSONArray();
 
         for (int i = 0; i < fieldsIn.length(); i++) {
@@ -752,7 +824,7 @@ public final class CustomPanelManifestCollector {
                 continue;
             }
 
-            JSONObject fout = validateOneSettingsModalField(f, manifest, fieldIds);
+            JSONObject fout = validateOneSettingsModalField(f, manifest, fieldIds, fieldKeys);
 
             if (fout == null) {
                 return null;
@@ -775,9 +847,10 @@ public final class CustomPanelManifestCollector {
      * @param f        raw field JSON
      * @param manifest manifest path for logging
      * @param fieldIds ids seen so far in this modal (including across sections); mutated in place
+     * @param fieldKeys INIDB keys seen so far in this modal (including across sections); mutated in place
      * @return canonical field JSON or {@code null}
      */
-    private static JSONObject validateOneSettingsModalField(JSONObject f, Path manifest, Set<String> fieldIds) {
+    private static JSONObject validateOneSettingsModalField(JSONObject f, Path manifest, Set<String> fieldIds, Set<String> fieldKeys) {
         String fid = f.optString("id", "").trim();
         String type = f.optString("type", "").trim().toLowerCase(Locale.ROOT);
         String label = f.optString("label", "").trim();
@@ -797,13 +870,12 @@ public final class CustomPanelManifestCollector {
         // checkbox, so it has no field-level "key" and rejects all type-specific knobs
         // belonging to other field types. Branch out before the regular key check.
         if ("checkboxgroup".equals(type)) {
-            return validateCheckboxGroupField(f, fid, label, table, help, manifest, fieldIds);
+            return validateCheckboxGroupField(f, fid, label, table, help, manifest, fieldIds, fieldKeys);
         }
 
         String key = f.optString("key", "").trim();
 
-        if (!isSafeDbIdentifier(key)) {
-            warnSkip(manifest, "settingsModal (field has invalid key)");
+        if (!validateFieldKey(key, manifest, fieldKeys, "field")) {
             return null;
         }
 
@@ -856,14 +928,8 @@ public final class CustomPanelManifestCollector {
             }
         }
 
-        if ("number".equals(type)) {
-            if (f.has("min")) {
-                fout.put("min", f.optInt("min"));
-            }
-
-            if (f.has("max")) {
-                fout.put("max", f.optInt("max"));
-            }
+        if ("number".equals(type) && !validateNumberBounds(f, fout, manifest)) {
+            return null;
         }
 
         if ("textarea".equals(type) && f.optBoolean("unlimited", false)) {
@@ -891,9 +957,10 @@ public final class CustomPanelManifestCollector {
      * @param help pre-validated help text (may be empty)
      * @param manifest manifest path for warn logging
      * @param fieldIds modal-wide id set; updated with every accepted checkbox id
+     * @param fieldKeys modal-wide INIDB key set; updated with every accepted checkbox key
      * @return canonical JSON for the field, or {@code null} when validation fails
      */
-    private static JSONObject validateCheckboxGroupField(JSONObject f, String fid, String label, String table, String help, Path manifest, Set<String> fieldIds) {
+    private static JSONObject validateCheckboxGroupField(JSONObject f, String fid, String label, String table, String help, Path manifest, Set<String> fieldIds, Set<String> fieldKeys) {
         if (f.has("key") || f.has("min") || f.has("max") || f.has("options") || f.has("unlimited")) {
             warnSkip(manifest, "settingsModal (checkboxgroup does not support key/min/max/options/unlimited)");
             return null;
@@ -925,8 +992,7 @@ public final class CustomPanelManifestCollector {
                 return null;
             }
 
-            if (!isSafeDbIdentifier(cbKey)) {
-                warnSkip(manifest, "settingsModal (checkboxgroup checkbox has invalid key)");
+            if (!validateFieldKey(cbKey, manifest, fieldKeys, "checkboxgroup checkbox")) {
                 return null;
             }
 
@@ -1001,6 +1067,102 @@ public final class CustomPanelManifestCollector {
         }
 
         return true;
+    }
+
+    /**
+     * Validates the INIDB {@code key} of a settings field or of a {@code checkboxgroup} checkbox:
+     * identifier-safe, not one of {@link #RESERVED_FIELD_KEYS}, and unique modal-wide. The panel
+     * reads loaded values by key alone (not table + key), so two rows sharing a key, even in
+     * different tables, would silently display and save each other's value.
+     *
+     * @param key          trimmed candidate key
+     * @param manifest     manifest path for warn logging
+     * @param fieldKeys    modal-wide key set; mutated on success
+     * @param contextLabel inserted into warn messages (e.g. {@code "field"},
+     *                     {@code "checkboxgroup checkbox"})
+     * @return {@code true} on success; {@code false} after warn-skip
+     */
+    private static boolean validateFieldKey(String key, Path manifest, Set<String> fieldKeys, String contextLabel) {
+        if (!isSafeDbIdentifier(key)) {
+            warnSkip(manifest, "settingsModal (" + contextLabel + " has invalid key)");
+            return false;
+        }
+
+        if (RESERVED_FIELD_KEYS.contains(key)) {
+            warnSkip(manifest, "settingsModal (" + contextLabel + " key '" + key + "' is reserved)");
+            return false;
+        }
+
+        if (!fieldKeys.add(key)) {
+            warnSkip(manifest, "settingsModal (" + contextLabel + " key collides with another field key)");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Copies the optional integer {@code min} / {@code max} bounds of a {@code number} field onto
+     * the canonical output. Each bound must be an integral JSON number that fits in an
+     * {@code int}; quoted numbers and fractions are rejected rather than silently coerced to
+     * {@code 0} the way {@code optInt} would. {@code min} may not exceed {@code max}.
+     *
+     * @param f        raw manifest field
+     * @param fout     canonical field being built; receives {@code min} / {@code max}
+     * @param manifest manifest path for warn logging
+     * @return {@code true} on success; {@code false} after warn-skip
+     */
+    private static boolean validateNumberBounds(JSONObject f, JSONObject fout, Path manifest) {
+        Integer min = null;
+        Integer max = null;
+
+        if (f.has("min") && !f.isNull("min")) {
+            min = toIntegralBound(f.opt("min"));
+
+            if (min == null) {
+                warnSkip(manifest, "settingsModal (number min must be an integer)");
+                return false;
+            }
+
+            fout.put("min", min.intValue());
+        }
+
+        if (f.has("max") && !f.isNull("max")) {
+            max = toIntegralBound(f.opt("max"));
+
+            if (max == null) {
+                warnSkip(manifest, "settingsModal (number max must be an integer)");
+                return false;
+            }
+
+            fout.put("max", max.intValue());
+        }
+
+        if (min != null && max != null && min > max) {
+            warnSkip(manifest, "settingsModal (number min is greater than max)");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param value raw JSON value
+     * @return the value as an {@link Integer} when it is a JSON number with no fractional part
+     *         that fits in an {@code int}; {@code null} otherwise
+     */
+    private static Integer toIntegralBound(Object value) {
+        if (!(value instanceof Number)) {
+            return null;
+        }
+
+        double d = ((Number) value).doubleValue();
+
+        if (d != Math.rint(d) || d < Integer.MIN_VALUE || d > Integer.MAX_VALUE) {
+            return null;
+        }
+
+        return (int) d;
     }
 
     /**
