@@ -52,6 +52,8 @@
     };
     ns.PANEL_SETTINGS_SAVED_WS_ARG = ns.PANEL_SETTINGS_SAVED_WS_ARG || 'panel-settings-saved';
     ns.LOAD_TIMEOUT_MS = ns.LOAD_TIMEOUT_MS || 8000;
+    ns.SAVE_TIMEOUT_MS = ns.SAVE_TIMEOUT_MS || 8000;
+    ns.USER_DATA_WAIT_MS = ns.USER_DATA_WAIT_MS || 5000;
     ns.MANIFEST_FETCH_TIMEOUT_MS = ns.MANIFEST_FETCH_TIMEOUT_MS || 15000;
     ns.TEXTAREA_DEFAULT_MAX_LEN = ns.TEXTAREA_DEFAULT_MAX_LEN || 480;
     ns.DEFAULT_PERMISSION_GROUP_ID = ns.DEFAULT_PERMISSION_GROUP_ID != null ? ns.DEFAULT_PERMISSION_GROUP_ID : 7;
@@ -339,6 +341,41 @@
     }
 
     /**
+     * Asks the bot to scan {@code scripts/custom} for newly-dropped modules so the UI we just
+     * rendered isn't pointing at scriptPaths Rhino doesn't know about yet. Idempotent and
+     * silent on the bot side; the per-file load log still lands in the bot console.
+     *
+     * <p>Only config users trigger the scan. {@code socket.sendCommand} is gated server-side on
+     * Full Access for the section of the current page (the dashboard at login), so sending it
+     * for a Panel User without that access produces a spurious "Permissions error" toast and
+     * an error line in the bot console on every login. {@code helpers.currentPanelUserData}
+     * arrives asynchronously after auth, so wait for it (bounded by
+     * {@code ns.USER_DATA_WAIT_MS}) before deciding.</p>
+     */
+    function scheduleCustomScriptScan() {
+        if (typeof helpers === 'undefined' || typeof helpers.promisePoll !== 'function') {
+            return;
+        }
+
+        const deadline = Date.now() + ns.USER_DATA_WAIT_MS;
+
+        helpers.promisePoll(function () {
+            return !!helpers.currentPanelUserData || Date.now() > deadline;
+        }, {pollIntervalMs: 250}).then(function () {
+            const user = helpers.currentPanelUserData;
+
+            if (!user || user.userType !== 'CONFIG') {
+                helpers.log('Custom panel: skipping reloadcustom scan (not a config user, or user data not loaded)', helpers.LOG_TYPE.DEBUG);
+                return;
+            }
+
+            if (typeof socket !== 'undefined' && socket && typeof socket.sendCommand === 'function') {
+                socket.sendCommand('pb_custom_panel_scan', 'reloadcustom silent', function () {});
+            }
+        });
+    }
+
+    /**
      * Public entry point invoked once from {@code js/index.js} after the panel websocket
      * finishes authenticating. Fetches the merged manifest JSON, indexes {@code cards}, and
      * dispatches {@code pbCustomManifestsLoaded} on {@code document} so sibling files (nav,
@@ -374,15 +411,7 @@
                     }));
                 }
 
-                // Ask the bot to scan scripts/custom for any newly-dropped modules
-                // so the panel UI we just rendered isn't pointing at scriptPaths
-                // Rhino doesn't know about yet. Idempotent + silent on the bot
-                // side; the per-file load log still lands in the bot console.
-                // No callback wiring needed: the panel doesn't display anything
-                // about the scan and the operator can verify via console.
-                if (typeof socket !== 'undefined' && socket && typeof socket.sendCommand === 'function') {
-                    socket.sendCommand('pb_custom_panel_scan', 'reloadcustom silent', function () {});
-                }
+                scheduleCustomScriptScan();
             },
             error: function (xhr, status, err) {
                 helpers.log('Custom panel manifest not loaded (' + status + '): ' + (err || ''), helpers.LOG_TYPE.DEBUG);

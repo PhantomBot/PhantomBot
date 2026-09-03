@@ -74,6 +74,19 @@
     }
 
     /**
+     * Panel websocket callback ids must be unique while a request is in flight. A request the
+     * bot never answers (watchdog timeout, permission denial) leaves its id registered in
+     * {@code index.js}, and {@code generateCallBack} refuses to register a second callback under
+     * the same id, so a retry would be sent without a completion handler.
+     *
+     * @param {string} prefix stable id prefix, already including the card id
+     * @returns {string}
+     */
+    function uniqueCallbackId(prefix) {
+        return prefix + '_' + Date.now();
+    }
+
+    /**
      * Notifies panel scripts after INIDB save + post-save hooks finish (modal still open
      * until caller closes it). Fires a single DOM {@code CustomEvent} on {@code document};
      * jQuery handlers receive it natively and can read {@code e.originalEvent.detail}.
@@ -112,7 +125,7 @@
         }
         const scriptPath = card.scriptPath;
         if (scriptPath && String(scriptPath).length > 0) {
-            socket.wsEvent('pb_custom_card_ws_' + card.id, scriptPath, null, [ns.PANEL_SETTINGS_SAVED_WS_ARG], finish);
+            socket.wsEvent(uniqueCallbackId('pb_custom_card_ws_' + card.id), scriptPath, null, [ns.PANEL_SETTINGS_SAVED_WS_ARG], finish);
             return;
         }
         finish();
@@ -498,7 +511,7 @@
      * @param {function()} finish post-chain callback (closes modal, fires success toast, etc.)
      */
     function dispatchSaveSequence(card, payload, finish) {
-        socket.updateDBValues('pb_custom_card_save_' + card.id, payload, function () {
+        socket.updateDBValues(uniqueCallbackId('pb_custom_card_save_' + card.id), payload, function () {
             dispatchBotWsAfterCustomCardSave(card, finish);
         });
     }
@@ -555,16 +568,26 @@
                 if (payload === null) {
                     return;
                 }
-                dispatchSaveSequence(card, payload, function () {
+                let finish = withWatchdog(ns.SAVE_TIMEOUT_MS, function () {
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error(
+                            'The bot did not confirm the save within ' +
+                            Math.round(ns.SAVE_TIMEOUT_MS / 1000) +
+                            ' seconds. Your changes may not have been applied.',
+                            'Settings save timed out'
+                        );
+                    }
+                }, function () {
                     notifyCustomCardSettingsSaved(card);
                     $('#' + modalId).modal('toggle');
                     if (typeof toastr !== 'undefined') {
                         toastr.success('Successfully saved settings!');
                     }
                 });
+                dispatchSaveSequence(card, payload, finish);
             }).modal('toggle');
         });
 
-        socket.getDBValues('pb_custom_card_settings_' + card.id, {tables: tables, keys: keys}, true, loadCallback);
+        socket.getDBValues(uniqueCallbackId('pb_custom_card_settings_' + card.id), {tables: tables, keys: keys}, true, loadCallback);
     };
 }());
