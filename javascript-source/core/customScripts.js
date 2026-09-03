@@ -21,8 +21,8 @@
  * Hot-loads newly-dropped modules under {@code scripts/custom/} and lang files
  * under {@code scripts/lang/custom/}. Exposes {@code !reloadcustom}
  * (caster perm) for chat use; the panel's {@code customPanelManifestLoader.js}
- * fires {@code !reloadcustom silent} after every manifest fetch so a browser
- * refresh is enough to pick up new modules.
+ * fires {@code !reloadcustom silent} after every manifest fetch by a config
+ * panel user so a browser refresh is enough to pick up new modules.
  *
  * <p>{@code init.js} only fires {@code initReady} once at boot, but most
  * modules register chat commands inside that hook. After the scan we diff
@@ -103,7 +103,11 @@
         }
 
         const afterModules = snapshotLoadedModules();
-        const newModules = diffLoadedModules(afterModules, beforeModules);
+        // $.lang.load() also registers scripts/lang/custom/*.js in $.bot.modules. Those are
+        // string tables, not modules, so keep them out of the count and the initReady replay.
+        const newModules = diffLoadedModules(afterModules, beforeModules).filter(function (name) {
+            return name.indexOf('./lang/') !== 0;
+        });
         const fired = fireInitReadyOn(newModules);
 
         return {
@@ -137,7 +141,7 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./core/customScripts.js', 'reloadcustom', 1);
+        $.registerChatCommand('./core/customScripts.js', 'reloadcustom', $.PERMISSION.Caster);
     });
 
     /**
