@@ -163,10 +163,10 @@ public final class CustomPanelManifestCollector {
     private static final Set<String> SETTINGS_FIELD_TYPES = Set.of("number", "text", "textarea", "boolean", "toggle", "checkboxgroup", "dropdown", "permission");
 
     /**
-     * INIDB key names a settings field may not use. The panel's {@code getDBValues} result
-     * resolver ({@code index.js}, {@code storeKey} branch) identifies the queried key as the one
-     * result property that is not {@code table} or {@code value}, so a field keyed by either
-     * name could never be read back.
+     * INIDB key names a settings field may not use. The bot answers a panel {@code dbquery} with
+     * {@code {"table": ..., "<key>": ..., "value": ...}} ({@code WsPanelHandler#handleDBQuery}) and
+     * the JSON writer throws on a duplicate key, so a field keyed {@code table} or {@code value}
+     * never gets a reply and its settings modal would hang until the panel watchdog fires.
      */
     private static final Set<String> RESERVED_FIELD_KEYS = Set.of("table", "value");
 
@@ -928,8 +928,8 @@ public final class CustomPanelManifestCollector {
             }
         }
 
-        if ("number".equals(type) && !validateNumberBounds(f, fout, manifest)) {
-            return null;
+        if ("number".equals(type)) {
+            copyNumberBounds(f, fout, manifest);
         }
 
         if ("textarea".equals(type) && f.optBoolean("unlimited", false)) {
@@ -1102,67 +1102,54 @@ public final class CustomPanelManifestCollector {
     }
 
     /**
-     * Copies the optional integer {@code min} / {@code max} bounds of a {@code number} field onto
-     * the canonical output. Each bound must be an integral JSON number that fits in an
-     * {@code int}; quoted numbers and fractions are rejected rather than silently coerced to
-     * {@code 0} the way {@code optInt} would. {@code min} may not exceed {@code max}.
+     * Copies the optional {@code min} / {@code max} bounds of a {@code number} field onto the
+     * canonical output. Bounds are optional extras, so a bad one is ignored with a warn line
+     * rather than failing the whole modal. A bound must be an integral JSON number, which org.json
+     * parses as {@link Integer}; quoted or fractional values (which {@code optInt} used to coerce
+     * silently) are skipped, and an inverted pair ({@code min > max}) is skipped as a whole.
      *
      * @param f        raw manifest field
      * @param fout     canonical field being built; receives {@code min} / {@code max}
      * @param manifest manifest path for warn logging
-     * @return {@code true} on success; {@code false} after warn-skip
      */
-    private static boolean validateNumberBounds(JSONObject f, JSONObject fout, Path manifest) {
-        Integer min = null;
-        Integer max = null;
+    private static void copyNumberBounds(JSONObject f, JSONObject fout, Path manifest) {
+        Integer min = optIntegerBound(f, "min", manifest);
+        Integer max = optIntegerBound(f, "max", manifest);
 
-        if (f.has("min") && !f.isNull("min")) {
-            min = toIntegralBound(f.opt("min"));
+        if (min != null && max != null && min > max) {
+            warnNote(manifest, "settingsModal field '" + fout.optString("id") + "' has min greater than max, ignoring both");
+            return;
+        }
 
-            if (min == null) {
-                warnSkip(manifest, "settingsModal (number min must be an integer)");
-                return false;
-            }
-
+        if (min != null) {
             fout.put("min", min.intValue());
         }
 
-        if (f.has("max") && !f.isNull("max")) {
-            max = toIntegralBound(f.opt("max"));
-
-            if (max == null) {
-                warnSkip(manifest, "settingsModal (number max must be an integer)");
-                return false;
-            }
-
+        if (max != null) {
             fout.put("max", max.intValue());
         }
-
-        if (min != null && max != null && min > max) {
-            warnSkip(manifest, "settingsModal (number min is greater than max)");
-            return false;
-        }
-
-        return true;
     }
 
     /**
-     * @param value raw JSON value
-     * @return the value as an {@link Integer} when it is a JSON number with no fractional part
-     *         that fits in an {@code int}; {@code null} otherwise
+     * @param f        raw manifest field
+     * @param name     {@code "min"} or {@code "max"}
+     * @param manifest manifest path for warn logging
+     * @return the bound when present and an integral JSON number; {@code null} when absent,
+     *         {@code null}, or not an integer (after a warn note)
      */
-    private static Integer toIntegralBound(Object value) {
-        if (!(value instanceof Number)) {
+    private static Integer optIntegerBound(JSONObject f, String name, Path manifest) {
+        if (f.isNull(name)) {
             return null;
         }
 
-        double d = ((Number) value).doubleValue();
+        Object value = f.opt(name);
 
-        if (d != Math.rint(d) || d < Integer.MIN_VALUE || d > Integer.MAX_VALUE) {
-            return null;
+        if (value instanceof Integer) {
+            return (Integer) value;
         }
 
-        return (int) d;
+        warnNote(manifest, "settingsModal field '" + f.optString("id") + "' " + name + " must be an integer, ignoring it");
+        return null;
     }
 
     /**

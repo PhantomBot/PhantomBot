@@ -32,7 +32,7 @@ When the bot runs in a container with a **data volume** (often mounted at `/opt/
 ## After you copy the files
 
 1. **Restart the bot** if the module’s README says to, or if you replaced an existing script and want a clean load. Many setups only need the next steps.
-2. Open the **web panel** in your browser and do a **hard refresh** (for example **Ctrl+Shift+R** on Windows) so the browser does not use an old cached page. When you are logged in with the main panel account, this refresh also makes the bot scan for newly added scripts.
+2. Open the **web panel** in your browser and do a **hard refresh** (for example **Ctrl+Shift+R** on Windows) so the browser does not use an old cached page. If your login has Full Access on the Dashboard (the main panel account does), this refresh also makes the bot scan for newly added scripts.
 3. If the module is **chat-only** and new commands do not appear, the broadcaster (or someone with permission) can run **`!reloadcustom`** in the channel so the bot picks up new scripts without a full restart.
 
 ## How to check that it worked

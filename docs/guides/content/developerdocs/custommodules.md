@@ -33,7 +33,7 @@ Pick a stable **`moduleId`** (short, filesystem-safe) and use the **same** name 
 
 1. Add `scripts/custom/yourModule.js` (and lang under `scripts/lang/custom/` if needed).
 2. Register commands inside `$.bind('initReady', function () { ... })` and call `$.registerChatCommand('./custom/.../yourModule.js', 'cmdname', perm);` (see the [registerChatCommand](guide=content/developerdocs/registerchatcommand "##guide_link") guide).
-3. Reload scripts without restarting: run **`!reloadcustom`** in chat (caster). Refreshing the web panel while logged in with the main panel account (the login from `botlogin.txt`) also triggers a silent reload once the manifests load; accounts created under **Settings → Panel Users** do not.
+3. Reload scripts without restarting: run **`!reloadcustom`** in chat (caster). Refreshing the web panel also triggers a silent reload once the manifests load, as long as the logged-in account has **Full Access** on the page it lands on: the main panel account from `botlogin.txt` does, a Panel User needs Full Access on **Dashboard**, and read-only logins skip it.
 
 ## Module with panel UI (manifest)
 
@@ -135,7 +135,7 @@ Set **`nav.section`** to `extra`, `alerts`, `giveaways`, or `audio`. Set **`card
 
 The bot rebuilds an internal index whenever manifests change: every **`settingsModal`** field **`table`**, every **`cards.scriptPath`**, and every path in **`nav.scripts`** is mapped to that entry’s **`section`** for Panel User websocket checks—no module-specific names are compiled into PhantomBot.
 
-DB queries and **`socket.sendCommand`** are checked against the **`section`** the page sends. **`socket.wsEvent`** is stricter: the target script must be indexed (via **`cards.scriptPath`** or **`nav.scripts`**), otherwise the call is denied for every Panel User other than the main panel account.
+DB queries and **`socket.sendCommand`** are checked against the **`section`** the page sends. **`socket.wsEvent`** is stricter: it always counts as a write, so it needs **Full Access** on the section, and the target script must be indexed (via **`cards.scriptPath`** or **`nav.scripts`**) or the call is denied for Panel Users. A script listed both as a card **`scriptPath`** and in **`nav.scripts`** keeps the card's section.
 
 **Websocket `section`:** `socket.getDBValues`, `socket.updateDBValues`, `socket.sendCommand`, and related panel APIs attach **`message.section`** from the active page. For manifest nav, that value comes from **`nav.section`** (`data-panel-section` on the sidebar link). Users should open your page through that link so section checks match **Settings → Panel Users**.
 
@@ -164,7 +164,7 @@ Recommended pattern for read-only users:
 
 Use the same **`section`** string as in your manifest (`extra`, etc.). You can read the active value with **`$.currentPage().panelSection`** after the user navigates via the manifest link.
 
-Optional: declare a minimal **`settingsModal`** on a **Games** card (or any card) listing your INIDB **`table`** names so the server indexes them to a section even when the primary UI is a **nav** page. If your page calls **`socket.wsEvent`** against your bot script, list that script in **`nav.scripts`**; otherwise the call is denied for every Panel User other than the main panel account.
+Optional: declare a minimal **`settingsModal`** on a **Games** card (or any card) listing your INIDB **`table`** names so the server indexes them to a section even when the primary UI is a **nav** page. If your page calls **`socket.wsEvent`** against your bot script, list that script in **`nav.scripts`**; unindexed scripts are denied for Panel Users, and **`socket.wsEvent`** always requires **Full Access** on the section.
 
 ### `nav` entries (sidebar links)
 
@@ -175,7 +175,7 @@ Optional: declare a minimal **`settingsModal`** on a **Games** card (or any card
 | `page` | Yes | **Single** filename only: `something.html`. Same safe character set; no `/`, `..`, `\`, or reserved URI delimiters. |
 | `hash` | No | Optional; merged output always uses `#` + `page`. If you set `hash`, the fragment (with or without `#`) must equal `page` or the nav row is skipped. |
 | `section` | No | **`extra`** (default), **`alerts`**, **`giveaways`**, or **`audio`**. Any other value is logged and treated as **`extra`**. |
-| `scripts` | No | Array of up to **10** bot script paths (same shape rules as **`cards.scriptPath`**, e.g. `./custom/mymod.js`). Indexed to this entry’s **`section`** so **`socket.wsEvent`** calls from your page pass Panel User checks. Any invalid entry skips the whole nav row with a warn-log. |
+| `scripts` | No | Array of up to **10** bot script paths (same shape rules as **`cards.scriptPath`**, e.g. `./custom/mymod.js`). Indexed to this entry’s **`section`** so **`socket.wsEvent`** calls from your page are checked against it (Full Access required; a script that is also a card **`scriptPath`** keeps the card’s section). Any invalid entry skips the whole nav row with a warn-log. |
 
 **Section hints:** **`extra`** is the general catch-all; **`alerts`**, **`giveaways`**, and **`audio`** match those submenu themes. Other built-in areas (Commands, Moderation, Loyalty, single-page panels like Dashboard, etc.) are **not** valid `nav` targets—there is no submenu to attach to. **`Games`** is for **`cards`**, not **`nav`**.
 
@@ -197,7 +197,7 @@ Duplicate **`section` + `id`** across manifests are deduplicated (**first wins**
 
 ### `settingsModal` field rows (all types)
 
-Every row needs **`id`**, **`type`**, **`label`** (max **200** chars), **`table`**, and **`key`** (INIDB names: letters, digits, `_`, max **64** chars). Optional **`help`** on any type (max **500** chars). **`key`** values must be unique across the whole modal, even across different tables, because the panel reads loaded values by key alone. They also may not be `table` or `value`; the panel’s DB result resolver reserves those names.
+Every row needs **`id`**, **`type`**, **`label`** (max **200** chars), **`table`**, and **`key`** (INIDB names: letters, digits, `_`, max **64** chars). Optional **`help`** on any type (max **500** chars). **`key`** values must be unique across the whole modal, even across different tables, because the panel reads loaded values by key alone. They also may not be `table` or `value`: the bot’s reply to a panel DB query already uses those property names and cannot emit a duplicate key.
 
 ### `settingsModal` field `type` values
 
@@ -205,7 +205,7 @@ Allowed **`type`** strings (each row in `fields[]`, including rows nested under 
 
 | `type` | Purpose | Extra keys |
 | --- | --- | --- |
-| **`number`** | Numeric input. | Optional **`min`**, **`max`**: integer JSON numbers (quoted or fractional values are rejected) with **`min`** ≤ **`max`**; validated on save. When **`min`** is omitted the panel enforces a floor of **0** (stock number validation), so set **`min`** explicitly to allow negatives. Default display value falls back to **`min`** or `0` when the DB value is empty. |
+| **`number`** | Numeric input. | Optional **`min`**, **`max`**: integer JSON numbers with **`min`** ≤ **`max`**, validated on save. A quoted, fractional, or inverted bound is ignored with a warn line and the field still renders without it. When **`min`** is omitted the panel enforces a floor of **0** (stock number validation), so set **`min`** explicitly to allow negatives. Default display value falls back to **`min`** or `0` when the DB value is empty. |
 | **`text`** | Single-line string. | — |
 | **`textarea`** | Multi-line string. | Set **`unlimited`**: `true` to skip the default max length; otherwise the panel caps input at **480** characters. |
 | **`boolean`** | Two-choice dropdown stored as boolean in INIDB. | Optional **`options`**: exactly **two** unique non-empty strings `[trueLabel, falseLabel]` (e.g. `["Enabled","Disabled"]`). If omitted, defaults to **Yes / No**. |

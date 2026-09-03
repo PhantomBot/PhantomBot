@@ -21,8 +21,8 @@
  * Hot-loads newly-dropped modules under {@code scripts/custom/} and lang files
  * under {@code scripts/lang/custom/}. Exposes {@code !reloadcustom}
  * (caster perm) for chat use; the panel's {@code customPanelManifestLoader.js}
- * fires {@code !reloadcustom silent} after every manifest fetch by a config
- * panel user so a browser refresh is enough to pick up new modules.
+ * fires {@code !reloadcustom silent} after every manifest fetch by a panel
+ * login with Full Access so a browser refresh is enough to pick up new modules.
  *
  * <p>{@code init.js} only fires {@code initReady} once at boot, but most
  * modules register chat commands inside that hook. After the scan we diff

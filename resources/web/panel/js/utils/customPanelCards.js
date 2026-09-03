@@ -314,7 +314,7 @@
             keys.push(c.scriptPath);
         });
 
-        socket.getDBValues('pb_custom_cards_get_modules', {tables: tables, keys: keys}, true, function (results) {
+        socket.getDBValues(ns.uniqueCallbackId('pb_custom_cards_get_modules'), {tables: tables, keys: keys}, true, function (results) {
             if (!results) {
                 return;
             }
