@@ -32,6 +32,8 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.util.AttributeKey;
+import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
@@ -42,6 +44,10 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
  */
 public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler {
 
+    /**
+     * Represents the {@code ATTR_AUTH_USER} attribute
+     */
+    public static final AttributeKey<PanelUser> ATTR_AUTH_USER = AttributeKey.valueOf("authUser");
     /**
      * The realm to present to the user
      */
@@ -108,6 +114,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
+        ctx.channel().attr(ATTR_AUTH_USER).setIfAbsent(null);
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         if (this.isAuthorized(ctx, req)) {
@@ -141,7 +148,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        throw new UnsupportedOperationException("Not supported by this authentication handler.");
+        ctx.channel().attr(ATTR_AUTH_USER).set(null);
     }
 
     @Override
@@ -185,7 +192,15 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
             String userpass = new String(Base64.getDecoder().decode(auth));
             if (!userpass.isBlank()) {
                 int colon = userpass.indexOf(':');
-                return (this.allowPaneluser && PanelUserHandler.checkLoginB64(auth, requestUri))
+                boolean isPanelUserLoggedIn = false;
+                if (this.allowPaneluser) {
+                    PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(auth, requestUri);
+                    isPanelUserLoggedIn = user != null;
+                    if (isPanelUserLoggedIn) {
+                        ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                    }
+                }
+                return isPanelUserLoggedIn
                     || (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass));
             }
         }
