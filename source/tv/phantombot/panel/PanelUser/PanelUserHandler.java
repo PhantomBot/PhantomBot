@@ -422,35 +422,6 @@ public final class PanelUserHandler {
     }
 
     /**
-     * Resolves the {@link PanelUser panel user} behind an already-authenticated request
-     * without re-running the login
-     *
-     * <p>Unlike {@link #checkLoginAndGetUserB64(String, String)} this neither compares the
-     * password nor updates the user's last-login timestamp (a database write for database
-     * users), so it is suitable for request handlers that run after the HTTP authentication
-     * handler has already accepted (and therefore already decoded) the token. Callers must not
-     * use it as an authentication check.</p>
-     *
-     * @param base64Token The user's login token in base64 from the HTTP-Headers
-     * @return The enabled {@link PanelUser} named by the token; {@code null} if the token is
-     *         missing, has no {@code user:password} separator, or names no enabled user
-     */
-    public static PanelUser getAuthenticatedUserB64(String base64Token) {
-        if (base64Token == null || base64Token.isEmpty()) {
-            return null;
-        }
-
-        String userpass = new String(Base64.getDecoder().decode(base64Token));
-        int colon = userpass.indexOf(':');
-        if (colon < 0) {
-            return null;
-        }
-
-        PanelUser user = PanelUser.LookupByUsername(userpass.substring(0, colon));
-        return user != null && user.isEnabled() ? user : null;
-    }
-
-    /**
      * Checks if the {@link PanelUser panel user} is allowed to logon to the web
      * panel and/or use the websocket
      *
