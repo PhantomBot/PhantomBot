@@ -45,13 +45,13 @@ loadScripts(document, 'script');</script>
 <ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field-summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor-summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method-summary">Method</a></li>
 </ul>
 <ul class="sub-nav-list">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field-detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method-detail">Method</a></li>
 </ul>
@@ -92,6 +92,23 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- =========== FIELD SUMMARY =========== -->
+<li>
+<section class="field-summary" id="field-summary">
+<h2>Field Summary</h2>
+<div class="caption"><span>Fields</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="../../../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#ATTR_AUTH_USER" class="member-name-link">ATTR_AUTH_USER</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Represents the <code>ATTR_AUTH_USER</code> attribute</div>
+</div>
+</div>
+</section>
+</li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <li>
 <section class="constructor-summary" id="constructor-summary">
@@ -190,6 +207,21 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 </section>
 <section class="details">
 <ul class="details-list">
+<!-- ============ FIELD DETAIL =========== -->
+<li>
+<section class="field-details" id="field-detail">
+<h2>Field Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="ATTR_AUTH_USER">
+<h3>ATTR_AUTH_USER</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="../../../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&gt;</span>&nbsp;<span class="element-name">ATTR_AUTH_USER</span></div>
+<div class="block">Represents the <code>ATTR_AUTH_USER</code> attribute</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <li>
 <section class="constructor-details" id="constructor-detail">
@@ -229,7 +261,7 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <dd><code>user</code> - The username required for valid authentication</dd>
 <dd><code>pass</code> - The password required for valid authentication</dd>
 <dd><code>loginUri</code> - The login page URI</dd>
-<dd><code>allowPanelUser</code> - Whether this instance is allow to authenticate headers against <code>PanelUser</code></dd>
+<dd><code>allowPanelUser</code> - Whether this instance is allow to authenticate headers against <a href="../../../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a></dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - If <code>realm</code> contains any double quotes or <code>user</code> contains any colons</dd>
 </dl>
