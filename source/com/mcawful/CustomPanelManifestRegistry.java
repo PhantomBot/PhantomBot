@@ -29,9 +29,12 @@ import org.json.JSONObject;
  * can resolve INIDB tables and Rhino {@code scriptPath} values to a stock panel section ({@code games},
  * {@code extra}, etc.) without hard-coding community module names.
  *
- * <p>Rebuilt whenever {@link CustomPanelManifestCollector} produces a new merged manifest. Nav-only
- * modules that keep settings in bespoke panel JS (no manifest {@code settingsModal}) rely on the
- * panel sending {@code section} from {@code nav.section} on websocket messages.</p>
+ * <p>Rebuilt whenever {@link CustomPanelManifestCollector} produces a new merged manifest. Scripts
+ * come from {@code cards[].scriptPath} and {@code nav[].scripts}; tables come from every
+ * {@code settingsModal} field. Nav-only modules that keep settings in bespoke panel JS (no manifest
+ * {@code settingsModal}) rely on the panel sending {@code section} from {@code nav.section} on
+ * websocket DB and command messages, and must list the scripts they target with
+ * {@code socket.wsEvent} in {@code nav.scripts}.</p>
  *
  * @author mcawful
  */
@@ -44,11 +47,14 @@ public final class CustomPanelManifestRegistry {
     }
 
     /**
-     * Clears and repopulates the registry from the canonical merged {@code cards} array.
+     * Clears and repopulates the registry from the canonical merged {@code nav} and {@code cards}
+     * arrays. Cards are indexed first, so a script declared both as a card {@code scriptPath} and in a
+     * nav entry's {@code scripts} resolves to the card's section.
      *
+     * @param nav   merged {@code nav} array (may be empty)
      * @param cards merged {@code cards} array (may be empty)
      */
-    static void rebuildFromMergedCards(JSONArray cards) {
+    static void rebuild(JSONArray nav, JSONArray cards) {
         Map<String, String> tables = new HashMap<>();
         Map<String, String> scripts = new HashMap<>();
 
@@ -64,6 +70,26 @@ public final class CustomPanelManifestRegistry {
                     scripts.put(normalizeScriptPath(scriptPath), panelSection);
                 }
                 indexSettingsModalTables(card.optJSONObject("settingsModal"), panelSection, tables);
+            }
+        }
+
+        if (nav != null) {
+            for (int i = 0; i < nav.length(); i++) {
+                JSONObject entry = nav.optJSONObject(i);
+                if (entry == null) {
+                    continue;
+                }
+                String panelSection = entry.optString("section", "extra").trim().toLowerCase(Locale.ROOT);
+                JSONArray navScripts = entry.optJSONArray("scripts");
+                if (navScripts == null) {
+                    continue;
+                }
+                for (int j = 0; j < navScripts.length(); j++) {
+                    String scriptPath = navScripts.optString(j, "").trim();
+                    if (!scriptPath.isEmpty()) {
+                        scripts.putIfAbsent(normalizeScriptPath(scriptPath), panelSection);
+                    }
+                }
             }
         }
 
