@@ -1,0 +1,23 @@
+{
+    "tenniscommand.usage": "Usage: !tennis [player (name) / rankings (atp / wta)]",
+    "tenniscommand.nokey": "No Live Tennis API key is set. The broadcaster can add a free key (no card, 100 requests/day) from https://livetennisapi.com then run: !tennis apikey (key) -- WARNING: run that from the bot console or web panel, if you run it from chat, anyone watching chat can copy your key!",
+    "tenniscommand.apikey.usage": "Usage: !tennis apikey [key / clear] -- WARNING: This should be done from the bot console or web panel, if you run this from chat, anyone watching chat can copy your info!",
+    "tenniscommand.apikey.set": "Live Tennis API key saved. It is never shown in chat or written to the log.",
+    "tenniscommand.apikey.cleared": "Live Tennis API key cleared. !tennis is inactive until a new key is set.",
+    "tenniscommand.board.header": "Live tennis: $1",
+    "tenniscommand.board.empty": "No tennis matches are live right now.",
+    "tenniscommand.board.more": " (+$1 more)",
+    "tenniscommand.player.usage": "Usage: !tennis player [name]",
+    "tenniscommand.player.notfound": "No live match found for \"$1\".",
+    "tenniscommand.rankings.header": "$1 rankings: $2",
+    "tenniscommand.rankings.usage": "Usage: !tennis rankings [atp / wta]",
+    "tenniscommand.rankings.empty": "No ranking table is published right now.",
+    "tenniscommand.err.upgrade": "Rankings need a Live Tennis API PRO key. The live board works on the free key.",
+    "tenniscommand.err.auth": "The Live Tennis API rejected the stored key. The broadcaster should set a valid key with !tennis apikey.",
+    "tenniscommand.err.ratelimited": "The Live Tennis API rate limit was hit. Try again shortly.",
+    "tenniscommand.err.unavailable": "The Live Tennis API could not be reached right now.",
+    "tenniscommand.err.budget": "The daily Live Tennis API request budget for this channel is used up. It resets at 00:00 UTC.",
+    "tenniscommand.cooldown": "!tennis is on cooldown, try again in $1 second(s).",
+    "tenniscommand.bp": "BP",
+    "tenniscommand.serving": "*"
+}

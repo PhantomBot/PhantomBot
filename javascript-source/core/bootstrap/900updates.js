@@ -34,6 +34,7 @@
         let modules = [
             './commands/dualstreamCommand.js',
             './commands/highlightCommand.js',
+            './commands/tennisCommand.js',
             './commands/toggleModCommand.js',
             './discord/games/8ball.js',
             './discord/games/gambling.js',
@@ -856,6 +857,11 @@
             commands[i].type = 'channelpoints';
         }
         $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+    });
+
+    addUpdate('3.21.2.0', 'installedv3.21.2.0', function () {
+        $.consoleLn('Disabling the new tennis command module by default...');
+        $.inidb.set('modules', './commands/tennisCommand.js', 'false');
     });
 
     // ------ Add updates above this line in execution order ------
