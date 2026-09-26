@@ -174,8 +174,8 @@ public final class PanelUserHandler {
             Map.entry("alerts", List.of()),
             Map.entry("audio", List.of()),
             Map.entry("commands", List.of(
-                    "disabledCommands",
-                    "hiddenCommands",
+                    "disabledcommands",
+                    "hiddencommands",
                     "command",
                     "permcom",
                     "cooldown",
