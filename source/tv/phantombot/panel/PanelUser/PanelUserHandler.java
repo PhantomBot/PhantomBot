@@ -41,6 +41,8 @@ import tv.phantombot.panel.WsPanelHandler;
 public final class PanelUserHandler {
     /**
      * Sections on the panel to which a user can be granted permissions to
+     * 
+     * @implNote All section names MUST be lowercase in this variable
      */
     private static final String[] PANEL_SECTIONS = {
             "alerts",
@@ -68,12 +70,16 @@ public final class PanelUserHandler {
     /**
      * Database tables that are generally called on the panel and are allowed with
      * {@link Permission#READ_ONLY read only permission}
+     * 
+     * @implNote All table names MUST be lowercase in this variable
      */
     private static final List<String> READ_ONLY_TABLES = List.of("paneluser", "settings", "groups", "panelsettings",
             "paneldata", "modules", "command");
     /**
      * {@link PANEL_SECTIONS Sections} and their respectively called scripts on the
      * panel
+     * 
+     * @implNote All section and script names MUST be lowercase in this variable
      */
     private static final Map<String, List<String>> PANEL_SECTION_SCRIPTS = Map.ofEntries(
             Map.entry("alerts", List.of(
@@ -97,8 +103,7 @@ public final class PanelUserHandler {
                     "./core/commandcooldown.js",
                     "./core/commandregister.js")),
             Map.entry("dashboard", List.of(
-                    "./core/panelhandler.js",
-                    "./systems/commercialsystem.js")),
+                    "./core/panelhandler.js")),
             Map.entry("discord", List.of(
                     "./core/logging.js",
                     "./discord/commands/customCommands",
@@ -168,14 +173,14 @@ public final class PanelUserHandler {
      * {@link PANEL_SECTIONS Sections} and specified tables that should be
      * explicitly checked against their permissions
      *
-     * @implNote All table names MUST be lowercase in this variable
+     * @implNote All section and table names MUST be lowercase in this variable
      */
     private static final Map<String, List<String>> PANEL_SECTION_TABLES = Map.ofEntries(
             Map.entry("alerts", List.of()),
             Map.entry("audio", List.of()),
             Map.entry("commands", List.of(
-                    "disabledCommands",
-                    "hiddenCommands",
+                    "disabledcommands",
+                    "hiddencommands",
                     "command",
                     "permcom",
                     "cooldown",
@@ -1045,6 +1050,9 @@ public final class PanelUserHandler {
             case "overlay":
                 section = "stream overlay";
                 break;
+            case "youtube":
+                section = "youtube player";
+                break;
             default:
                 break;
         }
@@ -1059,7 +1067,7 @@ public final class PanelUserHandler {
      * @param script  The script path being accessed
      * @param section The {@link PANEL_SECTIONS panel section} on which this request
      *                was created
-     * @return {@code true} if the user is allowed to access the table under the
+     * @return {@code true} if the user is allowed access under the
      *         conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserScriptAccess(PanelUser user, String script, String[] args, String section) {
@@ -1082,13 +1090,13 @@ public final class PanelUserHandler {
         }
 
         section = sectionConvert(section);
-        if (section.equalsIgnoreCase("dashboard")) {
-            return true;
-        }
         boolean isWriteAction = true;
         if (PANEL_SECTION_SCRIPTS.get("loyalty").contains(script) && args.length > 0 &&
                 (args[0].equalsIgnoreCase("redeemable-get-managed")
                         || args[0].equalsIgnoreCase("redeemable-reload-managed"))) {
+            isWriteAction = false;
+        }
+        if (section.equalsIgnoreCase("dashboard")) {
             isWriteAction = false;
         }
 
@@ -1115,7 +1123,7 @@ public final class PanelUserHandler {
      *                      request was created
      * @param isWriteAction Indicates if the action is an action requiring
      *                      {@link Permission.READ_WRITE write permissions}
-     * @return {@code true} if the user is allowed to access the table under the
+     * @return {@code true} if the user is allowed access under the
      *         conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserSectionAccess(PanelUser user, String section, boolean isWriteAction) {
@@ -1150,7 +1158,7 @@ public final class PanelUserHandler {
      * @param command The command which has been sent by the user through the panel
      * @param section The {@link PANEL_SECTIONS panel section} on which this request
      *                was created
-     * @return {@code true} if the user is allowed to access the table under the
+     * @return {@code true} if the user is allowed access under the
      *         conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserCommandAccess(PanelUser user, String command, String section) {

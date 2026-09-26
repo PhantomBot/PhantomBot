@@ -234,7 +234,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", true)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -260,7 +260,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", true)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -286,7 +286,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", true)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -311,7 +311,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", true)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -369,7 +369,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     private void handleDiscordChannelList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "discord", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -409,7 +409,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     private void handleChannelPointsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "loyalty", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -435,7 +435,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     private void handlePowerUpsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "loyalty", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -461,7 +461,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     private void handleChannelPointsListTest(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "loyalty", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -479,7 +479,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     private void handlePowerUpsListTest(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "loyalty", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -645,7 +645,7 @@ public class WsPanelHandler implements WsFrameHandler {
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("loadLang")) {
-            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "settings", false)) {
                 this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
                 return;
             }
@@ -653,7 +653,7 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.key("langFile").value(LangFileUpdater.getCustomLang(jso.getJSONObject("params").getString("lang-path")));
             jsonObject.endObject().endArray();
         } else if (query.equalsIgnoreCase("saveLang")) {
-            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), true)) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "settings", true)) {
                 this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
                 return;
             }
@@ -669,7 +669,7 @@ public class WsPanelHandler implements WsFrameHandler {
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("uploadAudioHook")) {
-            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), true)) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "audio", true)) {
                 this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
                 return;
             }
@@ -681,7 +681,7 @@ public class WsPanelHandler implements WsFrameHandler {
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("getLangList")) {
-            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "settings", false)) {
                 this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
                 return;
             }
@@ -840,7 +840,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -870,7 +870,7 @@ public class WsPanelHandler implements WsFrameHandler {
         if (ctx != null) {
             user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
         }
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -918,7 +918,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 }
 
                 PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-                if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+                if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", false)) {
                     this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
                     return;
                 }
@@ -951,7 +951,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -987,7 +987,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -1028,7 +1028,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, "", false)) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
