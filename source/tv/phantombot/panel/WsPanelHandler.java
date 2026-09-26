@@ -178,7 +178,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserCommandAccess(user, command, "commands")) {
+        if (user != null && !PanelUserHandler.checkPanelUserCommandAccess(user, command, (jso.has("section") ? jso.getString("section") : ""))) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
