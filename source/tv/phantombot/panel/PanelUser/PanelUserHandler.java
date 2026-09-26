@@ -1065,7 +1065,7 @@ public final class PanelUserHandler {
      * @param script  The script path being accessed
      * @param section The {@link PANEL_SECTIONS panel section} on which this request
      *                was created
-     * @return {@code true} if the user is allowed to access the table under the
+     * @return {@code true} if the user is allowed access under the
      *         conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserScriptAccess(PanelUser user, String script, String[] args, String section) {
@@ -1121,7 +1121,7 @@ public final class PanelUserHandler {
      *                      request was created
      * @param isWriteAction Indicates if the action is an action requiring
      *                      {@link Permission.READ_WRITE write permissions}
-     * @return {@code true} if the user is allowed to access the table under the
+     * @return {@code true} if the user is allowed access under the
      *         conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserSectionAccess(PanelUser user, String section, boolean isWriteAction) {
@@ -1156,7 +1156,7 @@ public final class PanelUserHandler {
      * @param command The command which has been sent by the user through the panel
      * @param section The {@link PANEL_SECTIONS panel section} on which this request
      *                was created
-     * @return {@code true} if the user is allowed to access the table under the
+     * @return {@code true} if the user is allowed access under the
      *         conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserCommandAccess(PanelUser user, String command, String section) {
