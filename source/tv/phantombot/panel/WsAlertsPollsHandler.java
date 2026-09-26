@@ -49,7 +49,7 @@ import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 public class WsAlertsPollsHandler implements WsFrameHandler {
 
     private static final String KEY_EVENT_TYPE = "type";
-    private static final String[] AUDIO_EXTS = {"mp3", "aac", "ogg", "wav", "m4a"};
+    static final String[] AUDIO_EXTS = {"mp3", "aac", "ogg", "wav", "m4a"};
 
     private final WsAuthenticationHandler authHandler;
 

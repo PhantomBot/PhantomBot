@@ -16,6 +16,7 @@
  */
 package tv.phantombot.panel;
 
+import com.gmt2001.PathValidator;
 import com.gmt2001.TestData;
 import com.gmt2001.datastore.KeyValue;
 import com.gmt2001.httpwsserver.HTTPWSServer;
@@ -36,7 +37,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -70,6 +75,7 @@ public class WsPanelHandler implements WsFrameHandler {
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken"};
     private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{};
+    private static final long MAX_AUDIO_HOOK_UPLOAD_SIZE = 10L * 1024 * 1024;
     private final WsAuthenticationHandler authHandler;
 
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
@@ -662,6 +668,18 @@ public class WsPanelHandler implements WsFrameHandler {
                         .endObject().endArray().endObject();
             }
             jsonObject.endArray();
+        } else if (query.equalsIgnoreCase("uploadAudioHook")) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), true)) {
+                this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+                return;
+            }
+            jsonObject.key("results").array();
+            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() || user != null) {
+                this.uploadAudioHook(jso.getJSONObject("params"), jsonObject);
+            } else {
+                this.uploadAudioHookError(jsonObject, "403", "Forbidden", "Read-only Connection");
+            }
+            jsonObject.endArray();
         } else if (query.equalsIgnoreCase("getLangList")) {
             if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
                 this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
@@ -701,6 +719,111 @@ public class WsPanelHandler implements WsFrameHandler {
 
         jsonObject.endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    /**
+     * Writes a chunk of an audio hook file uploaded from the panel to {@code ./config/audio-hooks}
+     * <p>
+     * Chunks are written to a {@code .part} file, which is moved into place once the final chunk is received
+     * <p>
+     * Whitespace in the file name is replaced with underscores, since audio hook names are passed as a single command argument
+     *
+     * @param params The request params: {@code name}, {@code offset}, {@code data} (base64), {@code final}, and {@code overwrite}
+     * @param jsonObject The response to add any errors to
+     */
+    private void uploadAudioHook(JSONObject params, JSONStringer jsonObject) {
+        String name = params.getString("name").replaceAll("\\s", "_");
+        long offset = params.getLong("offset");
+        boolean overwrite = params.optBoolean("overwrite", false);
+        Path target;
+        Path part;
+
+        try {
+            Path fileName = Paths.get(name).getFileName();
+            if (fileName == null || !fileName.toString().equals(name) || name.startsWith(".")) {
+                throw new InvalidPathException(name, "Not a plain file name");
+            }
+
+            target = Paths.get("./config/audio-hooks", name);
+            part = Paths.get("./config/audio-hooks", name + ".part");
+        } catch (InvalidPathException ex) {
+            this.uploadAudioHookError(jsonObject, "400", "Bad Request", "Invalid file name");
+            return;
+        }
+
+        int dot = name.lastIndexOf('.');
+        String ext = dot > 0 ? name.substring(dot + 1).toLowerCase() : "";
+        if (Arrays.stream(WsAlertsPollsHandler.AUDIO_EXTS).noneMatch(e -> e.equals(ext))) {
+            this.uploadAudioHookError(jsonObject, "415", "Unsupported Media Type", "Allowed file types: " + String.join(", ", WsAlertsPollsHandler.AUDIO_EXTS));
+            return;
+        }
+
+        if (!PathValidator.isValidPathShared(target.toString()) || !PathValidator.isValidPathShared(part.toString())) {
+            this.uploadAudioHookError(jsonObject, "403", "Forbidden", "Invalid path");
+            return;
+        }
+
+        if (offset == 0 && !overwrite && Files.exists(target)) {
+            this.uploadAudioHookError(jsonObject, "409", "Conflict", "File already exists");
+            return;
+        }
+
+        byte[] data;
+        try {
+            data = java.util.Base64.getDecoder().decode(params.getString("data"));
+        } catch (IllegalArgumentException ex) {
+            this.uploadAudioHookError(jsonObject, "400", "Bad Request", "Invalid file data");
+            return;
+        }
+
+        if (offset < 0 || offset + data.length > MAX_AUDIO_HOOK_UPLOAD_SIZE) {
+            this.uploadAudioHookError(jsonObject, "413", "Payload Too Large", "Audio hooks are limited to " + (MAX_AUDIO_HOOK_UPLOAD_SIZE / 1024 / 1024) + "MB");
+            return;
+        }
+
+        try {
+            if (offset == 0) {
+                Files.write(part, data);
+            } else if (Files.exists(part) && Files.size(part) == offset) {
+                Files.write(part, data, StandardOpenOption.APPEND);
+            } else {
+                this.uploadAudioHookError(jsonObject, "400", "Bad Request", "Unexpected offset, please retry the upload");
+                return;
+            }
+
+            if (params.optBoolean("final", false)) {
+                if (overwrite) {
+                    Files.move(part, target, StandardCopyOption.REPLACE_EXISTING);
+                } else {
+                    Files.move(part, target);
+                }
+            }
+        } catch (IOException ex) {
+            try {
+                Files.deleteIfExists(part);
+            } catch (IOException ex2) {
+                com.gmt2001.Console.err.printStackTrace(ex2);
+            }
+
+            this.uploadAudioHookError(jsonObject, "500", "Internal Server Error", "IOException: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Adds an error object to an audio hook upload response
+     *
+     * @param jsonObject The response to add the error to
+     * @param status The HTTP-style status code
+     * @param title The error title
+     * @param detail The error detail
+     */
+    private void uploadAudioHookError(JSONStringer jsonObject, String status, String title, String detail) {
+        jsonObject.object().key("errors").array().object()
+                .key("status").value(status)
+                .key("title").value(title)
+                .key("detail").value(detail)
+                .endObject().endArray().endObject();
     }
 
     public void handleDBQuery(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {

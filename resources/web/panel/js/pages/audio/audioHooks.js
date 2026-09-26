@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global toastr */
+/* global toastr, swal */
 
 // Function that queries all of the data we need.
 $(run = function () {
@@ -300,6 +300,84 @@ $(function () {
             // Alert the user.
             toastr.success('Successfully refreshed audio hooks!');
         });
+    });
+
+    /*
+     * @function Uploads an audio hook file to the bot in chunks.
+     *
+     * @param {File}    file
+     * @param {Boolean} overwrite
+     * @param {Number}  offset
+     */
+    function uploadAudioHook(file, overwrite, offset) {
+        let chunkSize = 32768,
+                reader = new FileReader(),
+                isFinal = offset + chunkSize >= file.size,
+                // Audio hook names are passed as a single command argument, so whitespace is not allowed.
+                fileName = file.name.replace(/\s/g, '_');
+
+        reader.onload = function () {
+            socket.doRemote('audio_hook_upload', 'uploadAudioHook', {
+                'name': fileName,
+                'offset': offset,
+                'data': reader.result.substring(reader.result.indexOf(',') + 1),
+                'final': isFinal,
+                'overwrite': overwrite
+            }, function (e) {
+                if (e.length > 0 && e[0].errors !== undefined) {
+                    // Ask the user if they want to replace the existing file.
+                    if (e[0].errors[0].status === '409') {
+                        swal({
+                            'title': 'The file "' + fileName + '" already exists. Do you want to replace it?',
+                            'icon': 'warning',
+                            'buttons': ['Cancel', 'Replace'],
+                            'dangerMode': true
+                        }).then(function (isReplace) {
+                            if (isReplace) {
+                                uploadAudioHook(file, true, 0);
+                            }
+                        });
+                    } else {
+                        toastr.error(e[0].errors[0].status + ' ' + e[0].errors[0].title + '<br>' + e[0].errors[0].detail, 'Failed to upload audio hook');
+                    }
+                } else if (!isFinal) {
+                    uploadAudioHook(file, overwrite, offset + chunkSize);
+                } else {
+                    socket.sendCommandSync('reload_audio_hooks_cmd', 'reloadaudiopanelhooks', function () {
+                        // Load new audio hooks.
+                        run();
+                        // Alert the user.
+                        toastr.success('Successfully uploaded audio hook "' + fileName + '"!');
+                    });
+                }
+            });
+        };
+        reader.readAsDataURL(file.slice(offset, offset + chunkSize));
+    }
+
+    // Upload audio hook button.
+    $('#upload-audio-hook').on('click', function () {
+        $('#upload-audio-hook-file').trigger('click');
+    });
+
+    // Upload audio hook file selected.
+    $('#upload-audio-hook-file').on('change', function () {
+        let file = this.files[0];
+
+        // Reset the input so the same file can be selected again.
+        $(this).val('');
+
+        if (file === undefined) {
+            return;
+        }
+
+        if (!/\.(mp3|aac|ogg|wav|m4a)$/i.test(file.name)) {
+            toastr.error('Allowed file types: mp3, aac, ogg, wav, m4a', 'Failed to upload audio hook');
+        } else if (file.size > 10 * 1024 * 1024) {
+            toastr.error('Audio hooks are limited to 10MB', 'Failed to upload audio hook');
+        } else {
+            uploadAudioHook(file, false, 0);
+        }
     });
 
     // Audio hooks settings.
