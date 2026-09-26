@@ -41,6 +41,8 @@ import tv.phantombot.panel.WsPanelHandler;
 public final class PanelUserHandler {
     /**
      * Sections on the panel to which a user can be granted permissions to
+     * 
+     * @implNote All section names MUST be lowercase in this variable
      */
     private static final String[] PANEL_SECTIONS = {
             "alerts",
@@ -68,12 +70,16 @@ public final class PanelUserHandler {
     /**
      * Database tables that are generally called on the panel and are allowed with
      * {@link Permission#READ_ONLY read only permission}
+     * 
+     * @implNote All table names MUST be lowercase in this variable
      */
     private static final List<String> READ_ONLY_TABLES = List.of("paneluser", "settings", "groups", "panelsettings",
             "paneldata", "modules", "command");
     /**
      * {@link PANEL_SECTIONS Sections} and their respectively called scripts on the
      * panel
+     * 
+     * @implNote All section and script names MUST be lowercase in this variable
      */
     private static final Map<String, List<String>> PANEL_SECTION_SCRIPTS = Map.ofEntries(
             Map.entry("alerts", List.of(
@@ -168,7 +174,7 @@ public final class PanelUserHandler {
      * {@link PANEL_SECTIONS Sections} and specified tables that should be
      * explicitly checked against their permissions
      *
-     * @implNote All table names MUST be lowercase in this variable
+     * @implNote All section and table names MUST be lowercase in this variable
      */
     private static final Map<String, List<String>> PANEL_SECTION_TABLES = Map.ofEntries(
             Map.entry("alerts", List.of()),
