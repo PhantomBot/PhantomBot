@@ -1051,6 +1051,9 @@ public final class PanelUserHandler {
             case "overlay":
                 section = "stream overlay";
                 break;
+            case "youtube":
+                section = "youtube player";
+                break;
             default:
                 break;
         }
