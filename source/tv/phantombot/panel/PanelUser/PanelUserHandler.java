@@ -103,8 +103,7 @@ public final class PanelUserHandler {
                     "./core/commandcooldown.js",
                     "./core/commandregister.js")),
             Map.entry("dashboard", List.of(
-                    "./core/panelhandler.js",
-                    "./systems/commercialsystem.js")),
+                    "./core/panelhandler.js")),
             Map.entry("discord", List.of(
                     "./core/logging.js",
                     "./discord/commands/customCommands",
@@ -1091,13 +1090,13 @@ public final class PanelUserHandler {
         }
 
         section = sectionConvert(section);
-        if (section.equalsIgnoreCase("dashboard")) {
-            return true;
-        }
         boolean isWriteAction = true;
         if (PANEL_SECTION_SCRIPTS.get("loyalty").contains(script) && args.length > 0 &&
                 (args[0].equalsIgnoreCase("redeemable-get-managed")
                         || args[0].equalsIgnoreCase("redeemable-reload-managed"))) {
+            isWriteAction = false;
+        }
+        if (section.equalsIgnoreCase("dashboard")) {
             isWriteAction = false;
         }
 
