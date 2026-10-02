@@ -153,6 +153,7 @@ $(function () {
                 'searching': true,
                 'autoWidth': false,
                 'data': tableData,
+                'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': [2, 3]},
                     {'width': '45%', 'targets': 0}
