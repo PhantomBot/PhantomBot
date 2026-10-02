@@ -25,79 +25,135 @@ $(function () {
             title: disabled ? 'disabled' : 'enabled'
         };
     };
+    const getHiddenIconAttr = function (hidden) {
+        return {
+            class: 'fa hidden-status-icon ' + (hidden ? 'fa-eye-slash text-muted' : 'fa-eye'),
+            title: hidden ? 'hidden' : 'visible'
+        };
+    };
 
-    const updateCommandDisabled = function (name, disabled, callback) {
+    const updateCommandVisibility = function (name, disabled, hidden, callback) {
+        let addTables = [],
+                addKeys = [],
+                addValues = [],
+                removeTables = [],
+                removeKeys = [];
+        if (disabled) {
+            addTables.push('disabledCommands');
+            addKeys.push(name);
+            addValues.push(true);
+        } else {
+            removeTables.push('disabledCommands');
+            removeKeys.push(name);
+        }
+        if (hidden) {
+            addTables.push('hiddenCommands');
+            addKeys.push(name);
+            addValues.push(true);
+        } else {
+            removeTables.push('hiddenCommands');
+            removeKeys.push(name);
+        }
         const wsUpdate = function () {
             socket.wsEvent('command_disabled_update_ws', './core/commandRegister.js', null,
                     [disabled ? 'disable' : 'enable', name], callback);
         };
-
-        if (disabled) {
-            socket.updateDBValue('command_disabled_update', 'disabledCommands', name, true, wsUpdate);
-        } else {
-            socket.removeDBValue('command_disabled_remove', 'disabledCommands', name, wsUpdate);
-        }
+        const remove = function (callback) {
+            if (removeTables.length > 0) {
+                socket.removeDBValues('default_command_visibility_remove', {tables: removeTables, keys: removeKeys}, callback);
+            } else {
+                callback();
+            }
+        };
+        const add = function (callback) {
+            if (addTables.length > 0) {
+                socket.updateDBValues('default_command_visibility_update', {tables: addTables, keys: addKeys, values: addValues}, callback);
+            } else {
+                callback();
+            }
+        };
+        remove(function () {
+            add(wsUpdate);
+        });
     };
 
     // Query all commands.
-    socket.getDBTableValues('commands_get_all', 'permcom', function (results) {
-        socket.getDBTableValues('custom_commands_get_all', 'command', function (customCommands) {
-            socket.getDBTableValues('disabled_commands_get_all', 'disabledCommands', function (disabledCommands) {
-                let tableData = [],
-                        cmds = {},
-                        disabled = {};
+    socket.getDBTablesValues('commands_get_all', [{table: 'permcom'}, {table: 'command'}, {table: 'disabledCommands'}, {table: 'hiddenCommands'}], function (results) {
+        let tableData = [],
+                cmds = {},
+                disabled = {},
+                hidden = {},
+                permcomResults = [];
 
-                for (let i = 0; i < customCommands.length; i++) {
-                    cmds[customCommands[i].key] = true;
-                }
+        for (let result of results) {
+            switch (result['table']) {
+                case 'command':
+                    cmds[result.key] = true;
+                    break;
+                case 'disabledCommands':
+                    disabled[result.key] = true;
+                    break;
+                case 'hiddenCommands':
+                    hidden[result.key] = true;
+                    break;
+                case 'permcom':
+                    permcomResults.push(result);
+                    break;
+            }
+        }
 
-                for (let i = 0; i < disabledCommands.length; i++) {
-                    disabled[disabledCommands[i].key] = true;
-                }
+        for (let i = 0; i < permcomResults.length; i++) {
+            if (cmds.hasOwnProperty(permcomResults[i].key)) {
+                continue;
+            }
 
-                for (let i = 0; i < results.length; i++) {
-                    if (cmds.hasOwnProperty(results[i].key)) {
-                        continue;
-                    }
-
-                    tableData.push([
-                        '!' + results[i].key,
-                        helpers.getGroupNameById(results[i].value),
-                        $('<div/>', {
-                            'class': 'btn-group'
-                        }).append($('<button/>', {
-                            'type': 'button',
-                            'class': 'btn btn-xs btn-warning btn-disablecommand',
-                            'style': 'float: right',
-                            'data-command': results[i].key,
-                            'html': $('<i/>', {
-                                        ...getDisabledIconAttr(disabled.hasOwnProperty(results[i].key)),
-                                        'style': "width: 9px"
-                                    })
-                        })).html(),
-                        $('<div/>', {
-                            'class': 'btn-group'
-                        }).append($('<button/>', {
-                            'type': 'button',
-                            'class': 'btn btn-xs btn-danger btn-deletecommand',
-                            'style': 'float: right',
-                            'data-toggle': 'tooltip',
-                            'title': 'Deletes the command permission and resets it to default on startup. This does not remove the command unless it doesn\'t exist anymore.',
-                            'data-command': results[i].key,
-                            'html': $('<i/>', {
-                                'class': 'fa fa-refresh'
+            tableData.push([
+                '!' + permcomResults[i].key,
+                helpers.getGroupNameById(permcomResults[i].value),
+                $('<div/>', {
+                    'class': 'btn-group'
+                }).append($('<button/>', {
+                    'type': 'button',
+                    'class': 'btn btn-xs btn-warning btn-disablecommand',
+                    'style': 'float: right',
+                    'data-command': permcomResults[i].key,
+                    'html': $('<i/>', {
+                                ...getDisabledIconAttr(disabled.hasOwnProperty(permcomResults[i].key)),
+                                'style': "width: 9px"
                             })
-                        })).append($('<button/>', {
-                            'type': 'button',
-                            'class': 'btn btn-xs btn-warning btn-editcommand',
-                            'style': 'float: right',
-                            'data-command': results[i].key,
-                            'html': $('<i/>', {
-                                'class': 'fa fa-edit'
+                })).append($('<button/>', {
+                    'type': 'button',
+                    'class': 'btn btn-xs btn-warning btn-hidecommand',
+                    'style': 'float: right',
+                    'data-command': permcomResults[i].key,
+                    'html': $('<i/>', {
+                                ...getHiddenIconAttr(hidden.hasOwnProperty(permcomResults[i].key)),
+                                'style': "width: 9px"
                             })
-                        })).html()
-                    ]);
-                }
+                })).html(),
+                $('<div/>', {
+                    'class': 'btn-group'
+                }).append($('<button/>', {
+                    'type': 'button',
+                    'class': 'btn btn-xs btn-danger btn-deletecommand',
+                    'style': 'float: right',
+                    'data-toggle': 'tooltip',
+                    'title': 'Deletes the command permission and resets it to default on startup. This does not remove the command unless it doesn\'t exist anymore.',
+                    'data-command': permcomResults[i].key,
+                    'html': $('<i/>', {
+                        'class': 'fa fa-refresh'
+                    })
+                })).append($('<button/>', {
+                    'type': 'button',
+                    'class': 'btn btn-xs btn-warning btn-editcommand',
+                    'style': 'float: right',
+                    'data-command': permcomResults[i].key,
+                    'html': $('<i/>', {
+                        'class': 'fa fa-edit'
+                    })
+                })).html()
+            ]);
+        }
 
                 // if the table exists, destroy it.
                 if ($.fn.DataTable.isDataTable('#defaultCommandsTable')) {
@@ -145,15 +201,33 @@ $(function () {
                     let command = $(this).data('command'),
                     row = $(this).parents('tr');
                     socket.getDBValues('default_command_edit', {
-                    tables: ['command', 'disabledCommands'],
-                    keys: [command, command]
+                    tables: ['command', 'disabledCommands', 'hiddenCommands'],
+                    keys: [command, command, command]
                     }, function (e) {
-                        let commandDisabled = e.disabledCommands === null;
-                        updateCommandDisabled(command, commandDisabled, function () {
+                        let commandDisabled = e.disabledCommands === null,
+                            commandHidden = e.hiddenCommands !== null;
+                        updateCommandVisibility(command, commandDisabled, commandHidden, function () {
                             // Update status icon
                             row.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
                         });
                     });
+                });
+
+                // On hidden button.
+                table.on('click', '.btn-hidecommand', function () {
+                  let command = $(this).data('command'),
+                  row = $(this).parents('tr');
+                  socket.getDBValues('default_command_edit', {
+                    tables: ['command', 'disabledCommands', 'hiddenCommands'],
+                    keys: [command, command, command]
+                    }, function (e) {
+                      let commandDisabled = e.disabledCommands !== null,
+                        commandHidden = e.hiddenCommands === null;
+                      updateCommandVisibility(command, commandDisabled, commandHidden, function () {
+                            // Update status icon
+                            row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
+                          });
+                      });
                 });
 
                 // On edit button.
@@ -163,8 +237,8 @@ $(function () {
 
                     // Get all the info about the command.
                     socket.getDBValues('default_command_edit', {
-                        tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'commandRestrictions'],
-                        keys: [command, command, command, command, command, command]
+                        tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'commandRestrictions', 'hiddenCommands'],
+                        keys: [command, command, command, command, command, command, command]
                     }, function (e) {
                         let cooldownJson = (e.cooldown === null ? {globalSec: -1, userSec: -1, modsSkip: false, clearOnOnline: false} : JSON.parse(e.cooldown)),
                                 restriction = (e.commandRestrictions === null || e.commandRestrictions === undefined || isNaN(e.commandRestrictions) ? -1 : parseInt(e.commandRestrictions));
@@ -219,6 +293,8 @@ $(function () {
                                                     'If checked, the cooldowns for this command will be cleared when you go live.'))
                                             .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
                                                     'If checked, the command cannot be used in chat.'))
+                                            .append(helpers.getCheckBox('command-hidden', e.hiddenCommands !== null, 'Hidden',
+                                                    'If checked, the command will not be listed when !command is called.'))
                                             // Callback function to be called once we hit the save button on the modal.
                                 })), function () {
                             let commandPermission = $('#command-permission'),
@@ -229,6 +305,7 @@ $(function () {
                                     commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                                     commandCooldownClearOnOnline = $('#command-cooldown-clearononline').is(':checked') ? '1' : '0',
                                     commandDisabled = $('#command-disabled').is(':checked'),
+                                    commandHidden = $('#command-hidden').is(':checked'),
                                     commandRestriction = $('#command-restriction option:selected').text().replace(/\b(on|only)\b/g, '').trim().toLowerCase();
                             // Handle each input to make sure they have a value.
                             switch (false) {
@@ -244,7 +321,7 @@ $(function () {
                                         keys: [command, command],
                                         values: [commandCost.val(), commandReward.val()]
                                     }, function () {
-                                        updateCommandDisabled(command, commandDisabled, function () {
+                                        updateCommandVisibility(command, commandDisabled, commandHidden, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
                                                     ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip, commandCooldownClearOnOnline, commandRestriction], function () {
@@ -256,6 +333,7 @@ $(function () {
                                                     $tr.find('td:eq(1)').text(commandPermission.find(':selected').text());
                                                     // Update status icons
                                                     $tr.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
+                                                    $tr.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
                                                     // Close the modal.
                                                     $('#edit-command').modal('hide');
                                                     // Tell the user the command was edited.
@@ -268,7 +346,5 @@ $(function () {
                         }).modal('toggle');
                     });
                 });
-            });
-        });
     });
 });
