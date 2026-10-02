@@ -30,6 +30,8 @@ $(function () {
             title: hidden ? 'hidden' : 'visible'
         };
     };
+    let selectedCommands = new Set();
+
     const updateCommandVisibility = function (name, disabled, hidden, callback) {
         let addTables = [],
                 addKeys = [],
@@ -54,14 +56,14 @@ $(function () {
         }
         const remove = function (callback) {
             if (removeTables.length > 0) {
-                socket.removeDBValues('custom_command_visibility_remove', {tables: removeTables, keys: removeKeys}, callback);
+                socket.removeDBValues('custom_command_visibility_remove_' + name, {tables: removeTables, keys: removeKeys}, callback);
             } else {
                 callback();
             }
         };
         const add = function (callback) {
             if (addTables.length > 0) {
-                socket.updateDBValues('custom_command_visibility_update', {tables: addTables, keys: addKeys, values: addValues}, callback);
+                socket.updateDBValues('custom_command_visibility_update_' + name, {tables: addTables, keys: addKeys, values: addValues}, callback);
             } else {
                 callback();
             }
@@ -98,6 +100,19 @@ $(function () {
             }
             for (let command of commands) {
                 tableData.push([
+                    $('<div/>', {
+                        'class': 'pretty p-icon'
+                    }).append($('<input/>', {
+                        'class': 'command-select-checkbox',
+                        'type': 'checkbox',
+                        'value': command.key
+                    })).append($('<div/>', {
+                        'class': 'state p-default'
+                    }).append($('<i/>', {
+                        'class': 'icon fa fa-check'
+                    })).append($('<label/>', {
+                        'text': ''
+                    }))).prop('outerHTML'),
                     '!' + command.key,
                     command.value,
                     perms[command.key],
@@ -155,11 +170,15 @@ $(function () {
                 'searching': true,
                 'autoWidth': false,
                 'data': tableData,
+                'order': [[1, 'asc']],
+                'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                 'columnDefs': [
-                    {'className': 'default-table', 'orderable': false, 'targets': [3, 4]},
-                    {'width': '15%', 'targets': 0}
+                    {'className': 'default-table', 'orderable': false, 'targets': [4, 5]},
+                    {'width': '30%', 'targets': 2},
+                    {'width': '5%', 'targets': 0}
                 ],
                 'columns': [
+                    {'title': '<div class="pretty p-icon" style="margin-right: 0;"><input type="checkbox" id="selectAllCommands"><div class="state p-default"><i class="icon fa fa-check"></i><label></label></div></div>', 'orderable': false, 'defaultContent': ''},
                     {'title': 'Command'},
                     {'title': 'Response'},
                     {'title': 'Permissions'},
@@ -168,7 +187,102 @@ $(function () {
                 ]
             });
 
-            // On delete button.
+            
+                // Toggle Bulk Toolbar
+                const toggleBulkToolbar = function() {
+                    if (selectedCommands.size > 0) {
+                        $('#bulkActionsToolbar').show();
+                    } else {
+                        $('#bulkActionsToolbar').hide();
+                    }
+                };
+
+                // On select all checkbox
+                $('#selectAllCommands').off('change').on('change', function() {
+                    let isChecked = $(this).is(':checked');
+                    $('.command-select-checkbox').each(function() {
+                        $(this).prop('checked', isChecked);
+                        if (isChecked) {
+                            selectedCommands.add($(this).val());
+                        } else {
+                            selectedCommands.delete($(this).val());
+                        }
+                    });
+                    toggleBulkToolbar();
+                });
+
+                // On row checkbox change
+                table.on('change', '.command-select-checkbox', function() {
+                    if ($(this).is(':checked')) {
+                        selectedCommands.add($(this).val());
+                    } else {
+                        selectedCommands.delete($(this).val());
+                    }
+                    
+                    let allChecked = $('.command-select-checkbox').length > 0 && $('.command-select-checkbox:not(:checked)').length === 0;
+                    $('#selectAllCommands').prop('checked', allChecked);
+                    toggleBulkToolbar();
+                });
+
+                // Maintain selection across pages
+                table.on('draw', function() {
+                    $('.command-select-checkbox').each(function() {
+                        if (selectedCommands.has($(this).val())) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                    let allChecked = $('.command-select-checkbox').length > 0 && $('.command-select-checkbox:not(:checked)').length === 0;
+                    $('#selectAllCommands').prop('checked', allChecked);
+                });
+
+                const processBulkAction = function(disableState, hiddenState) {
+                    let commandsToProcess = Array.from(selectedCommands);
+                    if (commandsToProcess.length === 0) return;
+                    
+                    let processed = 0;
+                    commandsToProcess.forEach(cmd => {
+                        socket.getDBValues('custom_command_bulk_edit_' + cmd, {
+                            tables: ['command', 'disabledCommands', 'hiddenCommands'],
+                            keys: [cmd, cmd, cmd]
+                        }, function (e) {
+                            let commandDisabled = e.disabledCommands !== null;
+                            let commandHidden = e.hiddenCommands !== null;
+                            
+                            let targetDisabled = disableState !== null ? disableState : commandDisabled;
+                            let targetHidden = hiddenState !== null ? hiddenState : commandHidden;
+                            
+                            updateCommandVisibility(cmd, targetDisabled, targetHidden, function() {
+                                socket.wsEvent('custom_command_edit_ws', './commands/customCommands.js', null, ['edit', String(cmd), e.command, JSON.stringify({disabled: targetDisabled})], function () {
+                                    // Find row and update icon
+                                    let indexes = table.rows().indexes().filter(function(idx) {
+                                        return table.row(idx).data()[1] === '!' + cmd;
+                                    });
+                                    
+                                    if (indexes.length > 0) {
+                                        let node = table.row(indexes[0]).node();
+                                        $(node).find('.disabled-status-icon').attr(getDisabledIconAttr(targetDisabled));
+                                        $(node).find('.hidden-status-icon').attr(getHiddenIconAttr(targetHidden));
+                                    }
+                                    
+                                    processed++;
+                                    if (processed === commandsToProcess.length) {
+                                        selectedCommands.clear();
+                                        $('.command-select-checkbox').prop('checked', false);
+                                        $('#selectAllCommands').prop('checked', false);
+                                        toggleBulkToolbar();
+                                    }
+                                });
+                            });
+                        });
+                    });
+                };
+
+                $('#bulkDisable').off('click').on('click', function() { processBulkAction(true, null); });
+                $('#bulkEnable').off('click').on('click', function() { processBulkAction(false, null); });
+                $('#bulkHide').off('click').on('click', function() { processBulkAction(null, true); });
+                $('#bulkShow').off('click').on('click', function() { processBulkAction(null, false); });
+
+// On delete button.
             table.on('click', '.btn-deletecommand', function () {
                 let command = $(this).data('command'),
                         row = $(this).parents('tr');
