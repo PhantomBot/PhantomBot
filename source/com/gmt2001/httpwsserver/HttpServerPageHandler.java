@@ -520,7 +520,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
     /**
      * Sends in-memory content using the same conditional caching headers as {@link #sendFile},
-     * with a caller-supplied strong {@code ETag} instead of file size / last-modified.
+     * with a caller-supplied strong {@code ETag} instead of file size / last-modified, and
+     * {@code no-cache} so the client revalidates on every request.
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} containing the request
@@ -536,7 +537,11 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, contentType);
         response.headers().set(HttpHeaderNames.CONNECTION, keepAlive ? HttpHeaderValues.KEEP_ALIVE : HttpHeaderValues.CLOSE);
 
-        if (checkIfClientCacheMatches(req, response, eTag, 0L)) {
+        boolean notModified = checkIfClientCacheMatches(req, response, eTag, 0L);
+        // In-memory content can change without a file the client can see changing, so always revalidate
+        response.headers().set(HttpHeaderNames.CACHE_CONTROL, "private, no-cache, no-transform");
+
+        if (notModified) {
             ctx.write(response);
             ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
             if (!keepAlive) {
