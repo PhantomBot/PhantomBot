@@ -647,7 +647,9 @@
                 if (cmds[idx].indexOf(' ') !== -1) {
                     continue;
                 }
-                if ($.permCom(sender, cmds[idx], '') === 0) {
+                if (!$.inidb.exists('disabledCommands', cmds[idx])
+                        && !$.inidb.exists('hiddenCommands', cmds[idx])
+                        && $.permCom(sender, cmds[idx], '') === 0) {
                     cmdList.push('!' + cmds[idx]);
                 }
             }
