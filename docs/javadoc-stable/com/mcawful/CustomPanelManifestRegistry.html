@@ -82,9 +82,12 @@ loadScripts(document, 'script');</script>
  can resolve INIDB tables and Rhino <code>scriptPath</code> values to a stock panel section (<code>games</code>,
  <code>extra</code>, etc.) without hard-coding community module names.
 
- <p>Rebuilt whenever <a href="CustomPanelManifestCollector.html" title="class in com.mcawful"><code>CustomPanelManifestCollector</code></a> produces a new merged manifest. Nav-only
- modules that keep settings in bespoke panel JS (no manifest <code>settingsModal</code>) rely on the
- panel sending <code>section</code> from <code>nav.section</code> on websocket messages.</p></div>
+ <p>Rebuilt whenever <a href="CustomPanelManifestCollector.html" title="class in com.mcawful"><code>CustomPanelManifestCollector</code></a> produces a new merged manifest. Scripts
+ come from <code>cards[].scriptPath</code> and <code>nav[].scripts</code>; tables come from every
+ <code>settingsModal</code> field. Nav-only modules that keep settings in bespoke panel JS (no manifest
+ <code>settingsModal</code>) rely on the panel sending <code>section</code> from <code>nav.section</code> on
+ websocket DB and command messages, and must list the scripts they target with
+ <code>socket.wsEvent</code> in <code>nav.scripts</code>.</p></div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>mcawful</dd>

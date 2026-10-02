@@ -50,6 +50,16 @@
     };
 
     /**
+     * Tags whose whole subtree is dropped rather than unwrapped, so script or style source
+     * never leaks into the dialog as visible prose.
+     *
+     * @type {Object<string, boolean>}
+     */
+    const PB_DETAILS_HTML_DROP_TAGS = {
+        SCRIPT: true, STYLE: true, IFRAME: true, OBJECT: true, EMBED: true, NOSCRIPT: true, TEMPLATE: true
+    };
+
+    /**
      * Validates and normalizes an {@code <a href>} attribute. Allowed schemes:
      * {@code http(s)://}, {@code mailto:}, fragment-only ({@code #anchor-id}). Everything
      * else (including {@code javascript:}, {@code data:}, {@code vbscript:}, relative paths)
@@ -92,13 +102,19 @@
      * @returns {string} sanitized HTML
      */
     function sanitizeDetailsModalHtml(html) {
-        const container = document.createElement('div');
-        container.innerHTML = html;
+        // Parse into an inert document: DOMParser output has scripting disabled and never
+        // loads resources, so e.g. <img onerror> cannot fire before the walk below strips it
+        // (assigning innerHTML on a detached <div> would let it fire).
+        const container = new DOMParser().parseFromString(html, 'text/html').body;
         const all = container.querySelectorAll('*');
         let i;
         for (i = all.length - 1; i >= 0; i--) {
             const el = all[i];
             const tag = el.tagName.toUpperCase();
+            if (PB_DETAILS_HTML_DROP_TAGS[tag]) {
+                el.parentNode.removeChild(el);
+                continue;
+            }
             if (!PB_DETAILS_HTML_TAGS[tag]) {
                 while (el.firstChild) {
                     el.parentNode.insertBefore(el.firstChild, el);

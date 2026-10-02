@@ -52,6 +52,7 @@
     };
     ns.PANEL_SETTINGS_SAVED_WS_ARG = ns.PANEL_SETTINGS_SAVED_WS_ARG || 'panel-settings-saved';
     ns.LOAD_TIMEOUT_MS = ns.LOAD_TIMEOUT_MS || 8000;
+    ns.SAVE_TIMEOUT_MS = ns.SAVE_TIMEOUT_MS || 8000;
     ns.MANIFEST_FETCH_TIMEOUT_MS = ns.MANIFEST_FETCH_TIMEOUT_MS || 15000;
     ns.TEXTAREA_DEFAULT_MAX_LEN = ns.TEXTAREA_DEFAULT_MAX_LEN || 480;
     ns.DEFAULT_PERMISSION_GROUP_ID = ns.DEFAULT_PERMISSION_GROUP_ID != null ? ns.DEFAULT_PERMISSION_GROUP_ID : 7;
@@ -75,20 +76,15 @@
     }
 
     /**
-     * Panel-user access for a stock sidebar section (matches Settings → Panel Users).
+     * Access level a user's permission rows record for one section, without the config-user
+     * shortcut. Used where the read-only botlogin variants must not count as writers.
      *
+     * @param {Array<object>} rows {@code helpers.currentPanelUserData.permission}
      * @param {string} section manifest section key
      * @returns {'write'|'read'|'none'}
      */
-    ns.panelSectionAccess = function (section) {
-        if (typeof helpers === 'undefined' || !helpers.currentPanelUserData) {
-            return 'write';
-        }
-        if (helpers.currentPanelUserData.userType === 'CONFIG') {
-            return 'write';
-        }
+    function sectionRowAccess(rows, section) {
         const permKey = normalizePanelSectionName(section);
-        const rows = helpers.currentPanelUserData.permission;
         if (!Array.isArray(rows)) {
             return 'none';
         }
@@ -105,6 +101,22 @@
             return 'read';
         }
         return 'none';
+    }
+
+    /**
+     * Panel-user access for a stock sidebar section (matches Settings → Panel Users).
+     *
+     * @param {string} section manifest section key
+     * @returns {'write'|'read'|'none'}
+     */
+    ns.panelSectionAccess = function (section) {
+        if (typeof helpers === 'undefined' || !helpers.currentPanelUserData) {
+            return 'write';
+        }
+        if (helpers.currentPanelUserData.userType === 'CONFIG') {
+            return 'write';
+        }
+        return sectionRowAccess(helpers.currentPanelUserData.permission, section);
     };
 
     /**
@@ -155,6 +167,19 @@
             return false;
         }
         return true;
+    };
+
+    /**
+     * Panel websocket callback ids must be unique while a request is in flight: a request the
+     * bot never answers (watchdog timeout, permission denial) leaves its id registered in
+     * {@code index.js}, and {@code generateCallBack} refuses to register a second callback under
+     * the same id, so a retry would be sent without a completion handler.
+     *
+     * @param {string} prefix stable id prefix, already including the card id where relevant
+     * @returns {string}
+     */
+    ns.uniqueCallbackId = ns.uniqueCallbackId || function (prefix) {
+        return prefix + '_' + Date.now();
     };
 
     let stylesInjected = false;
@@ -339,6 +364,70 @@
     }
 
     /**
+     * Section {@code index.js} stamps on the next websocket message (see {@code sendToSocket}).
+     *
+     * @returns {string} empty until the first page has finished loading
+     */
+    function currentSocketSection() {
+        const cp = typeof $.currentPage === 'function' ? $.currentPage() : null;
+        return cp ? (cp.panelSection || cp.folder || '') : '';
+    }
+
+    /**
+     * Asks the bot to scan {@code scripts/custom} for newly-dropped modules so the UI we just
+     * rendered isn't pointing at scriptPaths Rhino doesn't know about yet. Idempotent and
+     * silent on the bot side; the per-file load log still lands in the bot console.
+     *
+     * <p>{@code socket.sendCommand} is gated server-side on Full Access for the section of the
+     * current page (the dashboard at login), and a denial produces a "Permissions error" toast
+     * plus an error line in the bot console. So the scan is only sent when the user's own
+     * permission rows grant Full Access on that section: the main panel account and Panel Users
+     * with Full Access qualify; the read-only botlogin variants and read-only Panel Users do not.
+     * Both the user record and the first page load arrive asynchronously after auth, so wait for
+     * them; {@code helpers.loadCurrentUserInfo} either fills the record or signs the page out.</p>
+     */
+    function scheduleCustomScriptScan() {
+        if (typeof helpers === 'undefined' || typeof helpers.promisePoll !== 'function') {
+            return;
+        }
+
+        helpers.promisePoll(function () {
+            return !!helpers.currentPanelUserData && currentSocketSection() !== '';
+        }, {pollIntervalMs: 250}).then(function () {
+            const section = currentSocketSection();
+
+            if (sectionRowAccess(helpers.currentPanelUserData.permission, section) !== 'write') {
+                helpers.log('Custom panel: skipping reloadcustom scan (no Full Access on section "' + section + '")', helpers.LOG_TYPE.DEBUG);
+                return;
+            }
+
+            if (typeof socket !== 'undefined' && socket && typeof socket.sendCommand === 'function') {
+                socket.sendCommand('pb_custom_panel_scan', 'reloadcustom silent', function () {});
+            }
+        });
+    }
+
+    /**
+     * Indexes the merged manifest data (empty when the fetch failed) and dispatches
+     * {@code pbCustomManifestsLoaded}, so sibling files and any card mount waiting on the event
+     * run exactly once per session whether or not the fetch succeeded.
+     *
+     * @param {Array<object>} navList canonical nav entries
+     * @param {Array<object>} cardList canonical card entries
+     */
+    function publishManifests(navList, cardList) {
+        indexCards(cardList);
+        ns.loaded = true;
+
+        if (typeof document !== 'undefined' && typeof CustomEvent === 'function') {
+            document.dispatchEvent(new CustomEvent(ns.EVENTS.MANIFESTS_LOADED, {
+                bubbles: true,
+                detail: {nav: navList, cards: cardList}
+            }));
+        }
+    }
+
+    /**
      * Public entry point invoked once from {@code js/index.js} after the panel websocket
      * finishes authenticating. Fetches the merged manifest JSON, indexes {@code cards}, and
      * dispatches {@code pbCustomManifestsLoaded} on {@code document} so sibling files (nav,
@@ -358,34 +447,16 @@
             timeout: ns.MANIFEST_FETCH_TIMEOUT_MS,
             success: function (data) {
                 if (!data) {
+                    publishManifests([], []);
                     return;
                 }
 
-                const navList = Array.isArray(data.nav) ? data.nav : [];
-                const cardList = Array.isArray(data.cards) ? data.cards : [];
-
-                indexCards(cardList);
-                ns.loaded = true;
-
-                if (typeof document !== 'undefined' && typeof CustomEvent === 'function') {
-                    document.dispatchEvent(new CustomEvent(ns.EVENTS.MANIFESTS_LOADED, {
-                        bubbles: true,
-                        detail: {nav: navList, cards: cardList}
-                    }));
-                }
-
-                // Ask the bot to scan scripts/custom for any newly-dropped modules
-                // so the panel UI we just rendered isn't pointing at scriptPaths
-                // Rhino doesn't know about yet. Idempotent + silent on the bot
-                // side; the per-file load log still lands in the bot console.
-                // No callback wiring needed: the panel doesn't display anything
-                // about the scan and the operator can verify via console.
-                if (typeof socket !== 'undefined' && socket && typeof socket.sendCommand === 'function') {
-                    socket.sendCommand('pb_custom_panel_scan', 'reloadcustom silent', function () {});
-                }
+                publishManifests(Array.isArray(data.nav) ? data.nav : [], Array.isArray(data.cards) ? data.cards : []);
+                scheduleCustomScriptScan();
             },
             error: function (xhr, status, err) {
                 helpers.log('Custom panel manifest not loaded (' + status + '): ' + (err || ''), helpers.LOG_TYPE.DEBUG);
+                publishManifests([], []);
             }
         });
     };

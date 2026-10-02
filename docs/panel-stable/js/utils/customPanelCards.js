@@ -314,7 +314,7 @@
             keys.push(c.scriptPath);
         });
 
-        socket.getDBValues('pb_custom_cards_get_modules', {tables: tables, keys: keys}, true, function (results) {
+        socket.getDBValues(ns.uniqueCallbackId('pb_custom_cards_get_modules'), {tables: tables, keys: keys}, true, function (results) {
             if (!results) {
                 return;
             }
@@ -338,8 +338,10 @@
      * {@code Community modules} divider. Adds {@code pb-custom-cards-mount} to the mount
      * (expected to be a Bootstrap {@code .row}) so injected CSS can use flexbox for
      * equal-height cards. Page fragments (e.g. {@code games.html}) call this after their
-     * HTML is in the DOM. No-op when the mount selector is invalid or missing, when the
-     * namespace isn't ready yet, or when there are no cards for that section.
+     * HTML is in the DOM. No-op when the mount selector is invalid or missing, or when there
+     * are no cards for that section. If the manifest fetch is still in flight (the page was
+     * opened right after login), rendering is deferred until {@code pbCustomManifestsLoaded}
+     * fires, provided the mount is still on screen by then.
      *
      * @param {string} section the canonical section key (e.g. {@code "games"})
      * @param {string} mountSelector the canonical {@code "#pb-panel-<id>-custom-cards"} selector
@@ -351,6 +353,16 @@
         const $mount = $(mountSelector);
 
         if ($mount.length === 0) {
+            return;
+        }
+
+        if (!ns.loaded && ns.EVENTS) {
+            const mountEl = $mount[0];
+            document.addEventListener(ns.EVENTS.MANIFESTS_LOADED, function () {
+                if (document.contains(mountEl)) {
+                    window.injectCustomCards(section, mountSelector);
+                }
+            }, {once: true});
             return;
         }
 
@@ -388,9 +400,9 @@
             wireReadOnlyDenials($mount, sectionKey);
         }
         wireCardDetails($mount);
-        if (canWrite) {
-            loadInitialCardStates($mount, cards);
-        }
+        // Always sync toggle state: the modules table is readable by read-only Panel Users, and
+        // without this they would see every module as enabled regardless of its real state.
+        loadInitialCardStates($mount, cards);
         if (typeof $.fn.tooltip === 'function') {
             $mount.find('[data-toggle="tooltip"]').tooltip({container: 'body'});
         }
