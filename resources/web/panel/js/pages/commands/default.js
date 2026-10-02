@@ -57,19 +57,19 @@ $(function () {
             removeKeys.push(name);
         }
         const wsUpdate = function () {
-            socket.wsEvent('command_disabled_update_ws', './core/commandRegister.js', null,
+            socket.wsEvent('command_disabled_update_ws_' + name, './core/commandRegister.js', null,
                     [disabled ? 'disable' : 'enable', name], callback);
         };
         const remove = function (callback) {
             if (removeTables.length > 0) {
-                socket.removeDBValues('default_command_visibility_remove', {tables: removeTables, keys: removeKeys}, callback);
+                socket.removeDBValues('default_command_visibility_remove_' + name, {tables: removeTables, keys: removeKeys}, callback);
             } else {
                 callback();
             }
         };
         const add = function (callback) {
             if (addTables.length > 0) {
-                socket.updateDBValues('default_command_visibility_update', {tables: addTables, keys: addKeys, values: addValues}, callback);
+                socket.updateDBValues('default_command_visibility_update_' + name, {tables: addTables, keys: addKeys, values: addValues}, callback);
             } else {
                 callback();
             }
@@ -122,7 +122,7 @@ $(function () {
                     'class': 'icon fa fa-check'
                 })).append($('<label/>', {
                     'text': ''
-                }))).html(),
+                }))).prop('outerHTML'),
                 '!' + permcomResults[i].key,
                 helpers.getGroupNameById(permcomResults[i].value),
                 $('<div/>', {
@@ -181,10 +181,12 @@ $(function () {
                     'searching': true,
                     'autoWidth': false,
                     'data': tableData,
+                    'order': [[1, 'asc']],
                     'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                     'columnDefs': [
                         {'className': 'default-table-large', 'orderable': false, 'targets': [3, 4]},
-                        {'width': '35%', 'targets': 1}
+                        {'width': '35%', 'targets': 1},
+                        {'width': '5%', 'targets': 0}
                     ],
                     'columns': [
                         {'title': '<div class="pretty p-icon" style="margin-right: 0;"><input type="checkbox" id="selectAllCommands"><div class="state p-default"><i class="icon fa fa-check"></i><label></label></div></div>', 'orderable': false, 'defaultContent': ''},
@@ -249,7 +251,7 @@ $(function () {
                     
                     let processed = 0;
                     commandsToProcess.forEach(cmd => {
-                        socket.getDBValues('default_command_bulk_edit', {
+                        socket.getDBValues('default_command_bulk_edit_' + cmd, {
                             tables: ['command', 'disabledCommands', 'hiddenCommands'],
                             keys: [cmd, cmd, cmd]
                         }, function (e) {

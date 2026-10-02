@@ -56,14 +56,14 @@ $(function () {
         }
         const remove = function (callback) {
             if (removeTables.length > 0) {
-                socket.removeDBValues('custom_command_visibility_remove', {tables: removeTables, keys: removeKeys}, callback);
+                socket.removeDBValues('custom_command_visibility_remove_' + name, {tables: removeTables, keys: removeKeys}, callback);
             } else {
                 callback();
             }
         };
         const add = function (callback) {
             if (addTables.length > 0) {
-                socket.updateDBValues('custom_command_visibility_update', {tables: addTables, keys: addKeys, values: addValues}, callback);
+                socket.updateDBValues('custom_command_visibility_update_' + name, {tables: addTables, keys: addKeys, values: addValues}, callback);
             } else {
                 callback();
             }
@@ -100,6 +100,19 @@ $(function () {
             }
             for (let command of commands) {
                 tableData.push([
+                    $('<div/>', {
+                        'class': 'pretty p-icon'
+                    }).append($('<input/>', {
+                        'class': 'command-select-checkbox',
+                        'type': 'checkbox',
+                        'value': command.key
+                    })).append($('<div/>', {
+                        'class': 'state p-default'
+                    }).append($('<i/>', {
+                        'class': 'icon fa fa-check'
+                    })).append($('<label/>', {
+                        'text': ''
+                    }))).prop('outerHTML'),
                     '!' + command.key,
                     command.value,
                     perms[command.key],
@@ -157,12 +170,15 @@ $(function () {
                 'searching': true,
                 'autoWidth': false,
                 'data': tableData,
+                'order': [[1, 'asc']],
                 'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                 'columnDefs': [
-                    {'className': 'default-table', 'orderable': false, 'targets': [3, 4]},
-                    {'width': '15%', 'targets': 0}
+                    {'className': 'default-table', 'orderable': false, 'targets': [4, 5]},
+                    {'width': '30%', 'targets': 2},
+                    {'width': '5%', 'targets': 0}
                 ],
                 'columns': [
+                    {'title': '<div class="pretty p-icon" style="margin-right: 0;"><input type="checkbox" id="selectAllCommands"><div class="state p-default"><i class="icon fa fa-check"></i><label></label></div></div>', 'orderable': false, 'defaultContent': ''},
                     {'title': 'Command'},
                     {'title': 'Response'},
                     {'title': 'Permissions'},
@@ -225,7 +241,7 @@ $(function () {
                     
                     let processed = 0;
                     commandsToProcess.forEach(cmd => {
-                        socket.getDBValues('custom_command_bulk_edit', {
+                        socket.getDBValues('custom_command_bulk_edit_' + cmd, {
                             tables: ['command', 'disabledCommands', 'hiddenCommands'],
                             keys: [cmd, cmd, cmd]
                         }, function (e) {

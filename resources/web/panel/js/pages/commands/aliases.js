@@ -57,14 +57,14 @@ $(function () {
         }
         const remove = function (callback) {
             if (removeTables.length > 0) {
-                socket.removeDBValues('alias_visibility_remove', {tables: removeTables, keys: removeKeys}, callback);
+                socket.removeDBValues('alias_visibility_remove_' + name, {tables: removeTables, keys: removeKeys}, callback);
             } else {
                 callback();
             }
         };
         const add = function (callback) {
             if (addTables.length > 0) {
-                socket.updateDBValues('alias_visibility_update', {tables: addTables, keys: addKeys, values: addValues}, callback);
+                socket.updateDBValues('alias_visibility_update_' + name, {tables: addTables, keys: addKeys, values: addValues}, callback);
             } else {
                 callback();
             }
@@ -109,7 +109,7 @@ $(function () {
                         'class': 'icon fa fa-check'
                     })).append($('<label/>', {
                         'text': ''
-                    }))).html(),
+                    }))).prop('outerHTML'),
                     '!' + alias.key,
                     '!' + alias.value,
                     $('<div/>', {
@@ -168,10 +168,12 @@ $(function () {
                 'searching': true,
                 'autoWidth': false,
                 'data': tableData,
+                'order': [[1, 'asc']],
                 'lengthMenu': [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': [3, 4]},
-                    {'width': '35%', 'targets': 1}
+                    {'width': '35%', 'targets': 1},
+                    {'width': '5%', 'targets': 0}
                 ],
                 'columns': [
                     {'title': '<div class="pretty p-icon" style="margin-right: 0;"><input type="checkbox" id="selectAllCommands"><div class="state p-default"><i class="icon fa fa-check"></i><label></label></div></div>', 'orderable': false, 'defaultContent': ''},
@@ -236,7 +238,7 @@ $(function () {
                 
                 let processed = 0;
                 commandsToProcess.forEach(alias => {
-                    socket.getDBValues('alias_bulk_edit', {
+                    socket.getDBValues('alias_bulk_edit_' + alias, {
                         tables: ['aliases', 'disabledCommands', 'hiddenCommands'],
                         keys: [alias, alias, alias]
                     }, function (e) {
