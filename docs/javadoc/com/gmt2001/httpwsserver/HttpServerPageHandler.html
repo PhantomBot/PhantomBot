@@ -229,7 +229,8 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eTag)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Sends in-memory content using the same conditional caching headers as <a href="#sendFile(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,java.nio.file.Path)"><code>sendFile(io.netty.channel.ChannelHandlerContext, io.netty.handler.codec.http.FullHttpRequest, java.nio.file.Path)</code></a>,
- with a caller-supplied strong <code>ETag</code> instead of file size / last-modified.</div>
+ with a caller-supplied strong <code>ETag</code> instead of file size / last-modified, and
+ <code>no-cache</code> so the client revalidates on every request.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#sendFile(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,java.nio.file.Path)" class="member-name-link">sendFile</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
@@ -507,7 +508,8 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileNameOrType,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eTag)</span></div>
 <div class="block">Sends in-memory content using the same conditional caching headers as <a href="#sendFile(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,java.nio.file.Path)"><code>sendFile(io.netty.channel.ChannelHandlerContext, io.netty.handler.codec.http.FullHttpRequest, java.nio.file.Path)</code></a>,
- with a caller-supplied strong <code>ETag</code> instead of file size / last-modified.</div>
+ with a caller-supplied strong <code>ETag</code> instead of file size / last-modified, and
+ <code>no-cache</code> so the client revalidates on every request.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> of the session</dd>
