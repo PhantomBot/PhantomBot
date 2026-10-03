@@ -258,6 +258,7 @@ public final class PanelUserHandler {
                     "incoming_raids")),
             Map.entry("keywords & emotes", List.of(
                     "keywords",
+                    "keyword_emotes",
                     "coolkey")),
             Map.entry("loyalty", List.of(
                     "channelpointssettings",
@@ -283,7 +284,9 @@ public final class PanelUserHandler {
                     "modules",
                     "cooldownsettings",
                     "settings")),
-            Map.entry("stream overlay", List.of()),
+            Map.entry("stream overlay", List.of(
+                "overlay"
+            )),
             Map.entry("timers", List.of(
                     "notices")),
             Map.entry("youtube player", List.of()));
