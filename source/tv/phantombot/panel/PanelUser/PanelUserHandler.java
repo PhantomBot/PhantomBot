@@ -105,6 +105,8 @@ public final class PanelUserHandler {
             Map.entry("dashboard", List.of(
                     "./core/panelhandler.js")),
             Map.entry("discord", List.of(
+                    "./discord/commands/customcommands.js",
+                    "./discord/core/moderation.js",
                     "./core/logging.js",
                     "./discord/commands/customCommands",
                     "./discord/core/commandcooldown.js",
@@ -162,6 +164,7 @@ public final class PanelUserHandler {
             Map.entry("quotes", List.of("./systems/quotesystem.js")),
             Map.entry("ranking", List.of("./systems/rankssystem.js")),
             Map.entry("settings", List.of(
+                    "./systems/ranksystem.js",
                     "./core/corecommands.js",
                     "./discord/core/commandcooldown.js",
                     "./core/commandcooldown.js",
@@ -176,9 +179,24 @@ public final class PanelUserHandler {
      * @implNote All section and table names MUST be lowercase in this variable
      */
     private static final Map<String, List<String>> PANEL_SECTION_TABLES = Map.ofEntries(
-            Map.entry("alerts", List.of()),
-            Map.entry("audio", List.of()),
+            Map.entry("alerts", List.of(
+                    "greeting",
+                    "greetingsettings",
+                    "subscribehandler",
+                    "bitssettings",
+                    "clipssettings",
+                    "raidsettings",
+                    "welcome",
+                    "welcome_disabled_users",
+                    "donations",
+                    "tipeeestreamhandler",
+                    "streamelementshandler")),
+            Map.entry("audio", List.of(
+                    "audiocommands",
+                    "audio_hooks")),
             Map.entry("commands", List.of(
+                    "externalcommands",
+                    "commandrestrictions",
                     "disabledcommands",
                     "hiddencommands",
                     "command",
@@ -188,31 +206,83 @@ public final class PanelUserHandler {
                     "pricecom",
                     "paycom",
                     "commandtoken")),
-            Map.entry("dashboard", List.of()),
-            Map.entry("discord", List.of()),
-            Map.entry("extra", List.of()),
+            Map.entry("dashboard", List.of(
+                    "paneldata")),
+            Map.entry("discord", List.of(
+                    "discordcooldownsettings",
+                    "discordcooldown",
+                    "discordaliascom",
+                    "discordkeywords",
+                    "discordpermcom",
+                    "discordcommands",
+                    "discordpricecom",
+                    "discordsettings",
+                    "discordpermsobj",
+                    "discordchannelcom",
+                    "discordgambling")),
+            Map.entry("extra", List.of(
+                    "queue",
+                    "queuesettings",
+                    "dualstreamcommand",
+                    "bettingpanel",
+                    "deaths",
+                    "pollvotes",
+                    "pollpanel",
+                    "bettingsettings",
+                    "commercialsettings",
+                    "bettingvotes",
+                    "highlights")),
             Map.entry("games", List.of(
+                    "roulette",
                     "adventuresettings",
                     "slotmachine",
                     "slotmachineemotes",
                     "rollprizes",
                     "gambling",
                     "randomsettings")),
-            Map.entry("giveaways", List.of()),
-            Map.entry("history", List.of()),
+            Map.entry("giveaways", List.of(
+                    "rafflelist",
+                    "auctionsettings",
+                    "trafflestate",
+                    "rafflestate",
+                    "traffleresults",
+                    "trafflesettings",
+                    "ticketslist",
+                    "auctionresults",
+                    "raffleresults",
+                    "rafflesettings")),
+            Map.entry("history", List.of(
+                    "clipit",
+                    "followeddate",
+                    "outgoing_raids",
+                    "incoming_raids")),
             Map.entry("keywords & emotes", List.of(
                     "keywords",
                     "coolkey")),
-            Map.entry("loyalty", List.of()),
+            Map.entry("loyalty", List.of(
+                    "channelpointssettings",
+                    "pointsettings",
+                    "grouppoints",
+                    "grouppointsoffline",
+                    "points",
+                    "time",
+                    "timesettings")),
             Map.entry("moderation", List.of(
                     "blacklist",
                     "whitelist",
                     "chatmoderator")),
-            Map.entry("permissions", List.of()),
+            Map.entry("permissions", List.of(
+                    "groups",
+                    "group")),
             Map.entry("quotes", List.of(
                     "quotes")),
-            Map.entry("ranking", List.of()),
-            Map.entry("settings", List.of()),
+            Map.entry("ranking", List.of(
+                    "viewerranks",
+                    "ranksmapping")),
+            Map.entry("settings", List.of(
+                    "modules",
+                    "cooldownsettings",
+                    "settings")),
             Map.entry("stream overlay", List.of()),
             Map.entry("timers", List.of(
                     "notices")),
