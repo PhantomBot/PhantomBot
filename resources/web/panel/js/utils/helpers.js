@@ -1580,6 +1580,11 @@ $(function () {
     };
 
     helpers.getPanelUserNameFromCookie = function () {
+        // A passkey login has no readable cookie, the login page stores the username instead
+        if (window.sessionStorage.getItem('panelUser') !== null) {
+            return window.sessionStorage.getItem('panelUser');
+        }
+
         let b64 = helpers.getCookieField("panellogin");
         if (b64 === undefined) {
             return "Phantombot";
@@ -1590,10 +1595,21 @@ $(function () {
     };
 
     helpers.signOut = function () {
+        const isPasskeySession = window.sessionStorage.getItem('panelUser') !== null,
+            redirect = function () {
+                window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
+            };
+
         toastr.info('Signing out...', '', {timeOut: 0});
         socket.close();
         window.logoutCookie();
-        window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
+
+        if (isPasskeySession) {
+            // Only the bot can end a passkey session and remove its cookie
+            fetch('/panel/login/passkey/logout', {method: 'POST'}).finally(redirect);
+        } else {
+            redirect();
+        }
     };
 
     helpers.getDateStringFromDate = function (date) {

@@ -99,6 +99,12 @@
                             <input type="submit" id="login-button" class="btn btn-primary btn-block btn-flat" value="Login">
                         </div>
                     </div>
+
+                    <div class="row hide" id="passkey-row" style="margin-top: 10px;">
+                        <div class="col-xs-12">
+                            <button type="button" id="passkey-button" class="btn btn-default btn-block btn-flat">Sign in with a passkey</button>
+                        </div>
+                    </div>
                 </form>
                 <!-- this could link to a how-to reset the password guide -->
                 <!-- <a href="#">Unable to login?</a><br> -->
@@ -115,6 +121,7 @@
         <!-- Crypto-JS -->
         <script src="../vendors/crypto-js/crypto-js-4.1.1.min.js"></script>
         <script src="/common/js/session.js"></script>
+        <script src="/common/js/passkey.js"></script>
         <script>
             let isLocalBot = false;
             let hasAltPanelVersion = false;
@@ -210,9 +217,93 @@
                         window.sessionStorage.setItem('webauth', webauth);
                         window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/' + age);
                         document.cookie = window.sessionStorage.getItem('cookie');
-                        doKickback(window.localStorage.getItem('isStable'));
+                        if (isLocalBot) {
+                            // End any passkey session, so the bot does not prefer it over this login
+                            fetch('/panel/login/passkey/logout', {method: 'POST'}).finally(function () {
+                                doKickback(window.localStorage.getItem('isStable'));
+                            });
+                        } else {
+                            doKickback(window.localStorage.getItem('isStable'));
+                        }
                     }
                 };
+            }
+
+            /**
+             * Enters the panel after the bot has started a passkey session
+             *
+             * The session lives in a cookie that scripts can not read, so only the username is kept
+             *
+             * @param {String} username The user who signed in
+             */
+            function finishPasskeyLogin(username) {
+                window.logoutCookie();
+                window.localStorage.setItem('bothostname', $('#hostname').val());
+                window.localStorage.setItem('botport', $('#port').val());
+                history.pushState({}, 'PhantomBot | Log in | Success');
+                window.sessionStorage.setItem('webauth', 'session');
+                window.sessionStorage.setItem('panelUser', username);
+                doKickback(window.localStorage.getItem('isStable'));
+            }
+
+            /**
+             * Signs in with a passkey that was added from the panel
+             */
+            function passkeyLogin() {
+                $('#error-box').addClass('hide');
+                $('#success-box').addClass('hide');
+                $('#alert-br').addClass('hide');
+
+                fetch('/panel/login/passkey/options', {method: 'POST'}).then(function (res) {
+                    return res.json();
+                }).then(function (options) {
+                    return window.passkey.get(options);
+                }).then(function (credential) {
+                    credential.remember = $('#remember').val();
+
+                    return fetch('/panel/login/passkey/verify', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(credential)
+                    });
+                }).then(function (res) {
+                    if (!res.ok) {
+                        throw new Error('Passkey sign-in failed. The passkey may have been removed from the panel');
+                    }
+
+                    return res.json();
+                }).then(function (res) {
+                    finishPasskeyLogin(res.username);
+                }).catch(function (e) {
+                    $('#error-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#error-box').text(e.message);
+                });
+            }
+
+            /**
+             * Enters the panel without asking again if a passkey session is still active, such as in a new tab
+             *
+             * Other pages do not accept passkey sessions, so those are left to the password login
+             */
+            function resumePasskeySession() {
+                let kickback = new URLSearchParams(document.location.search.substring(1)).get('kickback');
+
+                if ((kickback !== null && kickback.length > 0 && !decodeURIComponent(kickback).startsWith('/panel'))
+                        || (window.sessionStorage.getItem('/panel/login#remember') !== null && parseInt(window.sessionStorage.getItem('/panel/login#remember')) >= Date.now())) {
+                    return;
+                }
+
+                fetch('/panel/login/passkey/session').then(function (res) {
+                    return res.json();
+                }).then(function (res) {
+                    if (res.authenticated === true) {
+                        window.sessionStorage.setItem('/panel/login#remember', (Date.now() + 10000));
+                        finishPasskeyLogin(res.username);
+                    }
+                }).catch(function () {
+                    // No session, the login form is already showing
+                });
             }
 
             function login() {
@@ -460,6 +551,13 @@
 
                 Promise.all([p1, p2]).then(() => {
                     checkAlreadyLoggedIn();
+                    if (isLocalBot) {
+                        resumePasskeySession();
+                        if (window.passkey.isSupported()) {
+                            $('#passkey-row').removeClass('hide');
+                            $('#passkey-button').on('click', passkeyLogin);
+                        }
+                    }
                     if (authExpired) {
                         $('#error-box').removeClass('hide');
                         $('#alert-br').removeClass('hide');

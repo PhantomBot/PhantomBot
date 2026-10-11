@@ -787,6 +787,13 @@ $(function () {
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
                 if (message.authresult === 'false') {
+                    // A passkey session that has ended can not be recovered here, so return to the login page.
+                    if (window.sessionStorage.getItem('panelUser') !== null) {
+                        window.logoutCookie();
+                        window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
+                        return;
+                    }
+
                     helpers.logError('Failed to auth with the socket.', helpers.LOG_TYPE.FORCE);
                     toastr.error('Failed to auth with the socket.', '', {timeOut: 0});
                     webSocket.close();
