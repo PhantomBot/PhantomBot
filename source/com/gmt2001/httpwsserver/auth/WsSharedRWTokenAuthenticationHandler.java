@@ -17,7 +17,9 @@
 package com.gmt2001.httpwsserver.auth;
 
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
+import com.mcawful.PanelSessionManager;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
@@ -72,6 +74,14 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      * Represents the {@code ATTR_AUTH_USER} attribute
      */
     public static final AttributeKey<PanelUser> ATTR_AUTH_USER = AttributeKey.valueOf("authUser");
+    /**
+     * Represents the {@code ATTR_ORIGIN} attribute, the {@code Origin} header sent by the browser during the handshake
+     */
+    public static final AttributeKey<String> ATTR_ORIGIN = AttributeKey.valueOf("origin");
+    /**
+     * Represents the {@code ATTR_SESSION} attribute, the passkey session that authenticated the connection, if any
+     */
+    private static final AttributeKey<PanelSessionManager.Session> ATTR_SESSION = AttributeKey.valueOf("panelSession");
 
     /**
      * Constructor
@@ -147,7 +157,8 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         ctx.channel().attr(ATTR_AUTH_USER).setIfAbsent(null);
 
         if (ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_SENT_AUTH_REPLY).get()) {
-            if (ctx.channel().attr(ATTR_AUTH_USER).get() != null && !ctx.channel().attr(ATTR_AUTH_USER).get().isEnabled()) {
+            if ((ctx.channel().attr(ATTR_AUTH_USER).get() != null && !ctx.channel().attr(ATTR_AUTH_USER).get().isEnabled())
+                    || (ctx.channel().attr(ATTR_SESSION).get() != null && !ctx.channel().attr(ATTR_SESSION).get().isValid())) {
                 this.invalidateAuthorization(ctx, frame);
                 com.gmt2001.Console.debug.println("Invalidated");
                 return false;
@@ -243,6 +254,23 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      */
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
+        ctx.channel().attr(ATTR_ORIGIN).set(headers.get(HttpHeaderNames.ORIGIN));
+
+        PanelSessionManager.Session session = this.allowPaneluser ? PanelSessionManager.getSession(headers) : null;
+
+        if (session != null) {
+            // A session only authenticates the page it was started from, and never falls back to the other methods
+            PanelUser user = session.getUser();
+            if (user != null && session.origin().equals(headers.get(HttpHeaderNames.ORIGIN))) {
+                ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
+                ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                ctx.channel().attr(ATTR_SESSION).set(session);
+                return true;
+            }
+
+            return false;
+        }
+
         if (this.allowPaneluser && PhantomBot.instance().getHTTPPanelAndYTHandler().getAuthHandler().isAuthorized(ctx, headers)) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
             com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));

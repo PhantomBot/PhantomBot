@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.security.Digest;
+import com.mcawful.PanelSessionManager;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -186,6 +187,17 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
     }
 
     private boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
+        // A session started by signing in with a passkey is used ahead of the panellogin cookie
+        if (this.allowPaneluser && !headers.contains(HttpHeaderNames.AUTHORIZATION)) {
+            PanelSessionManager.Session session = PanelSessionManager.getSession(headers);
+            PanelUser sessionUser = session == null ? null : session.getUser();
+
+            if (sessionUser != null && PanelUserHandler.isUriAllowed(sessionUser, requestUri)) {
+                ctx.channel().attr(ATTR_AUTH_USER).set(sessionUser);
+                return true;
+            }
+        }
+
         String auth = getAuthorizationString(headers);
 
         if (auth != null) {

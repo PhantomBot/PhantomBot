@@ -25,6 +25,7 @@ import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import com.gmt2001.security.Digest;
+import com.mcawful.PanelPasskeyHandler;
 import com.scaniatv.LangFileUpdater;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -1084,6 +1085,8 @@ public class WsPanelHandler implements WsFrameHandler {
             PanelUserHandler.getPermissionsJSONObject(jsonObject);
         } else if (jso.has("sections")) {
             PanelUserHandler.getAllPanelSectionsJSONObject(jsonObject);
+        } else if (jso.has("passkey")) {
+            PanelPasskeyHandler.handleWs(ctx, user, jso.getJSONObject("passkey"), jsonObject);
         } else {
             PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.Error;
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
