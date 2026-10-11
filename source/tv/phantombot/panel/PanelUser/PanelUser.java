@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jooq.conf.SettingsTools;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -507,6 +508,8 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      */
     void changeUsername(String newUsername) {
         try {
+            // A user loaded from the database is attached to the default configuration, which silently ignores a changed primary key
+            this.attach(this.configuration().derive(SettingsTools.clone(this.configuration().settings()).withUpdatablePrimaryKeys(true)));
             this.setUsername(newUsername);
             this.doupdate();
         } catch (Exception ex) {
