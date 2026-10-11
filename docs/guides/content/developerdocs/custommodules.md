@@ -272,4 +272,4 @@ Note the two exceptions: custom **language** and **Discord** scripts sit one lev
 
 The entrypoint **`mkdir`s** the data subdirectories on first boot so an empty bind-mount starts cleanly. Edit manifests and scripts on the **host** volume; no image rebuild is required.
 
-In Docker builds the manifest collector scans **`web/panel/custom`** both under the install directory and under **`PhantomBot_data`**. With the symlinks above those are the same files, and duplicate entries are dropped by id.
+In Docker builds the manifest collector also looks for **`web/panel/custom`** under **`PhantomBot_data`**, but skips it when it resolves to the same directory as the install path (as it does with the symlinks above), so each manifest is read once.
