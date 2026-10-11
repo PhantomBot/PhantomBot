@@ -272,14 +272,34 @@ public final class CustomPanelManifestCollector {
      * Returns the {@code web/panel/custom/} directories the collector should scan, in priority
      * order: bot execution directory first, Docker {@code _data} second (if applicable). Either
      * may be missing — callers must handle the empty list and individual missing roots.
+     *
+     * <p>In the official Docker image the execution-directory root is a symlink into the data
+     * volume, so the Docker root is only added when its real path differs; otherwise every
+     * manifest would be parsed, and every validation warning logged, twice per rebuild.</p>
      */
     private static List<Path> customRoots() {
         List<Path> roots = new ArrayList<>(2);
-        roots.add(Paths.get(Reflect.GetExecutionPath(), "web", "panel", "custom"));
+        Path execRoot = Paths.get(Reflect.GetExecutionPath(), "web", "panel", "custom");
+        roots.add(execRoot);
         if (RepoVersion.isDocker()) {
-            roots.add(Paths.get(PathValidator.getDockerPath(), "web", "panel", "custom"));
+            Path dockerRoot = Paths.get(PathValidator.getDockerPath(), "web", "panel", "custom");
+            if (!realPath(dockerRoot).equals(realPath(execRoot))) {
+                roots.add(dockerRoot);
+            }
         }
         return roots;
+    }
+
+    /**
+     * @param path directory that may be a symlink or may not exist yet
+     * @return the symlink-resolved path when it exists; otherwise the normalized absolute path
+     */
+    private static Path realPath(Path path) {
+        try {
+            return path.toRealPath();
+        } catch (IOException ex) {
+            return path.toAbsolutePath().normalize();
+        }
     }
 
     /**
