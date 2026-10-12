@@ -124,6 +124,7 @@
         <script src="/common/js/passkey.js"></script>
         <script>
             let isLocalBot = false;
+            let allowPasskey = false;
             let hasAltPanelVersion = false;
             let authExpired = false;
 
@@ -552,9 +553,27 @@
                     );
                 });
 
-                Promise.all([p1, p2]).then(() => {
+                let p3 = new Promise((resolve) => {
+                    $.ajax(
+                        {
+                            type: 'GET',
+                            url: window.location.protocol + '//' + window.location.hostname + (window.location.port.length > 0 ? ':' + window.location.port : '') + '/passkeycheck',
+                            dataType: 'text',
+                            success: function (allowed) {
+                                if (allowed === 'true') {
+                                    allowPasskey = true;
+                                }
+                            },
+                            complete: function() {
+                                resolve();
+                            }
+                        }
+                    );
+                });
+
+                Promise.all([p1, p2, p3]).then(() => {
                     checkAlreadyLoggedIn();
-                    if (isLocalBot) {
+                    if (isLocalBot && allowPasskey) {
                         resumePasskeySession();
                         if (window.passkey !== undefined && window.passkey.isSupported()) {
                             $('#passkey-row').removeClass('hide');
