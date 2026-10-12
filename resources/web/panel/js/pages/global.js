@@ -245,6 +245,7 @@ $(function () {
 
     // the manage passkeys button.
     if (helpers.isLocalPanel() && window.passkey !== undefined && window.passkey.isSupported()) {
+        $('#user-passkey-row').removeClass('hide');
         $('#user-passkey-btn').on('click', function () {
             helpers.getModal('passkey-panelUser', 'Manage passkeys', 'Add passkey', $('<form/>', {
                 'role': 'form'

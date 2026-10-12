@@ -789,8 +789,9 @@ public final class PanelUserHandler {
         }
 
         try {
-            user.dodelete();
+            // Passkeys go first, so a failure leaves the user in place and nothing half done
             PanelPasskeyHandler.deletePasskeys(username);
+            user.dodelete();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             return PanelMessage.SaveError;
@@ -964,9 +965,10 @@ public final class PanelUserHandler {
         String password = user.generateNewPassword();
 
         try {
-            user.doupdate();
-            // A reset must lock out anyone who had access, so passkeys can not be left behind
+            // A reset must lock out anyone who had access, so passkeys can not be left behind. They go first, so a
+            // failure does not leave the user with a new password that was never shown
             PanelPasskeyHandler.deletePasskeys(username);
+            user.doupdate();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             return PanelMessage.SaveError;
