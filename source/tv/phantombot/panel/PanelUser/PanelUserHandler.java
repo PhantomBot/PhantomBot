@@ -940,8 +940,8 @@ public final class PanelUserHandler {
     }
 
     /**
-     * Resets a {@link PanelUser panel user's} password, removes their passkeys and
-     * ends their passkey sessions
+     * Resets a {@link PanelUser panel user's} password, removes their passkeys,
+     * ends their passkey sessions and retires their websocket token
      * <br />
      * <br />
      * Only existing and {@link PanelUser#canBeEdited() editable} {@link PanelUser
@@ -968,6 +968,8 @@ public final class PanelUserHandler {
             // A reset must lock out anyone who had access, so passkeys can not be left behind. They go first, so a
             // failure does not leave the user with a new password that was never shown
             PanelPasskeyHandler.deletePasskeys(username);
+            // The websocket token is a login of its own, a new one is issued at the next login
+            user.setToken(null);
             user.doupdate();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);

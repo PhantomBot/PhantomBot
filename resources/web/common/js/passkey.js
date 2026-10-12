@@ -57,7 +57,7 @@
      */
     function describe(e) {
         if (e.name === 'NotAllowedError') {
-            return new Error('The passkey prompt was canceled or timed out');
+            return new Error('The passkey prompt was canceled, timed out, or is not allowed on this address. Passkeys need a valid HTTPS certificate or http://localhost');
         } else if (e.name === 'InvalidStateError') {
             return new Error('This device already has a passkey for this user');
         } else if (e.name === 'SecurityError') {

@@ -41,6 +41,7 @@ import io.netty.util.AttributeKey;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
+import tv.phantombot.panel.PanelUser.PanelUserTable;
 
 /**
  * Passkey registration, management and sign-in for {@link PanelUser panel users}.
@@ -61,6 +62,10 @@ public final class PanelPasskeyHandler {
      * The longest name a passkey can be given
      */
     private static final int MAX_NAME_LENGTH = 64;
+    /**
+     * The longest origin that fits the column it is stored in
+     */
+    private static final int MAX_ORIGIN_LENGTH = 255;
     /**
      * The path the sign-in requests are served from
      */
@@ -97,7 +102,13 @@ public final class PanelPasskeyHandler {
         String action = request.optString("action");
 
         try {
-            if (!canUsePasskeys(user)) {
+            PanelUser current = PanelUser.LookupByUsername(user.getUsername());
+
+            // A connection stays open, with the user it loaded when it was opened, after that user is disabled or
+            // their password is reset. Whoever holds it could otherwise register a passkey and keep their access,
+            // so a token alone is not enough, and neither is a login that is no longer the stored one
+            if (!canUsePasskeys(user) || !Boolean.TRUE.equals(ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_HANDSHAKE_AUTH).get())
+                    || current == null || !current.isEnabled() || !current.getPassword().equals(user.getPassword())) {
                 throw new IllegalArgumentException("Passkeys are not available for this login");
             }
 
@@ -180,12 +191,14 @@ public final class PanelPasskeyHandler {
 
     /**
      * Moves all passkeys of a panel user to a new username and ends their sessions. Must be
-     * called when the user is renamed
+     * called when the user is renamed. Passkeys that were left under the new name are removed
+     * first, so the user does not inherit them
      *
      * @param username the user's current name
      * @param newUsername the user's new name
      */
     public static void renamePasskeys(String username, String newUsername) {
+        deletePasskeys(newUsername);
         Datastore2.instance().dslContext().update(PanelPasskeyTable.instance())
                 .set(PanelPasskeyTable.instance().USERNAME, newUsername)
                 .where(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(username)).execute();
@@ -281,10 +294,17 @@ public final class PanelPasskeyHandler {
      * @return the options; binary values are base64url encoded
      */
     private static JSONObject createRegistrationOptions(ChannelHandlerContext ctx, PanelUser user) {
+        String origin = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_ORIGIN).get();
+
+        // Refused here, before the device creates a passkey that could not be stored
+        if (origin != null && origin.length() > MAX_ORIGIN_LENGTH) {
+            throw new IllegalArgumentException("The address of this panel is too long to be used with passkeys");
+        }
+
         String challenge = PasskeyVerifier.createChallenge();
         // The origin is part of the user handle, because a device keeps one passkey per host and user handle and
         // would otherwise replace the passkey of another bot on the same host which has a user with the same name
-        String userHandle = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_ORIGIN).get() + "/" + user.getUsername().toLowerCase();
+        String userHandle = origin + "/" + user.getUsername().toLowerCase();
         JSONArray excludeCredentials = new JSONArray();
 
         for (PasskeyRecord passkey : Datastore2.instance().dslContext().fetch(PanelPasskeyTable.instance(),
@@ -395,13 +415,21 @@ public final class PanelPasskeyHandler {
 
     /**
      * Checks if a panel user can use passkeys. Of the logins from botlogin.txt only the main one can, because the
-     * websocket tokens of the others are handed out without a password and would let anyone register a passkey
+     * websocket tokens of the others are handed out without a password and would let anyone register a passkey.
+     * The main one can not either while a database user has the same name, because passkeys are stored by
+     * username and a passkey of that user would otherwise sign in as the main login
      *
      * @param user the {@link PanelUser}
      * @return {@code true} if the user can register passkeys and sign in with them
      */
     private static boolean canUsePasskeys(PanelUser user) {
-        return !user.isConfigUser() || user.getUsername().equalsIgnoreCase(CaselessProperties.instance().getProperty("paneluser", "panel"));
+        if (!user.isConfigUser()) {
+            return true;
+        }
+
+        return user.getUsername().equalsIgnoreCase(CaselessProperties.instance().getProperty("paneluser", "panel"))
+                && !Datastore2.instance().dslContext().fetchExists(PanelUserTable.instance(),
+                        PanelUserTable.instance().USERNAME.equalIgnoreCase(user.getUsername()));
     }
 
     /**

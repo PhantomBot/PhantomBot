@@ -286,7 +286,7 @@
             /**
              * Enters the panel without asking again if a passkey session is still active, such as in a new tab
              *
-             * Other pages do not accept passkey sessions, so those are left to the password login
+             * Only the panel is entered this way, the Bot Setup and OAuth pages always ask for the password
              */
             function resumePasskeySession() {
                 let kickback = new URLSearchParams(document.location.search.substring(1)).get('kickback');

@@ -24,7 +24,7 @@ Browsers only allow passkeys on addresses they consider secure. Passkeys are ava
 
 The self-signed certificate that the bot creates by default does **not** meet these requirements, because browsers show a warning for it. See **[Enable Twitch Embeds](guide=content/integrations/twitchembeds "##guide_link")** for the ways to give your bot a certificate that browsers accept.
 
-When the requirements are not met, the passkey buttons are hidden and the panel works as it always has.
+When the panel can tell that the requirements are not met, the passkey buttons are hidden and the panel works as it always has. A browser does not tell the panel about a certificate warning, so with the default self-signed certificate the buttons may still be shown, and using them fails with a message.
 
 ## Adding a Passkey
 
@@ -70,7 +70,7 @@ Users with permission to manage panel users can not see or add passkeys for some
 
 | Action | Effect on the user's passkeys |
 | --- | --- |
-| Reset password | All passkeys are removed and the user is signed out. Use this when an account may have been used by someone else |
+| Reset password | All passkeys are removed, the user is signed out, and their login token for the Remote Panel stops working for new connections. Use this when an account may have been used by someone else |
 | Disable | Passkeys are kept but can not be used to sign in until the user is enabled again, and the user is signed out |
 | Rename | Passkeys are kept and the user is signed out |
 | Delete | All passkeys are removed |
@@ -83,6 +83,8 @@ The passkeys of the login from _botlogin.txt_ can only be removed by that login,
 
 - _Sign in with a passkey_ or _Manage Passkeys_ is missing
   - Check the address against the **Requirements** above. The most common causes are opening the panel by IP address or using the default self-signed certificate
+- A message says the passkey prompt is not allowed on this address
+  - Your browser does not accept the certificate of the panel, which is the case for the default self-signed certificate. See the **Requirements** above
 - The prompt appears but signing in fails
   - The passkey may have been removed from the panel, or the user may be disabled. Sign in with the password and check _Manage Passkeys_
   - The panel may be open on a different address or port than the one the passkey was added on
