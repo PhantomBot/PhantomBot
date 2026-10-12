@@ -39,6 +39,7 @@ Temporary Items
 .apdisk
 bin/
 .vscode/
+.agents/
 
 # Files created by the bot inside resources folder
 resources/bannedUsers.bin
