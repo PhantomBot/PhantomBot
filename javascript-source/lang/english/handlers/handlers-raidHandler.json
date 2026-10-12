@@ -1,5 +1,5 @@
 {
-    "raidhandler.usage": "Usage: !raid [username] | !raid [toggle / lookup / setreward / setincomingmessage / setnewincomingmessage / setoutgoingmessage / setoutgoingmessagespam]",
+    "raidhandler.usage": "Usage: !raid [username] | !raid [toggle / toggleshoutout / lookup / setreward / setincomingmessage / setnewincomingmessage / setoutgoingmessage / setoutgoingmessagespam]",
     "raidhandler.toggle.enabled": "Raid alerts have successfully been enabled.",
     "raidhandler.toggle.disabled": "Raid alerts have successfully been disabled.",
     "raidhandler.reward.usage": "Usage: !raid setreward [amount]",
@@ -18,5 +18,7 @@
     "raidhandler.lookup.user": "$1 has raided this channel a total of $2 time(s). Their last raid was on $3 with $4 viewers.",
     "raidhandler.lookup.user.404": "$1 has never raided this channel.",
     "raidhandler.out.messageoffline.usage": "Usage: !raid setoutgoingofflinemessage [message]",
-    "raidhandler.out.messageoffline.set": "Successfully updated the outgoing raid offline warning message!"
+    "raidhandler.out.messageoffline.set": "Successfully updated the outgoing raid offline warning message!",
+    "raidhandler.shoutout.enabled": "The shoutout API will now be triggered for the raiding channel. NOTE: Limit of 1 shoutout per 2 minutes. Can not repeat the same channel within 1 hour.",
+    "raidhandler.shoutout.disabled": "The shoutout API will no longer be triggered for the raiding channel."
 }
