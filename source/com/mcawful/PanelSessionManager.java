@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.security.Digest;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
@@ -124,16 +125,21 @@ public final class PanelSessionManager {
     }
 
     /**
-     * Ends the session of a request, if it has one
+     * Ends the session of a request, if it has one and the request comes from the origin the user signed in on.
+     * Other sites must not be able to sign the user out
      *
      * @param headers the {@link HttpHeaders} of the request
+     * @return {@code true} if a session was ended
      */
-    public static void revokeSession(HttpHeaders headers) {
+    public static boolean revokeSession(HttpHeaders headers) {
         Session session = getSession(headers);
 
-        if (session != null) {
-            session.expires = 0L;
+        if (session == null || !session.origin.equals(headers.get(HttpHeaderNames.ORIGIN))) {
+            return false;
         }
+
+        session.expires = 0L;
+        return true;
     }
 
     /**

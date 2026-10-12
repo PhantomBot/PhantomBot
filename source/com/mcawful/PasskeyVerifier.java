@@ -70,9 +70,9 @@ public final class PasskeyVerifier {
      */
     public static final int MAX_AUTH_DATA = 2048;
     /**
-     * Largest accepted public key or signature, in bytes
+     * Largest accepted public key or signature, in bytes. A key of this size still fits the column it is stored in
      */
-    public static final int MAX_KEY = 1536;
+    public static final int MAX_KEY = 1500;
     /**
      * Largest credential ID allowed by WebAuthn, in bytes
      */
@@ -158,7 +158,13 @@ public final class PasskeyVerifier {
             throw new IllegalArgumentException("Missing or oversized value");
         }
 
-        return Base64.getUrlDecoder().decode(data);
+        byte[] decoded = Base64.getUrlDecoder().decode(data);
+
+        if (decoded.length > maxBytes) {
+            throw new IllegalArgumentException("Missing or oversized value");
+        }
+
+        return decoded;
     }
 
     /**

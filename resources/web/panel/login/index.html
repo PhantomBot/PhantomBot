@@ -215,6 +215,8 @@
                         }
                         history.pushState({}, "PhantomBot | Log in | Success");
                         window.sessionStorage.setItem('webauth', webauth);
+                        // A passkey login in this tab would otherwise still decide which user the panel loads
+                        window.sessionStorage.removeItem('panelUser');
                         window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/' + age);
                         document.cookie = window.sessionStorage.getItem('cookie');
                         if (isLocalBot) {
@@ -289,7 +291,7 @@
             function resumePasskeySession() {
                 let kickback = new URLSearchParams(document.location.search.substring(1)).get('kickback');
 
-                if ((kickback !== null && kickback.length > 0 && !decodeURIComponent(kickback).startsWith('/panel'))
+                if ((kickback !== null && kickback.length > 0 && !kickback.startsWith('/panel'))
                         || (window.sessionStorage.getItem('/panel/login#remember') !== null && parseInt(window.sessionStorage.getItem('/panel/login#remember')) >= Date.now())) {
                     return;
                 }
@@ -485,6 +487,7 @@
                               && (window.sessionStorage.getItem('/panel/login#remember') === null || parseInt(window.sessionStorage.getItem('/panel/login#remember')) < Date.now())) {
                                 window.sessionStorage.setItem('/panel/login#remember', (Date.now() + 10000));
                                 window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
+                                window.sessionStorage.removeItem('panelUser');
                                 window.sessionStorage.setItem('cookie', 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=300');
                                 history.pushState({}, "PhantomBot | Log in | Success");
                                 document.cookie = window.sessionStorage.getItem('cookie');
@@ -553,7 +556,7 @@
                     checkAlreadyLoggedIn();
                     if (isLocalBot) {
                         resumePasskeySession();
-                        if (window.passkey.isSupported()) {
+                        if (window.passkey !== undefined && window.passkey.isSupported()) {
                             $('#passkey-row').removeClass('hide');
                             $('#passkey-button').on('click', passkeyLogin);
                         }

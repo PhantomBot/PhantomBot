@@ -38,6 +38,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.AttributeKey;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
@@ -96,6 +97,10 @@ public final class PanelPasskeyHandler {
         String action = request.optString("action");
 
         try {
+            if (!canUsePasskeys(user)) {
+                throw new IllegalArgumentException("Passkeys are not available for this login");
+            }
+
             if (action.equals("options")) {
                 result = createRegistrationOptions(ctx, user);
             } else if (action.equals("register")) {
@@ -147,9 +152,11 @@ public final class PanelPasskeyHandler {
         } else if (path.equals(HTTP_PATH + "verify")) {
             res = login(req);
         } else if (path.equals(HTTP_PATH + "logout")) {
-            PanelSessionManager.revokeSession(req.headers());
             res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT);
-            res.headers().add(HttpHeaderNames.SET_COOKIE, PanelSessionManager.COOKIE + "=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
+
+            if (PanelSessionManager.revokeSession(req.headers())) {
+                res.headers().add(HttpHeaderNames.SET_COOKIE, PanelSessionManager.COOKIE + "=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
+            }
         } else {
             res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND);
         }
@@ -212,8 +219,8 @@ public final class PanelPasskeyHandler {
 
             PanelUser user = PanelUser.LookupByUsername(passkey.username());
 
-            if (user == null || !user.isEnabled()) {
-                throw new IllegalArgumentException("User does not exist or is disabled");
+            if (user == null || !user.isEnabled() || !canUsePasskeys(user)) {
+                throw new IllegalArgumentException("User does not exist, is disabled, or can not use passkeys");
             }
 
             if (!passkey.origin().equals(req.headers().get(HttpHeaderNames.ORIGIN))) {
@@ -275,6 +282,9 @@ public final class PanelPasskeyHandler {
      */
     private static JSONObject createRegistrationOptions(ChannelHandlerContext ctx, PanelUser user) {
         String challenge = PasskeyVerifier.createChallenge();
+        // The origin is part of the user handle, because a device keeps one passkey per host and user handle and
+        // would otherwise replace the passkey of another bot on the same host which has a user with the same name
+        String userHandle = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_ORIGIN).get() + "/" + user.getUsername().toLowerCase();
         JSONArray excludeCredentials = new JSONArray();
 
         for (PasskeyRecord passkey : Datastore2.instance().dslContext().fetch(PanelPasskeyTable.instance(),
@@ -288,7 +298,7 @@ public final class PanelPasskeyHandler {
                 .put("challenge", challenge)
                 .put("rp", new JSONObject().put("name", "PhantomBot"))
                 .put("user", new JSONObject()
-                        .put("id", PasskeyVerifier.encode(Digest.sha256(user.getUsername().toLowerCase().getBytes(StandardCharsets.UTF_8))))
+                        .put("id", PasskeyVerifier.encode(Digest.sha256(userHandle.getBytes(StandardCharsets.UTF_8))))
                         .put("name", user.getUsername())
                         .put("displayName", user.getUsername()))
                 .put("pubKeyCredParams", new JSONArray()
@@ -381,6 +391,17 @@ public final class PanelPasskeyHandler {
         }
 
         PanelSessionManager.revokePasskey(idHash);
+    }
+
+    /**
+     * Checks if a panel user can use passkeys. Of the logins from botlogin.txt only the main one can, because the
+     * websocket tokens of the others are handed out without a password and would let anyone register a passkey
+     *
+     * @param user the {@link PanelUser}
+     * @return {@code true} if the user can register passkeys and sign in with them
+     */
+    private static boolean canUsePasskeys(PanelUser user) {
+        return !user.isConfigUser() || user.getUsername().equalsIgnoreCase(CaselessProperties.instance().getProperty("paneluser", "panel"));
     }
 
     /**

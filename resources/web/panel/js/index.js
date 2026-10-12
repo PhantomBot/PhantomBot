@@ -787,10 +787,7 @@ $(function () {
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
                 if (message.authresult === 'false') {
-                    // A passkey session that has ended can not be recovered here, so return to the login page.
-                    if (window.sessionStorage.getItem('panelUser') !== null) {
-                        window.logoutCookie();
-                        window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
+                    if (helpers.leaveEndedPasskeySession()) {
                         return;
                     }
 

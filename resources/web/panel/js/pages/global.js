@@ -171,6 +171,13 @@ $(function () {
     // Loads the passkeys of the current user into the manage passkeys modal.
     const loadPasskeys = function () {
         socket.query('panelUserRO', 'passkey_list', {passkey: {action: 'list'}}, function (res) {
+            // Of the logins from botlogin.txt only the main one can use passkeys, the bot refuses the others
+            if (res.error !== undefined) {
+                toastr.error(res.error);
+                $('#passkey-panelUser').modal('hide');
+                return;
+            }
+
             const list = $('#user-passkey-list').empty();
 
             if (res.passkeys === undefined || res.passkeys.length === 0) {
@@ -194,7 +201,13 @@ $(function () {
                     'click': function () {
                         helpers.getConfirmDeleteModal('user-passkey-remove', 'Are you sure you want to remove the passkey "' + passkey.name + '"?', false,
                             'Passkey removed', function () {
-                                socket.query('panelUserRO', 'passkey_delete', {passkey: {action: 'delete', id: passkey.id}}, loadPasskeys, true);
+                                socket.query('panelUserRO', 'passkey_delete', {passkey: {action: 'delete', id: passkey.id}}, function (res) {
+                                    if (res.error !== undefined) {
+                                        toastr.error(res.error);
+                                    }
+
+                                    loadPasskeys();
+                                }, true);
                             });
                     }
                 })));
@@ -231,7 +244,7 @@ $(function () {
     };
 
     // the manage passkeys button.
-    if (helpers.isLocalPanel() && window.passkey.isSupported()) {
+    if (helpers.isLocalPanel() && window.passkey !== undefined && window.passkey.isSupported()) {
         $('#user-passkey-btn').on('click', function () {
             helpers.getModal('passkey-panelUser', 'Manage passkeys', 'Add passkey', $('<form/>', {
                 'role': 'form'

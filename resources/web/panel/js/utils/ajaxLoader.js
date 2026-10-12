@@ -74,12 +74,23 @@ $(function () {
             helpers.temp = {};
 
             window.updateCookie();
+            // Keep the request, so the address the bot answered from can be read after a redirect.
+            const request = $.ajaxSettings.xhr();
             // Load the page.
             $.ajax({
                 cache: false,
                 dataType: 'html',
                 url: 'pages/' + folder + '/' + page,
+                xhr: function () {
+                    return request;
+                },
                 success: function (data) {
+                    // The bot answers with the login page once a passkey session has ended.
+                    if (helpers.isPasskeySession() && new URL(request.responseURL, window.location.href).pathname.indexOf(window.location.pathname + 'login/') === 0) {
+                        helpers.leaveEndedPasskeySession();
+                        return;
+                    }
+
                     // Set the new page.
                     $('#page-content').html(data);
                     // Scroll to top.

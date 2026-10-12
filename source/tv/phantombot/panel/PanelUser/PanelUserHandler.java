@@ -30,6 +30,7 @@ import org.json.JSONStringer;
 
 import com.mcawful.CustomPanelManifestRegistry;
 import com.mcawful.PanelPasskeyHandler;
+import com.mcawful.PanelSessionManager;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.panel.WsPanelHandler;
@@ -754,6 +755,8 @@ public final class PanelUserHandler {
 
         String password;
         try {
+            // Passkeys can be left under a name that was used by a login from botlogin.txt, a new user must not inherit them
+            PanelPasskeyHandler.deletePasskeys(username);
             password = PanelUser.create(username, permissions, enabled, canManageUsers, canRestartBot);
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -899,6 +902,10 @@ public final class PanelUserHandler {
             // Only move the passkeys once the new name is really in use, or they would be left without an owner
             if (newUsername != null && !currentUsername.equals(newUsername) && PanelUser.UserExists(newUsername)) {
                 PanelPasskeyHandler.renamePasskeys(currentUsername, newUsername);
+            }
+
+            if (!enabled) {
+                PanelSessionManager.revokeUser(currentUsername);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);

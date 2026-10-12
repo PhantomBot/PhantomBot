@@ -1581,7 +1581,7 @@ $(function () {
 
     helpers.getPanelUserNameFromCookie = function () {
         // A passkey login has no readable cookie, the login page stores the username instead
-        if (window.sessionStorage.getItem('panelUser') !== null) {
+        if (helpers.isPasskeySession()) {
             return window.sessionStorage.getItem('panelUser');
         }
 
@@ -1594,8 +1594,32 @@ $(function () {
         return userpass.substring(0, colon);
     };
 
+    /**
+     * Checks if the panel was signed in with a passkey
+     *
+     * @returns {Boolean} true if it was
+     */
+    helpers.isPasskeySession = function () {
+        return window.sessionStorage.getItem('panelUser') !== null;
+    };
+
+    /**
+     * Returns to the login page if the panel was signed in with a passkey, because a passkey session that has ended can not be recovered here
+     *
+     * @returns {Boolean} true if the panel is leaving for the login page
+     */
+    helpers.leaveEndedPasskeySession = function () {
+        if (!helpers.isPasskeySession()) {
+            return false;
+        }
+
+        window.logoutCookie();
+        window.location = window.location.origin + window.location.pathname + 'login/#missingAuth=true';
+        return true;
+    };
+
     helpers.signOut = function () {
-        const isPasskeySession = window.sessionStorage.getItem('panelUser') !== null,
+        const isPasskeySession = helpers.isPasskeySession(),
             redirect = function () {
                 window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
             };

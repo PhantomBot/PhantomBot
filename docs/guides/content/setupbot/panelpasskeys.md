@@ -10,7 +10,7 @@
 
 A passkey lets you sign in to the panel with your fingerprint, face, device PIN or a security key instead of typing your panel password. Passkeys are optional. Your password keeps working, and you can use either one each time you sign in.
 
-Every panel login can have its own passkeys, including the login from _botlogin.txt_ and every user created under _Settings > Panel Users_.
+The main login from _botlogin.txt_ and every user created under _Settings > Panel Users_ can have their own passkeys. The additional logins that the bot derives from it, whose names end in `_RO`, `_YT` or `_YT_RO`, can not use passkeys.
 
 ## Requirements
 
@@ -71,7 +71,7 @@ Users with permission to manage panel users can not see or add passkeys for some
 | Action | Effect on the user's passkeys |
 | --- | --- |
 | Reset password | All passkeys are removed and the user is signed out. Use this when an account may have been used by someone else |
-| Disable | Passkeys are kept but can not be used to sign in until the user is enabled again |
+| Disable | Passkeys are kept but can not be used to sign in until the user is enabled again, and the user is signed out |
 | Rename | Passkeys are kept and the user is signed out |
 | Delete | All passkeys are removed |
 
