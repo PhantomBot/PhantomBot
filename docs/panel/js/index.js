@@ -787,6 +787,10 @@ $(function () {
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
                 if (message.authresult === 'false') {
+                    if (helpers.leaveEndedPasskeySession()) {
+                        return;
+                    }
+
                     helpers.logError('Failed to auth with the socket.', helpers.LOG_TYPE.FORCE);
                     toastr.error('Failed to auth with the socket.', '', {timeOut: 0});
                     webSocket.close();

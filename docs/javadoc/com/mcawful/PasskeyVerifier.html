@@ -1,0 +1,405 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>PasskeyVerifier (PhantomBot JavaDoc)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="description" content="declaration: package: com.mcawful, class: PasskeyVerifier">
+<meta name="generator" content="javadoc/ClassWriterImpl">
+<link rel="stylesheet" type="text/css" href="../../javadoc-theme.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../script-dir/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../jquery-ui.overrides.css" title="Style">
+<script type="text/javascript" src="../../script.js"></script>
+<script type="text/javascript" src="../../script-dir/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="../../script-dir/jquery-ui.min.js"></script>
+</head>
+<body class="class-declaration-page">
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../";
+loadScripts(document, 'script');</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<div class="flex-box">
+<header role="banner" class="flex-header">
+<nav role="navigation">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="top-nav" id="navbar-top">
+<div class="skip-nav"><a href="#skip-navbar-top" title="Skip navigation links">Skip navigation links</a></div>
+<div class="about-language"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+<ul id="navbar-top-firstrow" class="nav-list" title="Navigation">
+<li><a href="../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="nav-bar-cell1-rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../index-all.html">Index</a></li>
+<li><a href="../../help-doc.html#class">Help</a></li>
+</ul>
+</div>
+<div class="sub-nav">
+<div>
+<ul class="sub-nav-list">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field-summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method-summary">Method</a></li>
+</ul>
+<ul class="sub-nav-list">
+<li>Detail:&nbsp;</li>
+<li><a href="#field-detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method-detail">Method</a></li>
+</ul>
+</div>
+<div class="nav-list-search"><label for="search-input">SEARCH:</label>
+<input type="text" id="search-input" value="search" disabled="disabled">
+<input type="reset" id="reset-button" value="reset" disabled="disabled">
+</div>
+</div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<span class="skip-nav" id="skip-navbar-top"></span></nav>
+</header>
+<div class="flex-content">
+<main role="main">
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.mcawful</a></div>
+<h1 title="Class PasskeyVerifier" class="title">Class PasskeyVerifier</h1>
+</div>
+<div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
+<div class="inheritance">com.mcawful.PasskeyVerifier</div>
+</div>
+<section class="class-description" id="class-description">
+<hr>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">PasskeyVerifier</span>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">Server-side checks for passkey (WebAuthn) registration and sign-in on the panel.
+
+ <p>Attestation is not requested, so the browser hands over the public key in
+ SubjectPublicKeyInfo form and no CBOR parsing is needed. Only ES256 (P-256) and RS256 keys
+ are accepted.</p>
+
+ <p>This class holds no bot state. Every <code>verify</code> method throws
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link"><code>IllegalArgumentException</code></a> with the reason when a check fails.</p></div>
+<dl class="notes">
+<dt>Author:</dt>
+<dd>mcawful</dd>
+</dl>
+</section>
+<section class="summary">
+<ul class="summary-list">
+<!-- =========== FIELD SUMMARY =========== -->
+<li>
+<section class="field-summary" id="field-summary">
+<h2>Field Summary</h2>
+<div class="caption"><span>Fields</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static final long</code></div>
+<div class="col-second even-row-color"><code><a href="#CHALLENGE_TTL_MILLIS" class="member-name-link">CHALLENGE_TTL_MILLIS</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">How long a challenge stays valid, in milliseconds</div>
+</div>
+<div class="col-first odd-row-color"><code>static final int</code></div>
+<div class="col-second odd-row-color"><code><a href="#MAX_AUTH_DATA" class="member-name-link">MAX_AUTH_DATA</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Largest accepted authenticator data, in bytes</div>
+</div>
+<div class="col-first even-row-color"><code>static final int</code></div>
+<div class="col-second even-row-color"><code><a href="#MAX_CLIENT_DATA" class="member-name-link">MAX_CLIENT_DATA</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Largest accepted <code>clientDataJSON</code>, in bytes</div>
+</div>
+<div class="col-first odd-row-color"><code>static final int</code></div>
+<div class="col-second odd-row-color"><code><a href="#MAX_CREDENTIAL_ID" class="member-name-link">MAX_CREDENTIAL_ID</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Largest credential ID allowed by WebAuthn, in bytes</div>
+</div>
+<div class="col-first even-row-color"><code>static final int</code></div>
+<div class="col-second even-row-color"><code><a href="#MAX_KEY" class="member-name-link">MAX_KEY</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Largest accepted public key or signature, in bytes.</div>
+</div>
+</div>
+</section>
+</li>
+<!-- ========== METHOD SUMMARY =========== -->
+<li>
+<section class="method-summary" id="method-summary">
+<h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createChallenge()" class="member-name-link">createChallenge</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Creates a challenge which carries its own expiry and an HMAC, so the server does not
+ have to remember challenges it has handed out to unauthenticated clients</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static byte[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#decode(java.lang.String,int)" class="member-name-link">decode</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;data,
+ int&nbsp;maxBytes)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Decodes a base64url string</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#encode(byte%5B%5D)" class="member-name-link">encode</a><wbr>(byte[]&nbsp;data)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Encodes bytes as base64url without padding, the encoding WebAuthn uses in JSON</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static byte[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#randomBytes(int)" class="member-name-link">randomBytes</a><wbr>(int&nbsp;length)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Generates cryptographically secure random bytes</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static long</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#verifyAssertion(byte%5B%5D,byte%5B%5D,byte%5B%5D,byte%5B%5D,java.lang.String,long)" class="member-name-link">verifyAssertion</a><wbr>(byte[]&nbsp;clientDataJSON,
+ byte[]&nbsp;authData,
+ byte[]&nbsp;signature,
+ byte[]&nbsp;publicKey,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;origin,
+ long&nbsp;signCount)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Verifies the response to <code>navigator.credentials.get()</code></div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static long</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#verifyRegistration(byte%5B%5D,byte%5B%5D,byte%5B%5D,byte%5B%5D,java.lang.String,java.lang.String)" class="member-name-link">verifyRegistration</a><wbr>(byte[]&nbsp;clientDataJSON,
+ byte[]&nbsp;authData,
+ byte[]&nbsp;publicKey,
+ byte[]&nbsp;credentialId,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;challenge,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;origin)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Verifies the response to <code>navigator.credentials.create()</code></div>
+</div>
+</div>
+</div>
+</div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+</section>
+</li>
+</ul>
+</section>
+<section class="details">
+<ul class="details-list">
+<!-- ============ FIELD DETAIL =========== -->
+<li>
+<section class="field-details" id="field-detail">
+<h2>Field Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="CHALLENGE_TTL_MILLIS">
+<h3>CHALLENGE_TTL_MILLIS</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">CHALLENGE_TTL_MILLIS</span></div>
+<div class="block">How long a challenge stays valid, in milliseconds</div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../constant-values.html#com.mcawful.PasskeyVerifier.CHALLENGE_TTL_MILLIS">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="MAX_CLIENT_DATA">
+<h3>MAX_CLIENT_DATA</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">MAX_CLIENT_DATA</span></div>
+<div class="block">Largest accepted <code>clientDataJSON</code>, in bytes</div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../constant-values.html#com.mcawful.PasskeyVerifier.MAX_CLIENT_DATA">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="MAX_AUTH_DATA">
+<h3>MAX_AUTH_DATA</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">MAX_AUTH_DATA</span></div>
+<div class="block">Largest accepted authenticator data, in bytes</div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../constant-values.html#com.mcawful.PasskeyVerifier.MAX_AUTH_DATA">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="MAX_KEY">
+<h3>MAX_KEY</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">MAX_KEY</span></div>
+<div class="block">Largest accepted public key or signature, in bytes. A key of this size still fits the column it is stored in</div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../constant-values.html#com.mcawful.PasskeyVerifier.MAX_KEY">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="MAX_CREDENTIAL_ID">
+<h3>MAX_CREDENTIAL_ID</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">MAX_CREDENTIAL_ID</span></div>
+<div class="block">Largest credential ID allowed by WebAuthn, in bytes</div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../constant-values.html#com.mcawful.PasskeyVerifier.MAX_CREDENTIAL_ID">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="randomBytes(int)">
+<h3>randomBytes</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">byte[]</span>&nbsp;<span class="element-name">randomBytes</span><wbr><span class="parameters">(int&nbsp;length)</span></div>
+<div class="block">Generates cryptographically secure random bytes</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>length</code> - the number of bytes</dd>
+<dt>Returns:</dt>
+<dd>the random bytes</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="encode(byte[])">
+<h3>encode</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">encode</span><wbr><span class="parameters">(byte[]&nbsp;data)</span></div>
+<div class="block">Encodes bytes as base64url without padding, the encoding WebAuthn uses in JSON</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>data</code> - the bytes to encode</dd>
+<dt>Returns:</dt>
+<dd>the encoded string</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="decode(java.lang.String,int)">
+<h3>decode</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">byte[]</span>&nbsp;<span class="element-name">decode</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;data,
+ int&nbsp;maxBytes)</span></div>
+<div class="block">Decodes a base64url string</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>data</code> - the string to decode</dd>
+<dd><code>maxBytes</code> - the largest decoded size to accept</dd>
+<dt>Returns:</dt>
+<dd>the decoded bytes</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if the string is missing, not base64url, or too large</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createChallenge()">
+<h3>createChallenge</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">createChallenge</span>()</div>
+<div class="block">Creates a challenge which carries its own expiry and an HMAC, so the server does not
+ have to remember challenges it has handed out to unauthenticated clients</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the challenge, base64url encoded</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="verifyRegistration(byte[],byte[],byte[],byte[],java.lang.String,java.lang.String)">
+<h3>verifyRegistration</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">verifyRegistration</span><wbr><span class="parameters">(byte[]&nbsp;clientDataJSON,
+ byte[]&nbsp;authData,
+ byte[]&nbsp;publicKey,
+ byte[]&nbsp;credentialId,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;challenge,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;origin)</span></div>
+<div class="block">Verifies the response to <code>navigator.credentials.create()</code></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>clientDataJSON</code> - the raw <code>clientDataJSON</code></dd>
+<dd><code>authData</code> - the raw authenticator data</dd>
+<dd><code>publicKey</code> - the public key in SubjectPublicKeyInfo form</dd>
+<dd><code>credentialId</code> - the credential ID reported by the browser</dd>
+<dd><code>challenge</code> - the challenge that was issued for this registration, as returned by <a href="#createChallenge()"><code>createChallenge()</code></a></dd>
+<dd><code>origin</code> - the origin the browser must have performed the registration on</dd>
+<dt>Returns:</dt>
+<dd>the initial signature counter</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if any check fails</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="verifyAssertion(byte[],byte[],byte[],byte[],java.lang.String,long)">
+<h3>verifyAssertion</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">verifyAssertion</span><wbr><span class="parameters">(byte[]&nbsp;clientDataJSON,
+ byte[]&nbsp;authData,
+ byte[]&nbsp;signature,
+ byte[]&nbsp;publicKey,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;origin,
+ long&nbsp;signCount)</span></div>
+<div class="block">Verifies the response to <code>navigator.credentials.get()</code></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>clientDataJSON</code> - the raw <code>clientDataJSON</code></dd>
+<dd><code>authData</code> - the raw authenticator data</dd>
+<dd><code>signature</code> - the signature</dd>
+<dd><code>publicKey</code> - the stored public key in SubjectPublicKeyInfo form</dd>
+<dd><code>origin</code> - the origin the passkey was registered on</dd>
+<dd><code>signCount</code> - the stored signature counter</dd>
+<dt>Returns:</dt>
+<dd>the new signature counter</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if any check fails</dd>
+</dl>
+</section>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+<!-- ========= END OF CLASS DATA ========= -->
+</main>
+<footer role="contentinfo">
+<hr>
+<p class="legal-copy"><small><i>Copyright &copy; 2016-2026 phantombot.github.io/PhantomBot</i></small></p>
+</footer>
+</div>
+</div>
+</body>
+</html>
