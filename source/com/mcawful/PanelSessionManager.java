@@ -104,9 +104,10 @@ public final class PanelSessionManager {
      */
     public static String createSession(String username, String origin, String passkey, long lifetime) {
         String id = PasskeyVerifier.encode(PasskeyVerifier.randomBytes(32));
+        long expires = System.currentTimeMillis() + lifetime;
 
         SESSIONS.values().removeIf(session -> !session.isValid());
-        SESSIONS.put(Digest.sha256(id), new Session(username, origin, passkey, System.currentTimeMillis() + lifetime));
+        SESSIONS.put(Digest.sha256(id), new Session(username, origin, passkey, expires));
 
         return id;
     }
