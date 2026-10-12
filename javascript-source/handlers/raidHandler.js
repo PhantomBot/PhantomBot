@@ -16,14 +16,15 @@
  */
 
 (function () {
-    var raidToggle = $.getSetIniDbBoolean('raidSettings', 'raidToggle', false),
+    let raidToggle = $.getSetIniDbBoolean('raidSettings', 'raidToggle', false),
             newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
             raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) is raiding us with (viewers) viewers! This is the (times) time (username) has raided us!'),
             raidIncMinViewers = $.getSetIniDbNumber('raidSettings', 'raidMinViewers', 0),
             raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
             raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
             raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1),
-            raidOutOfflineMessage = $.getSetIniDbString('raidSettings', 'raidOutOfflineMessage', null);
+            raidOutOfflineMessage = $.getSetIniDbString('raidSettings', 'raidOutOfflineMessage', null),
+            shoutoutApi = $.getSetIniDbBoolean('raidSettings', 'shoutoutapi', false);
 
     /*
      * @function Reloads the raid variables from the panel.
@@ -37,6 +38,7 @@
         raidOutMessage = $.getIniDbString('raidSettings', 'raidOutMessage');
         raidOutSpam = $.getIniDbNumber('raidSettings', 'raidOutSpam');
         raidOutOfflineMessage = $.getIniDbString('raidSettings', 'raidOutOfflineMessage');
+        shoutoutApi = $.getSetIniDbBoolean('raidSettings', 'shoutoutapi');
     }
 
     /*
@@ -143,7 +145,7 @@
      * @event twitchRaid
      */
     $.bind('twitchRaid', function (event) {
-        var username = event.getUsername(),
+        let username = event.getUsername(),
             viewers = event.getViewers(),
             hasRaided = false,
             raidObj,
@@ -205,6 +207,10 @@
             if (message !== '') {
                 $.say(message);
             }
+
+            if (shoutoutApi) {
+                $.say('/shoutout ' + username);
+            }
         }
 
         // Add reward.
@@ -239,6 +245,16 @@
                 raidToggle = !raidToggle;
                 $.setIniDbBoolean('raidSettings', 'raidToggle', raidToggle);
                 $.say($.whisperPrefix(sender) + (raidToggle ? $.lang.get('raidhandler.toggle.enabled') : $.lang.get('raidhandler.toggle.disabled')));
+                return;
+            }
+
+            /*
+             * @commandpath raid toggleshoutout - Toggles if the bot should trigger the shoutout API for the raiding channel.
+             */
+            if ($.equalsIgnoreCase(action, 'toggleshoutout')) {
+                shoutoutApi = !shoutoutApi;
+                $.setIniDbBoolean('raidSettings', 'shoutoutapi', shoutoutApi);
+                $.say($.whisperPrefix(sender) + (shoutoutApi ? $.lang.get('raidhandler.shoutout.enabled') : $.lang.get('raidhandler.shoutout.disabled')));
                 return;
             }
 
