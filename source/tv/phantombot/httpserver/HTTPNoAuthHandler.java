@@ -36,6 +36,7 @@ import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import com.gmt2001.util.Reflect;
+import com.mcawful.PanelPasskeyHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -103,6 +104,11 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
+        }
+
+        if (req.uri().startsWith("/panel/login/passkey/")) {
+            PanelPasskeyHandler.handleHttp(ctx, req);
             return;
         }
 

@@ -359,8 +359,8 @@ $(function () {
             //Password reset
             table.on('click', '.btn-success', function () {
                 let username = $(this).data('username');
-                helpers.getConfirmDeleteModal('reset_panel_user_pwd_modal', 'Are you sure you want to reset ' + username + '\'s password?', false,
-                    username + '\'s password has been successfully reset!', function () {
+                helpers.getConfirmDeleteModal('reset_panel_user_pwd_modal', 'Are you sure you want to reset ' + username + '\'s password and remove their passkeys?', false,
+                    username + '\'s password has been successfully reset and their passkeys removed!', function () {
                         socket.resetPanelUserPWD('reset_panel_user_pwd', username, function (res) {
                             if (res.error !== undefined) {
                                 toastr.error(res.error);

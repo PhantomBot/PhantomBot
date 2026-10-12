@@ -17,7 +17,9 @@
 package com.gmt2001.httpwsserver.auth;
 
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
+import com.mcawful.PanelSessionManager;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
@@ -72,6 +74,19 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      * Represents the {@code ATTR_AUTH_USER} attribute
      */
     public static final AttributeKey<PanelUser> ATTR_AUTH_USER = AttributeKey.valueOf("authUser");
+    /**
+     * Represents the {@code ATTR_ORIGIN} attribute, the {@code Origin} header sent by the browser during the handshake
+     */
+    public static final AttributeKey<String> ATTR_ORIGIN = AttributeKey.valueOf("origin");
+    /**
+     * Represents the {@code ATTR_SESSION} attribute, the passkey session that authenticated the connection, if any
+     */
+    private static final AttributeKey<PanelSessionManager.Session> ATTR_SESSION = AttributeKey.valueOf("panelSession");
+    /**
+     * Represents the {@code ATTR_HANDSHAKE_AUTH} attribute, which is {@code true} if the connection was authenticated by the cookie or session
+     * sent with its handshake, as opposed to a token sent in a frame
+     */
+    public static final AttributeKey<Boolean> ATTR_HANDSHAKE_AUTH = AttributeKey.valueOf("handshakeAuth");
 
     /**
      * Constructor
@@ -145,6 +160,13 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).setIfAbsent(Boolean.FALSE);
         ctx.channel().attr(ATTR_AUTH_ATTEMPTS).setIfAbsent(0);
         ctx.channel().attr(ATTR_AUTH_USER).setIfAbsent(null);
+
+        // A passkey session that has ended takes the authentication of the connection with it. This is checked
+        // before anything else, because a connection that was authenticated by its handshake never has to send
+        // an authenticate frame. The frame then gets the same reply as any other unauthenticated frame
+        if (ctx.channel().attr(ATTR_SESSION).get() != null && !ctx.channel().attr(ATTR_SESSION).get().isValid()) {
+            this.invalidateAuthorization(ctx, frame);
+        }
 
         if (ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_SENT_AUTH_REPLY).get()) {
             if (ctx.channel().attr(ATTR_AUTH_USER).get() != null && !ctx.channel().attr(ATTR_AUTH_USER).get().isEnabled()) {
@@ -232,6 +254,8 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.FALSE);
         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
         ctx.channel().attr(ATTR_AUTH_USER).set(null);
+        ctx.channel().attr(ATTR_SESSION).set(null);
+        ctx.channel().attr(ATTR_HANDSHAKE_AUTH).set(Boolean.FALSE);
     }
 
     /**
@@ -243,12 +267,31 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      */
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
+        ctx.channel().attr(ATTR_ORIGIN).set(headers.get(HttpHeaderNames.ORIGIN));
+
+        PanelSessionManager.Session session = this.allowPaneluser ? PanelSessionManager.getSession(headers) : null;
+
+        if (session != null) {
+            // A session only authenticates the page it was started from, and never falls back to the panellogin cookie
+            PanelUser user = session.getUser();
+            if (user != null && session.origin().equals(headers.get(HttpHeaderNames.ORIGIN))) {
+                ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
+                ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                ctx.channel().attr(ATTR_SESSION).set(session);
+                ctx.channel().attr(ATTR_HANDSHAKE_AUTH).set(Boolean.TRUE);
+                return true;
+            }
+
+            return false;
+        }
+
         if (this.allowPaneluser && PhantomBot.instance().getHTTPPanelAndYTHandler().getAuthHandler().isAuthorized(ctx, headers)) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
             com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
             if (user != null) {
                 ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                 ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                ctx.channel().attr(ATTR_HANDSHAKE_AUTH).set(Boolean.TRUE);
                 return true;
             }
         }

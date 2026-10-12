@@ -1005,8 +1005,8 @@ public final class ConsoleEventHandler implements Listener {
             }
             /**
              * @consolecommand paneluser resetpassword username - Resets a panel users
-             *                 password if the user exists and prints the new and randomly
-             *                 generated password
+             *                 password and removes their passkeys if the user exists and
+             *                 prints the new and randomly generated password
              */
             else if (argument[0].equalsIgnoreCase("resetpassword")) {
                 PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(argument[1]);

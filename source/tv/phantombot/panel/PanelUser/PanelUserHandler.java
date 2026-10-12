@@ -29,6 +29,8 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.mcawful.CustomPanelManifestRegistry;
+import com.mcawful.PanelPasskeyHandler;
+import com.mcawful.PanelSessionManager;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.panel.WsPanelHandler;
@@ -562,30 +564,54 @@ public final class PanelUserHandler {
             return null;
         }
 
-        if (requestUri != null) {
-            if ((requestUri.contains("/setup/") || requestUri.contains("/oauth/"))
-                    && (!user.isConfigUser() || !user.canManageUsers())) {
-                return null;
-            }
-            if (requestUri.contains("/ytplayer/") && !(user.getPermission().containsKey("youtube player")
-                    && user.getPermission().get("youtube player").equals(Permission.READ_WRITE))) {
-                return null;
-            }
+        if (!isUriAllowed(user, requestUri)) {
+            return null;
         }
 
         if (password.equals(user.getPassword())) {
-            user.setLastLoginNOW();
-
-            try {
-                user.doupdate();
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-
+            recordLogin(user);
             return user;
         }
 
         return null;
+    }
+
+    /**
+     * Stores the current time as the last login of a {@link PanelUser panel user}
+     *
+     * @param user The user who logged in
+     * @see PanelUser#setLastLoginNOW()
+     */
+    public static void recordLogin(PanelUser user) {
+        user.setLastLoginNOW();
+
+        try {
+            user.doupdate();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Checks if the {@link PanelUser panel user} is allowed to access a uri
+     *
+     * @param user       The user
+     * @param requestUri The requested uri; {@code null} to skip the check
+     * @return {@code true} if the user is allowed to access the uri
+     */
+    public static boolean isUriAllowed(PanelUser user, String requestUri) {
+        if (requestUri != null) {
+            if ((requestUri.contains("/setup/") || requestUri.contains("/oauth/"))
+                    && (!user.isConfigUser() || !user.canManageUsers())) {
+                return false;
+            }
+            if (requestUri.contains("/ytplayer/") && !(user.getPermission().containsKey("youtube player")
+                    && user.getPermission().get("youtube player").equals(Permission.READ_WRITE))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -729,6 +755,8 @@ public final class PanelUserHandler {
 
         String password;
         try {
+            // Passkeys can be left under a name that was used by a login from botlogin.txt, a new user must not inherit them
+            PanelPasskeyHandler.deletePasskeys(username);
             password = PanelUser.create(username, permissions, enabled, canManageUsers, canRestartBot);
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -739,7 +767,7 @@ public final class PanelUserHandler {
     }
 
     /**
-     * Deletes a {@link PanelUser panel user}
+     * Deletes a {@link PanelUser panel user} and their passkeys
      * <br />
      * <br />
      * Only existing and {@link PanelUser#canBeEdited() editable} {@link PanelUser
@@ -761,6 +789,8 @@ public final class PanelUserHandler {
         }
 
         try {
+            // Passkeys go first, so a failure leaves the user in place and nothing half done
+            PanelPasskeyHandler.deletePasskeys(username);
             user.dodelete();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -870,6 +900,14 @@ public final class PanelUserHandler {
 
         try {
             user.doupdate();
+            // Only move the passkeys once the new name is really in use, or they would be left without an owner
+            if (newUsername != null && !currentUsername.equals(newUsername) && PanelUser.UserExists(newUsername)) {
+                PanelPasskeyHandler.renamePasskeys(currentUsername, newUsername);
+            }
+
+            if (!enabled) {
+                PanelSessionManager.revokeUser(currentUsername);
+            }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             return PanelMessage.SaveError;
@@ -902,7 +940,8 @@ public final class PanelUserHandler {
     }
 
     /**
-     * Resets a {@link PanelUser panel user's} password
+     * Resets a {@link PanelUser panel user's} password, removes their passkeys,
+     * ends their passkey sessions and retires their websocket token
      * <br />
      * <br />
      * Only existing and {@link PanelUser#canBeEdited() editable} {@link PanelUser
@@ -926,6 +965,11 @@ public final class PanelUserHandler {
         String password = user.generateNewPassword();
 
         try {
+            // A reset must lock out anyone who had access, so passkeys can not be left behind. They go first, so a
+            // failure does not leave the user with a new password that was never shown
+            PanelPasskeyHandler.deletePasskeys(username);
+            // The websocket token is a login of its own, a new one is issued at the next login
+            user.setToken(null);
             user.doupdate();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);

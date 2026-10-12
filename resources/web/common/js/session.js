@@ -34,6 +34,7 @@
         window.localStorage.removeItem('b64');
         window.sessionStorage.removeItem('webauth');
         window.sessionStorage.removeItem('cookie');
+        window.sessionStorage.removeItem('panelUser');
         document.cookie = 'panellogin=' + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=1'
     };
 
@@ -60,7 +61,10 @@
      */
     window.updateCookie = function() {
         window.checkExpireCookie();
-        document.cookie = window.sessionStorage.getItem('cookie');
+        // A passkey login has no cookie to restore, its session cookie is managed by the bot
+        if (window.sessionStorage.getItem('cookie') !== null) {
+            document.cookie = window.sessionStorage.getItem('cookie');
+        }
     };
 
     window.updateCookie();
