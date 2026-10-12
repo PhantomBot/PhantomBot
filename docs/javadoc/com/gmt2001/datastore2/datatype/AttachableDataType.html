@@ -78,13 +78,13 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">AttachableDataType</span></div>
-<div class="block">Allows a custom <code>DataType</code> to attach a reference to a <code>UpdatableRecord</code>
+<div class="block">Allows a custom <code>DataType</code> to attach a reference to a <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link"><code>UpdatableRecord</code></a>
  <p>
- This interface is used to allow the <code>UpdatableRecord</code> to automatically detect and trigger the attachment so that the
+ This interface is used to allow the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link"><code>UpdatableRecord</code></a> to automatically detect and trigger the attachment so that the
  <code>DataType</code> can mark itself as changed when an internal state is updated which requires storage
  <p>
  It is up to the implmenting class to store the <code>record</code> and <code>fieldIndex</code> variables, override methods which
- change their internal state, and call <code>Record.changed(int, boolean)</code> when appropriate</div>
+ change their internal state, and call <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record.html#changed(int,boolean)" title="class or interface in org.jooq" class="external-link"><code>Record.changed(int, boolean)</code></a> when appropriate</div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>gmt2001</dd>
@@ -104,7 +104,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#attach(org.jooq.UpdatableRecord,int)" class="member-name-link">attach</a><wbr>(org.jooq.UpdatableRecord&lt;?&gt;&nbsp;record,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#attach(org.jooq.UpdatableRecord,int)" class="member-name-link">attach</a><wbr>(<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link">UpdatableRecord</a>&lt;?&gt;&nbsp;record,
  int&nbsp;fieldIndex)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Attaches this <a href="AttachableDataType.html" title="interface in com.gmt2001.datastore2.datatype"><code>AttachableDataType</code></a> to a record and field to mark when changed</div>
@@ -126,7 +126,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="attach(org.jooq.UpdatableRecord,int)">
 <h3>attach</h3>
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">attach</span><wbr><span class="parameters">(org.jooq.UpdatableRecord&lt;?&gt;&nbsp;record,
+<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">attach</span><wbr><span class="parameters">(<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link">UpdatableRecord</a>&lt;?&gt;&nbsp;record,
  int&nbsp;fieldIndex)</span></div>
 <div class="block">Attaches this <a href="AttachableDataType.html" title="interface in com.gmt2001.datastore2.datatype"><code>AttachableDataType</code></a> to a record and field to mark when changed</div>
 <dl class="notes">

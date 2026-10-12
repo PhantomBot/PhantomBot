@@ -67,6 +67,7 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./handlers/clipHandler.js | !topclip | - Displays the top clip from the past day. |
 | ./handlers/clipHandler.js | !clipit (-d duration) (title) | - Creates a clip, optionally setting the initial duration and title. |
 | ./handlers/raidHandler.js | !raid toggle | - Toggles if the bot should welcome raiders. |
+| ./handlers/raidHandler.js | !raid toggleshoutout | - Toggles if the bot should trigger the shoutout API for the raiding channel. |
 | ./handlers/raidHandler.js | !raid setreward [amount] | - Sets the amount of points given to raiders. |
 | ./handlers/raidHandler.js | !raid setincomingminviewers [amount] | - Sets the minimum amount of viewers to trigger the raid message. |
 | ./handlers/raidHandler.js | !raid setincomingmessage [message] | - Sets the incoming raid message - Tags: (username), (viewers), (url), (times), (reward) and (game) |
