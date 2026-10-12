@@ -70,6 +70,17 @@ public final class PanelUserHandler {
     };
 
     /**
+     * Mappings of alternate section names to standard section names
+     * 
+     * @implNote All section names MUST be lowercase in this variable
+     */
+    private static final Map<String, String> SECTION_ALIASES = Map.of(
+            "keywords", "keywords & emotes",
+            "overlay", "stream overlay",
+            "youtube", "youtube player"
+    );
+
+    /**
      * Database tables that are generally called on the panel and are allowed with
      * {@link Permission#READ_ONLY read only permission}
      * 
@@ -1155,26 +1166,11 @@ public final class PanelUserHandler {
      */
     public static String sectionConvert(String section) {
         if (section == null) {
-            section = "";
+            return "";
         }
 
-        section = section.toLowerCase();
-
-        switch (section) {
-            case "keywords":
-                section = "keywords & emotes";
-                break;
-            case "overlay":
-                section = "stream overlay";
-                break;
-            case "youtube":
-                section = "youtube player";
-                break;
-            default:
-                break;
-        }
-
-        return section;
+        String lowerSection = section.toLowerCase();
+        return SECTION_ALIASES.getOrDefault(lowerSection, lowerSection);
     }
 
     /**
