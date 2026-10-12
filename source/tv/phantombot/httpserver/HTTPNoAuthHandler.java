@@ -97,6 +97,25 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             return;
         }
 
+        if (req.uri().startsWith("/passkeycheck")) {
+            boolean isSsl = HTTPWSServer.instance().isSsl();
+            if (req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST) || req.headers().contains(HTTPWSServer.HEADER_CF_RAY)) {
+                isSsl = true;
+            }
+
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+
+            boolean allowpasskey = (isSsl || (origin != null && !origin.isBlank() && origin.equals("http://localhost"))) && !HTTPWSServer.instance().isAutoSsl();
+
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (allowpasskey ? "true" : "false").getBytes(), null);
+            if (origin != null && !origin.isBlank()) {
+                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            }
+            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + qsd.path());
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
+        }
+
         if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
 
