@@ -47,6 +47,20 @@
         }
     }
 
+    /*
+     * @function incrUserPoints
+     *
+     * @param  {Number} id
+     * @param  {Number} amount
+     */
+    function incrUserPoints(id, amount) {
+        var username = $.discord.resolveTwitchName(id);
+
+        if (username !== null) {
+            $.inidb.incr('points', username.toLowerCase(), amount);
+        }
+    }
+
     /**
      * @event discordChannelCommand
      */
@@ -88,4 +102,5 @@
     /* Export to the API */
     $.discord.getUserPoints = getUserPoints;
     $.discord.decrUserPoints = decrUserPoints;
+    $.discord.incrUserPoints = incrUserPoints;
 })();

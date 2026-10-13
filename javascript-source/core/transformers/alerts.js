@@ -17,6 +17,46 @@
 
 (function () {
     /*
+     * Cancels a command that uses one of these tags while alerts are paused, without taking its cost
+     *
+     * @param {object} args the arguments of the transformer
+     * @returns {object} the transformer result which cancels the command, or undefined if the tag may run
+     */
+    function cancelIfPaused(args) {
+        // Only commands are paused. Messages such as subscription alerts have no command event.
+        if (!$.alertPause.isPaused() || args.event === undefined || args.event === null || args.event.getCommand === undefined) {
+            return;
+        }
+
+        if (args.customArgs !== undefined && args.customArgs !== null && args.customArgs.redemption !== undefined) {
+            $.channelpoints.cancelRedemption(args.customArgs.redemption);
+        } else if (args.event.getSenderId !== undefined) {
+            // A Discord event. Checked on the event because args.platform is not set by every Discord caller.
+            let cost = $.discord.getCommandCost(args.event.getCommand());
+
+            if (cost > 0) {
+                $.discord.incrUserPoints(args.event.getSenderId(), cost);
+            }
+        } else {
+            $.alertPause.returnCommandPrice(args.event);
+        }
+
+        return {cancel: true};
+    }
+
+    /*
+     * Makes a transformer cancel the command instead of running while alerts are paused
+     *
+     * @param {function} transformer
+     * @returns {function}
+     */
+    function pausable(transformer) {
+        return function (args) {
+            return cancelIfPaused(args) || transformer(args);
+        };
+    }
+
+    /*
      * @transformer alert
      * @formula (alert fileName:str) sends a GIF/video alert to the alerts overlay, fading out after 3 seconds
      * @formula (alert fileName:str, durationSeconds:int) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with the audio volume set to 0.8
@@ -26,6 +66,8 @@
      * @labels twitch discord noevent alerts
      * @notes this tag uses the _config/gif-alerts_ folder
      * @notes if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume
+     * @notes while alerts are paused with !togglealerts, a command, keyword or redemption that uses this tag is canceled without taking its cost
+     * @cancels sometimes
      * @example Caster: !addcom !banana (alert banana.gif)
      * @example Caster: !addcom !bananatext (alert banana.gif, 5, 0.6, font-size:42px;color:#FF00FF, Ring Ring Ring Ring...Banana Phone!)
      */
@@ -43,6 +85,8 @@
      * @formula (alerttext -c css:str, message:str) sends a text alert with the specified CSS to the alerts overlay, fading out after 3 seconds
      * @formula (alerttext -d duration:float, -c css:str, message:str) sends a text alert with the specified CSS to the alerts overlay, fading out after duration seconds
      * @labels twitch discord noevent alerts
+     * @notes while alerts are paused with !togglealerts, a command, keyword or redemption that uses this tag is canceled without taking its cost
+     * @cancels sometimes
      */
     function alerttext(args) {
         let alertText = args.args;
@@ -98,6 +142,8 @@
      * @formula (playsound hook:str|volume:float) plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
      * @labels twitch discord noevent alerts
      * @notes this tag uses the _config/audio-hooks_ folder
+     * @notes while alerts are paused with !togglealerts, a command, keyword or redemption that uses this tag is canceled without taking its cost
+     * @cancels sometimes
      * @example Caster: !addcom !good Played sound goodgood (playsound goodgood)
      * @example Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
      */
@@ -119,9 +165,9 @@
     }
 
     let transformers = [
-        new $.transformers.transformer('alert', ['twitch', 'discord', 'noevent', 'alerts'], alert),
-        new $.transformers.transformer('alerttext', ['twitch', 'discord', 'noevent', 'alerts'], alerttext),
-        new $.transformers.transformer('playsound', ['twitch', 'discord', 'noevent', 'alerts'], playsound)
+        new $.transformers.transformer('alert', ['twitch', 'discord', 'noevent', 'alerts'], pausable(alert)),
+        new $.transformers.transformer('alerttext', ['twitch', 'discord', 'noevent', 'alerts'], pausable(alerttext)),
+        new $.transformers.transformer('playsound', ['twitch', 'discord', 'noevent', 'alerts'], pausable(playsound))
     ];
 
     $.transformers.addTransformers(transformers);
