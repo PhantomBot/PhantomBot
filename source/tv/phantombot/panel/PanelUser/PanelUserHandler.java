@@ -298,6 +298,7 @@ public final class PanelUserHandler {
                     "cooldownsettings",
                     "settings")),
             Map.entry("stream overlay", List.of(
+                "alertpause",
                 "overlay"
             )),
             Map.entry("timers", List.of(
