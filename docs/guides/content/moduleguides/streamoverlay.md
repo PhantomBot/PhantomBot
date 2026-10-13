@@ -15,7 +15,7 @@ The stream overlay is ready to use and is configured through the URL.
 The sounds and alerts that viewers trigger can be paused, for example during a quiet moment on stream, without anyone losing points.
 
 - In chat, `!togglealerts` pauses them until the command is used again. `!togglealerts 300` pauses them for 300 seconds. Using `!togglealerts` while they are paused resumes them. The command is for admins by default.
-- In the panel, use the _Pause Alerts_ switch at the top of the 'Overlay' page.
+- In the panel, use the _Pause Alerts_ switch at the top of the 'Overlay' page. The switch sends the same command, so the bot also posts the confirmation in chat.
 
 The pause is kept when the bot restarts.
 
@@ -28,7 +28,7 @@ While alerts are paused:
 
 Some things to keep in mind:
 
-- Tags that come before the sound or alert tag in a command have already run when the command is canceled. For a redemption, put `(cpfulfill)` after the sound or alert tag, because a redemption that is already fulfilled can not be canceled.
+- Tags that come before the sound or alert tag in a command have already run when the command is canceled. For a redemption, put `(cpfulfill)` after the sound or alert tag, because a redemption that is already fulfilled cannot be canceled.
 - A sound or alert that is reached through another command, with `(command)` or `(delaycommand)`, is canceled as that other command. The cost of the command that was used, or the redemption, is not given back.
 - If a canceled command has a reward set with `!paycom`, the reward is still paid.
 - `!togglealerts` does nothing while all commands are paused with `!pausecommands`.
