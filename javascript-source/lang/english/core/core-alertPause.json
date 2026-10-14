@@ -1,0 +1,6 @@
+{
+    "alertpause.paused": "Sound and alert commands are paused.",
+    "alertpause.paused.timed": "Sound and alert commands are paused for $1.",
+    "alertpause.resumed": "Sound and alert commands are enabled again.",
+    "togglealerts.usage": "usage: !togglealerts (seconds)"
+}

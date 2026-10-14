@@ -188,6 +188,10 @@
                 $.paginateArray(getAudioHookCommands(), 'audiohook.list', ', ', true, sender);
                 return;
             }
+            if ($.alertPause.isPaused()) {
+                $.alertPause.returnCommandPrice(event);
+                return;
+            }
             if (messageToggle) {
                 $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.success', hook.get()));
             }
@@ -233,6 +237,11 @@
 
                 if (!audioHookExists(audioHook)) {
                     $.returnCommandCost(sender, command, isMod);
+                    return;
+                }
+
+                if ($.alertPause.isPaused()) {
+                    $.alertPause.returnCommandPrice(event);
                     return;
                 }
 

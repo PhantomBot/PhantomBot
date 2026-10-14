@@ -386,6 +386,20 @@
     }
 
     /**
+     * Marks a managed redemption as canceled if it is still unfulfilled, refunding the users channel points
+     *
+     * @param {object} redemption The redemption event
+     */
+    function cancelRedemption(redemption) {
+        if ((redemption.getClass().getSimpleName().equals("ChannelCustomPowerUpRedemptionAdd")
+            && redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.power_ups.redemption.ChannelCustomPowerUpRedemptionAdd.RedemptionStatus.Unfulfilled)) {
+            updateRedemptionStatusCancelled(redemption.customPowerUp().id(), redemption.id());
+        } else if (redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
+            updateRedemptionStatusCancelled(redemption.reward().id(), redemption.id());
+        }
+    }
+
+    /**
      * Sets the enabled state of the redeemable
      *
      * @param {string} redeemableId The id of the redeemable that is being updated
@@ -592,6 +606,12 @@
          * @param {string} redemptionId The id of the redemption event
          */
         updateRedemptionStatusCancelled: updateRedemptionStatusCancelled,
+        /**
+         * Marks a managed redemption as canceled if it is still unfulfilled, refunding the users channel points
+         *
+         * @param {object} redemption The redemption event
+         */
+        cancelRedemption: cancelRedemption,
         /**
          * Sets the enabled state of the redeemable
          *

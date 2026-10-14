@@ -27,12 +27,7 @@
      * @cached
      */
     function cpcancel(args) {
-        if ((args.customArgs.redemption.getClass().getSimpleName().equals("ChannelCustomPowerUpRedemptionAdd")
-            && args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.power_ups.redemption.ChannelCustomPowerUpRedemptionAdd.RedemptionStatus.Unfulfilled)) {
-            $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.customPowerUp().id(), args.customArgs.redemption.id());
-        } else if (args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
-            $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.reward().id(), args.customArgs.redemption.id());
-        }
+        $.channelpoints.cancelRedemption(args.customArgs.redemption);
         return {
             result: '',
             cache: true
