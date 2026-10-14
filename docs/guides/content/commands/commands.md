@@ -285,6 +285,7 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./systems/welcomeSystem.js | !welcome disable [user] | - Disable welcoming of the given user. |
 | ./systems/welcomeSystem.js | !welcome enable [user] | - Disable welcoming of the given user. |
 | ./core/commandPause.js | !pausecommands clear | - Unpause commands |
+| ./core/alertPause.js | !togglealerts (seconds) | - Pause or resume the sounds and alerts that commands, keywords and redemptions send to the stream overlay. If (seconds) is present, pause them for that amount of time |
 | ./core/lang.js | !lang [language name] | - Get or optionally set the current language (use folder name from "./lang" directory); |
 | ./core/lang.js | !mute | - Toggle muting the bot in the chat |
 | ./core/lang.js | !toggleme | - Toggle prepending chat output with "/me". |

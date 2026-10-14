@@ -36,6 +36,11 @@ $(function () {
     const fadeDuration = 'fadeDuration';
     const enableAutoStopGifAlerts = 'stopGifWithAudio';
 
+    // The alert pause is owned by ./core/alertPause.js and is not part of the overlay URL
+    const alertPauseTable = 'alertPause';
+    const alertPauseKey = 'pausedUntil';
+    const alertPauseToggleId = 'overlayPauseAlerts';
+
     // members
     let inputElements = null;
     let outputElement = null;
@@ -102,6 +107,31 @@ $(function () {
 
         // finally generate the url once
         buildOverlayUrl();
+
+        showAlertsPaused();
+    }
+
+    /**
+     * Reads the stored pause and works out if alerts are paused
+     *
+     * @param {Function} callback Called with true if alerts are paused
+     */
+    function getAlertsPaused(callback) {
+        socket.getDBValue('overlay_get_alert_pause', alertPauseTable, alertPauseKey, function (e) {
+            // Same rule as isPaused in ./core/alertPause.js: 0 is not paused, -1 is paused until toggled, anything else is the time the pause ends
+            let pausedUntil = Number(e[alertPauseTable]);
+
+            callback(pausedUntil < 0 || pausedUntil > Date.now());
+        });
+    }
+
+    /**
+     * Sets the pause switch to the state of the bot
+     */
+    function showAlertsPaused() {
+        getAlertsPaused((isPaused) => {
+            document.getElementById(alertPauseToggleId).checked = isPaused;
+        });
     }
 
 
@@ -146,6 +176,17 @@ $(function () {
             toastr.success('Successfully saved settings!');
         });
     }
+
+    $('#' + alertPauseToggleId).on('change', function () {
+        let wanted = this.checked;
+
+        // The pause may have been changed in chat or have run out since the page loaded, so only toggle it if the bot disagrees
+        getAlertsPaused((isPaused) => {
+            if (isPaused !== wanted) {
+                socket.sendCommandSync('overlay_toggle_alert_pause', 'togglealerts', showAlertsPaused);
+            }
+        });
+    });
 
     $('#overlayCopyButton').click(() => {
         outputElement.select();
