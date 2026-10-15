@@ -96,7 +96,7 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
 
     public void sendJSONToAll(String jsonString) {
         try {
-            WebSocketFrameHandler.broadcastWsFrame("/ws/alertspolls", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
+            WebSocketFrameHandler.broadcastWsFrame("/ws/alertspolls", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString), true);
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }

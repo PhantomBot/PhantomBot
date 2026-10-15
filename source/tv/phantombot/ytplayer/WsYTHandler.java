@@ -430,7 +430,7 @@ public class WsYTHandler implements WsFrameHandler {
     }
 
     public void sendJSONToAll(String jsonString) {
-        WebSocketFrameHandler.broadcastWsFrame("/ws/ytplayer", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
+        WebSocketFrameHandler.broadcastWsFrame("/ws/ytplayer", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString), true);
     }
 
     @Override
