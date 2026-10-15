@@ -74,6 +74,7 @@ import tv.phantombot.twitch.api.Helix;
 public class WsPanelHandler implements WsFrameHandler {
 
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
+    private static final String[] ALLOWED_RO_DB_QUERY_TABLES = new String[]{};
     private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken"};
     private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{};
     private static final long MAX_AUDIO_HOOK_UPLOAD_SIZE = 10L * 1024 * 1024;
@@ -127,7 +128,11 @@ public class WsPanelHandler implements WsFrameHandler {
 
     private void handleRestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         try {
-            if (jso.has("command") || jso.has("command_sync")) {
+            if (jso.has("version")) {
+                handleVersion(ctx, frame, jso);
+            } else if (jso.has("remote")) {
+                handleRemote(ctx, frame, jso);
+            } else if (jso.has("command") || jso.has("command_sync")) {
                 handleCommand(ctx, frame, jso);
             } else if (jso.has("console_command")) {
                 handleConsoleCommand(ctx, frame, jso);
@@ -153,6 +158,8 @@ public class WsPanelHandler implements WsFrameHandler {
                 handleChannelPointsListTest(ctx, frame, jso);
             } else if (jso.has("powerupslisttest")) {
                 handlePowerUpsListTest(ctx, frame, jso);
+            } else if (jso.has("panelUserRO")) {
+                handlePanelUserRO(ctx, frame, jso);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
@@ -545,11 +552,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     private void handleUnrestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         try {
-            if (jso.has("version")) {
-                handleVersion(ctx, frame, jso);
-            } else if (jso.has("remote")) {
-                handleRemote(ctx, frame, jso);
-            } else if (jso.has("dbquery")) {
+            if (jso.has("dbquery")) {
                 handleDBQuery(ctx, frame, jso);
             } else if (jso.has("dbkeys")) {
                 handleDBKeysQuery(ctx, frame, jso);
@@ -561,8 +564,6 @@ public class WsPanelHandler implements WsFrameHandler {
                 handleDBValuesByOrderQuery(ctx, frame, jso);
             } else if (jso.has("dbkeyssearch")) {
                 handleDBKeysSearchQuery(ctx, frame, jso);
-            } else if (jso.has("panelUserRO")) {
-                handlePanelUserRO(ctx, frame, jso);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
@@ -836,6 +837,10 @@ public class WsPanelHandler implements WsFrameHandler {
         String key = jso.getJSONObject("query").getString("key");
         String uniqueID = jso.has("dbquery") ? jso.getString("dbquery") : "";
 
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
+
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
@@ -862,6 +867,10 @@ public class WsPanelHandler implements WsFrameHandler {
 
         String table = jso.getJSONObject("query").getString("table");
         String uniqueID = jso.has("dbkeys") ? jso.getString("dbkeys") : "";
+
+        if (ctx != null && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
@@ -914,6 +923,10 @@ public class WsPanelHandler implements WsFrameHandler {
             if (jsonArray.getJSONObject(i).has("table")) {
                 String table = jsonArray.getJSONObject(i).getString("table");
 
+                if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+                    continue;
+                }
+
                 if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
                     continue;
                 }
@@ -946,6 +959,10 @@ public class WsPanelHandler implements WsFrameHandler {
         String offset = jso.getJSONObject("query").getString("offset");
         String order = jso.getJSONObject("query").getString("order");
         String uniqueID = jso.has("dbkeysbyorder") ? jso.getString("dbkeysbyorder") : "";
+
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
@@ -982,6 +999,10 @@ public class WsPanelHandler implements WsFrameHandler {
         String order = jso.getJSONObject("query").getString("order");
         String isNumber = jso.getJSONObject("query").getString("number");
         String uniqueID = jso.has("dbvaluesbyorder") ? jso.getString("dbvaluesbyorder") : "";
+
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
@@ -1023,6 +1044,10 @@ public class WsPanelHandler implements WsFrameHandler {
         String offset = jso.getJSONObject("query").getString("offset");
         String order = jso.getJSONObject("query").getString("order");
         String uniqueID = jso.has("dbkeyssearch") ? jso.getString("dbkeyssearch") : "";
+
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
