@@ -17,6 +17,8 @@
 package com.gmt2001.httpwsserver;
 
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
+import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
+
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -262,13 +264,27 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     }
 
     /**
-     * Transmits a {@link WebSocketFrame} to all authenticated clients
+     * Transmits a {@link WebSocketFrame} to all authenticated clients who are not read-only
      *
      * @param resframe The {@link WebSocketFrame} to transmit
      */
     public static void broadcastWsFrame(WebSocketFrame resframe) {
+        broadcastWsFrame(resframe, false);
+    }
+
+    /**
+     * Transmits a {@link WebSocketFrame} to all authenticated clients
+     *
+     * @param resframe The {@link WebSocketFrame} to transmit
+     */
+    public static void broadcastWsFrame(WebSocketFrame resframe, boolean includeReadOnly) {
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get()) {
+                if (!includeReadOnly && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+                    com.gmt2001.Console.debug.println("Did not broadcast to client [" + c.remoteAddress().toString() + "] Authenticated: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Read-only: t");
+                    return;
+                }
+                com.gmt2001.Console.debug.println("Broadcast to client [" + c.remoteAddress().toString() + "]");
                 sendWsFrame(c, null, resframe.copy());
             }
         });
@@ -277,15 +293,30 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     }
 
     /**
-     * Transmits a {@link WebSocketFrame} to all authenticated clients that are connected to a specific URI
+     * Transmits a {@link WebSocketFrame} to all authenticated clients that are connected to a specific URI and are not read-only
      *
      * @param uri The URI to filter clients by for the broadcast
      * @param resframe The {@link WebSocketFrame} to transmit
      */
     public static void broadcastWsFrame(String uri, WebSocketFrame resframe) {
+        broadcastWsFrame(uri, resframe, false);
+    }
+
+    /**
+     * Transmits a {@link WebSocketFrame} to all authenticated clients that are connected to a specific URI
+     *
+     * @param uri The URI to filter clients by for the broadcast
+     * @param resframe The {@link WebSocketFrame} to transmit
+     * @param includeReadOnly Whether to include read-only clients
+     */
+    public static void broadcastWsFrame(String uri, WebSocketFrame resframe, boolean includeReadOnly) {
         com.gmt2001.Console.debug.println("Broadcasting frame to Uri [" + uri + "]");
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
+                if (!includeReadOnly && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+                    com.gmt2001.Console.debug.println("Did not broadcast to client [" + c.remoteAddress().toString() + "] Authenticated: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Uri: " + c.attr(ATTR_URI).get() + "   Uri match: " + (c.attr(ATTR_URI).get().equals(uri) ? "t" : "f") + "   Read-only: t");
+                    return;
+                }
                 com.gmt2001.Console.debug.println("Broadcast to client [" + c.remoteAddress().toString() + "]");
                 sendWsFrame(c, null, resframe.copy());
             } else {

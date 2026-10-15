@@ -268,6 +268,15 @@ $(function() {
         });
     };
 
+    player.isModuleEnabled = (callback_id, callback) => {
+        listeners[callback_id] = callback;
+
+        sendToSocket({
+            is_module_enabled: true,
+            query_id: callback_id
+        });
+    };
+
     /*
      * @function Updates a key and value in the database
      *

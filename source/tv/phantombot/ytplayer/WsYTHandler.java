@@ -71,7 +71,7 @@ public class WsYTHandler implements WsFrameHandler {
     private static final AttributeKey<Boolean> ATTR_IS_PLAYER = AttributeKey.valueOf("isPlayer");
     private static final AttributeKey<Instant> ATTR_LAST_PONG = AttributeKey.valueOf("lastPong");
     private static final AttributeKey<Boolean> ATTR_CLOSE_ATTACHED = AttributeKey.valueOf("closeAttached");
-    private static final String[] ALLOWED_DB_QUERY_TABLES = new String[]{"modules", "ytSettings", "yt_playlists_registry"};
+    private static final String[] ALLOWED_DB_QUERY_TABLES = new String[]{"ytSettings", "yt_playlists_registry"};
     private static final String[] ALLOWED_DB_UPDATE_TABLES = new String[]{"ytSettings"};
     private final WsAuthenticationHandler authHandler;
     private int currentVolume;
@@ -327,6 +327,12 @@ public class WsYTHandler implements WsFrameHandler {
             }
         } else if (jso.has("pong")) {
             ctx.channel().attr(ATTR_LAST_PONG).set(Instant.now());
+        } else if (jso.has("is_module_enabled")) {
+            try {
+                handleIsModuleEnabled(ctx, frame, jso.getString("query_id"));
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
         }
     }
 
@@ -346,6 +352,17 @@ public class WsYTHandler implements WsFrameHandler {
         }
 
         jsonObject.endObject();
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    public void handleIsModuleEnabled(ChannelHandlerContext ctx, WebSocketFrame frame, String id) throws JSONException {
+        JSONStringer jsonObject = new JSONStringer();
+
+        jsonObject.object().key("query_id").value(id);
+
+        jsonObject.key("enabled").value(PhantomBot.instance().getDataStore().get("modules", "./systems/youtubePlayer.js"));
+        jsonObject.endObject();
+
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 
@@ -413,7 +430,7 @@ public class WsYTHandler implements WsFrameHandler {
     }
 
     public void sendJSONToAll(String jsonString) {
-        WebSocketFrameHandler.broadcastWsFrame("/ws/ytplayer", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
+        WebSocketFrameHandler.broadcastWsFrame("/ws/ytplayer", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString), true);
     }
 
     @Override
