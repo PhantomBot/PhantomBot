@@ -146,11 +146,24 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">broadcastWsFrame</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients</div>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients who are not read-only</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">broadcastWsFrame</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uri,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)" class="member-name-link">broadcastWsFrame</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe,
+ boolean&nbsp;includeReadOnly)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">broadcastWsFrame</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uri,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI and are not read-only</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)" class="member-name-link">broadcastWsFrame</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uri,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe,
+ boolean&nbsp;includeReadOnly)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI</div>
 </div>
@@ -464,6 +477,18 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame)">
 <h3>broadcastWsFrame</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">broadcastWsFrame</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe)</span></div>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients who are not read-only</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>resframe</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to transmit</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)">
+<h3>broadcastWsFrame</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">broadcastWsFrame</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe,
+ boolean&nbsp;includeReadOnly)</span></div>
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -476,11 +501,26 @@ loadScripts(document, 'script');</script>
 <h3>broadcastWsFrame</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">broadcastWsFrame</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uri,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe)</span></div>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI and are not read-only</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>uri</code> - The URI to filter clients by for the broadcast</dd>
+<dd><code>resframe</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to transmit</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)">
+<h3>broadcastWsFrame</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">broadcastWsFrame</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uri,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;resframe,
+ boolean&nbsp;includeReadOnly)</span></div>
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>uri</code> - The URI to filter clients by for the broadcast</dd>
 <dd><code>resframe</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to transmit</dd>
+<dd><code>includeReadOnly</code> - Whether to include read-only clients</dd>
 </dl>
 </section>
 </li>

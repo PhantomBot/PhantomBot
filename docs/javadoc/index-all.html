@@ -811,9 +811,17 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">broadcastWsFrame(WebSocketFrame)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients who are not read-only</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)" class="member-name-link">broadcastWsFrame(WebSocketFrame, boolean)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dd>
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">broadcastWsFrame(String, WebSocketFrame)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dd>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI and are not read-only</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)" class="member-name-link">broadcastWsFrame(String, WebSocketFrame, boolean)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI</div>
 </dd>
@@ -5984,6 +5992,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Handles a request to <code>/panel/login/passkey/</code>, which the login page uses to sign in
  with a passkey.</div>
 </dd>
+<dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#handleIsModuleEnabled(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,java.lang.String)" class="member-name-link">handleIsModuleEnabled(ChannelHandlerContext, WebSocketFrame, String)</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpRequestHandler.html#handleRequest(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleRequest(ChannelHandlerContext, FullHttpRequest)</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver">HttpRequestHandler</a></dt>
 <dd>
 <div class="block">Handles the HTTP request and sends a response back to the client
