@@ -105,8 +105,8 @@ $(function() {
         player.videoId = null;
 
         // Check if the player is disabled right away.
-        player.dbQuery('get_module_status', 'modules', (data) => {
-            if (!helpers.isTrue(data['./systems/youtubePlayer.js'])) {
+        player.isModuleEnabled('get_module_status', (data) => {
+            if (!helpers.isTrue(data['enabled'])) {
                 helpers.getErrorModal('Module Disabled', 'The YouTube player module is disabled, please go and enable it.', () => {
                     window.location.reload();
                 }).modal('toggle');
