@@ -409,9 +409,18 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Represents the <code>ATTR_FRAME_HANDLER</code> attribute, which stores the <a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> that processes frames for this client</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#ATTR_HANDSHAKE_AUTH" class="member-name-link">ATTR_HANDSHAKE_AUTH</a> - Static variable in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Represents the <code>ATTR_HANDSHAKE_AUTH</code> attribute, which is <code>true</code> if the connection was authenticated by the cookie or session
+ sent with its handshake, as opposed to a token sent in a frame</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#ATTR_IS_READ_ONLY" class="member-name-link">ATTR_IS_READ_ONLY</a> - Static variable in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Represents the <code>ATTR_IS_READ_ONLY</code> attribute</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#ATTR_ORIGIN" class="member-name-link">ATTR_ORIGIN</a> - Static variable in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Represents the <code>ATTR_ORIGIN</code> attribute, the <code>Origin</code> header sent by the browser during the handshake</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html#ATTR_SENT_AUTH_REPLY" class="member-name-link">ATTR_SENT_AUTH_REPLY</a> - Static variable in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></dt>
 <dd>
@@ -802,9 +811,17 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">broadcastWsFrame(WebSocketFrame)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients who are not read-only</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)" class="member-name-link">broadcastWsFrame(WebSocketFrame, boolean)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dd>
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">broadcastWsFrame(String, WebSocketFrame)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dd>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI and are not read-only</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#broadcastWsFrame(java.lang.String,io.netty.handler.codec.http.websocketx.WebSocketFrame,boolean)" class="member-name-link">broadcastWsFrame(String, WebSocketFrame, boolean)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to all authenticated clients that are connected to a specific URI</div>
 </dd>
@@ -976,6 +993,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelUpdate.html#categoryName()" class="member-name-link">categoryName()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelUpdate.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelUpdate</a></dt>
 <dd>
 <div class="block">The category name.</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#CHALLENGE_TTL_MILLIS" class="member-name-link">CHALLENGE_TTL_MILLIS</a> - Static variable in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">How long a challenge stays valid, in milliseconds</div>
 </dd>
 <dt><a href="tv/phantombot/httpserver/HTTPOAuthHandler.html#changeBroadcasterToken()" class="member-name-link">changeBroadcasterToken()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPOAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPOAuthHandler</a></dt>
 <dd>&nbsp;</dd>
@@ -1693,6 +1714,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#convertTo(java.util.function.Function)" class="member-name-link">convertTo(Function&lt;? super U, ? extends SectionVariableValueRecord&gt;)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelSessionManager.html#COOKIE" class="member-name-link">COOKIE</a> - Static variable in class com.mcawful.<a href="com/mcawful/PanelSessionManager.html" title="class in com.mcawful">PanelSessionManager</a></dt>
+<dd>
+<div class="block">Name of the cookie that holds the session ID</div>
+</dd>
 <dt><a href="com/gmt2001/module/CoreModule.html" class="type-name-link" title="class in com.gmt2001.module">CoreModule</a> - Class in <a href="com/gmt2001/module/package-summary.html">com.gmt2001.module</a></dt>
 <dd>
 <div class="block">A bot module which is a core module</div>
@@ -1751,6 +1776,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#create(org.jooq.Context)" class="member-name-link">create(Context&lt;?&gt;)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#createChallenge()" class="member-name-link">createChallenge()</a> - Static method in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Creates a challenge which carries its own expiry and an HMAC, so the server does not
+ have to remember challenges it has handed out to unauthenticated clients</div>
 </dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#createClip(java.lang.String,java.lang.Float,java.lang.String)" class="member-name-link">createClip(String, Float, String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
@@ -1934,13 +1964,29 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Method to create a new role.</div>
 </dd>
+<dt><a href="com/mcawful/PanelSessionManager.html#createSession(java.lang.String,java.lang.String,java.lang.String,long)" class="member-name-link">createSession(String, String, String, long)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.html" title="class in com.mcawful">PanelSessionManager</a></dt>
+<dd>
+<div class="block">Starts a session</div>
+</dd>
 <dt><a href="com/gmt2001/JSFileSystem.html#CreateStringList()" class="member-name-link">CreateStringList()</a> - Static method in class com.gmt2001.<a href="com/gmt2001/JSFileSystem.html" title="class in com.gmt2001">JSFileSystem</a></dt>
 <dd>
 <div class="block">Helper method to create a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a> of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a></div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#creationDate()" class="member-name-link">creationDate()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#CREATIONDATE" class="member-name-link">CREATIONDATE</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Timestamp of when the passkey was registered</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#CREATIONDATE" class="member-name-link">CREATIONDATE</a> - Variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
 <div class="block">Account creation date</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#credentialId()" class="member-name-link">credentialId()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#CREDENTIALID" class="member-name-link">CREDENTIALID</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Credential ID, base64url encoded</div>
 </dd>
 <dt><a href="com/gmt2001/RollbarProvider.html#critical(java.lang.String)" class="member-name-link">critical(String)</a> - Method in class com.gmt2001.<a href="com/gmt2001/RollbarProvider.html" title="class in com.gmt2001">RollbarProvider</a></dt>
 <dd>
@@ -2132,6 +2178,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#declaresWindows()" class="member-name-link">declaresWindows()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#decode(java.lang.String,int)" class="member-name-link">decode(String, int)</a> - Static method in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Decodes a base64url string</div>
+</dd>
 <dt><a href="com/gmt2001/datastore/DataStore.html#decr(java.lang.String,java.lang.String,int)" class="member-name-link">decr(String, String, int)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Decreases the value of the <code>value</code> column as an integer in the default section of the given table and key</div>
@@ -2258,6 +2308,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Method to delete a message.</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#deletePasskeys(java.lang.String)" class="member-name-link">deletePasskeys(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Removes all passkeys of a panel user and ends their sessions.</div>
+</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#deleteRole(discord4j.core.object.entity.Role)" class="member-name-link">deleteRole(Role)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>
 <div class="block">Method to delete a role.</div>
@@ -2272,7 +2326,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#deleteUser(java.lang.String)" class="member-name-link">deleteUser(String)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
-<div class="block">Deletes a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a>
+<div class="block">Deletes a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> and their passkeys
  <br/>
  <br/>
  Only existing and <a href="tv/phantombot/panel/PanelUser/PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can be deleted</div>
@@ -2725,6 +2779,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#ENABLED" class="member-name-link">ENABLED</a> - Variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
 <div class="block">If the account is enabled</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#encode(byte%5B%5D)" class="member-name-link">encode(byte[])</a> - Static method in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Encodes bytes as base64url without padding, the encoding WebAuthn uses in JSON</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html#end()" class="member-name-link">end()</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html" title="class in com.gmt2001.twitch.tmi">TMIMessage.EmoteLocation</a></dt>
 <dd>&nbsp;</dd>
@@ -5188,6 +5246,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The primary key constraint</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#getPrimaryKey()" class="member-name-link">getPrimaryKey()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">The primary key constraint</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#getPrimaryKey()" class="member-name-link">getPrimaryKey()</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
 <div class="block">The primary key constraint</div>
@@ -5300,6 +5362,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The class holding records for this table</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#getRecordType()" class="member-name-link">getRecordType()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">The class holding records for this table</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#getRecordType()" class="member-name-link">getRecordType()</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
 <div class="block">The class holding records for this table</div>
@@ -5404,6 +5470,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/PhantomBot.html#getSession()" class="member-name-link">getSession()</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
 <div class="block">Gives you the session for that channel.</div>
+</dd>
+<dt><a href="com/mcawful/PanelSessionManager.html#getSession(io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">getSession(HttpHeaders)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.html" title="class in com.mcawful">PanelSessionManager</a></dt>
+<dd>
+<div class="block">Finds the session of a request</div>
 </dd>
 <dt><a href="tv/phantombot/cache/EmotesCache.EmotesSet.html#getSharedEmotes()" class="member-name-link">getSharedEmotes()</a> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/EmotesCache.EmotesSet.html" title="class in tv.phantombot.cache">EmotesCache.EmotesSet</a></dt>
 <dd>&nbsp;</dd>
@@ -5578,6 +5648,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/cache/TwitchTeamsCache.Team.html#getUrl()" class="member-name-link">getUrl()</a> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchTeamsCache.Team.html" title="class in tv.phantombot.cache">TwitchTeamsCache.Team</a></dt>
 <dd>
 <div class="block">Method that returns the team url.</div>
+</dd>
+<dt><a href="com/mcawful/PanelSessionManager.Session.html#getUser()" class="member-name-link">getUser()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.Session.html" title="class in com.mcawful">PanelSessionManager.Session</a></dt>
+<dd>
+<div class="block">Looks up the user of this session</div>
 </dd>
 <dt><a href="tv/phantombot/event/irc/channel/IrcChannelJoinEvent.html#getUser()" class="member-name-link">getUser()</a> - Method in class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelJoinEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelJoinEvent</a></dt>
 <dd>
@@ -5913,6 +5987,13 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#handleHttp(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleHttp(ChannelHandlerContext, FullHttpRequest)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Handles a request to <code>/panel/login/passkey/</code>, which the login page uses to sign in
+ with a passkey.</div>
+</dd>
+<dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#handleIsModuleEnabled(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,java.lang.String)" class="member-name-link">handleIsModuleEnabled(ChannelHandlerContext, WebSocketFrame, String)</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpRequestHandler.html#handleRequest(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleRequest(ChannelHandlerContext, FullHttpRequest)</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver">HttpRequestHandler</a></dt>
 <dd>
 <div class="block">Handles the HTTP request and sends a response back to the client
@@ -5931,6 +6012,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/TwitchAuthorizationCodeFlow.html#handleRequest(io.netty.handler.codec.http.FullHttpRequest,byte%5B%5D,tv.phantombot.httpserver.HTTPOAuthHandler)" class="member-name-link">handleRequest(FullHttpRequest, byte[], HTTPOAuthHandler)</a> - Static method in class com.gmt2001.twitch.<a href="com/gmt2001/twitch/TwitchAuthorizationCodeFlow.html" title="class in com.gmt2001.twitch">TwitchAuthorizationCodeFlow</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#handleWs(io.netty.channel.ChannelHandlerContext,tv.phantombot.panel.PanelUser.PanelUser,org.json.JSONObject,org.json.JSONStringer)" class="member-name-link">handleWs(ChannelHandlerContext, PanelUser, JSONObject, JSONStringer)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Handles a <code>passkey</code> query on the panel websocket</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSub.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)" class="member-name-link">handshakeComplete(ChannelHandlerContext)</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSub.html" title="class in com.gmt2001.twitch.eventsub">EventSub</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)" class="member-name-link">handshakeComplete(ChannelHandlerContext)</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html" title="class in com.gmt2001.twitch.tmi">TwitchMessageInterface</a></dt>
@@ -6310,6 +6395,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The user id</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#idHash()" class="member-name-link">idHash()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#IDHASH" class="member-name-link">IDHASH</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">SHA-256 of the credential ID as a hex-encoded string.</div>
+</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#ignoreIndex(java.lang.String...)" class="member-name-link">ignoreIndex(String...)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#ignoreIndexForGroupBy(java.lang.String...)" class="member-name-link">ignoreIndexForGroupBy(String...)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
@@ -6534,6 +6625,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/illusionaryone/YouTubeAPIv3.html#instance()" class="member-name-link">instance()</a> - Static method in class com.illusionaryone.<a href="com/illusionaryone/YouTubeAPIv3.html" title="class in com.illusionaryone">YouTubeAPIv3</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#instance()" class="member-name-link">instance()</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Provides an instance of <a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful"><code>PanelPasskeyTable</code></a></div>
+</dd>
 <dt><a href="com/scaniatv/CustomAPI.html#instance()" class="member-name-link">instance()</a> - Static method in class com.scaniatv.<a href="com/scaniatv/CustomAPI.html" title="class in com.scaniatv">CustomAPI</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/scaniatv/StreamElementsAPIv2.html#instance()" class="member-name-link">instance()</a> - Static method in class com.scaniatv.<a href="com/scaniatv/StreamElementsAPIv2.html" title="class in com.scaniatv">StreamElementsAPIv2</a></dt>
@@ -7224,6 +7319,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#isTokenAvailable()" class="member-name-link">isTokenAvailable()</a> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#isUriAllowed(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)" class="member-name-link">isUriAllowed(PanelUser, String)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Checks if the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to access a uri</div>
+</dd>
+<dt><a href="com/mcawful/PanelSessionManager.Session.html#isValid()" class="member-name-link">isValid()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.Session.html" title="class in com.mcawful">PanelSessionManager.Session</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#isValidFilePath(java.lang.String)" class="member-name-link">isValidFilePath(String)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/PathValidator.html#isValidPathLang(java.lang.String)" class="member-name-link">isValidPathLang(String)</a> - Static method in class com.gmt2001.<a href="com/gmt2001/PathValidator.html" title="class in com.gmt2001">PathValidator</a></dt>
@@ -7646,6 +7747,22 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Constructor</div>
 </dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#MAX_AUTH_DATA" class="member-name-link">MAX_AUTH_DATA</a> - Static variable in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Largest accepted authenticator data, in bytes</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#MAX_CLIENT_DATA" class="member-name-link">MAX_CLIENT_DATA</a> - Static variable in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Largest accepted <code>clientDataJSON</code>, in bytes</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#MAX_CREDENTIAL_ID" class="member-name-link">MAX_CREDENTIAL_ID</a> - Static variable in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Largest credential ID allowed by WebAuthn, in bytes</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#MAX_KEY" class="member-name-link">MAX_KEY</a> - Static variable in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Largest accepted public key or signature, in bytes.</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#maxRateLimit()" class="member-name-link">maxRateLimit()</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">The maximum value of <a href="tv/phantombot/twitch/api/Helix.html#remainingRateLimit()"><code>Helix.remainingRateLimit()</code></a></div>
@@ -7922,11 +8039,17 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The Twitch user display name</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#name()" class="member-name-link">name()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.MessageCreateFile.html#name()" class="member-name-link">name()</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.MessageCreateFile.html" title="class in tv.phantombot.discord.util">DiscordUtil.MessageCreateFile</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/cache/Viewer.html#name(java.lang.String)" class="member-name-link">name(String)</a> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
 <dd>
 <div class="block">Updates the Twitch user display name</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#NAME" class="member-name-link">NAME</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Name the user gave the passkey</div>
 </dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#naturalFullOuterJoin(java.lang.String)" class="member-name-link">naturalFullOuterJoin(String)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
@@ -8338,6 +8461,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Orange</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#origin()" class="member-name-link">origin()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelSessionManager.Session.html#origin()" class="member-name-link">origin()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.Session.html" title="class in com.mcawful">PanelSessionManager.Session</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#ORIGIN" class="member-name-link">ORIGIN</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Origin (scheme, host and port) the passkey was registered on</div>
+</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#original(int)" class="member-name-link">original(int)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#original(java.lang.String)" class="member-name-link">original(String)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
@@ -8403,10 +8534,30 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String,java.lang.String,java.lang.Integer,java.lang.Integer,java.lang.Boolean)" class="member-name-link">panelNotification(String, String, String, Integer, Integer, Boolean)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html" class="type-name-link" title="class in com.mcawful">PanelPasskeyHandler</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Passkey registration, management and sign-in for <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a>.</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html" class="type-name-link" title="class in com.mcawful">PanelPasskeyTable</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Stores the passkeys that panel users have registered for signing in to the panel</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" class="type-name-link" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">A passkey registered by a panel user</div>
+</dd>
 <dt><a href="com/mcawful/CustomPanelManifestRegistry.html#panelSectionForScript(java.lang.String)" class="member-name-link">panelSectionForScript(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/CustomPanelManifestRegistry.html" title="class in com.mcawful">CustomPanelManifestRegistry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mcawful/CustomPanelManifestRegistry.html#panelSectionForTable(java.lang.String)" class="member-name-link">panelSectionForTable(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/CustomPanelManifestRegistry.html" title="class in com.mcawful">CustomPanelManifestRegistry</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelSessionManager.html" class="type-name-link" title="class in com.mcawful">PanelSessionManager</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Panel login sessions that are started by signing in with a passkey.</div>
+</dd>
+<dt><a href="com/mcawful/PanelSessionManager.Session.html" class="type-name-link" title="class in com.mcawful">PanelSessionManager.Session</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">A panel login session.</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html" class="type-name-link" title="class in tv.phantombot.panel.PanelUser">PanelUser</a> - Class in <a href="tv/phantombot/panel/PanelUser/package-summary.html">tv.phantombot.panel.PanelUser</a></dt>
 <dd>
 <div class="block">Represents a panel user and should be managed through <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUserHandler</code></a></div>
@@ -8457,6 +8608,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/twitch/tmi/processors/PartTMIProcessor.html#%3Cinit%3E()" class="member-name-link">PartTMIProcessor()</a> - Constructor for class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/PartTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">PartTMIProcessor</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#%3Cinit%3E()" class="member-name-link">PasskeyRecord()</a> - Constructor for class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html" class="type-name-link" title="class in com.mcawful">PasskeyVerifier</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Server-side checks for passkey (WebAuthn) registration and sign-in on the panel.</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#PASSWORD" class="member-name-link">PASSWORD</a> - Variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
 <div class="block">Hashed Password</div>
@@ -9042,6 +9201,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/twitch/emotes/SevenTVAPIv3.html#PROVIDER_NAME" class="member-name-link">PROVIDER_NAME</a> - Static variable in class tv.phantombot.twitch.emotes.<a href="tv/phantombot/twitch/emotes/SevenTVAPIv3.html" title="class in tv.phantombot.twitch.emotes">SevenTVAPIv3</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#publicKey()" class="member-name-link">publicKey()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#PUBLICKEY" class="member-name-link">PUBLICKEY</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Public key in SubjectPublicKeyInfo form, base64url encoded</div>
+</dd>
 <dt><a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationAction.html#Purge()" class="member-name-link">Purge()</a> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationAction.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent.ModerationAction</a></dt>
 <dd>
 <div class="block">Attempts to set the current action to <code>Actions.Timeout</code> with a time of 1</div>
@@ -9135,6 +9300,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/data/RaidData.html#%3Cinit%3E(org.json.JSONObject)" class="member-name-link">RaidData(JSONObject)</a> - Constructor for class com.gmt2001.twitch.eventsub.subscriptions.channel.data.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/data/RaidData.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.data">RaidData</a></dt>
 <dd>
 <div class="block">Constructor</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#randomBytes(int)" class="member-name-link">randomBytes(int)</a> - Static method in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Generates cryptographically secure random bytes</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html#rateLimiter()" class="member-name-link">rateLimiter()</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html" title="class in com.gmt2001.twitch.tmi">TwitchMessageInterface</a></dt>
 <dd>
@@ -9303,6 +9472,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/datastore2/record/Record8.html#%3Cinit%3E(org.jooq.Table,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier)" class="member-name-link">Record8(Table&lt;RR&gt;, Supplier&lt;Field&lt;A&gt;&gt;, Supplier&lt;Field&lt;B&gt;&gt;, Supplier&lt;Field&lt;C&gt;&gt;, Supplier&lt;Field&lt;D&gt;&gt;, Supplier&lt;Field&lt;E&gt;&gt;, Supplier&lt;Field&lt;F&gt;&gt;, Supplier&lt;Field&lt;G&gt;&gt;, Supplier&lt;Field&lt;H&gt;&gt;)</a> - Constructor for class com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record8.html" title="class in com.gmt2001.datastore2.record">Record8</a></dt>
 <dd>
 <div class="block">Constructor</div>
+</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#recordLogin(tv.phantombot.panel.PanelUser.PanelUser)" class="member-name-link">recordLogin(PanelUser)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Stores the current time as the last login of a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a></div>
 </dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#recordType()" class="member-name-link">recordType()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
@@ -9536,6 +9709,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#renamePasskeys(java.lang.String,java.lang.String)" class="member-name-link">renamePasskeys(String, String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Moves all passkeys of a panel user to a new username and ends their sessions.</div>
+</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#rendersContent(org.jooq.Context)" class="member-name-link">rendersContent(Context&lt;?&gt;)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/datatype/AbstractDatabaseMap.html#replace(K,V)" class="member-name-link">replace(K, V)</a> - Method in class com.gmt2001.datastore2.datatype.<a href="com/gmt2001/datastore2/datatype/AbstractDatabaseMap.html" title="class in com.gmt2001.datastore2.datatype">AbstractDatabaseMap</a></dt>
@@ -9616,7 +9793,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#resetPassword(java.lang.String)" class="member-name-link">resetPassword(String)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
-<div class="block">Resets a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> password
+<div class="block">Resets a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> password, removes their passkeys,
+ ends their passkey sessions and retires their websocket token
  <br/>
  <br/>
  Only existing and <a href="tv/phantombot/panel/PanelUser/PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can have their passwords reset</div>
@@ -9694,6 +9872,18 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/Revocation.html#%3Cinit%3E()" class="member-name-link">Revocation()</a> - Constructor for class com.gmt2001.twitch.eventsub.subscriptions.<a href="com/gmt2001/twitch/eventsub/subscriptions/Revocation.html" title="class in com.gmt2001.twitch.eventsub.subscriptions">Revocation</a></dt>
 <dd>
 <div class="block">Only used by EventSub for handler registration</div>
+</dd>
+<dt><a href="com/mcawful/PanelSessionManager.html#revokePasskey(java.lang.String)" class="member-name-link">revokePasskey(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.html" title="class in com.mcawful">PanelSessionManager</a></dt>
+<dd>
+<div class="block">Ends all sessions that were started with a passkey</div>
+</dd>
+<dt><a href="com/mcawful/PanelSessionManager.html#revokeSession(io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">revokeSession(HttpHeaders)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.html" title="class in com.mcawful">PanelSessionManager</a></dt>
+<dd>
+<div class="block">Ends the session of a request, if it has one and the request comes from the origin the user signed in on.</div>
+</dd>
+<dt><a href="com/mcawful/PanelSessionManager.html#revokeUser(java.lang.String)" class="member-name-link">revokeUser(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelSessionManager.html" title="class in com.mcawful">PanelSessionManager</a></dt>
+<dd>
+<div class="block">Ends all sessions of a user</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/channel_points/redemption/ChannelPointsCustomRewardRedemptionAdd.html#reward()" class="member-name-link">reward()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/channel_points/redemption/ChannelPointsCustomRewardRedemptionAdd.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption">ChannelPointsCustomRewardRedemptionAdd</a></dt>
 <dd>
@@ -10150,6 +10340,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Version of this record implementation</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#serialVersionUID" class="member-name-link">serialVersionUID</a> - Static variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>
+<div class="block">Version of this record implementation</div>
+</dd>
 <dt><a href="tv/phantombot/CaselessProperties.html#serialVersionUID" class="member-name-link">serialVersionUID</a> - Static variable in class tv.phantombot.<a href="tv/phantombot/CaselessProperties.html" title="class in tv.phantombot">CaselessProperties</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#serialVersionUID" class="member-name-link">serialVersionUID</a> - Static variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
@@ -10434,6 +10628,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/event/jvm/ShutdownEvent.html#%3Cinit%3E()" class="member-name-link">ShutdownEvent()</a> - Constructor for class tv.phantombot.event.jvm.<a href="tv/phantombot/event/jvm/ShutdownEvent.html" title="class in tv.phantombot.event.jvm">ShutdownEvent</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#signCount()" class="member-name-link">signCount()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#SIGNCOUNT" class="member-name-link">SIGNCOUNT</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Signature counter last reported by the authenticator</div>
+</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#size()" class="member-name-link">size()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelModerate.html#slow()" class="member-name-link">slow()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelModerate.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelModerate</a></dt>
@@ -11905,6 +12105,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The login of the user.</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#username()" class="member-name-link">username()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/automod/message/AutomodMessage.html#userName()" class="member-name-link">userName()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.automod.message.<a href="com/gmt2001/twitch/eventsub/subscriptions/automod/message/AutomodMessage.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.automod.message">AutomodMessage</a></dt>
 <dd>
 <div class="block">The message sender's user display name.</div>
@@ -11932,6 +12134,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/TopPredictor.html#userName()" class="member-name-link">userName()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/TopPredictor.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">TopPredictor</a></dt>
 <dd>
 <div class="block">The display name of the user.</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeyTable.html#USERNAME" class="member-name-link">USERNAME</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
+<dd>
+<div class="block">Username of the panel user who owns the passkey</div>
 </dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#USERNAME" class="member-name-link">USERNAME</a> - Variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
@@ -12408,6 +12614,14 @@ the order they are declared.</div>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#VARIABLE" class="member-name-link">VARIABLE</a> - Variable in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>
 <div class="block">The variable</div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#verifyAssertion(byte%5B%5D,byte%5B%5D,byte%5B%5D,byte%5B%5D,java.lang.String,long)" class="member-name-link">verifyAssertion(byte[], byte[], byte[], byte[], String, long)</a> - Static method in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Verifies the response to <code>navigator.credentials.get()</code></div>
+</dd>
+<dt><a href="com/mcawful/PasskeyVerifier.html#verifyRegistration(byte%5B%5D,byte%5B%5D,byte%5B%5D,byte%5B%5D,java.lang.String,java.lang.String)" class="member-name-link">verifyRegistration(byte[], byte[], byte[], byte[], String, String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PasskeyVerifier.html" title="class in com.mcawful">PasskeyVerifier</a></dt>
+<dd>
+<div class="block">Verifies the response to <code>navigator.credentials.create()</code></div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersionRecord.html#version()" class="member-name-link">version()</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersionRecord.html" title="class in com.gmt2001.datastore2.meta">TableVersionRecord</a></dt>
 <dd>

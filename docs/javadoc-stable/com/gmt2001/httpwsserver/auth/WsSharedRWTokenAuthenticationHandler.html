@@ -106,9 +106,20 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <div class="block">Represents the <code>ATTR_AUTH_USER</code> attribute</div>
 </div>
 <div class="col-first odd-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
-<div class="col-second odd-row-color"><code><a href="#ATTR_IS_READ_ONLY" class="member-name-link">ATTR_IS_READ_ONLY</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#ATTR_HANDSHAKE_AUTH" class="member-name-link">ATTR_HANDSHAKE_AUTH</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Represents the <code>ATTR_HANDSHAKE_AUTH</code> attribute, which is <code>true</code> if the connection was authenticated by the cookie or session
+ sent with its handshake, as opposed to a token sent in a frame</div>
+</div>
+<div class="col-first even-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#ATTR_IS_READ_ONLY" class="member-name-link">ATTR_IS_READ_ONLY</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Represents the <code>ATTR_IS_READ_ONLY</code> attribute</div>
+</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#ATTR_ORIGIN" class="member-name-link">ATTR_ORIGIN</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Represents the <code>ATTR_ORIGIN</code> attribute, the <code>Origin</code> header sent by the browser during the handshake</div>
 </div>
 </div>
 <div class="inherited-list">
@@ -224,6 +235,21 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <h3>ATTR_AUTH_USER</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="../../../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&gt;</span>&nbsp;<span class="element-name">ATTR_AUTH_USER</span></div>
 <div class="block">Represents the <code>ATTR_AUTH_USER</code> attribute</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ATTR_ORIGIN">
+<h3>ATTR_ORIGIN</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">ATTR_ORIGIN</span></div>
+<div class="block">Represents the <code>ATTR_ORIGIN</code> attribute, the <code>Origin</code> header sent by the browser during the handshake</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ATTR_HANDSHAKE_AUTH">
+<h3>ATTR_HANDSHAKE_AUTH</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">ATTR_HANDSHAKE_AUTH</span></div>
+<div class="block">Represents the <code>ATTR_HANDSHAKE_AUTH</code> attribute, which is <code>true</code> if the connection was authenticated by the cookie or session
+ sent with its handshake, as opposed to a token sent in a frame</div>
 </section>
 </li>
 </ul>

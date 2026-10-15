@@ -167,6 +167,103 @@ $(function () {
     $('#user-pwd-btn').on('click', function () {
         helpers.getModal('pwdChange-panelUser', 'Change password', 'Save', passwordChangeForm, passwordChangeCallback).modal('toggle');
     });
+
+    // Loads the passkeys of the current user into the manage passkeys modal.
+    const loadPasskeys = function () {
+        socket.query('panelUserRO', 'passkey_list', {passkey: {action: 'list'}}, function (res) {
+            // Of the logins from botlogin.txt only the main one can use passkeys, the bot refuses the others
+            if (res.error !== undefined) {
+                toastr.error(res.error);
+                $('#passkey-panelUser').modal('hide');
+                return;
+            }
+
+            const list = $('#user-passkey-list').empty();
+
+            if (res.passkeys === undefined || res.passkeys.length === 0) {
+                list.append($('<li/>', {
+                    'class': 'list-group-item',
+                    'text': 'You have not added any passkeys yet.'
+                }));
+                return;
+            }
+
+            for (const passkey of res.passkeys) {
+                list.append($('<li/>', {
+                    'class': 'list-group-item',
+                    'text': passkey.name + ' (added ' + helpers.getDateStringFromDate(new Date(passkey.creationDate)) + ')'
+                }).append($('<button/>', {
+                    'class': 'btn btn-xs btn-danger pull-right',
+                    'type': 'button',
+                    'html': $('<i/>', {
+                        'class': 'fa fa-trash'
+                    }),
+                    'click': function () {
+                        helpers.getConfirmDeleteModal('user-passkey-remove', 'Are you sure you want to remove the passkey "' + passkey.name + '"?', false,
+                            'Passkey removed', function () {
+                                socket.query('panelUserRO', 'passkey_delete', {passkey: {action: 'delete', id: passkey.id}}, function (res) {
+                                    if (res.error !== undefined) {
+                                        toastr.error(res.error);
+                                    }
+
+                                    loadPasskeys();
+                                }, true);
+                            });
+                    }
+                })));
+            }
+        }, true);
+    };
+
+    // Creates a passkey on this device and registers it with the bot.
+    const passkeyAddCallback = function () {
+        socket.query('panelUserRO', 'passkey_options', {passkey: {action: 'options'}}, function (options) {
+            if (options.error !== undefined) {
+                toastr.error(options.error);
+                return;
+            }
+
+            window.passkey.create(options).then(function (credential) {
+                credential.action = 'register';
+                credential.name = $('#user-passkey-name').val();
+
+                socket.query('panelUserRO', 'passkey_register', {passkey: credential}, function (res) {
+                    if (res.error !== undefined) {
+                        toastr.error(res.error);
+                        return;
+                    }
+
+                    toastr.success(res.success);
+                    $('#user-passkey-name').val('');
+                    loadPasskeys();
+                }, true);
+            }).catch(function (e) {
+                toastr.error(e.message);
+            });
+        }, true);
+    };
+
+    // the manage passkeys button.
+    if (helpers.isLocalPanel() && window.passkey !== undefined && window.passkey.isSupported()) {
+        $('#user-passkey-row').removeClass('hide');
+        $('#user-passkey-btn').on('click', function () {
+            helpers.getModal('passkey-panelUser', 'Manage passkeys', 'Add passkey', $('<form/>', {
+                'role': 'form'
+            })
+            .append($('<ul/>', {
+                'class': 'list-group',
+                'id': 'user-passkey-list'
+            }))
+            .append(helpers.getInputGroup('user-passkey-name', 'text', 'New passkey name', 'My laptop', '', 'A name to recognize the new passkey by')),
+            passkeyAddCallback, {canceltext: 'Close'}).on('shown.bs.modal', function () {
+                // The list only exists in the page once the modal has been shown
+                loadPasskeys();
+            }).modal('toggle');
+        });
+    } else {
+        // Passkeys need the panel hosted by the bot, on HTTPS with a valid certificate or on http://localhost.
+        $('#user-passkey-row').remove();
+    }
     // Load the display name.
     $(function () {
         //Remove sections to which the user has no permissions

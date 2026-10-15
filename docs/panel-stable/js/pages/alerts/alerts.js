@@ -503,8 +503,8 @@ $(function () {
     // Raid settings.
     $('#raidHandlerSettings').on('click', function () {
         socket.getDBValues('alerts_get_raid_settings', {
-            tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
-            keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam', 'raidMinViewers']
+            tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
+            keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam', 'raidMinViewers', 'shoutoutapi']
         }, true, function (e) {
             helpers.getModal('raid-alert', 'Raid Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -532,7 +532,9 @@ $(function () {
                                             'Reward given to the users who raid your channel.'))
                                     // Appen the min viewers for alerts box
                                     .append(helpers.getInputGroup('raid-min-viewers', 'number', 'Raid Minimum Viewers', '', e.raidMinViewers,
-                                            'The minimum amount of viewers to trigger the raid alert. Data will still be saved in history even if minimum viewers is not met.'))))
+                                            'The minimum amount of viewers to trigger the raid alert. Data will still be saved in history even if minimum viewers is not met.'))
+                                    .append(helpers.getDropdownGroup('shoutout-api', 'Enable Shoutout API', (helpers.isTrue(e.shoutoutapi) ? 'Yes' : 'No'), ['Yes', 'No'],
+                                            'Enables sending a Twitch /shoutout for the raiding channel. NOTE: Limit of 1 shoutout per 2 minutes. Can not repeat the same channel within 1 hour.')))
                             // Append second collapsible accordion.
                             .append(helpers.getCollapsibleAccordion('main-2', 'Outgoing Raid Settings', $('<form/>', {
                                 'role': 'form'
@@ -562,9 +564,9 @@ $(function () {
                                 break;
                             default:
                                 socket.updateDBValues('raid_setting_update', {
-                                    tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
-                                    keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam', 'raidMinViewers'],
-                                    values: [raidToggle, raidNewMsg.val(), raidMsg.val(), raidReward.val(), raidOutMsg.val(), raidMsgSpam.val(), raidMinViewers.val()]
+                                    tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
+                                    keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam', 'raidMinViewers', 'shoutoutapi'],
+                                    values: [raidToggle, raidNewMsg.val(), raidMsg.val(), raidReward.val(), raidOutMsg.val(), raidMsgSpam.val(), raidMinViewers.val(), shoutoutApi.val()]
                                 }, function () {
                                     socket.sendCommand('raid_setting_update_cmd', 'reloadraid', function () {
                                         // Alert the user.

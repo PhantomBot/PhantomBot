@@ -38,6 +38,8 @@ _NOTE: this tag uses the _config/gif-alerts_ folder_
 
 _NOTE: if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume_
 
+_NOTE: while alerts are paused with !togglealerts, a command, keyword or redemption that uses this tag is canceled without taking its cost_
+
 
 **Example:**
 ```text
@@ -51,7 +53,7 @@ Caster: !addcom !bananatext (alert banana.gif, 5, 0.6, font-size:42px;color:#FF0
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
@@ -68,9 +70,12 @@ Defined in script: _./javascript-source/core/transformers/alerts.js_
 
 **Labels:** twitch discord noevent alerts
 
+
+_NOTE: while alerts are paused with !togglealerts, a command, keyword or redemption that uses this tag is canceled without taking its cost_
+
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
@@ -88,6 +93,8 @@ Defined in script: _./javascript-source/core/transformers/alerts.js_
 
 _NOTE: this tag uses the _config/audio-hooks_ folder_
 
+_NOTE: while alerts are paused with !togglealerts, a command, keyword or redemption that uses this tag is canceled without taking its cost_
+
 
 **Example:**
 ```text
@@ -101,7 +108,7 @@ Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 

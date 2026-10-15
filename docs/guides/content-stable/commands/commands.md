@@ -67,6 +67,7 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./handlers/clipHandler.js | !topclip | - Displays the top clip from the past day. |
 | ./handlers/clipHandler.js | !clipit (-d duration) (title) | - Creates a clip, optionally setting the initial duration and title. |
 | ./handlers/raidHandler.js | !raid toggle | - Toggles if the bot should welcome raiders. |
+| ./handlers/raidHandler.js | !raid toggleshoutout | - Toggles if the bot should trigger the shoutout API for the raiding channel. |
 | ./handlers/raidHandler.js | !raid setreward [amount] | - Sets the amount of points given to raiders. |
 | ./handlers/raidHandler.js | !raid setincomingminviewers [amount] | - Sets the minimum amount of viewers to trigger the raid message. |
 | ./handlers/raidHandler.js | !raid setincomingmessage [message] | - Sets the incoming raid message - Tags: (username), (viewers), (url), (times), (reward) and (game) |
@@ -284,6 +285,7 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./systems/welcomeSystem.js | !welcome disable [user] | - Disable welcoming of the given user. |
 | ./systems/welcomeSystem.js | !welcome enable [user] | - Disable welcoming of the given user. |
 | ./core/commandPause.js | !pausecommands clear | - Unpause commands |
+| ./core/alertPause.js | !togglealerts (seconds) | - Pause or resume the sounds and alerts that commands, keywords and redemptions send to the stream overlay. If (seconds) is present, pause them for that amount of time |
 | ./core/lang.js | !lang [language name] | - Get or optionally set the current language (use folder name from "./lang" directory); |
 | ./core/lang.js | !mute | - Toggle muting the bot in the chat |
 | ./core/lang.js | !toggleme | - Toggle prepending chat output with "/me". |
