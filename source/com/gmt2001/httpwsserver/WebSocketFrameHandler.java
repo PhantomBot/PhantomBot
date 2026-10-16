@@ -280,7 +280,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     public static void broadcastWsFrame(WebSocketFrame resframe, boolean includeReadOnly) {
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get()) {
-                if (!includeReadOnly && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+                if (!includeReadOnly && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null) {
                     com.gmt2001.Console.debug.println("Did not broadcast to client [" + c.remoteAddress().toString() + "] Authenticated: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Read-only: t");
                     return;
                 }
@@ -313,7 +313,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         com.gmt2001.Console.debug.println("Broadcasting frame to Uri [" + uri + "]");
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
-                if (!includeReadOnly && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+                if (!includeReadOnly && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && c.attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null) {
                     com.gmt2001.Console.debug.println("Did not broadcast to client [" + c.remoteAddress().toString() + "] Authenticated: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Uri: " + c.attr(ATTR_URI).get() + "   Uri match: " + (c.attr(ATTR_URI).get().equals(uri) ? "t" : "f") + "   Read-only: t");
                     return;
                 }
