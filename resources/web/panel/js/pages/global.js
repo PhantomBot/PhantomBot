@@ -245,7 +245,14 @@ $(function () {
 
     // the manage passkeys button.
     if (helpers.isLocalPanel() && window.passkey !== undefined && window.passkey.isSupported()) {
-        $('#user-passkey-row').removeClass('hide');
+        // The bot also rules out its self-signed certificate, which the browser does not report to the page
+        $.get('/passkeycheck', function (allowed) {
+            if (allowed === 'true') {
+                $('#user-passkey-row').removeClass('hide');
+            } else {
+                $('#user-passkey-row').remove();
+            }
+        }, 'text');
         $('#user-passkey-btn').on('click', function () {
             helpers.getModal('passkey-panelUser', 'Manage passkeys', 'Add passkey', $('<form/>', {
                 'role': 'form'
