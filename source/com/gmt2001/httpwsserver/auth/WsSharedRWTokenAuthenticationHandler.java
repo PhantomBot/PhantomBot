@@ -212,7 +212,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         com.gmt2001.Console.debug.println("ROToken");
                     }
 
-                    if (this.allowPaneluser && ctx.channel().attr(ATTR_AUTH_USER).get() == null) {
+                    if (this.allowPaneluser && ctx.channel().attr(ATTR_AUTH_USER).get() == null && !astr.equals(readOnlyToken)) {
                         PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(astr);
                         com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                         if (user != null) {
