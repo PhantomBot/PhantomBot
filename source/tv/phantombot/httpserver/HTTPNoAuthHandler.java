@@ -105,7 +105,11 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
 
-            boolean allowpasskey = (isSsl || (origin != null && !origin.isBlank() && origin.equals("http://localhost"))) && !HTTPWSServer.instance().isAutoSsl();
+            // Browsers send no Origin on a same-origin GET, so localhost is read from the Host header, without the port
+            boolean isLocalhost = req.headers().get(HttpHeaderNames.HOST, "").replaceFirst(":\\d*$", "").equalsIgnoreCase("localhost");
+            boolean isProxied = req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST) || req.headers().contains(HTTPWSServer.HEADER_CF_RAY);
+
+            boolean allowpasskey = (isSsl || isLocalhost) && (!HTTPWSServer.instance().isAutoSsl() || isProxied);
 
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (allowpasskey ? "true" : "false").getBytes(), null);
             if (origin != null && !origin.isBlank()) {

@@ -24,7 +24,7 @@ Browsers only allow passkeys on addresses they consider secure. Passkeys are ava
 
 The self-signed certificate that the bot creates by default does **not** meet these requirements, because browsers show a warning for it. See **[Enable Twitch Embeds](guide=content/integrations/twitchembeds "##guide_link")** for the ways to give your bot a certificate that browsers accept.
 
-When the panel can tell that the requirements are not met, the passkey buttons are hidden and the panel works as it always has. A browser does not tell the panel about a certificate warning, so with the default self-signed certificate the buttons may still be shown, and using them fails with a message.
+When the requirements are not met, the passkey buttons are hidden and the panel works as it always has. The bot hides them for its default self-signed certificate. If a reverse proxy serves the panel, set it up as described in **[Enable Twitch Embeds](guide=content/integrations/twitchembeds "##guide_link")**, otherwise the bot hides the buttons. For any other certificate that your browser warns about, the buttons may still be shown, and using them fails with a message.
 
 ## Adding a Passkey
 
