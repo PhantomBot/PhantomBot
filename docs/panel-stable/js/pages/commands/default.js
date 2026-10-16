@@ -442,7 +442,7 @@ $(function () {
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
                                                     const $tr = t.parents('tr');
                                                     // Update user level value.
-                                                    $tr.find('td:eq(1)').text(commandPermission.find(':selected').text());
+                                                    $tr.find('td:eq(2)').text(commandPermission.find(':selected').text());
                                                     // Update status icons
                                                     $tr.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
                                                     $tr.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
