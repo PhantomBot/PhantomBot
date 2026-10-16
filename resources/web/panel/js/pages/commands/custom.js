@@ -458,12 +458,12 @@ $(function () {
                                                 socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
                                                     // Update the command response
-                                                    row.find('td:eq(1)').text(commandResponse.val());
+                                                    row.find('td:eq(2)').text(commandResponse.val());
                                                     // Update status icons
                                                     row.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
                                                     row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
                                                     // Update Permissions
-                                                    row.find('td:eq(2)').text(commandPermission.find(':selected').text());
+                                                    row.find('td:eq(3)').text(commandPermission.find(':selected').text());
                                                     // Close the modal.
                                                     $('#edit-command').modal('hide');
                                                     // Tell the user the command was edited.

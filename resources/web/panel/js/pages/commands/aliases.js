@@ -386,7 +386,7 @@ $(function () {
                                                         ['editAlias', alias, aliasCmd.val(), JSON.stringify({disabled: aliasDisabled})], function () {
                                                     const $tr = t.parents('tr');
                                                     // Update the table.
-                                                    $tr.find('td:eq(1)').text('!' + aliasCmd.val());
+                                                    $tr.find('td:eq(2)').text('!' + aliasCmd.val());
                                                     // Update status icons
                                                     $tr.find('.disabled-status-icon').attr(getDisabledIconAttr(aliasDisabled));
                                                     $tr.find('.hidden-status-icon').attr(getHiddenIconAttr(aliasHidden));
