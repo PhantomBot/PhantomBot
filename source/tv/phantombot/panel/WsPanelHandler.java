@@ -118,7 +118,7 @@ public class WsPanelHandler implements WsFrameHandler {
             }
 
             PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() || user != null) {
+            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null || user != null) {
                 handleRestrictedCommands(ctx, frame, jso);
             }
 
@@ -660,7 +660,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 return;
             }
             jsonObject.key("results").array();
-            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() || ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
+            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null || ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                 LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"), jsonObject);
             } else {
                 jsonObject.object().key("errors").array().object()
@@ -676,7 +676,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 return;
             }
             jsonObject.key("results").array();
-            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() || user != null) {
+            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null || user != null) {
                 this.uploadAudioHook(jso.getJSONObject("params"), jsonObject);
             } else {
                 this.uploadAudioHookError(jsonObject, "403", "Forbidden", "Read-only Connection");
@@ -837,7 +837,7 @@ public class WsPanelHandler implements WsFrameHandler {
         String key = jso.getJSONObject("query").getString("key");
         String uniqueID = jso.has("dbquery") ? jso.getString("dbquery") : "";
 
-        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
 
@@ -868,7 +868,7 @@ public class WsPanelHandler implements WsFrameHandler {
         String table = jso.getJSONObject("query").getString("table");
         String uniqueID = jso.has("dbkeys") ? jso.getString("dbkeys") : "";
 
-        if (ctx != null && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+        if (ctx != null && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
 
@@ -923,7 +923,7 @@ public class WsPanelHandler implements WsFrameHandler {
             if (jsonArray.getJSONObject(i).has("table")) {
                 String table = jsonArray.getJSONObject(i).getString("table");
 
-                if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+                if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
                     continue;
                 }
 
@@ -960,7 +960,7 @@ public class WsPanelHandler implements WsFrameHandler {
         String order = jso.getJSONObject("query").getString("order");
         String uniqueID = jso.has("dbkeysbyorder") ? jso.getString("dbkeysbyorder") : "";
 
-        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
 
@@ -1000,7 +1000,7 @@ public class WsPanelHandler implements WsFrameHandler {
         String isNumber = jso.getJSONObject("query").getString("number");
         String uniqueID = jso.has("dbvaluesbyorder") ? jso.getString("dbvaluesbyorder") : "";
 
-        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
 
@@ -1045,7 +1045,7 @@ public class WsPanelHandler implements WsFrameHandler {
         String order = jso.getJSONObject("query").getString("order");
         String uniqueID = jso.has("dbkeyssearch") ? jso.getString("dbkeyssearch") : "";
 
-        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+        if (ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() == null && !Arrays.stream(ALLOWED_RO_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
             return;
         }
 
