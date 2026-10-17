@@ -544,7 +544,7 @@ $(function () {
                                             'Message said in chat when you use the !raid command to raid a channel. Tags: (username) and (url)', false))
                                     // Appen the spam box
                                     .append(helpers.getInputGroup('raid-spam', 'number', 'Raiding Message Spam', '', e.raidOutSpam,
-                                            'How many times the message when using the !raid command will be said in the chat. Maximum is 10 times.'))))),
+                                            'How many times the message when using the !raid command will be said in the chat. Maximum is 10 times.')))))),
                     function () {
                         let raidToggle = $('#raid-toggle').find(':selected').text() === 'Yes',
                                 raidNewMsg = $('#new-raid-message'),
@@ -552,7 +552,8 @@ $(function () {
                                 raidReward = $('#raid-reward'),
                                 raidOutMsg = $('#out-raid-message'),
                                 raidMsgSpam = $('#raid-spam'),
-                                raidMinViewers = $('#raid-min-viewers');
+                                raidMinViewers = $('#raid-min-viewers'),
+                                shoutoutApi = $('#shoutout-api').find(':selected').text() === 'Yes';
 
                         switch (false) {
                             case helpers.handleInputString(raidNewMsg):
@@ -566,7 +567,7 @@ $(function () {
                                 socket.updateDBValues('raid_setting_update', {
                                     tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
                                     keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam', 'raidMinViewers', 'shoutoutapi'],
-                                    values: [raidToggle, raidNewMsg.val(), raidMsg.val(), raidReward.val(), raidOutMsg.val(), raidMsgSpam.val(), raidMinViewers.val(), shoutoutApi.val()]
+                                    values: [raidToggle, raidNewMsg.val(), raidMsg.val(), raidReward.val(), raidOutMsg.val(), raidMsgSpam.val(), raidMinViewers.val(), shoutoutApi]
                                 }, function () {
                                     socket.sendCommand('raid_setting_update_cmd', 'reloadraid', function () {
                                         // Alert the user.
@@ -576,7 +577,7 @@ $(function () {
                                     });
                                 });
                         }
-                    }).modal('toggle'));
+                    }).modal('toggle');
         });
     });
 
