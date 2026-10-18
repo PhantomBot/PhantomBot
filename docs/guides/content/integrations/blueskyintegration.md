@@ -55,9 +55,11 @@ The bot remembers the posts it made itself for an hour, to keep them out of *You
 
 | Setting | When | At most |
 | :--- | :--- | :--- |
-| Post When Going Live | About 90 seconds after the stream goes live, so Twitch has made a preview picture for the link card | Once every 8 hours |
+| Post When Going Live | When the stream goes live | Once every 8 hours |
 | Post When Changing Game | When the game changes while live | Once an hour |
 | Post Updates While Live | Periodically while live | Every 180 minutes or more, as set by *Update Interval* |
+
+Each automatic post gets a link card for your Twitch channel, with your profile picture, the stream title and the game, as the Bluesky app shows for a Twitch link.
 
 The text of each post can use any tag that does not need a command, and these:
 

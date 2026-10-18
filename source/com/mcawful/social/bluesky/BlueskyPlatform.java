@@ -345,8 +345,6 @@ public final class BlueskyPlatform implements SocialPlatform {
 
     /**
      * Downloads the card's picture and uploads it to Bluesky
-     * <p>
-     * A Twitch stream preview is requested at 1280x720, then 640x360, to stay under Bluesky's size limit
      *
      * @return the blob; {@code null} if there is no usable picture
      */
@@ -355,29 +353,21 @@ public final class BlueskyPlatform implements SocialPlatform {
             return null;
         }
 
-        List<String> candidates = thumbnailUrl.contains("-1920x1080.")
-                ? List.of(thumbnailUrl.replace("-1920x1080.", "-1280x720."), thumbnailUrl.replace("-1920x1080.", "-640x360."))
-                : List.of(thumbnailUrl);
+        HttpClientResponse response = HttpClient.get(URIUtil.create(thumbnailUrl));
+        String contentType = response.isSuccess() ? response.responseHeaders().get(HttpHeaderNames.CONTENT_TYPE, "") : "";
+        byte[] data = response.rawResponseBody();
 
-        for (String candidate : candidates) {
-            HttpClientResponse response = HttpClient.get(URIUtil.create(candidate + (candidate.contains("?") ? "&" : "?")
-                    + "t=" + Instant.now().getEpochSecond()));
-            String contentType = response.isSuccess() ? response.responseHeaders().get(HttpHeaderNames.CONTENT_TYPE, "") : "";
-            byte[] data = response.rawResponseBody();
-
-            if (contentType.startsWith("image/") && data != null && data.length > 0 && data.length <= MAX_THUMBNAIL_BYTES) {
-                try {
-                    return this.xrpc.upload(data, contentType).getJSONObject("blob");
-                } catch (XrpcException ex) {
-                    com.gmt2001.Console.warn.println("Failed to upload the Bluesky link card picture: " + ex.getMessage());
-                    return null;
-                }
-            }
+        if (!contentType.startsWith("image/") || data == null || data.length == 0 || data.length > MAX_THUMBNAIL_BYTES) {
+            com.gmt2001.Console.warn.println("No usable picture for the Bluesky link card at " + thumbnailUrl);
+            return null;
         }
 
-        com.gmt2001.Console.warn.println("No usable picture for the Bluesky link card at " + thumbnailUrl);
-
-        return null;
+        try {
+            return this.xrpc.upload(data, contentType).getJSONObject("blob");
+        } catch (XrpcException ex) {
+            com.gmt2001.Console.warn.println("Failed to upload the Bluesky link card picture: " + ex.getMessage());
+            return null;
+        }
     }
 
     @Override

@@ -29,7 +29,6 @@
     const MIN_UPDATE_MINUTES = 180,
         ONLINE_COOLDOWN = 8 * 60 * 60 * 1000,
         GAME_CHANGE_COOLDOWN = 60 * 60 * 1000,
-        ONLINE_POST_DELAY = 90 * 1000,
         UPDATE_CHECK_INTERVAL = 80 * 1000,
         MAX_CHAT_TEXT = 250,
         LAST_TYPES = {lastpost: 'posts', lastmention: 'mentions', lastrepost: 'reposts'},
@@ -236,7 +235,7 @@
 
         card = new Packages.com.mcawful.social.SocialLinkCard(getTwitchUrl(),
                 title !== '' ? title : getLang(spec, 'card.title', $.username.resolve($.channelName)),
-                game !== '' ? getLang(spec, 'card.description', game) : '', $.twitchcache.getPreviewLink());
+                game !== '' ? getLang(spec, 'card.description', game) : '', $.twitchcache.getLogoLink());
         result = spec.api.createPost(text, card, true);
 
         if (result.success()) {
@@ -250,15 +249,14 @@
      * @function scheduleAutoPost
      * @param {Object} spec
      * @param {String} key the message_ key of the template
-     * @param {Number} delay milliseconds to wait; the post is made on a timer so the request does not hold up the event
      */
-    function scheduleAutoPost(spec, key, delay) {
+    function scheduleAutoPost(spec, key) {
+        // Posted on a timer, so the requests to the platform do not hold up the event
         setTimeout(function () {
-            // Going live waits for Twitch to make the stream preview used on the link card; check the stream is still live
             if ($.isOnline($.channelName)) {
                 createAutoPost(spec, key);
             }
-        }, delay);
+        }, 0);
     }
 
     /*
@@ -622,7 +620,7 @@
             if (isEnabled(spec) && spec.api.isConfigured() && $.getIniDbBoolean(spec.id, 'post_online', false)
                     && now - $.getIniDbNumber(spec.id, 'last_onlinepost', 0) >= ONLINE_COOLDOWN) {
                 $.inidb.set(spec.id, 'last_onlinepost', now);
-                scheduleAutoPost(spec, 'message_online', ONLINE_POST_DELAY);
+                scheduleAutoPost(spec, 'message_online');
             }
         }
     });
@@ -644,7 +642,7 @@
             if (isEnabled(spec) && spec.api.isConfigured() && $.getIniDbBoolean(spec.id, 'post_gamechange', false)
                     && now - $.getIniDbNumber(spec.id, 'last_gamechange', 0) >= GAME_CHANGE_COOLDOWN) {
                 $.inidb.set(spec.id, 'last_gamechange', now);
-                scheduleAutoPost(spec, 'message_gamechange', 0);
+                scheduleAutoPost(spec, 'message_gamechange');
             }
         }
     });
