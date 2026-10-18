@@ -58,6 +58,8 @@ import com.gmt2001.util.concurrent.ExecutorService;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.StreamLabsAPI;
 import com.illusionaryone.YouTubeAPIv3;
+import com.mcawful.social.SocialPlatformRegistry;
+import com.mcawful.social.SocialPoller;
 import com.scaniatv.CustomAPI;
 
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -116,6 +118,7 @@ public final class PhantomBot implements Listener {
     private TipeeeStreamCache tipeeeStreamCache;
     private ViewerListCache viewerListCache;
     private StreamElementsCache streamElementCache;
+    private SocialPoller socialPoller;
     public static boolean twitchCacheReady = false;
 
     /* Sockets */
@@ -971,6 +974,7 @@ public final class PhantomBot implements Listener {
         this.twitchCache = TwitchCache.instance();
         RhinoRuntime.ExposePropertyToScripts("twitchcache", this.twitchCache);
         RhinoRuntime.ExposePropertyToScripts("viewer", ViewerCache.instance());
+        RhinoRuntime.ExposePropertyToScripts("socialPlatforms", SocialPlatformRegistry.instance());
 
         /* And finally try to load init, that will then load the scripts */
         try {
@@ -1083,6 +1087,14 @@ public final class PhantomBot implements Listener {
             StreamElementsCache.instance().kill();
         }
 
+        if (this.socialPoller != null) {
+            this.print("Terminating the social media poller...");
+            com.gmt2001.Console.debug.println("Kill SocialPoller");
+            this.socialPoller.kill();
+        }
+
+        SocialPlatformRegistry.instance().shutdown();
+
         this.print("Terminating all script modules...");
         com.gmt2001.Console.debug.println("Kill scripts");
         Map<String, Script> scripts = ScriptManager.getScripts();
@@ -1177,6 +1189,7 @@ public final class PhantomBot implements Listener {
         DonationsCache.instance();
         this.tipeeeStreamCache = TipeeeStreamCache.instance();
         this.streamElementCache = StreamElementsCache.instance();
+        this.socialPoller = SocialPoller.instance();
 
         /* Export these to the $. api for the sripts to use */
         RhinoRuntime.ExposePropertyToScripts("twitchteamscache", this.twitchTeamCache);
