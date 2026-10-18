@@ -42,11 +42,13 @@
             './discord/games/roll.js',
             './discord/games/roulette.js',
             './discord/games/slotMachine.js',
+            './discord/handlers/blueskyHandler.js',
             './discord/handlers/streamElementsHandler.js',
             './discord/handlers/streamlabsHandler.js',
             './discord/handlers/tipeeeStreamHandler.js',
             './discord/systems/greetingsSystem.js',
             './discord/systems/pointSystem.js',
+            './handlers/blueskyHandler.js',
             './handlers/donationHandler.js',
             './handlers/streamElementsHandler.js',
             './handlers/tipeeeStreamHandler.js',
@@ -856,6 +858,17 @@
             commands[i].type = 'channelpoints';
         }
         $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+    });
+
+    addUpdate('3.24.0.0', 'installedv3.24.0.0-bluesky', function () {
+        let modules = ['./discord/handlers/blueskyHandler.js', './handlers/blueskyHandler.js'];
+
+        // New modules are enabled when first loaded; keep the Bluesky modules off until they are set up
+        for (let i = 0; i < modules.length; i++) {
+            if (!$.inidb.exists('modules', modules[i])) {
+                $.inidb.set('modules', modules[i], 'false');
+            }
+        }
     });
 
     // ------ Add updates above this line in execution order ------
