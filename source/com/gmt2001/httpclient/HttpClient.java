@@ -67,6 +67,47 @@ public final class HttpClient {
      * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse request(HttpMethod method, URI url, HttpHeaders requestHeaders, String requestBody) {
+        String _requestBody = requestBody;
+
+        if (_requestBody == null) {
+            _requestBody = "";
+        }
+
+        return request(method, url, requestHeaders, ByteBufFlux.fromString(Mono.just(_requestBody)),
+            requestBody == null ? 0 : requestBody.getBytes(StandardCharsets.UTF_8).length, requestBody);
+    }
+
+    /**
+     * Performs a {@link HttpMethod#POST} request with a binary body, such as an image
+     * <p>
+     * The {@code Content-Length} header is always set from the length of the body
+     *
+     * @param url the URL to request
+     * @param requestHeaders the request headers to send, including the {@code Content-Type}
+     * @param requestBody the request body to send
+     * @return a {@link HttpClientResponse} with the results
+     */
+    public static HttpClientResponse postBytes(URI url, HttpHeaders requestHeaders, byte[] requestBody) {
+        byte[] body = requestBody == null ? new byte[0] : requestBody;
+        HttpHeaders headers = createHeaders().add(requestHeaders);
+        headers.set(HttpHeaderNames.CONTENT_LENGTH, body.length);
+
+        return request(HttpMethod.POST, url, headers, ByteBufFlux.fromInbound(Mono.just(body)), body.length, "(" + body.length + " bytes)");
+    }
+
+    /**
+     * Performs an HTTP request
+     *
+     * @param method the HTTP method
+     * @param url the URL to request
+     * @param requestHeaders the request headers to send
+     * @param requestBody the request body to send
+     * @param requestBodyLength the length of the request body, in bytes
+     * @param requestBodyText the request body as reported by the {@link HttpClientResponse}
+     * @return a {@link HttpClientResponse} with the results
+     */
+    private static HttpClientResponse request(HttpMethod method, URI url, HttpHeaders requestHeaders, ByteBufFlux requestBody,
+            int requestBodyLength, String requestBodyText) {
         reactor.netty.http.client.HttpClient client = reactor.netty.http.client.HttpClient.create();
 
         /**
@@ -97,20 +138,10 @@ public final class HttpClient {
                 h.add(HttpHeaderNames.USER_AGENT, DEFAULT_USER_AGENT);
 
                 if (!h.contains(HttpHeaderNames.CONTENT_LENGTH)) {
-                    if (requestBody != null) {
-                        h.add(HttpHeaderNames.CONTENT_LENGTH, requestBody.getBytes(StandardCharsets.UTF_8).length);
-                    } else {
-                        h.add(HttpHeaderNames.CONTENT_LENGTH, 0);
-                    }
+                    h.add(HttpHeaderNames.CONTENT_LENGTH, requestBodyLength);
                 }
             }
         });
-
-        String _requestBody = requestBody;
-
-        if (_requestBody == null) {
-            _requestBody = "";
-        }
 
         RequestSender sender = client.followRedirect(true).request(method).uri(url);
 
@@ -119,12 +150,12 @@ public final class HttpClient {
              * @botproperty httpclienttimeout - The timeout, in seconds, for an HTTP request to complete. Default `10`
              * @botpropertycatsort httpclienttimeout 100 700 HTTP/WS
              */
-            return sender.send(ByteBufFlux.fromString(Mono.just(_requestBody)))
-                    .responseSingle((res, buf) -> buf.asByteArray().map(content -> new HttpClientResponse(null, requestBody, content, url, res))
-                    .defaultIfEmpty(new HttpClientResponse(null, requestBody, new byte[0], url, res)))
+            return sender.send(requestBody)
+                    .responseSingle((res, buf) -> buf.asByteArray().map(content -> new HttpClientResponse(null, requestBodyText, content, url, res))
+                    .defaultIfEmpty(new HttpClientResponse(null, requestBodyText, new byte[0], url, res)))
                     .toFuture().get(CaselessProperties.instance().getPropertyAsInt("httpclienttimeout", TIMEOUT_TIME), TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException ex) {
-            return new HttpClientResponse(ex, false, method, requestBody, ex.getClass().getName().getBytes(StandardCharsets.UTF_8), requestHeaders, null, null, url);
+            return new HttpClientResponse(ex, false, method, requestBodyText, ex.getClass().getName().getBytes(StandardCharsets.UTF_8), requestHeaders, null, null, url);
         }
     }
 

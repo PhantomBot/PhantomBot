@@ -1,0 +1,18 @@
+{
+    "social.discord.announce.success": "(platform) $1 announcements in Discord are now $2.",
+    "social.discord.announce.type.usage": "usage: !(command) announce $1 [on/off]. Currently $2. Announces $3 in Discord.",
+    "social.discord.announce.usage": "usage: !(command) announce [$1] [on/off]",
+    "social.discord.channel.default": "the default channel",
+    "social.discord.channel.notfound": "No channel called #$1 was found.",
+    "social.discord.channel.set": "(platform) announcements will now be made in $1",
+    "social.discord.channel.type.set": "(platform) $1 will now be announced in $2",
+    "social.discord.channel.type.usage": "usage: !(command) channel $1 [channel | default]. Currently $2.",
+    "social.discord.channel.usage": "usage: !(command) channel [channel] sets the default channel; !(command) channel [$1] [channel | default] sets the channel for one kind",
+    "social.discord.embed.mention": "New (platform) mention",
+    "social.discord.embed.post": "New (platform) post",
+    "social.discord.embed.quote": "New (platform) quote",
+    "social.discord.embed.reply": "New (platform) reply",
+    "social.discord.embed.repost": "New (platform) repost",
+    "social.discord.toggle": "(platform) announcements have been $1.",
+    "social.discord.usage": "usage: !(command) [toggle | channel | announce]"
+}

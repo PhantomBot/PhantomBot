@@ -21,10 +21,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,10 @@ import com.gmt2001.datastore2.MySQLStore2;
 import com.gmt2001.datastore2.SQLiteStore2;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.gmt2001.util.Reflect;
+import com.mcawful.social.SocialItem;
+import com.mcawful.social.SocialPlatform;
+import com.mcawful.social.SocialPlatformRegistry;
+import com.mcawful.social.SocialPostResult;
 
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;
@@ -62,6 +68,8 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.console.ConsoleInputEvent;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
+import tv.phantombot.event.social.SocialActivityEvent;
+import tv.phantombot.event.social.SocialRepostersEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -936,6 +944,71 @@ public final class ConsoleEventHandler implements Listener {
             transaction.setProperty("youtubekey", youtubeKey);
             System.out.println("PhantomBot YouTube API key setup done, PhantomBot will exit.");
             finishTransaction();
+            return;
+        }
+
+        /**
+         * @consolecommand blueskysetup - Links a Bluesky account with an app password.
+         */
+        if (message.equalsIgnoreCase("blueskysetup")) {
+            SocialPlatform platform = SocialPlatformRegistry.instance().get("bluesky");
+            System.out.println("");
+            System.out.println("PhantomBot Bluesky setup");
+            System.out.println("Make an app password in Bluesky under Settings > Privacy and security > App passwords.");
+            System.out.println("");
+            System.out.print("Please enter the Bluesky handle, such as name.bsky.social: ");
+            String handle = com.gmt2001.Console.in.readLine().trim();
+            System.out.print("Please enter the app password (not the account password): ");
+            String password = com.gmt2001.Console.in.readLine().trim();
+            System.out.print("Please enter the service address, or leave it empty for bsky.social: ");
+            String service = com.gmt2001.Console.in.readLine().trim();
+            SocialPostResult result = platform.link(handle, password, service);
+
+            if (result.success()) {
+                System.out.println("Bluesky linked as " + platform.getAccountName() + ".");
+            } else {
+                System.out.println("Bluesky was not linked: " + (result.detail() != null ? result.detail() : result.error()));
+            }
+            return;
+        }
+
+        /**
+         * @consolecommand reposttest (platform) (accounts) - Sends a fake repost rewards event, by default for Bluesky.
+         */
+        if (message.equalsIgnoreCase("reposttest")) {
+            int first = argument != null && SocialPlatformRegistry.instance().get(argument[0]) != null ? 1 : 0;
+            SocialPlatform platform = SocialPlatformRegistry.instance().get(first == 1 ? argument[0] : "bluesky");
+            int count = argument == null ? 0 : argument.length - first;
+            String[] accountIds = new String[count];
+            String[] accountNames = new String[count];
+
+            for (int i = 0; i < count; i++) {
+                String accountId = platform.resolveAccountId(argument[first + i]);
+                accountNames[i] = argument[first + i];
+                accountIds[i] = accountId != null ? accountId : argument[first + i];
+            }
+
+            com.gmt2001.Console.out.println("[CONSOLE] Executing reposttest (" + platform.getId() + ", " + String.join(", ", accountNames) + ")");
+            EventBus.instance().postAsync(new SocialRepostersEvent(platform.getId(), accountIds, accountNames));
+            return;
+        }
+
+        /**
+         * @consolecommand socialtest (platform) (type) (account) (text) - Sends a fake social media activity event, by default a Bluesky mention.
+         */
+        if (message.equalsIgnoreCase("socialtest")) {
+            int first = argument != null && SocialPlatformRegistry.instance().get(argument[0]) != null ? 1 : 0;
+            SocialPlatform platform = SocialPlatformRegistry.instance().get(first == 1 ? argument[0] : "bluesky");
+            String type = argument != null && argument.length > first ? argument[first].toLowerCase() : "mention";
+            String account = argument != null && argument.length > first + 1 ? argument[first + 1] : "test.bsky.social";
+            String text = argument != null && argument.length > first + 2
+                    ? String.join(" ", Arrays.copyOfRange(argument, first + 2, argument.length)) : "This is a test";
+            String url = platform.getProfileUrl().isEmpty() ? "https://bsky.app" : platform.getProfileUrl();
+
+            com.gmt2001.Console.out.println("[CONSOLE] Executing socialtest (" + platform.getId() + ", " + type + ", " + account + ")");
+            String pollType = type.equals("post") ? "posts" : type.equals("repost") ? "reposts" : "mentions";
+            EventBus.instance().postAsync(new SocialActivityEvent(platform.getId(), pollType, new SocialItem(type, "test", "did:example:" + account,
+                    account, account, text, url, Instant.now().toString())));
             return;
         }
 

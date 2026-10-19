@@ -25,10 +25,10 @@ $(function () {
 
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
         keys: ['./handlers/followHandler.js', './handlers/subscribeHandler.js', './handlers/bitsHandler.js', './handlers/clipHandler.js',
             './systems/greetingSystem.js', './systems/welcomeSystem.js', './handlers/donationHandler.js', './handlers/raidHandler.js', './handlers/tipeeeStreamHandler.js',
-            './handlers/streamElementsHandler.js']
+            './handlers/streamElementsHandler.js', './handlers/blueskyHandler.js']
     }, true, function (e) {
         // Handle the settings button.
         let keys = Object.keys(e),
@@ -992,4 +992,82 @@ $(function () {
                     }).modal('toggle');
         });
     });
+
+    /**
+     * Builds the settings card for a social media platform, opened with the shared settings modal
+     * (customPanelSettingsModal.js). The settings are read by ./core/social.js each time they are used.
+     *
+     * @param {string} id the platform id, which is also its table
+     * @param {string} name the platform name
+     * @param {Array} pollTypes [{id, label, min}] for each kind of activity the platform can announce
+     * @returns {object} the card
+     */
+    function socialSettingsCard(id, name, pollTypes) {
+        let chatFields = [];
+
+        pollTypes.forEach(function (type) {
+            chatFields.push({id: 'poll-' + type.id, type: 'boolean', table: id, key: 'poll_' + type.id, label: 'Announce ' + type.label,
+                options: ['Yes', 'No'], help: 'If ' + type.label.toLowerCase() + ' on ' + name + ' should be announced in the chat.'});
+            chatFields.push({id: 'polldelay-' + type.id, type: 'number', table: id, key: 'polldelay_' + type.id, label: type.label + ' Check Interval (Seconds)',
+                min: type.min, help: 'How often to check ' + name + ' for these, in seconds. Minimum is ' + type.min + ' seconds.'});
+        });
+
+        return {
+            id: id,
+            section: 'alerts',
+            title: name + ' Alerts',
+            settingsModal: {
+                title: name + ' Alert Settings',
+                sections: [{
+                    id: 'chat',
+                    title: 'Chat Announcements',
+                    fields: chatFields
+                }, {
+                    id: 'reward',
+                    title: 'Repost Rewards',
+                    fields: [
+                        {id: 'reward-toggle', type: 'boolean', table: id, key: 'reward_toggle', label: 'Reward Reposts', options: ['Yes', 'No'],
+                            help: 'If viewers who registered their ' + name + ' account with !' + id + ' register should get points for reposting your posts.'},
+                        {id: 'reward-announce', type: 'boolean', table: id, key: 'reward_announce', label: 'Announce Rewards', options: ['Yes', 'No'],
+                            help: 'If rewards should be announced in the chat.'},
+                        {id: 'reward-points', type: 'number', table: id, key: 'reward_points', label: 'Reward Points', min: 0,
+                            help: 'Points given for a repost. Set to 0 to give none.'},
+                        {id: 'reward-cooldown', type: 'number', table: id, key: 'reward_cooldown', label: 'Reward Cooldown (Hours)', min: 0,
+                            help: 'Hours a viewer must wait between rewards.'}
+                    ]
+                }, {
+                    id: 'post',
+                    title: 'Automatic Posts',
+                    fields: [
+                        {id: 'post-online', type: 'boolean', table: id, key: 'post_online', label: 'Post When Going Live', options: ['Yes', 'No'],
+                            help: 'If the bot should post to ' + name + ' when the stream goes live, at most once every 8 hours.'},
+                        {id: 'message-online', type: 'textarea', table: id, key: 'message_online', label: 'Going Live Post',
+                            help: 'Tags: (title), (game), (uptime), (twitchurl) and (enter) for a line break. A link card for the stream is added.'},
+                        {id: 'post-gamechange', type: 'boolean', table: id, key: 'post_gamechange', label: 'Post When Changing Game', options: ['Yes', 'No'],
+                            help: 'If the bot should post to ' + name + ' when the game changes while live, at most once an hour.'},
+                        {id: 'message-gamechange', type: 'textarea', table: id, key: 'message_gamechange', label: 'Game Change Post',
+                            help: 'Tags: (title), (game), (uptime), (twitchurl) and (enter) for a line break.'},
+                        {id: 'post-update', type: 'boolean', table: id, key: 'post_update', label: 'Post Updates While Live', options: ['Yes', 'No'],
+                            help: 'If the bot should post to ' + name + ' periodically while live.'},
+                        {id: 'message-update', type: 'textarea', table: id, key: 'message_update', label: 'Update Post',
+                            help: 'Tags: (title), (game), (uptime), (twitchurl) and (enter) for a line break.'},
+                        {id: 'postdelay-update', type: 'number', table: id, key: 'postdelay_update', label: 'Update Interval (Minutes)', min: 180,
+                            help: 'Minutes between update posts. Minimum is 180 minutes.'}
+                    ]
+                }]
+            }
+        };
+    }
+
+    // Bluesky settings.
+    $('#blueskyHandlerSettings').on('click', function () {
+        window.__pbCustomPanel__.openSettingsModal(socialSettingsCard('bluesky', 'Bluesky', [
+            {id: 'mentions', label: 'Mentions, Replies and Quotes', min: 60},
+            {id: 'reposts', label: 'Reposts', min: 60},
+            {id: 'posts', label: 'Your Posts', min: 15}
+        ]));
+    });
+
+    // Bluesky account link. Only shown to the bot's config users.
+    $('#blueskyLink').on('click', helpers.openBlueskyLinkModal);
 });
