@@ -534,7 +534,7 @@ $(function () {
                                     .append(helpers.getInputGroup('raid-min-viewers', 'number', 'Raid Minimum Viewers', '', e.raidMinViewers,
                                             'The minimum amount of viewers to trigger the raid alert. Data will still be saved in history even if minimum viewers is not met.'))
                                     .append(helpers.getDropdownGroup('shoutout-api', 'Enable Shoutout API', (helpers.isTrue(e.shoutoutapi) ? 'Yes' : 'No'), ['Yes', 'No'],
-                                            'Enables sending a Twitch /shoutout for the raiding channel. NOTE: Limit of 1 shoutout per 2 minutes. Can not repeat the same channel within 1 hour.')))
+                                            'Enables sending a Twitch /shoutout for the raiding channel. NOTE: Your stream must be live. Limit of 1 shoutout per 2 minutes. Can not repeat the same channel within 1 hour.')))
                             // Append second collapsible accordion.
                             .append(helpers.getCollapsibleAccordion('main-2', 'Outgoing Raid Settings', $('<form/>', {
                                 'role': 'form'
@@ -581,7 +581,7 @@ $(function () {
         });
     });
 
-    // Welcome esettings.
+    // Welcome settings.
     $('#welcomeSystemSettings').on('click', function () {
         const updateDisabled = function (disabledUsers, welcomeDisabled, callback) {
             let addTables = [],
