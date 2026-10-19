@@ -42,6 +42,10 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./discord/handlers/keywordHandler.js | !keyword add [keyword] [response] | - Adds a custom keyword. |
 | ./discord/handlers/keywordHandler.js | !keyword edit [keyword] [response] | - Edits a custom keyword. |
 | ./discord/handlers/keywordHandler.js | !keyword remove [keyword] | - Removes a custom keyword. |
+| ./discord/handlers/blueskyHandler.js | !blueskyhandler toggle | - Toggles Bluesky announcements in Discord. |
+| ./discord/handlers/blueskyHandler.js | !blueskyhandler channel [channel name] | - Sets the default channel that Bluesky announcements are made in. |
+| ./discord/handlers/blueskyHandler.js | !blueskyhandler channel [mentions &#124; reposts &#124; posts] [channel name &#124; default] | - Sets the channel for one kind of announcement. |
+| ./discord/handlers/blueskyHandler.js | !blueskyhandler announce [mentions &#124; reposts &#124; posts] [on/off] | - Chooses which kinds of Bluesky activity are announced in Discord. |
 | ./discord/handlers/clipHandler.js | !clipstoggle | - Toggles the clips announcements. |
 | ./discord/handlers/clipHandler.js | !clipsmessage [message] | - Sets a message for when someone creates a clip. |
 | ./discord/handlers/clipHandler.js | !clipschannel [channel] | - Sets the channel to send a message to for when someone creates a clip. |

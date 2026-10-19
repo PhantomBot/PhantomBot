@@ -61,6 +61,23 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./handlers/wordCounter.js | !wordcounter remove [word] | - Removes the given word which will no longer be counted every time someone says it |
 | ./handlers/wordCounter.js | !count [word] | - Tells you how many times that word as been said in chat. |
 | ./handlers/gameScanHandler.js | !gamescan [game name] | - Scan for a recently played game and list the date in which the broadcaster played it. |
+| ./handlers/blueskyHandler.js | !bluesky | - Shows the linked Bluesky account. |
+| ./handlers/blueskyHandler.js | !bluesky usage | - Shows the usage of the command. |
+| ./handlers/blueskyHandler.js | !bluesky id | - Shows the linked Bluesky account. |
+| ./handlers/blueskyHandler.js | !bluesky lastpost | - Shows the last post seen from the linked account. |
+| ./handlers/blueskyHandler.js | !bluesky lastmention | - Shows the last mention, reply or quote seen. |
+| ./handlers/blueskyHandler.js | !bluesky lastrepost | - Shows the last repost seen. |
+| ./handlers/blueskyHandler.js | !bluesky register [handle] | - Registers your Bluesky account for repost rewards. |
+| ./handlers/blueskyHandler.js | !bluesky unregister | - Removes your registered Bluesky account. |
+| ./handlers/blueskyHandler.js | !bluesky post [message] | - Posts a message to the linked Bluesky account. |
+| ./handlers/blueskyHandler.js | !bluesky set poll [mentions &#124; reposts &#124; posts] [on/off] | - Announces that kind of activity in chat. |
+| ./handlers/blueskyHandler.js | !bluesky set polldelay [mentions &#124; reposts &#124; posts] [seconds] | - Sets how often that kind of activity is checked. |
+| ./handlers/blueskyHandler.js | !bluesky set post [online &#124; gamechange &#124; update] [on/off] | - Posts automatically when going live, when changing game, or periodically while live. |
+| ./handlers/blueskyHandler.js | !bluesky set message [online &#124; gamechange &#124; update] [message] | - Sets the text of an automatic post. |
+| ./handlers/blueskyHandler.js | !bluesky set updatetimer [minutes] | - Sets the minutes between periodic posts while live. Minimum 180. |
+| ./handlers/blueskyHandler.js | !bluesky set reward [toggle &#124; announce] [on/off] | - Turns repost rewards, or their chat announcement, on or off. |
+| ./handlers/blueskyHandler.js | !bluesky set reward points [points] | - Sets the points given for a repost. |
+| ./handlers/blueskyHandler.js | !bluesky set reward cooldown [hours] | - Sets the hours a viewer must wait between repost rewards. |
 | ./handlers/clipHandler.js | !clipstoggle | - Toggles the clips announcements. |
 | ./handlers/clipHandler.js | !clipsmessage | - Sets a message for when someone creates a clip. |
 | ./handlers/clipHandler.js | !lastclip | - Displays information about the last clip captured. |
