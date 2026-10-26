@@ -62,7 +62,6 @@ ignoreproperties = [
     "oauth",
     "oauthexpires",
     "refresh",
-    "rollbarid",
     "webauth",
     "webauthro",
     "ytauth",

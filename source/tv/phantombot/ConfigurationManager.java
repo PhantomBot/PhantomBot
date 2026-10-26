@@ -49,7 +49,6 @@ public class ConfigurationManager {
     public static final String PROP_YTAUTH_RO = "ytauthro";
     public static final String PROP_API_OAUTH = "apioauth";
     public static final String PROP_SILENTSCRIPTSLOAD = "silentscriptsload";
-    public static final String PROP_USEROLLBAR = "userollbar";
     public static final String ENV_PROP_IS_PTERODACTYL = "P_SERVER_UUID";
     public static final String PROP_IS_PTERODACTYL = "is_pterodactyl";
     public static final String PROP_PTERODACTYL_FIX = "--pterodactyl-fix";
@@ -161,8 +160,6 @@ public class ConfigurationManager {
         changed |= setDefaultIfMissing(startProperties, PROP_USEHTTPS, "true", "Set default usehttps");
         changed |= setDefaultIfMissing(startProperties, PROP_WEBENABLE, "true", "Set default webenable");
         changed |= setDefaultIfMissing(startProperties, PROP_MUSICENABLE, "true", "Set default musicenable");
-
-        changed |= setDefaultIfMissing(startProperties, PROP_USEROLLBAR, "true", "Enabled Rollbar");
 
         /* Check to see if there's a webOauth set */
         changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH, ConfigurationManager::generateWebAuth,
