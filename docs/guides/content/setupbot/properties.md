@@ -21,16 +21,6 @@ NOTE: _botlogin.txt_ can **not** be edited while the bot is running
 
 
 ### Admin
-#### userollbar
-
-Data Type: _Boolean_
-
-if `true`, exceptions thrown during operation may be sent to rollbar exception tracking. default `true`
-
-_NOTE: A restart is required for this property to take effect_
-
-&nbsp;
-
 #### allowpanelusertosetup
 
 Data Type: _Boolean_
