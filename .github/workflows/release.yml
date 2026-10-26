@@ -177,7 +177,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       dockermissing: ${{ steps.check_docker_credentials.outputs.missingsecrets }}
-      servermissing: ${{ steps.check_server_credentials.outputs.missingsecrets }}
       branch: ${{ steps.build_env.outputs.branch }}
       version: ${{ steps.build_env.outputs.version }}
       revision: ${{ steps.build_env.outputs.revision }}
