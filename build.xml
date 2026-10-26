@@ -118,6 +118,7 @@
     <target depends="init-ivy" name="ivy-retrieve">
         <ivy:settings file="ivysettings.xml"/>
         <ivy:retrieve sync="true" conf="default"/>
+        <ivy:report graph="false" todir="resources/licenses/"/>
         <ivy:retrieve sync="true" conf="lib.extra" pattern="${reference.extra}/[artifact]-[revision].[ext]"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
         <exec executable="git" outputproperty="git.ivychange" failifexecutionfails="false" errorproperty="">
