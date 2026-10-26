@@ -52,7 +52,7 @@ public final class UncaughtExceptionHandler implements Thread.UncaughtExceptionH
     /**
      * Handles uncaught exceptions
      * <p>
-     * In addition to sending to the regular error handler (Console, {@code core-error} log, Rollbar),
+     * In addition to sending to the regular error handler (Console, {@code core-error} log),
      * the exception is logged in the {@code stacktraces} folder
      * <p>
      * If the exception is an {@link java.lang.OutOfMemoryError}, then a heap dump is additionally created
