@@ -317,6 +317,10 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
         this.triggerEmote(emoteId, amount, provider, false);
     }
 
+    public void triggerEmote(String emoteId, int amount, String provider, String emoteCode) {
+        this.triggerEmote(emoteId, amount, provider, emoteCode, false);
+    }
+
     public void triggerEmote(String emoteId, int amount, String provider, boolean ignoreSleep) {
         this.triggerEmote(emoteId, amount, provider, emoteId, ignoreSleep);
     }
