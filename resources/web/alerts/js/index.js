@@ -45,7 +45,8 @@ $(function () {
         audioCtx = null,
         gainNode = null,
         audioSource = null,
-        videoSource = null;
+        videoSource = null,
+        ignoredEmotes = {'twitch': [], 'ffz': [], 'bttv': [], 'sevenTv': [], 'emoji': [], 'local': []};
 
     imgEl.onload = () => printDebug('GIF loaded');
     imgEl.onerror = (e) => printDebug('Error: GIF failed to load: ' + e, true);
@@ -156,6 +157,20 @@ $(function () {
     function isPlayingAny() {
         return playingMask !== 0;
     }
+
+    function populateIgnoredEmotes() {
+        const baseUri = window.location.protocol + '//' + window.location.host + '/addons/ignored-emotes';
+        for (const provider in ignoredEmotes) {
+            $.ajax({
+                url: `${baseUri}/${provider}.txt`,
+                method: 'GET',
+                success: function(data) {
+                    ignoredEmotes[provider] = data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                }
+            });
+        }
+    }
+    populateIgnoredEmotes();
 
 
     //Copied from https://davidwalsh.name/detect-supported-audio-formats-javascript
@@ -800,15 +815,16 @@ $(function () {
         const animationName = json.animationName || 'flyUp';
         const duration = json.duration || 10000;
         const ignoreSleep = json.ignoreSleep || false;
+        const emoteCode = json.emoteCode !== undefined && json.emoteCode !== null ? json.emoteCode : json.emoteId;
         for (let i = 0; i < amount; i++) {
-            displayEmote(json['emoteId'], json['provider'], animationName, duration);
+            displayEmote(json['emoteId'], json['provider'], animationName, duration, emoteCode);
             if (!ignoreSleep) {
                 await sleep(getRandomInt(1, 200));
             }
         }
     }
 
-    async function displayEmote(emoteId, provider, animationName, duration) {
+    async function displayEmote(emoteId, provider, animationName, duration, emoteCode) {
         if (getOptionSetting(CONF_ENABLE_FLYING_EMOTES, 'false') === 'false') {
             // Feature not enabled, end the function
             return;
@@ -826,25 +842,49 @@ $(function () {
         switch (provider) {
             case PROVIDER_TWITCH:
                 // Taken from the entry "emotes" on https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags
+                if (ignoredEmotes.twitch.includes(emoteId) || ignoredEmotes.twitch.includes(emoteCode)) {
+                    printDebug(`Ignoring Twitch emote '${emoteCode}'`);
+                    return;
+                }
                 emoteUrl = 'https://static-cdn.jtvnw.net/emoticons/v2/' + emoteId + '/default/dark/3.0';
                 break;
             case PROVIDER_LOCAL:
+                if (ignoredEmotes.local.includes(emoteId) || ignoredEmotes.local.includes(emoteCode)) {
+                    printDebug(`Ignoring local emote '${emoteCode}'`);
+                    return;
+                }
                 emoteUrl = '/config/emotes/' + emoteId;
                 break;
             case PROVIDER_MAXCDN:
+                if (ignoredEmotes.emoji.includes(emoteId) || ignoredEmotes.emoji.includes(emoteCode)) {
+                    printDebug(`Ignoring Emoji '${emoteCode}'`);
+                    return;
+                }
                 emoteUrl = `https://twemoji.maxcdn.com/v/latest/svg/${emoteId}.svg`;
                 break;
             case PROVIDER_BTTV:
+                if (ignoredEmotes.bttv.includes(emoteId) || ignoredEmotes.bttv.includes(emoteCode)) {
+                    printDebug(`Ignoring BTTV emote '${emoteCode}'`);
+                    return;
+                }
                 emoteUrl = `https://cdn.betterttv.net/emote/${emoteId}/3x`;
                 break;
             case PROVIDER_FFZ:
+                if (ignoredEmotes.ffz.includes(emoteId) || ignoredEmotes.ffz.includes(emoteCode)) {
+                    printDebug(`Ignoring FFZ emote '${emoteCode}'`);
+                    return;
+                }
                 emoteUrl = `https://cdn.frankerfacez.com/emoticon/${emoteId}/4`;
                 break;
             case PROVIDER_SEVENTV:
+                if (ignoredEmotes.sevenTv.includes(emoteId) || ignoredEmotes.sevenTv.includes(emoteCode)) {
+                    printDebug(`Ignoring 7TV emote '${emoteCode}'`);
+                    return;
+                }
                 emoteUrl =  `https://cdn.7tv.app/emote/${emoteId}/4x.avif`;
                 break;
             default:
-                printDebug(`Could not find local emote '${emoteId}'`);
+                printDebug(`Could not find emote '${emoteId}' with provider '${provider}'`);
                 return;
         }
 

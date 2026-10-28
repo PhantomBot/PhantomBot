@@ -318,12 +318,17 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     public void triggerEmote(String emoteId, int amount, String provider, boolean ignoreSleep) {
+        this.triggerEmote(emoteId, amount, provider, emoteId, ignoreSleep);
+    }
+
+    public void triggerEmote(String emoteId, int amount, String provider, String emoteCode, boolean ignoreSleep) {
         try {
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object()
                     .key("emoteId").value(emoteId)
                     .key("amount").value(amount)
                     .key("provider").value(provider)
+                    .key("emoteCode").value(emoteCode)
                     .key("ignoreSleep").value(ignoreSleep)
                     .endObject();
             sendJSONToAll(jsonObject.toString());
