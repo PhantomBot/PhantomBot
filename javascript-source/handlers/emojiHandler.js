@@ -25,7 +25,7 @@
 
         if (emojiCounts.size() > 0) {
             emojiCounts.forEach((codepoint, count) =>
-                $.alertspollssocket.triggerEmote(codepoint, count, emoteProvider)
+                $.alertspollssocket.triggerEmote(codepoint, count, emoteProvider, codepoint)
             );
         }
     });

@@ -77,7 +77,7 @@
                 }
 
                 if (count > 0) {
-                    $.alertspollssocket.triggerEmote(emote.id, count, emoteProvider);
+                    $.alertspollssocket.triggerEmote(emote.id, count, emoteProvider, emote.code);
                 }
             });
         } finally {
