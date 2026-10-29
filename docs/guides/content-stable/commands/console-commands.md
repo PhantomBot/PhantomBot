@@ -45,6 +45,9 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | tipeeestreamsetup | - Sets up TipeeeStream. |
 | panelsetup | - Sets up the panel. |
 | ytsetup | - Sets up YouTube API Key |
+| blueskysetup | - Links a Bluesky account with an app password. |
+| reposttest (platform) (accounts) | - Sends a fake repost rewards event, by default for Bluesky. |
+| socialtest (platform) (type) (account) (text) | - Sends a fake social media activity event, by default a Bluesky mention. |
 | dumpheap | - Creates a heap dump |
 | dumpthreads | - Creates a thread dump |
 | paneluser add username | - Creates a new panel user with fullaccess to all panel sections if the user does not exist andprints the randomly generated password |

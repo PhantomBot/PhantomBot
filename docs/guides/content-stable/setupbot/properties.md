@@ -21,16 +21,6 @@ NOTE: _botlogin.txt_ can **not** be edited while the bot is running
 
 
 ### Admin
-#### userollbar
-
-Data Type: _Boolean_
-
-if `true`, exceptions thrown during operation may be sent to rollbar exception tracking. default `true`
-
-_NOTE: A restart is required for this property to take effect_
-
-&nbsp;
-
 #### allowpanelusertosetup
 
 Data Type: _Boolean_
@@ -458,6 +448,31 @@ Data Type: _String_
 the access token for youtube apiv3
 
 _NOTE: A restart is required for this property to take effect_
+
+&nbsp;
+
+### Bluesky
+#### bluesky_handle
+
+Data Type: _String_
+
+the handle (or email) of the bluesky account the bot posts as, such as `name.bsky.social`
+
+&nbsp;
+
+#### bluesky_apppassword
+
+Data Type: _String_
+
+an app password for the bluesky account, made in settings > privacy and security > app passwords. not the account password
+
+&nbsp;
+
+#### bluesky_service
+
+Data Type: _String_
+
+the address of the bluesky service to sign in to. only needed for an account on another pds. default `https://bsky.social`
 
 &nbsp;
 

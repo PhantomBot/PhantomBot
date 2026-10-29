@@ -2965,6 +2965,78 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### social.js
+
+#### title
+
+Defined in script: _./javascript-source/core/social.js_
+
+**Formulas:**
+
+- `(title)` - The stream title
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### game
+
+Defined in script: _./javascript-source/core/social.js_
+
+**Formulas:**
+
+- `(game)` - The game being played
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### uptime
+
+Defined in script: _./javascript-source/core/social.js_
+
+**Formulas:**
+
+- `(uptime)` - How long the stream has been live, as HH:MM
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### twitchurl
+
+Defined in script: _./javascript-source/core/social.js_
+
+**Formulas:**
+
+- `(twitchurl)` - The address of the Twitch channel
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### enter
+
+Defined in script: _./javascript-source/core/social.js_
+
+**Formulas:**
+
+- `(enter)` - A line break
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### subscribeHandler.js
 
 #### amount
@@ -3281,6 +3353,28 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | No
 
 **Labels Used:** twitch commandevent noevent
+
+&nbsp;
+
+### social.js
+
+Defined in script: _./javascript-source/core/social.js_
+
+#### Hook: twitchOnline
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
+
+#### Hook: twitchGameChange
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
 
 &nbsp;
 
