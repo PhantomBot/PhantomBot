@@ -186,7 +186,8 @@ $(function () {
 
                     // Enable the select2 dropdown.
                     $('#custom-command-run').select2({
-                        placeholder: 'Select a Command to Run'
+                        placeholder: 'Select a Command to Run',
+                        allowClear: true
                     }).tooltip('disable');
 
                     socket.getDBValues('dashboard_get_panel_toggles', {
@@ -365,11 +366,51 @@ $(function () {
 
     // Handle custom command run.
     $('#custom-command-run').on('select2:select', function (e) {
-        socket.sendCommand('send_command', e.params.data.text.slice(1), function () {
-            // Alert user.
-            toastr.success('Successfully ran command ' + e.params.data.text);
-            // Clear input.
-            $('#custom-command-run').val('').trigger('change');
+        const selectedValue = e.params.data.text;
+        if (!selectedValue) return;
+        const $container = $('#custom-command-run').data('select2').$container;
+        const $selection = $container.find('.select2-selection');
+        const $rendered = $container.find('.select2-selection__rendered');
+        $rendered.html(`
+          <input type="text" id="custom-command-input" 
+                 value="${selectedValue} " 
+                 style="border: none; outline: none; background: transparent; width: 100%; font: inherit; padding: 0;" />
+        `);
+        let $clearBtn = $selection.find('.select2-selection__clear');
+        if ($clearBtn.length === 0) {
+          $rendered.prepend('<span class="select2-selection__clear" title="Clear selection">×</span>');
+          $clearBtn = $selection.find('.select2-selection__clear');
+        } else {
+          $clearBtn.show();
+        }
+        const $input = $('#custom-command-input');
+        $input.focus();
+        const len = $input.val().length;
+        $input[0].setSelectionRange(len, len);
+        $input.on('click mousedown', function (evt) {
+          evt.stopPropagation();
+        });
+        $input.on('keydown', function (evt) {
+          if (evt.key === 'Enter') {
+            evt.preventDefault();
+            evt.stopPropagation();
+            const origval = $(this).val();
+            let val = origval;
+            if (val.startsWith('!')) {
+                val = val.slice(1);
+            }
+            socket.sendCommand('send_command', val.trim(), function () {
+                // Alert user.
+                toastr.success('Successfully ran command ' + origval);
+                // Clear input.
+                $('#custom-command-run').val('').trigger('change');
+            });
+          }
+        });
+        $clearBtn.off('click.customClear').on('click.customClear', function (evt) {
+          evt.preventDefault();
+          evt.stopPropagation();
+          $('#custom-command-run').val('').trigger('change');
         });
     });
 
