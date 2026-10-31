@@ -1,5 +1,7 @@
 name: Auto-Retry Failed Jobs
 
+run-name: "Auto-Retry Failed Jobs: ${{ github.event.workflow_run.name }} (#${{ github.event.workflow_run.run_number }}, attempt ${{ github.event.workflow_run.run_attempt }})"
+
 on:
   workflow_run:
     workflows: ["Java CI", "Build JLink Binaries", "Build/Upload Release", "CodeQL", "On Push Actions"]
