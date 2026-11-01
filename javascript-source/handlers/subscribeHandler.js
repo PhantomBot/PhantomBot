@@ -204,7 +204,7 @@
 
         /*
          * @localtransformer customemote
-         * @formula (customemote) '<The Emote, Repeated Months Times (Max 12)>'
+         * @formula (customemote) '&lt;The Emote, Repeated Months Times (Max 12)&gt;'
          * @example Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you! (customemote)
          * Caster: !subemote 1000 BloodTrail
          * Twitch: User has just subscriber at Tier 1! They have been subscribed for 3 months!
@@ -246,7 +246,7 @@
 
         /*
          * @localtransformer giftmonths
-         * @formula (giftmonths) '<Number of Months Gifted>'
+         * @formula (giftmonths) '&lt;Number of Months Gifted&gt;'
          * @example Caster: !giftsubmessage 1000 (name) just gifted (giftmonths) months of (plan) to (recipient)! Thank you!
          * Twitch: User has just gifted a 6 month sub to OtherUser at Tier 1!
          * Bot: User just gifted 6 months of Tier 1 to OtherUser! Thank you!
@@ -261,7 +261,7 @@
 
         /*
          * @localtransformer giftreward
-         * @formula (giftreward) '<Points Reward>'
+         * @formula (giftreward) '&lt;Points Reward&gt;'
          * @customarg (giftreward:int) The number of points awarded to the gifter for gifting a sub to someone else
          * @example Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! (name) gets (giftreward) points! Thank you!
          * @example Caster: !giftsubreward 1000 25
@@ -278,7 +278,7 @@
 
         /*
          * @localtransformer months
-         * @formula (months) '<Total Months Subscribed>'
+         * @formula (months) '&lt;Total Months Subscribed&gt;'
          * @example Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you!
          * Twitch: User has just subscriber at Tier 1! They have been subscribed for 12 months!
          * Bot: User just subscribed! They have been subscribed for 12 months! Thank you!
@@ -308,7 +308,7 @@
 
         /*
          * @localtransformer plan
-         * @formula (plan) '<Subscription Tier>'
+         * @formula (plan) '&lt;Subscription Tier&gt;'
          * @example Caster: !submessage 1000 (name) just subscribed at (plan)! Thank you!
          * Caster: !namesubplan 1000 Friendo Tier
          * Twitch: User has just subscriber at Tier 1!
@@ -339,7 +339,7 @@
 
         /*
          * @localtransformer reward
-         * @formula (reward) '<Points Reward>'
+         * @formula (reward) '&lt;Points Reward&gt;'
          * @customarg (reward:int) The number of points awarded for the sub
          * @example Caster: !submessage 1000 (name) just subscribed at Tier 1! They get (reward) points! Thank you!
          * Twitch: User has just subscriber at Tier 1!
