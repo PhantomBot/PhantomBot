@@ -871,6 +871,22 @@
         }
     });
 
+    addUpdate('3.24.1.0', 'installedv3.24.1.0', function () {
+        let greeting = $.getSetIniDbString('greetingSettings', 'defaultJoin');
+        let rankShowRankInResolveRank = $.getIniDbBoolean('settings', 'rankShowRankInResolveRank', false);
+        if (greeting !== null) {
+            greeting = greeting.replace('(name)', rankShowRankInResolveRank ? '(rank)' : '(sender)');
+            $.setIniDbString('greetingSettings', 'defaultJoin', greeting);
+        }
+
+        let userGreetings = $.inidb.GetKeyList('greeting', '');
+        for (let i in userGreetings) {
+            let userGreeting = $.getIniDbString('greeting', userGreetings[i]);
+            userGreeting = userGreeting.replace('(name)', rankShowRankInResolveRank ? '(rank)' : '(sender)');
+            $.setIniDbString('greeting', userGreetings[i], userGreeting);
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
