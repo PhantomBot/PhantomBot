@@ -59,7 +59,6 @@ import com.illusionaryone.StreamLabsAPI;
 import com.illusionaryone.YouTubeAPIv3;
 import com.mcawful.social.SocialPlatformRegistry;
 import com.mcawful.social.SocialPoller;
-import com.scaniatv.CustomAPI;
 
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.JdkLoggerFactory;
@@ -958,7 +957,6 @@ public final class PhantomBot implements Listener {
         RhinoRuntime.ExposePropertyToScripts("changed", CaselessProperties.instance().getPropertyAsBoolean("newSetup", false));
         RhinoRuntime.ExposePropertyToScripts("discordAPI", DiscordAPI.instance());
         RhinoRuntime.ExposePropertyToScripts("hasDiscordToken", hasDiscordToken());
-        RhinoRuntime.ExposePropertyToScripts("customAPI", CustomAPI.instance());
         RhinoRuntime.ExposePropertyToScripts("streamLabsAPI", StreamLabsAPI.instance());
         this.twitchCache = TwitchCache.instance();
         RhinoRuntime.ExposePropertyToScripts("twitchcache", this.twitchCache);

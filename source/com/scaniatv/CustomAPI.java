@@ -28,6 +28,11 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * @deprecated No longer exposed to scripts. Use {@code $.api.request} in scripts instead; {@code $.customAPI} is now
+ * provided by {@code core/api.js} and works as this class did
+ */
+@Deprecated(since = "3.24.2.0", forRemoval = true)
 public class CustomAPI {
 
     private static CustomAPI instance;
