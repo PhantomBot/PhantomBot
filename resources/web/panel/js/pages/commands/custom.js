@@ -292,8 +292,8 @@ $(function () {
                         'The command !' + command + ' has been successfully removed!', function () {
                             // Delete all information about the command.
                             socket.removeDBValues('custom_command_remove', {
-                                tables: ['command', 'permcom', 'cooldown', 'aliases', 'pricecom', 'paycom', 'commandtoken', 'disabledCommands', 'hiddenCommands'],
-                                keys: [command, command, command, command, command, command, command, command, command]
+                                tables: ['command', 'permcom', 'cooldown', 'aliases', 'pricecom', 'paycom', 'commandtoken', 'disabledCommands', 'hiddenCommands', 'apiCommandSecrets'],
+                                keys: [command, command, command, command, command, command, command, command, command, command]
                             }, function () {
                                 socket.wsEvent('custom_command_remove_ws', './commands/customCommands.js', null, ['remove', String(command)], function () {
                                     // Remove the table row.
@@ -357,7 +357,8 @@ $(function () {
                     keys: [command, command, command, command, command, command, command]
                 }, function (e) {
                     let cooldownJson = (e.cooldown === null ? {globalSec: -1, userSec: -1, modsSkip: false, clearOnOnline: false} : JSON.parse(e.cooldown)),
-                            tokenButton = '';
+                            tokenButton = '',
+                            tieButton = '';
 
                     if (e.command.match(/\(customapi/gi) !== null) {
                         tokenButton = $('<button/>', {
@@ -372,6 +373,18 @@ $(function () {
                         });
                     }
 
+                    if (e.command.match(/\(api\s/gi) !== null) {
+                        tieButton = $('<button/>', {
+                            'type': 'button',
+                            'class': 'btn btn-info',
+                            'style': 'float: right; position: relative; bottom: 6px;',
+                            'click': function () {
+                                helpers.openApiSecretTieModal('apiCommandSecrets', command);
+                            },
+                            'text': 'Tie API Secret'
+                        });
+                    }
+
                     // Get advance modal from our util functions in /utils/helpers.js
                     helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
                         'role': 'form'
@@ -381,6 +394,7 @@ $(function () {
                             // Append a text box for the command response.
                             .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', '', e.command, 'Response of the command. Use enter for multiple chat lines maximum is 5.'))
                             .append(tokenButton)
+                            .append(tieButton)
                             // Append a select option for the command permission.
                             .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
                                     helpers.getPermGroupNames()))

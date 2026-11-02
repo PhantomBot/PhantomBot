@@ -1106,6 +1106,100 @@ $(function () {
     };
 
     /**
+     * @function Opens the dialog that ties a saved API secret to a custom command, so its (api) requests send it in a header
+     *
+     * @param {String} table apiCommandSecrets for a Twitch command, discordApiCommandSecrets for a Discord command
+     * @param {String} command the command, without the !
+     */
+    helpers.openApiSecretTieModal = function (table, command) {
+        socket.getDBTableValues('api_secret_tie_names', 'apiSecretNames', function (results) {
+            socket.getDBValue('api_secret_tie_get', table, command, function (e) {
+                let tie = (e[table] === null || e[table] === undefined ? {secret: '', header: 'Authorization'} : JSON.parse(e[table])),
+                        secretSelect = $('<select/>', {
+                            'class': 'form-control',
+                            'id': 'tie-secret',
+                            'style': 'cursor: pointer;'
+                        }).append(results.map(function (result) {
+                            return $('<option/>', {
+                                'value': result.key,
+                                'text': '$secret.' + result.key,
+                                'selected': result.key === tie.secret
+                            });
+                        }));
+
+                // A tied secret that was removed from the pool would otherwise show as the first one in the list
+                if (tie.secret !== '' && !results.some((result) => result.key === tie.secret)) {
+                    secretSelect.prepend($('<option/>', {
+                        'value': tie.secret,
+                        'text': '$secret.' + tie.secret + ' (not saved)',
+                        'selected': true
+                    }));
+                }
+
+                helpers.getModal('api-secret-tie', 'Tie API Secret', 'Save', $('<form/>', {
+                    'role': 'form'
+                })
+                        .append($('<div/>', {
+                            'class': 'form-group',
+                            'html': 'The tied secret is sent with every (api) request of the command, so the command does not need to name it.\n\
+                            <br /> The Authorization header is sent as Bearer and the secret. Any other header is sent as the secret.\n\
+                            <br /> A header typed in the (api) tag replaces it.'
+                        }))
+                        .append(helpers.getInputGroup('tie-command', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
+                        // Also shown with no saved secrets when the command is tied to one that was removed
+                        .append(secretSelect.children().length === 0 ? '' : $('<div/>', {
+                            'class': 'form-group'
+                        }).append($('<label/>', {
+                            'html': $('<b/>', {
+                                'text': 'Secret'
+                            })
+                        })).append(secretSelect))
+                        .append(results.length > 0 ? '' : $('<p/>', {
+                            'text': 'No secrets have been saved. Save one with the API Secrets button first.'
+                        }))
+                        .append(helpers.getInputGroup('tie-header', 'text', 'Header', 'Authorization', tie.header, 'Name of the header the secret is sent in.'))
+                        .append(tie.secret === '' ? '' : $('<button/>', {
+                            'type': 'button',
+                            'class': 'btn btn-danger btn-flat',
+                            'html': 'Remove Tie',
+                            'click': function () {
+                                socket.removeDBValue('api_secret_tie_remove', table, command, function () {
+                                    // Close the modal.
+                                    $('#api-secret-tie').modal('hide');
+                                    // Tell the user the tie was removed.
+                                    toastr.success('The API secret is no longer sent with !' + command);
+                                });
+                            }
+                        })), function () {
+                    let tieHeader = $('#tie-header');
+
+                    tieHeader.val(tieHeader.val().trim());
+
+                    // Handle each input to make sure they have a value.
+                    switch (false) {
+                        case results.length > 0:
+                            break;
+                        case helpers.handleInput(tieHeader, function (obj) {
+                            return obj.val().match(/^[\w-]+$/) === null ? 'Only letters, numbers, underscores, and dashes are allowed.' : null;
+                        }):
+                            break;
+                        default:
+                            socket.updateDBValue('api_secret_tie_update', table, command, JSON.stringify({
+                                secret: secretSelect.val(),
+                                header: tieHeader.val()
+                            }), function () {
+                                // Close the modal.
+                                $('#api-secret-tie').modal('hide');
+                                // Tell the user the secret was tied.
+                                toastr.success('The API secret ' + secretSelect.val() + ' is now sent with !' + command);
+                            });
+                    }
+                }).modal('toggle');
+            });
+        });
+    };
+
+    /**
      * @function Generates a random string.
      *
      * @param  {Number} len

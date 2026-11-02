@@ -113,6 +113,15 @@ $(function () {
                 .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command.' + (isEdit ? ' This cannot be edited.' : ''), isEdit))
                 // Append a text box for the command response.
                 .append(helpers.getTextAreaGroup('command-response', 'text', 'Response', '', helpers.getDefaultIfNullOrUndefined(e.discordCommands, ''), 'Response of the command.'))
+                .append(isEdit && helpers.getDefaultIfNullOrUndefined(e.discordCommands, '').match(/\(api\s/i) !== null ? $('<button/>', {
+                    'type': 'button',
+                    'class': 'btn btn-info',
+                    'style': 'float: right; position: relative; bottom: 6px;',
+                    'click': function () {
+                        helpers.openApiSecretTieModal('discordApiCommandSecrets', command);
+                    },
+                    'text': 'Tie API Secret'
+                }) : '')
                 // Append a select option for the command permission.
                 .append(helpers.getMultiDropdownGroup('command-permission', 'Allowed Roles and Permissions', [
                     {
@@ -370,8 +379,8 @@ $(function () {
                     helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Are you sure you want to remove command !' + command + '?', true,
                             'The command !' + command + ' has been successfully removed!', function () {
                                 socket.removeDBValues('discord_custom_command_rm', {
-                                    tables: ['discordCommands', 'discordPermcom', 'discordCooldown', 'discordChannelcom', 'discordPricecom', 'discordAliascom'],
-                                    keys: [command, command, command, command, command, command]
+                                    tables: ['discordCommands', 'discordPermcom', 'discordCooldown', 'discordChannelcom', 'discordPricecom', 'discordAliascom', 'discordApiCommandSecrets'],
+                                    keys: [command, command, command, command, command, command, command]
                                 }, function () {
                                     socket.wsEvent('discord_custom_command_rm_cache', './discord/commands/customCommands.js', 'remove', [command], function () {
                                         // Remove the table row.

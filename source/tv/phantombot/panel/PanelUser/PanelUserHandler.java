@@ -224,7 +224,8 @@ public final class PanelUserHandler {
                     "paycom",
                     "commandtoken",
                     "apisecrets",
-                    "apisecretnames")),
+                    "apisecretnames",
+                    "apicommandsecrets")),
             Map.entry("dashboard", List.of(
                     "paneldata")),
             Map.entry("discord", List.of(
@@ -238,7 +239,8 @@ public final class PanelUserHandler {
                     "discordsettings",
                     "discordpermsobj",
                     "discordchannelcom",
-                    "discordgambling")),
+                    "discordgambling",
+                    "discordapicommandsecrets")),
             Map.entry("extra", List.of(
                     "queue",
                     "queuesettings",
