@@ -5,6 +5,7 @@
         "commands": "Twitch !Command List",
         "discord-commands": "Discord !Command List",
         "command-variables": "Custom Command Tags",
+        "api-secrets": "API Secrets",
         "console-commands": "Console Commands"
     }
 }

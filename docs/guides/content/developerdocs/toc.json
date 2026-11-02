@@ -4,6 +4,7 @@
     "pages": {
         "registerchatcommand": "registerChatCommand Function",
         "sanitize": "sanitize Function",
+        "apirequest": "api.request Function",
         "custommodules": "Creating custom modules"
     }
 }
