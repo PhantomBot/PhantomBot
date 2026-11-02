@@ -75,7 +75,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private static final String[] ALLOWED_RO_DB_QUERY_TABLES = new String[]{};
-    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken"};
+    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken", "apisecrets"};
     private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{};
     private static final long MAX_AUDIO_HOOK_UPLOAD_SIZE = 10L * 1024 * 1024;
     private final WsAuthenticationHandler authHandler;

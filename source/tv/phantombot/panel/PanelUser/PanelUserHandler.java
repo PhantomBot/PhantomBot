@@ -222,7 +222,9 @@ public final class PanelUserHandler {
                     "aliases",
                     "pricecom",
                     "paycom",
-                    "commandtoken")),
+                    "commandtoken",
+                    "apisecrets",
+                    "apisecretnames")),
             Map.entry("dashboard", List.of(
                     "paneldata")),
             Map.entry("discord", List.of(

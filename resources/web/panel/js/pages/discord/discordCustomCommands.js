@@ -249,6 +249,11 @@ $(function () {
         }).modal('toggle');
     }
 
+    // API secrets button.
+    $('#discord-apisecrets-button').on('click', function () {
+        helpers.openApiSecretsModal();
+    });
+
     // Toggle for the module.
     $('#discordCustomCommandsModuleToggle').on('change', function () {
         // Enable the module then query the data.

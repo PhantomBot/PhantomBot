@@ -1006,6 +1006,106 @@ $(function () {
     };
 
     /**
+     * @function Opens the dialog that lists, saves, and removes the secrets used by the (api) command tag
+     */
+    helpers.openApiSecretsModal = function () {
+        // The panel cannot read the apiSecrets table, so the names are kept in a table of their own.
+        socket.getDBTableValues('api_secret_names', 'apiSecretNames', function (results) {
+            let secretList = $('<div/>', {
+                'class': 'form-group'
+            }).append($('<label/>', {
+                'html': $('<b/>', {
+                    'text': 'Saved Secrets'
+                })
+            }));
+
+            if (results.length === 0) {
+                secretList.append($('<p/>', {
+                    'text': 'No secrets have been saved.'
+                }));
+            } else {
+                secretList.append($('<div/>', {
+                    'class': 'input-group'
+                }).append($('<select/>', {
+                    'class': 'form-control',
+                    'id': 'secret-saved',
+                    'style': 'cursor: pointer;'
+                }).append(results.map(function (result) {
+                    return $('<option/>', {
+                        'value': result.key,
+                        'text': '$secret.' + result.key
+                    });
+                }))).append($('<span/>', {
+                    'class': 'input-group-btn',
+                    'html': $('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-danger btn-flat',
+                        'html': 'Remove',
+                        'click': function () {
+                            let secret = $('#secret-saved').val();
+
+                            // Close the modal.
+                            $('#api-secret').modal('hide');
+                            // Ask the user if they want to remove the secret.
+                            helpers.getConfirmDeleteModal('api_secret_modal_remove', 'Are you sure you want to remove API secret ' + secret + '?', true,
+                                    'The API secret ' + secret + ' has been successfully removed!', function () {
+                                        socket.removeDBValues('api_secret_remove', {
+                                            tables: ['apiSecrets', 'apiSecretNames'],
+                                            keys: [secret, secret]
+                                        }, function () {});
+                                    });
+                        }
+                    })
+                })));
+            }
+
+            // Get modal from our util functions in /utils/helpers.js
+            helpers.getModal('api-secret', 'API Secrets', 'Save', $('<form/>', {
+                'role': 'form'
+            })
+                    .append($('<div/>', {
+                        'class': 'form-group',
+                        'html': 'This dialog stores secrets, such as API keys, to be used in an (api) command tag as $secret.name\n\
+                        <br /> A saved secret cannot be viewed again. Saving with an existing name replaces it.\n\
+                        <br /> NOTE: Anyone who can add or edit commands can use any saved secret.'
+                    }))
+                    // Append the list of saved secrets.
+                    .append(secretList)
+                    // Append input box for the secret name.
+                    .append(helpers.getInputGroup('secret-name', 'text', 'Name', 'shop', '', 'Name of the secret. Letters, numbers, and underscores only.'))
+                    // Append input box for the secret value.
+                    .append(helpers.getInputGroup('secret-value', 'password', 'Value', '', '', 'Value of the secret.')), function () {
+                let secretName = $('#secret-name'),
+                        secretValue = $('#secret-value');
+
+                // The (api) tag looks up secrets by their lowercase name.
+                secretName.val(secretName.val().trim().toLowerCase());
+                secretValue.val(secretValue.val().trim());
+
+                // Handle each input to make sure they have a value.
+                switch (false) {
+                    case helpers.handleInput(secretName, function (obj) {
+                        return obj.val().match(/^\w+$/) === null ? 'Only letters, numbers, and underscores are allowed.' : null;
+                    }):
+                    case helpers.handleInputString(secretValue):
+                        break;
+                    default:
+                        socket.updateDBValues('api_secret_update', {
+                            tables: ['apiSecrets', 'apiSecretNames'],
+                            keys: [secretName.val(), secretName.val()],
+                            values: [secretValue.val(), 'true']
+                        }, function () {
+                            // Close the modal.
+                            $('#api-secret').modal('hide');
+                            // Tell the user the secret was saved.
+                            toastr.success('Successfully saved API secret ' + secretName.val());
+                        });
+                }
+            }).modal('toggle');
+        });
+    };
+
+    /**
      * @function Generates a random string.
      *
      * @param  {Number} len

@@ -603,6 +603,11 @@ $(function () {
         }).modal('toggle');
     });
 
+    // API secrets button.
+    $('#apisecrets-button').on('click', function () {
+        helpers.openApiSecretsModal();
+    });
+
     // On token button.
     tokenEditModal = function (command) {
         // Get modal from our util functions in /utils/helpers.js
