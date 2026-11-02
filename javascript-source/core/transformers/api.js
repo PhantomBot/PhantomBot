@@ -87,11 +87,7 @@
     function fill(str, cmdArgs, encode) {
         return str.replace(reFill, function (match, secret, n, rest) {
             if (secret) {
-                let value = $.optIniDbString('apiSecrets', secret.toLowerCase());
-                if (!value.isPresent()) {
-                    throw 'no API secret named ' + secret;
-                }
-                return encode($.jsString(value.get()));
+                return encode(getSecret(secret));
             }
 
             if (cmdArgs === null) {
@@ -102,6 +98,42 @@
             let value = getArg(cmdArgs, parseInt(n), rest === '>');
             return value ? encode(value) : '';
         });
+    }
+
+    /*
+     * @function getSecret
+     *
+     * @param {string} name the name of a saved API secret
+     * @returns {string} the value of the secret
+     * @throws if there is no saved secret with that name
+     */
+    function getSecret(name) {
+        let value = $.optIniDbString('apiSecrets', name.toLowerCase());
+        if (!value.isPresent()) {
+            throw 'no API secret named ' + name;
+        }
+        return $.jsString(value.get());
+    }
+
+    /*
+     * @function getTie
+     *
+     * @param {object} event the event that ran the tag
+     * @returns {object} {secret, header} for the API secret tied to the command with !secretcom; null if there is none
+     */
+    function getTie(event) {
+        if (event === undefined || event === null || event.getCommand === undefined) {
+            return null;
+        }
+
+        // Only Discord command events have a sender id
+        let tie = $.optIniDbString(event.getSenderId !== undefined ? 'discordApiCommandSecrets' : 'apiCommandSecrets', $.jsString(event.getCommand()).toLowerCase());
+
+        try {
+            return tie.isPresent() ? JSON.parse(tie.get()) : null;
+        } catch (ex) {
+            return null;
+        }
     }
 
     /*
@@ -168,9 +200,10 @@
      * @param {object} request the parts of the request from parseTag
      * @param {array} cmdArgs the arguments of the command; null if there is no command
      * @param {boolean} acceptJson true if a reply reads a field from the response
+     * @param {object} tie the API secret tied to the command, from getTie; null if there is none
      * @returns {object} the status code and body of the response; status 0 if there was no response
      */
-    function send(request, cmdArgs, acceptJson) {
+    function send(request, cmdArgs, acceptJson, tie) {
         // Headers typed in the tag come last, so they replace these defaults
         let headers = {},
                 isJson = request.body.startsWith('{') || request.body.startsWith('['),
@@ -184,6 +217,9 @@
             }
             if (acceptJson) {
                 headers['Accept'] = 'application/json';
+            }
+            if (tie !== null) {
+                headers[tie.header] = (tie.header.toLowerCase() === 'authorization' ? 'Bearer ' : '') + encodeHeader(getSecret(tie.secret));
             }
             for (let i = 0; i < request.headers.length; i++) {
                 headers[request.headers[i].name] = fill(request.headers[i].value, cmdArgs, encodeHeader);
@@ -266,6 +302,7 @@
      * @notes arguments are split as for every command: double quotes group words into one argument and are removed. Type `\"` for a literal double quote
      * @notes a part of the url in square brackets that contains `$1`-`$9`, such as `[/$2]`, is only sent if every argument inside it was given. Those arguments are optional in the rest of the tag as well, and are left blank when missing
      * @notes `$secret.name` is replaced with an API secret saved in the panel. It can be used in the url, a header, or the body. For saving secrets and keeping them safe, see https://phantombot.dev/guides/#guide=content/commands/api-secrets
+     * @notes a secret tied to the command with `!secretcom` or the panel is sent with every request of the command, in the `Authorization` header as `Bearer` and the secret, or as the secret in another header chosen when it was tied. A header typed in the tag replaces it
      * @notes a user name and password in the url are not sent; use an `Authorization` header. The request times out after the `httpclienttimeout` bot property, 10 seconds by default
      * @notes this tag can change data on the remote server. Anyone who can add or edit commands can use any saved API secret
      * @notes start the chat message with your own text, such as `-> Path: {path}`. A message that starts with `/` or `.` is treated as a Twitch command, which a field, an argument, or the response text could otherwise decide
@@ -316,7 +353,7 @@
             acceptJson = acceptJson || reField.test(request.replies[i].text);
         }
 
-        let response = send(request, cmdArgs, acceptJson),
+        let response = send(request, cmdArgs, acceptJson, getTie(args.event)),
                 isSuccess = response.status > 0 && response.status < 400,
                 reply = findReply(request.replies, [String(response.status), Math.floor(response.status / 100) + 'xx', isSuccess ? 'ok' : '!']),
                 json = {};

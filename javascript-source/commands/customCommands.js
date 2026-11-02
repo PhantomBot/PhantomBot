@@ -128,6 +128,25 @@
     }
 
     /*
+     * @function refuseAdminOnlyEdit
+     *
+     * @param {string} sender
+     * @param {object} event
+     * @param {string} action the custom command
+     * @returns {boolean} true, after saying so, if the command is (adminonlyedit) and the sender is not an admin
+     */
+    function refuseAdminOnlyEdit(sender, event, action) {
+        if ($.getIniDbString('command', action).match(/\(adminonlyedit\)/) && !$.checkUserPermission(sender, event.getTags(), $.PERMISSION.Admin)) {
+            if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.perm.404', $.getGroupNameById($.PERMISSION.Admin)));
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    /*
      * @event command
      * @usestransformers global twitch commandevent noevent
      */
@@ -297,6 +316,82 @@
         }
 
         /*
+         * @commandpath secretcom [command] (secret) (header) - Ties a saved API secret to the command, so each (api) request of the command sends it in the header, Authorization as Bearer if left out. Without a secret, shows which one is tied
+         */
+        if ($.equalsIgnoreCase(command, 'secretcom')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.secret.usage'));
+                return;
+            }
+
+            action = $.jsString(action).replace('!', '').toLowerCase();
+
+            if (!$.inidb.exists('command', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
+                return;
+            }
+
+            if (subAction === undefined) {
+                let tie = $.optIniDbString('apiCommandSecrets', action);
+                if (tie.isPresent()) {
+                    tie = JSON.parse(tie.get());
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.secret.show', action, tie.secret, tie.header));
+                } else {
+                    $.say($.whisperPrefix(sender) + $.lang.get('customcommands.secret.none', action));
+                }
+                return;
+            }
+
+            if (refuseAdminOnlyEdit(sender, event, action)) {
+                return;
+            }
+
+            let secret = $.jsString(subAction).toLowerCase(),
+                    header = args[2] === undefined ? 'Authorization' : $.jsString(args[2]);
+
+            // Only secrets saved in the panel can be tied
+            if (!$.inidb.exists('apiSecrets', secret)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.secret.404'));
+                return;
+            }
+
+            if (!/^[\w-]+$/.test(header)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.secret.header'));
+                return;
+            }
+
+            $.inidb.set('apiCommandSecrets', action, JSON.stringify({secret: secret, header: header}));
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.secret.success', secret, action, header));
+            return;
+        }
+
+        /*
+         * @commandpath delsecretcom [command] - Stops sending the API secret tied to the command
+         */
+        if ($.equalsIgnoreCase(command, 'delsecretcom')) {
+            if (action === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delsecret.usage'));
+                return;
+            }
+
+            action = $.jsString(action).replace('!', '').toLowerCase();
+
+            if (!$.inidb.exists('command', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cmd.404', action));
+                return;
+            } else if (refuseAdminOnlyEdit(sender, event, action)) {
+                return;
+            } else if (!$.inidb.exists('apiCommandSecrets', action)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('customcommands.secret.none', action));
+                return;
+            }
+
+            $.inidb.del('apiCommandSecrets', action);
+            $.say($.whisperPrefix(sender) + $.lang.get('customcommands.delsecret.success', action));
+            return;
+        }
+
+        /*
          * @commandpath delcom [command] - Delete that custom command
          */
         if ($.equalsIgnoreCase(command, 'delcom')) {
@@ -324,6 +419,7 @@
             $.inidb.del('disabledCommands', action);
             $.inidb.del('hiddenCommands', action);
             $.inidb.del('commandtoken', action);
+            $.inidb.del('apiCommandSecrets', action);
             $.unregisterChatCommand(action);
             _lock.lock();
             try {
@@ -817,6 +913,8 @@
         $.registerChatCommand('./commands/customCommands.js', 'delcom', $.PERMISSION.Mod);
         $.registerChatCommand('./commands/customCommands.js', 'editcom', $.PERMISSION.Mod);
         $.registerChatCommand('./commands/customCommands.js', 'tokencom', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/customCommands.js', 'secretcom', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/customCommands.js', 'delsecretcom', $.PERMISSION.Mod);
         $.registerChatCommand('./commands/customCommands.js', 'permcom', $.PERMISSION.Admin);
         $.registerChatCommand('./commands/customCommands.js', 'commands', $.PERMISSION.Viewer);
         $.registerChatCommand('./commands/customCommands.js', 'hidecom', $.PERMISSION.Admin);
