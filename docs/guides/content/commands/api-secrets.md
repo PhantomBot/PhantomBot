@@ -41,6 +41,25 @@ Secrets are never replaced in a reply. A request that uses a name that is not sa
 
 &nbsp;
 
+## Tying A Secret To A Command
+
+A saved secret can be tied to a custom command. It is then sent with every `(api)` request of that command, so the command does not need a header for it
+
+| Chat command | Result |
+|--------------|--------|
+| `!secretcom !shop shop` | Sends `$secret.shop` with `!shop` as `Authorization: Bearer` and the secret |
+| `!secretcom !shop shop X-Api-Key` | Sends it in the `X-Api-Key` header instead, as the secret alone |
+| `!secretcom !shop` | Says which secret is tied to `!shop`, by name |
+| `!delsecretcom !shop` | Stops sending it |
+
+The same commands work for Discord custom commands, in Discord. In the panel, open a command with an `(api)` tag in _Edit Command_ and click _Tie API Secret_.
+
+Only a secret that has been saved can be tied; chat commands cannot save one. A header typed in the `(api)` tag replaces the tied one. Deleting the command also removes the tie. If a tied secret is removed, the command's requests are not sent until it is saved again or the tie is removed. Tying a secret in the panel needs read access to the _Commands_ section, as well as write access to the page of the command.
+
+**WARNING:** The tied secret is sent to whatever address each `(api)` tag of the command requests, including one built from an argument, and also when the command is run through an alias. Only tie a secret to a command whose `(api)` tags all go to the service the secret is for.
+
+&nbsp;
+
 ## Keeping Secrets Safe
 
 **WARNING:** Anyone who can add or edit commands, keywords, or other responses that use command tags can use any saved secret, including in a request to a server of their own. Only give that access to people you trust with your secrets.
