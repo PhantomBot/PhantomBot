@@ -64,11 +64,13 @@ public final class SocialPoller {
      */
     private static final int MAX_ANNOUNCE_PER_POLL = 3;
     private static final Duration ERROR_LOG_INTERVAL = Duration.ofMinutes(10);
+    private static final int FAILURES_BEFORE_LOGGING = 3;
     private static final int STALE_POLLS = 10;
     private static final long STALE_SECONDS = 3600;
     private static SocialPoller instance;
     private final ScheduledFuture<?> future;
     private final Map<String, Instant> lastErrorLog = new ConcurrentHashMap<>();
+    private final Map<String, Integer> failures = new ConcurrentHashMap<>();
 
     /**
      * Returns the instance, starting the poller on first use
@@ -99,7 +101,9 @@ public final class SocialPoller {
 
             for (SocialPollType type : platform.getPollTypes()) {
                 try {
-                    this.poll(platform, type);
+                    if (this.poll(platform, type)) {
+                        this.logRecovery(platform, type);
+                    }
                 } catch (Exception ex) {
                     this.logError(platform, type, ex);
                 }
@@ -111,7 +115,12 @@ public final class SocialPoller {
         return PhantomBot.instance().getDataStore().GetBoolean("modules", "", script);
     }
 
-    private void poll(SocialPlatform platform, SocialPollType type) throws Exception {
+    /**
+     * Polls one type if it is wanted and its delay has passed
+     *
+     * @return {@code true} if a request was made and succeeded; {@code false} if the type was not due
+     */
+    private boolean poll(SocialPlatform platform, SocialPollType type) throws Exception {
         DataStore datastore = PhantomBot.instance().getDataStore();
         String table = platform.getId();
         String discordKey = platform.getId() + "Announce" + type.id().substring(0, 1).toUpperCase() + type.id().substring(1);
@@ -122,7 +131,7 @@ public final class SocialPoller {
         boolean reward = type.feedsRewards() && this.isModuleEnabled(platform.getModuleScript()) && datastore.GetBoolean(table, "", "reward_toggle");
 
         if (!announce && !reward) {
-            return;
+            return false;
         }
 
         long now = Instant.now().getEpochSecond();
@@ -131,7 +140,7 @@ public final class SocialPoller {
         long lastPoll = datastore.GetLong(table, "", "lastpoll_" + type.id(), 0L);
 
         if (now - lastPoll < delay) {
-            return;
+            return false;
         }
 
         datastore.SetLong(table, "", "lastpoll_" + type.id(), now);
@@ -172,21 +181,39 @@ public final class SocialPoller {
             datastore.SetString(table, "", "watermark_" + type.id(), result.watermark());
             datastore.SetString(table, "", "watermarkaccount_" + type.id(), account);
         }
+
+        return true;
     }
 
     /**
-     * Logs a failed poll, at most once every {@link #ERROR_LOG_INTERVAL} per platform and type; more often to the debug log
+     * Logs a failed poll to the error log once it has failed {@link #FAILURES_BEFORE_LOGGING} times in a row, then at most once
+     * every {@link #ERROR_LOG_INTERVAL} per platform and type; otherwise to the debug log. A single failure is usually a short
+     * outage of the platform, and the next poll picks up anything it missed.
      */
     private void logError(SocialPlatform platform, SocialPollType type, Exception ex) {
         String key = platform.getId() + "." + type.id();
+        int count = this.failures.merge(key, 1, Integer::sum);
         Instant last = this.lastErrorLog.get(key);
-        String message = "Failed to poll " + platform.getDisplayName() + " " + type.id() + ": " + ex.getMessage();
+        String message = "Failed to poll " + platform.getDisplayName() + " " + type.id() + " (" + count + " in a row): " + ex.getMessage();
 
-        if (last == null || last.plus(ERROR_LOG_INTERVAL).isBefore(Instant.now())) {
+        if (count >= FAILURES_BEFORE_LOGGING && (last == null || last.plus(ERROR_LOG_INTERVAL).isBefore(Instant.now()))) {
             this.lastErrorLog.put(key, Instant.now());
             com.gmt2001.Console.err.println(message);
         } else {
             com.gmt2001.Console.debug.println(message);
+        }
+    }
+
+    /**
+     * Notes that a type polls again after failing, logging it when the failures were in the error log
+     */
+    private void logRecovery(SocialPlatform platform, SocialPollType type) {
+        String key = platform.getId() + "." + type.id();
+        Integer count = this.failures.remove(key);
+
+        if (count != null && count >= FAILURES_BEFORE_LOGGING) {
+            this.lastErrorLog.remove(key);
+            com.gmt2001.Console.out.println("Polling " + platform.getDisplayName() + " " + type.id() + " works again after " + count + " failures");
         }
     }
 

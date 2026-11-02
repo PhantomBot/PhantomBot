@@ -408,9 +408,17 @@ final class BlueskyXrpc {
             throw new XrpcException(response.responseCode().code(), "InvalidResponse", "Bluesky sent a response that is not JSON");
         }
 
-        if (response.responseCode() == null) {
-            String message = response.hasException() ? response.exception().getClass().getSimpleName() : "";
-            throw new XrpcException(0, "NetworkError", "Bluesky could not be reached " + message);
+        // HttpClient reports a request that got no answer (a timeout or a failed connection) as status 0
+        if (response.responseCode().code() == 0) {
+            Throwable cause = response.exception();
+
+            // A failed connection arrives wrapped in an ExecutionException
+            if (cause != null && cause.getCause() != null) {
+                cause = cause.getCause();
+            }
+
+            String message = cause != null ? " (" + cause.getClass().getSimpleName() + ")" : "";
+            throw new XrpcException(0, "NetworkError", "Bluesky could not be reached" + message);
         }
 
         int status = response.responseCode().code();
