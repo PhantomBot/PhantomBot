@@ -191,6 +191,8 @@ public class WsPanelHandler implements WsFrameHandler {
             return;
         }
 
+        com.gmt2001.Console.out.println("Panel command from " + user.getUsername() + " (" + username + "): " + command);
+
         if (!jso.has("command_sync")) {
             PhantomBot.instance().handleCommand(username, command);
         } else {
@@ -217,6 +219,8 @@ public class WsPanelHandler implements WsFrameHandler {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
+
+        com.gmt2001.Console.out.println("Panel console command from " + user.getUsername() + ": " + command);
 
         EventBus.instance().postAsync(new ConsoleInputEvent(command));
 

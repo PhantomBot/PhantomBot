@@ -35,8 +35,6 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
 import com.gmt2001.PathValidator;
-import com.gmt2001.RollbarProvider;
-
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -84,7 +82,6 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
             Files.write(Paths.get(LOG_PATHS.get(item.type), this.logFileTimestamp() + ".txt"), item.lines,
                     StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
         } catch (IOException ex) {
-            RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item.toString()));
             ex.printStackTrace(System.err);
         }
         this.subscription.request(1);
@@ -92,7 +89,6 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Override
     public void onError(Throwable throwable) {
-        RollbarProvider.instance().error(throwable, null, "", true);
         throwable.printStackTrace(System.err);
         com.gmt2001.Console.err.println("Logger threw an exception and is being disconnected...");
     }
@@ -168,8 +164,6 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
                 Files.createDirectories(PathValidator.getRealPath(Paths.get(p)));
                 success.add(Boolean.TRUE);
             } catch (Exception ex) {
-                Map<String, Object> locals = RollbarProvider.localsToCustom(new String[]{"LOG_PATHS[]", "absoluteNormalizedReal"}, new Object[]{p, PathValidator.getRealPath(Paths.get(p))});
-                RollbarProvider.instance().error(ex, locals);
                 ex.printStackTrace(System.err);
                 success.add(Boolean.FALSE);
             }

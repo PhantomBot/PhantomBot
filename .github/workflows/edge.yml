@@ -82,10 +82,8 @@ jobs:
     - name: Build with Ant
       env:
         BUILDTYPE: ${{ format('{0}', steps.build_env.outputs.branch) }}
-        ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
-        ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
         BRANCH: ${{ steps.build_env.outputs.branch }}
-      run: ant -noinput -Dversion=$BRANCH -Dbuildtype=$BUILDTYPE -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml dist
+      run: ant -noinput -Dversion=$BRANCH -Dbuildtype=$BUILDTYPE -buildfile build.xml dist
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:

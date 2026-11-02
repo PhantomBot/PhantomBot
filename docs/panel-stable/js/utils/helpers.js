@@ -1719,6 +1719,87 @@ $(function () {
 
     helpers.CANT_EMBED_TWITCH_TEXT = 'Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443 or setup a reverse proxy. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.';
 
+    /**
+     * Opens the dialog that links a Bluesky account with an app password. The bot checks the handle and app
+     * password with Bluesky before saving them. Only the bot's config users can link an account.
+     */
+    helpers.openBlueskyLinkModal = function () {
+        // The toasts show HTML, and these values come from the Bluesky service the user chose
+        let toText = function (value) {
+            return $('<div/>').text(value === undefined || value === null ? '' : String(value)).html();
+        };
+
+        socket.getDBValues('bluesky_get_account', {
+            tables: ['bluesky', 'bluesky', 'bluesky', 'bluesky'],
+            keys: ['account', 'service', 'auth_status', 'auth_error']
+        }, true, function (e) {
+            let status = 'No account is linked.';
+
+            if (e.auth_status === 'ok' && e.account) {
+                status = 'Linked as @' + e.account + '.';
+            } else if (e.auth_status === 'failed' || e.auth_status === 'error') {
+                status = 'Signing in to Bluesky failed: ' + e.auth_error;
+            }
+
+            helpers.getModal('bluesky-link', 'Link Bluesky Account', 'Link', $('<form/>', {
+                'role': 'form'
+            }).append($('<div/>', {
+                'class': 'box box-info'
+            }).append($('<div/>', {
+                'class': 'box-header',
+                'html': 'App Password'
+            })).append($('<div/>', {
+                'class': 'box-body',
+                'html': '<ol>'
+                        + '<li>Sign in to <a href="https://bsky.app" target="_blank">Bluesky</a> with the account the bot should post as</li>'
+                        + '<li>Open <b>Settings</b>, then <b>Privacy and security</b>, then <b>App passwords</b></li>'
+                        + '<li>Click <b>Add App Password</b>, name it, for example <i>PhantomBot</i>, and leave access to direct messages off</li>'
+                        + '<li>Copy the app password into the box below. Do not use your account password</li>'
+                        + '</ol>'
+            }))).append($('<p/>', {
+                'text': status
+            })).append(helpers.getInputGroup('bluesky-link-handle', 'text', 'Handle', 'name.bsky.social', e.account || '',
+                    'The handle of the account, such as name.bsky.social.'))
+                .append(helpers.getInputGroup('bluesky-link-password', 'password', 'App Password', 'xxxx-xxxx-xxxx-xxxx', '',
+                    'The app password. It is checked with Bluesky before it is saved.'))
+                .append(helpers.getInputGroup('bluesky-link-service', 'text', 'Service (Optional)', 'https://bsky.social', e.service || '',
+                    'Only needed for an account on a self-hosted PDS.')), function () {
+                let handle = $('#bluesky-link-handle'),
+                        password = $('#bluesky-link-password');
+
+                switch (false) {
+                    case helpers.handleInputString(handle):
+                    case helpers.handleInputString(password):
+                        break;
+                    default:
+                        socket.wsEvent('bluesky_link_' + Date.now(), 'SocialPlatforms.java', null,
+                                ['link', 'bluesky', handle.val().trim(), password.val().trim(), $('#bluesky-link-service').val().trim()], function (e) {
+                            if (e.success) {
+                                $('#bluesky-link').modal('hide');
+                                toastr.success('Linked Bluesky as @' + toText(e.account) + '!');
+                            } else if (e.error === 'notlinked') {
+                                toastr.error('Bluesky refused the handle or app password: ' + toText(e.detail));
+                            } else {
+                                toastr.error('Could not link Bluesky: ' + toText(e.detail || e.error));
+                            }
+                        }, true);
+                }
+            }, {
+                'footerpre': [$('<button/>', {
+                    'class': 'btn btn-danger pull-left',
+                    'type': 'button',
+                    'text': 'Unlink',
+                    'click': function () {
+                        socket.wsEvent('bluesky_unlink_' + Date.now(), 'SocialPlatforms.java', null, ['unlink', 'bluesky'], function () {
+                            $('#bluesky-link').modal('hide');
+                            toastr.success('Unlinked Bluesky.');
+                        }, true);
+                    }
+                })]
+            }).modal('toggle');
+        });
+    };
+
     // Export.
     window.helpers = helpers;
     window.helpers.temp = {};

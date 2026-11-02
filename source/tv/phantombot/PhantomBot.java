@@ -38,7 +38,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
 
 import com.gmt2001.PathValidator;
-import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.SqliteStore;
@@ -287,16 +286,6 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.debug.println("Enable JDK debug");
             setLevel(java.util.logging.Level.ALL);
             InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
-        }
-
-        /**
-         * @botproperty userollbar - If `true`, Exceptions thrown during operation may be sent to Rollbar exception tracking. Default `true`
-         * @botpropertycatsort userollbar 10 10 Admin
-         * @botpropertyrestart userollbar
-         */
-        if (CaselessProperties.instance().getPropertyAsBoolean("userollbar", true)) {
-            com.gmt2001.Console.debug.println("Enable rollbar");
-            RollbarProvider.instance().enable();
         }
 
         /* Start loading the bot information */
@@ -1134,13 +1123,6 @@ public final class PhantomBot implements Listener {
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-        }
-
-        try {
-            com.gmt2001.Console.debug.println("Close Rollbar");
-            RollbarProvider.instance().close();
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
         com.gmt2001.Console.debug.println("Kill ExecutorService");

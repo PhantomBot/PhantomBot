@@ -265,6 +265,38 @@
             </div>
 
         </div>
+
+        <div class="row">
+            <!-- Bluesky Alerts -->
+            <div class="col-md-4">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <div class="box-tools pull-right">
+                            <label class="switch" data-toggle="tooltip" title="Module toggle.">
+                                <input type="checkbox" id="blueskyHandlerToggle" data-alert-toggle="./discord/handlers/blueskyHandler.js" checked>
+                                <span class="slider round"></span>
+                            </label>
+
+                            <button type="button" id="discordBlueskyLink" class="btn btn-md btn-box-tool" style="margin-bottom: 7px;" data-removeForNonConfigUser="true">
+                                <i class="fa fa-link fa-lg"></i>
+                            </button>
+
+                            <button type="button" id="discordBlueskyHandlerSettings" class="btn btn-md btn-box-tool" style="margin-bottom: 7px;">
+                                <i class="fa fa-cog fa-lg"></i>
+                            </button>
+                        </div>
+                        <h3 class="box-title">Bluesky Alerts</h3>
+                    </div>
+
+                    <form role="form">
+                        <!-- Box content -->
+                        <div class="box-body">
+                            <p class="auto-cut">Display Bluesky posts, mentions and reposts in a Discord channel.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- discordAlerts -->

@@ -236,55 +236,62 @@ loadScripts(document, 'script');</script>
 <div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with the default headers</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#postBytes(java.net.URI,io.netty.handler.codec.http.HttpHeaders,byte%5B%5D)" class="member-name-link">postBytes</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;requestHeaders,
+ byte[]&nbsp;requestBody)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Performs a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with a binary body, such as an image</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;requestHeaders,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;requestBody)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the specified headers</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.util.Map)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.util.Map)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;requestHeaders,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;putData)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Shortcut to URL-encode a map of put data then submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the specified headers</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;requestHeaders,
  <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&nbsp;json)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the specified headers</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,java.lang.String)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,java.lang.String)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;requestBody)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Shortcut to perform a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the default headers</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,java.util.Map)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,java.util.Map)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;putData)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Shortcut to URL-encode a map of put data then submit it as a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the default headers</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,org.json.JSONObject)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#put(java.net.URI,org.json.JSONObject)" class="member-name-link">put</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
  <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&nbsp;json)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the default headers</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#request(io.netty.handler.codec.http.HttpMethod,java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">request</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpMethod</a>&nbsp;method,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#request(io.netty.handler.codec.http.HttpMethod,java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">request</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpMethod</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;requestHeaders,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;requestBody)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Performs an HTTP request</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#urlencodePost(java.util.Map)" class="member-name-link">urlencodePost</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;postData)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#urlencodePost(java.util.Map)" class="member-name-link">urlencodePost</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;postData)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Converts a map of post data into a URL-encoded string suitable for the content type application/x-www-form-urlencoded</div>
 </div>
 </div>
@@ -319,6 +326,25 @@ loadScripts(document, 'script');</script>
 <dd><code>requestHeaders</code> - the request headers to send</dd>
 <dd><code>requestBody</code> - the request body to send if method is <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a>,
  or <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PATCH" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PATCH</code></a>; <code>null</code> for other methods</dd>
+<dt>Returns:</dt>
+<dd>a <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient"><code>HttpClientResponse</code></a> with the results</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="postBytes(java.net.URI,io.netty.handler.codec.http.HttpHeaders,byte[])">
+<h3>postBytes</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></span>&nbsp;<span class="element-name">postBytes</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;url,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;requestHeaders,
+ byte[]&nbsp;requestBody)</span></div>
+<div class="block">Performs a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with a binary body, such as an image
+ <p>
+ The <code>Content-Length</code> header is always set from the length of the body</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>url</code> - the URL to request</dd>
+<dd><code>requestHeaders</code> - the request headers to send, including the <code>Content-Type</code></dd>
+<dd><code>requestBody</code> - the request body to send</dd>
 <dt>Returns:</dt>
 <dd>a <a href="HttpClientResponse.html" title="class in com.gmt2001.httpclient"><code>HttpClientResponse</code></a> with the results</dd>
 </dl>

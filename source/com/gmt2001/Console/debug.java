@@ -17,7 +17,6 @@
 package com.gmt2001.Console;
 
 import com.illusionaryone.Logger;
-import com.gmt2001.RollbarProvider;
 import com.gmt2001.util.LogFilter;
 
 import java.io.IOException;
@@ -216,8 +215,6 @@ public final class debug {
                 custom = new HashMap<>(oldCustom);
                 custom.putIfAbsent("__caller", stackInfo);
             }
-
-            RollbarProvider.instance().debug(e, custom, description);
 
             try ( Writer trace = new StringWriter()) {
                 try ( PrintWriter ptrace = new PrintWriter(trace)) {

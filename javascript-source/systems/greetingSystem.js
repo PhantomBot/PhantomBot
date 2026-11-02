@@ -19,13 +19,10 @@
 
 /**
  * greetingSystem.js
- *
- * Tags in greetings:
- * - (name) The username corresponding to the target user
  */
 (function () {
     let autoGreetEnabled = $.getSetIniDbBoolean('greetingSettings', 'autoGreetEnabled', false),
-            defaultJoinMessage = $.getSetIniDbString('greetingSettings', 'defaultJoin', '(name) joined!'),
+            defaultJoinMessage = $.getSetIniDbString('greetingSettings', 'defaultJoin', '(sender) joined!'),
             greetingCooldown = $.getSetIniDbNumber('greetingSettings', 'cooldown', (6 * 36e5)),
             /* 6 Hours */
             greetingQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
@@ -57,7 +54,7 @@
 
     /**
      * @event ircChannelJoin
-     * @usestransformers global twitch noevent
+     * @usestransformers global local twitch noevent
      */
     $.bind('ircChannelJoin', function (event) {
         if ($.isOnline($.channelName) && autoGreetEnabled && onJoin) {
@@ -67,7 +64,7 @@
 
     /**
      * @event ircChannelMessage
-     * @usestransformers global twitch noevent
+     * @usestransformers global local twitch noevent
      */
     $.bind('ircChannelMessage', function (event) {
         if ($.isOnline($.channelName) && autoGreetEnabled && !onJoin) {
@@ -75,16 +72,58 @@
         }
     });
 
+    function transformers() {
+        /*
+        * @localtransformer sender
+        * @formula (sender) The display name of the user being greeted
+        * @cached
+        */
+        function sender(args) {
+            return {
+                result: $.usernameResolveIgnoreEx(args.customArgs['sender']),
+                cache: true
+            }
+        }
+        /*
+        * @localtransformer rawsender
+        * @formula (rawsender) The login name of the user being greeted
+        * @cached
+        */
+        function rawsender(args) {
+            return {
+                result: args.customArgs['sender'],
+                cache: true
+            }
+        }
+        /*
+        * @localtransformer rank
+        * @formula (rank) The rank and username of the user being greeted
+        * @cached
+        */
+        function rank(args) {
+            return {
+                result: $.resolveRank(args.customArgs['sender']),
+                cache: true
+            }
+        }
+
+        return {
+            sender: sender,
+            rawsender: rawsender,
+            rank: rank
+        }
+    }
+
+    let localTransformers = transformers();
+
     function addToQueue(sender) {
-        let rankStr = $.resolveRank(sender),
-            message = $.optIniDbString('greeting', sender),
+        let message = $.optIniDbString('greeting', sender),
             lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
             now = $.systemTime();
 
         if (lastUserGreeting + greetingCooldown < now) {
             if (message.isPresent()) {
-                message = message.get().replace('(name)', rankStr); // Keep (name)
-                message = $.transformers.tags(null, message, ['twitch', ['noevent']]);
+                message = $.transformers.tags(null, message, ['twitch', ['noevent']], {localTransformers: localTransformers, customArgs: {'sender': sender}});
 
                 greetingQueue.add(message);
 

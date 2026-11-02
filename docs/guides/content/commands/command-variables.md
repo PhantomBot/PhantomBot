@@ -2965,6 +2965,50 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### greetingSystem.js
+
+#### sender
+
+Defined in script: _./javascript-source/systems/greetingSystem.js_
+
+**Formulas:**
+
+- `(sender)` - The display name of the user being greeted
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### rawsender
+
+Defined in script: _./javascript-source/systems/greetingSystem.js_
+
+**Formulas:**
+
+- `(rawsender)` - The login name of the user being greeted
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### rank
+
+Defined in script: _./javascript-source/systems/greetingSystem.js_
+
+**Formulas:**
+
+- `(rank)` - The rank and username of the user being greeted
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### social.js
 
 #### title
@@ -3067,7 +3111,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Formulas:**
 
-- `(customemote)` - '<The Emote, Repeated Months Times (Max 12)>'
+- `(customemote)` - '&lt;The Emote, Repeated Months Times (Max 12)&gt;'
 
 
 **Example:**
@@ -3090,7 +3134,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Formulas:**
 
-- `(giftmonths)` - '<Number of Months Gifted>'
+- `(giftmonths)` - '&lt;Number of Months Gifted&gt;'
 
 
 **Example:**
@@ -3112,7 +3156,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Formulas:**
 
-- `(giftreward)` - '<Points Reward>'
+- `(giftreward)` - '&lt;Points Reward&gt;'
 
 **Custom Arguments:**
 
@@ -3143,7 +3187,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Formulas:**
 
-- `(months)` - '<Total Months Subscribed>'
+- `(months)` - '&lt;Total Months Subscribed&gt;'
 
 
 **Example:**
@@ -3187,7 +3231,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Formulas:**
 
-- `(plan)` - '<Subscription Tier>'
+- `(plan)` - '&lt;Subscription Tier&gt;'
 
 
 **Example:**
@@ -3232,7 +3276,7 @@ Defined in script: _./javascript-source/handlers/subscribeHandler.js_
 
 **Formulas:**
 
-- `(reward)` - '<Points Reward>'
+- `(reward)` - '&lt;Points Reward&gt;'
 
 **Custom Arguments:**
 
@@ -3540,7 +3584,7 @@ Defined in script: _./javascript-source/systems/greetingSystem.js_
 
 Global&nbsp;&nbsp; | Local
 -------|-------
-Yes&nbsp;&nbsp; | No
+Yes&nbsp;&nbsp; | Yes
 
 **Labels Used:** twitch noevent
 
@@ -3548,7 +3592,7 @@ Yes&nbsp;&nbsp; | No
 
 Global&nbsp;&nbsp; | Local
 -------|-------
-Yes&nbsp;&nbsp; | No
+Yes&nbsp;&nbsp; | Yes
 
 **Labels Used:** twitch noevent
 

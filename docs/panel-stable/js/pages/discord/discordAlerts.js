@@ -19,13 +19,17 @@
 
 // Main function that gets all of our data.
 $(function () {
+    if (helpers.currentPanelUserData.userType !== 'CONFIG') {
+        $('[data-removeForNonConfigUser="true"]').remove();
+    }
+
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
         keys: ['./discord/handlers/followHandler.js', './discord/handlers/subscribeHandler.js',
             './discord/handlers/bitsHandler.js', './discord/handlers/clipHandler.js', './discord/systems/greetingsSystem.js', './discord/handlers/streamlabsHandler.js',
             './discord/handlers/raidHandler.js', './discord/handlers/tipeeeStreamHandler.js', './discord/handlers/streamElementsHandler.js',
-            './discord/handlers/streamHandler.js']
+            './discord/handlers/streamHandler.js', './discord/handlers/blueskyHandler.js']
     }, true, function (e) {
         // Handle the settings button.
         let keys = Object.keys(e),
@@ -61,11 +65,16 @@ $(function () {
         });
     }
 
-    function getChannelSelector(id, title, placeholder, value, tooltip, allowedChannelTypes) {
+    function getChannelSelector(id, title, placeholder, value, tooltip, allowedChannelTypes, emptyOptionName) {
         if (discordChannels === null) {
             return helpers.getInputGroup(id, 'text', title, placeholder, value, tooltip);
         } else {
             let data = [];
+
+            // An optional first choice that saves an empty value, such as "Same as the default channel"
+            if (emptyOptionName !== undefined) {
+                data.push({title: '', options: [{'name': emptyOptionName, 'value': '', 'selected': value === ''}]});
+            }
 
             for (const [category, channels] of Object.entries(discordChannels)) {
                 let entry = {};
@@ -758,6 +767,80 @@ $(function () {
                 refreshChannels(function () {
                     if (discordChannels !== null) {
                         $('#streamelements-channel').select2({templateResult: discordChannelTemplate});
+                    }
+                });
+            }).modal('toggle');
+        });
+    });
+
+    // Bluesky account link. Only shown to the bot's config users.
+    $('#discordBlueskyLink').on('click', helpers.openBlueskyLinkModal);
+
+    // Bluesky settings. The handler reads these each time it announces, so no reload is sent.
+    $('#discordBlueskyHandlerSettings').on('click', function () {
+        let kinds = [
+                {id: 'Mentions', label: 'Mentions, Replies and Quotes'},
+                {id: 'Reposts', label: 'Reposts'},
+                {id: 'Posts', label: 'Your Posts'}
+            ],
+            keys = ['blueskyToggle', 'blueskyChannel'];
+
+        kinds.forEach(function (kind) {
+            keys.push('blueskyAnnounce' + kind.id, 'blueskyChannel' + kind.id);
+        });
+
+        socket.getDBValues('discord_alerts_bluesky_get_settings', {
+            tables: keys.map(function () { return 'discordSettings'; }),
+            keys: keys
+        }, true, function (e) {
+            let form = $('<form/>', {
+                'role': 'form'
+            })
+                    // Add the toggle for Bluesky alerts.
+                    .append(helpers.getDropdownGroup('bluesky-toggle', 'Enable Bluesky Alerts', (helpers.isTrue(e.blueskyToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
+                            'If Bluesky activity should be posted in Discord.'))
+                    // Add the default channel selector.
+                    .append(getChannelSelector('bluesky-channel', 'Default Channel', '#alerts', e.blueskyChannel,
+                            'Channel for every kind of Bluesky alert that has no channel of its own.', allowedChannelTypes));
+
+            kinds.forEach(function (kind) {
+                form.append(helpers.getDropdownGroup('bluesky-announce-' + kind.id, 'Announce ' + kind.label, (helpers.isTrue(e['blueskyAnnounce' + kind.id]) ? 'Yes' : 'No'),
+                        ['Yes', 'No'], 'If ' + kind.label.toLowerCase() + ' on Bluesky should be posted in Discord. These are chosen apart from the Twitch chat alerts.'))
+                    .append(getChannelSelector('bluesky-channel-' + kind.id, kind.label + ' Channel', '', e['blueskyChannel' + kind.id] || '',
+                            'Channel for ' + kind.label.toLowerCase() + '.', allowedChannelTypes, 'Same as the default channel'));
+            });
+
+            helpers.getModal('bluesky-alert', 'Bluesky Alert Settings', 'Save', form, function () { // Callback once the user clicks save.
+                let blueskyChannel = $('#bluesky-channel'),
+                        values = [$('#bluesky-toggle').find(':selected').text() === 'Yes', blueskyChannel.val()];
+
+                kinds.forEach(function (kind) {
+                    values.push($('#bluesky-announce-' + kind.id).find(':selected').text() === 'Yes', $('#bluesky-channel-' + kind.id).val() || '');
+                });
+
+                // Make sure everything has been filled it correctly.
+                switch (false) {
+                    case helpers.handleInputString(blueskyChannel):
+                        break;
+                    default:
+                        socket.updateDBValues('discord_alerts_bluesky_update_settings', {
+                            tables: keys.map(function () { return 'discordSettings'; }),
+                            keys: keys,
+                            values: values
+                        }, function () {
+                            // Close the modal.
+                            $('#bluesky-alert').modal('toggle');
+                            // Alert the user.
+                            toastr.success('Successfully updated the Bluesky alert settings!');
+                        });
+                }
+            }).on('shown.bs.modal', function () {
+                refreshChannels(function () {
+                    if (discordChannels !== null) {
+                        $('#bluesky-channel').select2({templateResult: discordChannelTemplate});
+                        kinds.forEach(function (kind) {
+                            $('#bluesky-channel-' + kind.id).select2({templateResult: discordChannelTemplate});
+                        });
                     }
                 });
             }).modal('toggle');

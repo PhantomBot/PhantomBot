@@ -65,20 +65,6 @@
         </and>
     </condition>
 
-    <condition property="rollbar_token" value="${rollbar_token}" else="notoken">
-        <and>
-            <isset property="rollbar_token" />
-            <length string="${rollbar_token}" trim="yes" length="0" when="greater" />
-        </and>
-    </condition>
-
-    <condition property="rollbar_endpoint" value="${rollbar_endpoint}" else="">
-        <and>
-            <isset property="rollbar_endpoint" />
-            <length string="${rollbar_endpoint}" trim="yes" length="0" when="greater" />
-        </and>
-    </condition>
-
     <condition property="isdocker" value="true" else="false">
         <isset property="isdocker" />
     </condition>
@@ -118,6 +104,7 @@
     <target depends="init-ivy" name="ivy-retrieve">
         <ivy:settings file="ivysettings.xml"/>
         <ivy:retrieve sync="true" conf="default"/>
+        <ivy:report graph="false" todir="resources/licenses/"/>
         <ivy:retrieve sync="true" conf="lib.extra" pattern="${reference.extra}/[artifact]-[revision].[ext]"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
         <exec executable="git" outputproperty="git.ivychange" failifexecutionfails="false" errorproperty="">
@@ -219,14 +206,6 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="isStressTest = false;"
             replace="isStressTest = ${isstresstest};" />
-        <replaceregexp
-            file="source/com/gmt2001/RollbarProvider.java"
-            match="ACCESS_TOKEN = &quot;(.*)&quot;;"
-            replace="ACCESS_TOKEN = &quot;${rollbar_token}&quot;;" />
-        <replaceregexp
-            file="source/com/gmt2001/RollbarProvider.java"
-            match="ENDPOINT = &quot;(.*)&quot;;"
-            replace="ENDPOINT = &quot;${rollbar_endpoint}&quot;;" />
             <sleep seconds="2"/>
     </target>
 
@@ -278,14 +257,6 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="isStressTest = (.*);"
             replace="isStressTest = false;" />
-        <replaceregexp
-            file="source/com/gmt2001/RollbarProvider.java"
-            match="ACCESS_TOKEN = &quot;(.*)&quot;;"
-            replace="ACCESS_TOKEN = &quot;@access.token@&quot;;" />
-        <replaceregexp
-            file="source/com/gmt2001/RollbarProvider.java"
-            match="ENDPOINT = &quot;(.*)&quot;;"
-            replace="ENDPOINT = &quot;@endpoint@&quot;;" />
             <sleep seconds="2"/>
     </target>
 

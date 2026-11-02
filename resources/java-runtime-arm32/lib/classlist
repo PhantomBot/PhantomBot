@@ -922,7 +922,6 @@ jdk/internal/jimage/BasicImageReader
 jdk/internal/jimage/BasicImageReader$1
 jdk/internal/jimage/BasicImageReader$2
 jdk/internal/jimage/ImageHeader
-jdk/internal/jimage/ImageLocation
 jdk/internal/jimage/ImageReader
 jdk/internal/jimage/ImageReader$SharedImageReader
 jdk/internal/jimage/ImageReaderFactory
@@ -1109,6 +1108,7 @@ sun/nio/ch/FileDispatcher
 sun/nio/ch/FileDispatcherImpl
 sun/nio/ch/IOUtil
 sun/nio/ch/NativeDispatcher
+sun/nio/ch/NativeThread
 sun/nio/ch/NativeThreadSet
 sun/nio/cs/HistoricallyNamedCharset
 sun/nio/cs/ISO_8859_1
