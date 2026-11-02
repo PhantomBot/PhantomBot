@@ -65,7 +65,7 @@ Only a secret that has been saved can be tied; chat commands cannot save one. A 
 **WARNING:** Anyone who can add or edit commands, keywords, or other responses that use command tags can use any saved secret, including in a request to a server of their own. Only give that access to people you trust with your secrets.
 
 - An API that sends the request back in its response can cause a secret to be shown in chat
-- If viewers may set their own greeting (`!greeting toggleuserselfservice`), they can use `(api)` and saved secrets in it
+- `(api)` does not run in greetings, because viewers can be allowed to set their own
 - Use `$1` to `$9`, or `$1>` to `$9>`, for anything typed by a viewer. Other tags, such as `(1)`, are read as part of the `(api)` tag, so a viewer could type `$secret.` and a name to put any saved secret into the request
 - If the API redirects the request to another address, the bot follows it and sends the headers there as well, except `Authorization`. Put a secret in an `Authorization` header when the API allows it
 - With the `wsdebug` or `httpclientdebug` bot property on, the values of saved secrets can be written to the bot's debug log. Turn them off again after debugging
