@@ -381,7 +381,7 @@ $(function () {
                             'click': function () {
                                 helpers.openApiSecretTieModal('apiCommandSecrets', command);
                             },
-                            'text': 'Tie API Secret'
+                            'text': 'Add/Edit API Auth'
                         });
                     }
 

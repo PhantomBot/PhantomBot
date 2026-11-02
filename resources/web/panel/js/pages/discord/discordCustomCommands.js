@@ -120,7 +120,7 @@ $(function () {
                     'click': function () {
                         helpers.openApiSecretTieModal('discordApiCommandSecrets', command);
                     },
-                    'text': 'Tie API Secret'
+                    'text': 'Add/Edit API Auth'
                 }) : '')
                 // Append a select option for the command permission.
                 .append(helpers.getMultiDropdownGroup('command-permission', 'Allowed Roles and Permissions', [

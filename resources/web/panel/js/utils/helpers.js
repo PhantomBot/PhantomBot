@@ -1136,7 +1136,7 @@ $(function () {
                     }));
                 }
 
-                helpers.getModal('api-secret-tie', 'Tie API Secret', 'Save', $('<form/>', {
+                helpers.getModal('api-secret-tie', 'Add/Edit API Auth', 'Save', $('<form/>', {
                     'role': 'form'
                 })
                         .append($('<div/>', {
@@ -1161,7 +1161,7 @@ $(function () {
                         .append(tie.secret === '' ? '' : $('<button/>', {
                             'type': 'button',
                             'class': 'btn btn-danger btn-flat',
-                            'html': 'Remove Tie',
+                            'html': 'Remove API Auth',
                             'click': function () {
                                 socket.removeDBValue('api_secret_tie_remove', table, command, function () {
                                     // Close the modal.

@@ -52,7 +52,7 @@ A saved secret can be tied to a custom command. It is then sent with every `(api
 | `!secretcom !shop` | Says which secret is tied to `!shop`, by name |
 | `!delsecretcom !shop` | Stops sending it |
 
-The same commands work for Discord custom commands, in Discord. In the panel, open a command with an `(api)` tag in _Edit Command_ and click _Tie API Secret_.
+The same commands work for Discord custom commands, in Discord. In the panel, open a command with an `(api)` tag in _Edit Command_ and click _Add/Edit API Auth_.
 
 Only a secret that has been saved can be tied; chat commands cannot save one. A header typed in the `(api)` tag replaces the tied one. Deleting the command also removes the tie. If a tied secret is removed, the command's requests are not sent until it is saved again or the tie is removed. Tying a secret in the panel needs read access to the _Commands_ section, as well as write access to the page of the command.
 
