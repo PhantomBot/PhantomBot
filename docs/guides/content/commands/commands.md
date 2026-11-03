@@ -294,6 +294,8 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./commands/customCommands.js | !addcom [command] [command response] | - Adds a custom command |
 | ./commands/customCommands.js | !editcom [command] [command response] | - Edits the current response of that command |
 | ./commands/customCommands.js | !tokencom [command] [token] | - Stores a user/pass or API key to be replaced into a (customapi) tag. WARNING: This should be done from the bot console or web panel, if you run this from chat, anyone watching chat can copy your info! |
+| ./commands/customCommands.js | !secretcom [command] (secret) (header) | - Ties a saved API secret to the command, so each (api) request of the command sends it in the header, Authorization as Bearer if left out. Without a secret, shows which one is tied |
+| ./commands/customCommands.js | !delsecretcom [command] | - Stops sending the API secret tied to the command |
 | ./commands/customCommands.js | !delcom [command] | - Delete that custom command |
 | ./commands/customCommands.js | !aliascom [alias name] [existing command] | - Create an alias to any command |
 | ./commands/customCommands.js | !delalias [alias] | - Delete that alias |

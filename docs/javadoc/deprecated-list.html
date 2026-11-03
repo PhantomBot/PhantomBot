@@ -108,68 +108,73 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">To be replaced</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/cache/TwitchCache.html#getViewerCount()">tv.phantombot.cache.TwitchCache.getViewerCount()</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="com/scaniatv/CustomAPI.html" title="class in com.scaniatv">com.scaniatv.CustomAPI</a></div>
 <div class="col-last odd-row-color">
+<div class="deprecation-comment">No longer exposed to scripts. Use <code>$.api.request</code> in scripts instead; <code>$.customAPI</code> is now
+ provided by <code>core/api.js</code> and works as this class did</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/cache/TwitchCache.html#getViewerCount()">tv.phantombot.cache.TwitchCache.getViewerCount()</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Please use <a href="tv/phantombot/cache/TwitchCache.html#viewers()"><code>TwitchCache.viewers()</code></a> instead</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/cache/TwitchCache.html#getViews()">tv.phantombot.cache.TwitchCache.getViews()</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/cache/TwitchCache.html#getViews()">tv.phantombot.cache.TwitchCache.getViews()</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Twitch does not report this anymore, this method is temporarily available to prevent script errors and will be removed soon</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.UsernameCache</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.UsernameCache</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.username</code></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.ViewerListCache</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.ViewerListCache</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.usernameCache</code></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserWithDiscriminator(java.lang.String,java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getUserWithDiscriminator<wbr>(String, String)</a></div>
-<div class="col-last odd-row-color">
-<div class="deprecation-comment">Discriminators have been removed from Discord</div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserWithDiscriminatorAsync(java.lang.String,java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getUserWithDiscriminatorAsync<wbr>(String, String)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserWithDiscriminator(java.lang.String,java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getUserWithDiscriminator<wbr>(String, String)</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">Discriminators have been removed from Discord</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/event/discord/DiscordEvent.html#getDiscriminator()">tv.phantombot.event.discord.DiscordEvent.getDiscriminator()</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserWithDiscriminatorAsync(java.lang.String,java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getUserWithDiscriminatorAsync<wbr>(String, String)</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Discriminators have been removed from Discord</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(java.lang.String%5B%5D,java.lang.String%5B%5D)">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent<wbr>(String[], String[])</a></div>
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/event/discord/DiscordEvent.html#getDiscriminator()">tv.phantombot.event.discord.DiscordEvent.getDiscriminator()</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Joins/Parts are not calculated anymore</div>
+<div class="deprecation-comment">Discriminators have been removed from Discord</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String%5B%5D,java.lang.String%5B%5D)">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent<wbr>(TwitchSession, String[], String[])</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(java.lang.String%5B%5D,java.lang.String%5B%5D)">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent<wbr>(String[], String[])</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Joins/Parts are not calculated anymore</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getJoins()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getJoins()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String%5B%5D,java.lang.String%5B%5D)">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent<wbr>(TwitchSession, String[], String[])</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">Joins/Parts are not calculated anymore</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getParts()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getParts()</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getJoins()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getJoins()</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Joins/Parts are not calculated anymore</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/PhantomBot.html#getProperties()">tv.phantombot.PhantomBot.getProperties()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getParts()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getParts()</a></div>
 <div class="col-last even-row-color">
+<div class="deprecation-comment">Joins/Parts are not calculated anymore</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/PhantomBot.html#getProperties()">tv.phantombot.PhantomBot.getProperties()</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Please use <a href="tv/phantombot/CaselessProperties.html#instance()"><code>CaselessProperties.instance()</code></a> instead</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/PhantomBot.html#isPrerelease()">tv.phantombot.PhantomBot.isPrerelease()</a></div>
-<div class="col-last odd-row-color">
-<div class="deprecation-comment">This build type is not used</div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/RepoVersion.html#isPrereleaseBuild()">tv.phantombot.RepoVersion.isPrereleaseBuild()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/PhantomBot.html#isPrerelease()">tv.phantombot.PhantomBot.isPrerelease()</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">This build type is not used</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollows(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollows<wbr>(String, String, int, String)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/RepoVersion.html#isPrereleaseBuild()">tv.phantombot.RepoVersion.isPrereleaseBuild()</a></div>
 <div class="col-last odd-row-color">
+<div class="deprecation-comment">This build type is not used</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollows(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollows<wbr>(String, String, int, String)</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">This endpoint is deprecated by Twitch in favor of <a href="tv/phantombot/twitch/api/Helix.html#getChannelFollowers(java.lang.String,int,java.lang.String)"><code>Helix.getChannelFollowers(String, int, String)</code></a>, which requires an OAuth scope</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollowsAsync(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollowsAsync<wbr>(String, String, int, String)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollowsAsync(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollowsAsync<wbr>(String, String, int, String)</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">This endpoint is deprecated by Twitch in favor of <a href="tv/phantombot/twitch/api/Helix.html#getChannelFollowersAsync(java.lang.String,int,java.lang.String)"><code>Helix.getChannelFollowersAsync(String, int, String)</code></a>, which requires an OAuth scope</div>
 </div>
 </div>
@@ -215,12 +220,17 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">To be replaced</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.UsernameCache</a></div>
+<div class="col-summary-item-name even-row-color"><a href="com/scaniatv/CustomAPI.html" title="class in com.scaniatv">com.scaniatv.CustomAPI</a></div>
 <div class="col-last even-row-color">
+<div class="deprecation-comment">No longer exposed to scripts. Use <code>$.api.request</code> in scripts instead; <code>$.customAPI</code> is now
+ provided by <code>core/api.js</code> and works as this class did</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.UsernameCache</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.username</code></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.ViewerListCache</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.ViewerListCache</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.usernameCache</code></div>
 </div>
 </div>

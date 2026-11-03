@@ -1006,6 +1006,200 @@ $(function () {
     };
 
     /**
+     * @function Opens the dialog that lists, saves, and removes the secrets used by the (api) command tag
+     */
+    helpers.openApiSecretsModal = function () {
+        // The panel cannot read the apiSecrets table, so the names are kept in a table of their own.
+        socket.getDBTableValues('api_secret_names', 'apiSecretNames', function (results) {
+            let secretList = $('<div/>', {
+                'class': 'form-group'
+            }).append($('<label/>', {
+                'html': $('<b/>', {
+                    'text': 'Saved Secrets'
+                })
+            }));
+
+            if (results.length === 0) {
+                secretList.append($('<p/>', {
+                    'text': 'No secrets have been saved.'
+                }));
+            } else {
+                secretList.append($('<div/>', {
+                    'class': 'input-group'
+                }).append($('<select/>', {
+                    'class': 'form-control',
+                    'id': 'secret-saved',
+                    'style': 'cursor: pointer;'
+                }).append(results.map(function (result) {
+                    return $('<option/>', {
+                        'value': result.key,
+                        'text': '$secret.' + result.key
+                    });
+                }))).append($('<span/>', {
+                    'class': 'input-group-btn',
+                    'html': $('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-danger btn-flat',
+                        'html': 'Remove',
+                        'click': function () {
+                            let secret = $('#secret-saved').val();
+
+                            // Close the modal.
+                            $('#api-secret').modal('hide');
+                            // Ask the user if they want to remove the secret.
+                            helpers.getConfirmDeleteModal('api_secret_modal_remove', 'Are you sure you want to remove API secret ' + secret + '?', true,
+                                    'The API secret ' + secret + ' has been successfully removed!', function () {
+                                        socket.removeDBValues('api_secret_remove', {
+                                            tables: ['apiSecrets', 'apiSecretNames'],
+                                            keys: [secret, secret]
+                                        }, function () {});
+                                    });
+                        }
+                    })
+                })));
+            }
+
+            // Get modal from our util functions in /utils/helpers.js
+            helpers.getModal('api-secret', 'API Secrets', 'Save', $('<form/>', {
+                'role': 'form'
+            })
+                    .append($('<div/>', {
+                        'class': 'form-group',
+                        'html': 'This dialog stores secrets, such as API keys, to be used in an (api) command tag as $secret.name\n\
+                        <br /> A saved secret cannot be viewed again. Saving with an existing name replaces it.\n\
+                        <br /> NOTE: Anyone who can add or edit commands can use any saved secret.'
+                    }))
+                    // Append the list of saved secrets.
+                    .append(secretList)
+                    // Append input box for the secret name.
+                    .append(helpers.getInputGroup('secret-name', 'text', 'Name', 'shop', '', 'Name of the secret. Letters, numbers, and underscores only.'))
+                    // Append input box for the secret value.
+                    .append(helpers.getInputGroup('secret-value', 'password', 'Value', '', '', 'Value of the secret.')), function () {
+                let secretName = $('#secret-name'),
+                        secretValue = $('#secret-value');
+
+                // The (api) tag looks up secrets by their lowercase name.
+                secretName.val(secretName.val().trim().toLowerCase());
+                secretValue.val(secretValue.val().trim());
+
+                // Handle each input to make sure they have a value.
+                switch (false) {
+                    case helpers.handleInput(secretName, function (obj) {
+                        return obj.val().match(/^\w+$/) === null ? 'Only letters, numbers, and underscores are allowed.' : null;
+                    }):
+                    case helpers.handleInputString(secretValue):
+                        break;
+                    default:
+                        socket.updateDBValues('api_secret_update', {
+                            tables: ['apiSecrets', 'apiSecretNames'],
+                            keys: [secretName.val(), secretName.val()],
+                            values: [secretValue.val(), 'true']
+                        }, function () {
+                            // Close the modal.
+                            $('#api-secret').modal('hide');
+                            // Tell the user the secret was saved.
+                            toastr.success('Successfully saved API secret ' + secretName.val());
+                        });
+                }
+            }).modal('toggle');
+        });
+    };
+
+    /**
+     * @function Opens the dialog that ties a saved API secret to a custom command, so its (api) requests send it in a header
+     *
+     * @param {String} table apiCommandSecrets for a Twitch command, discordApiCommandSecrets for a Discord command
+     * @param {String} command the command, without the !
+     */
+    helpers.openApiSecretTieModal = function (table, command) {
+        socket.getDBTableValues('api_secret_tie_names', 'apiSecretNames', function (results) {
+            socket.getDBValue('api_secret_tie_get', table, command, function (e) {
+                let tie = (e[table] === null || e[table] === undefined ? {secret: '', header: 'Authorization'} : JSON.parse(e[table])),
+                        secretSelect = $('<select/>', {
+                            'class': 'form-control',
+                            'id': 'tie-secret',
+                            'style': 'cursor: pointer;'
+                        }).append(results.map(function (result) {
+                            return $('<option/>', {
+                                'value': result.key,
+                                'text': '$secret.' + result.key,
+                                'selected': result.key === tie.secret
+                            });
+                        }));
+
+                // A tied secret that was removed from the pool would otherwise show as the first one in the list
+                if (tie.secret !== '' && !results.some((result) => result.key === tie.secret)) {
+                    secretSelect.prepend($('<option/>', {
+                        'value': tie.secret,
+                        'text': '$secret.' + tie.secret + ' (not saved)',
+                        'selected': true
+                    }));
+                }
+
+                helpers.getModal('api-secret-tie', 'Add/Edit API Auth', 'Save', $('<form/>', {
+                    'role': 'form'
+                })
+                        .append($('<div/>', {
+                            'class': 'form-group',
+                            'html': 'The tied secret is sent with every (api) request of the command, so the command does not need to name it.\n\
+                            <br /> The Authorization header is sent as Bearer and the secret. Any other header is sent as the secret.\n\
+                            <br /> A header typed in the (api) tag replaces it.'
+                        }))
+                        .append(helpers.getInputGroup('tie-command', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
+                        // Also shown with no saved secrets when the command is tied to one that was removed
+                        .append(secretSelect.children().length === 0 ? '' : $('<div/>', {
+                            'class': 'form-group'
+                        }).append($('<label/>', {
+                            'html': $('<b/>', {
+                                'text': 'Secret'
+                            })
+                        })).append(secretSelect))
+                        .append(results.length > 0 ? '' : $('<p/>', {
+                            'text': 'No secrets have been saved. Save one with the API Secrets button first.'
+                        }))
+                        .append(helpers.getInputGroup('tie-header', 'text', 'Header', 'Authorization', tie.header, 'Name of the header the secret is sent in.'))
+                        .append(tie.secret === '' ? '' : $('<button/>', {
+                            'type': 'button',
+                            'class': 'btn btn-danger btn-flat',
+                            'html': 'Remove API Auth',
+                            'click': function () {
+                                socket.removeDBValue('api_secret_tie_remove', table, command, function () {
+                                    // Close the modal.
+                                    $('#api-secret-tie').modal('hide');
+                                    // Tell the user the tie was removed.
+                                    toastr.success('The API secret is no longer sent with !' + command);
+                                });
+                            }
+                        })), function () {
+                    let tieHeader = $('#tie-header');
+
+                    tieHeader.val(tieHeader.val().trim());
+
+                    // Handle each input to make sure they have a value.
+                    switch (false) {
+                        case results.length > 0:
+                            break;
+                        case helpers.handleInput(tieHeader, function (obj) {
+                            return obj.val().match(/^[\w-]+$/) === null ? 'Only letters, numbers, underscores, and dashes are allowed.' : null;
+                        }):
+                            break;
+                        default:
+                            socket.updateDBValue('api_secret_tie_update', table, command, JSON.stringify({
+                                secret: secretSelect.val(),
+                                header: tieHeader.val()
+                            }), function () {
+                                // Close the modal.
+                                $('#api-secret-tie').modal('hide');
+                                // Tell the user the secret was tied.
+                                toastr.success('The API secret ' + secretSelect.val() + ' is now sent with !' + command);
+                            });
+                    }
+                }).modal('toggle');
+            });
+        });
+    };
+
+    /**
      * @function Generates a random string.
      *
      * @param  {Number} len

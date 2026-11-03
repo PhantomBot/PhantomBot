@@ -51,6 +51,8 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./discord/commands/customCommands.js | !addcom [command] [response] | - Adds a custom command to be used in your Discord server. |
 | ./discord/commands/customCommands.js | !editcom [command] [response] | - Edits an existing command. |
 | ./discord/commands/customCommands.js | !delcom [command] | - Deletes a custom command. |
+| ./discord/commands/customCommands.js | !secretcom [command] (secret) (header) | - Ties a saved API secret to the command, so each (api) request of the command sends it in the header, Authorization as Bearer if left out. Without a secret, shows which one is tied |
+| ./discord/commands/customCommands.js | !delsecretcom [command] | - Stops sending the API secret tied to the command |
 | ./discord/commands/customCommands.js | !channelcom [command] [channel / --global / --list] | - Makes a command only work in that channel, separate the channels with commas (no spaces) for multiple, use --global as the channel to make the command global again. |
 | ./discord/commands/customCommands.js | !pricecom [command] [amount] | - Sets a cost for that command, users must of their Twitch accounts linked for this to work. |
 | ./discord/commands/customCommands.js | !aliascom [alias] [command] | - Alias a command to another command, this only works with commands that have a single command. |
