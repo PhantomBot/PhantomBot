@@ -33,6 +33,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
 
 import org.json.JSONException;
@@ -46,6 +47,7 @@ import tv.phantombot.PhantomBot;
  */
 public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
+    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken", "apisecrets"};
     private HttpAuthenticationHandler authHandler;
 
     public HTTPAuthenticatedHandler(String webAuth, String myPassword) {
@@ -142,6 +144,12 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
         String dbTable = qsd.parameters().get("table").get(0);
         String dbSection = "";
+
+        if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equalsIgnoreCase(dbTable))) {
+            jsonObject.object().key("error").value("table not allowed").endObject();
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            return;
+        }
 
         if (qsd.parameters().containsKey("section") && !qsd.parameters().get("section").isEmpty() && !qsd.parameters().get("section").get(0).isBlank()) {
             dbSection = qsd.parameters().get("section").get(0);
