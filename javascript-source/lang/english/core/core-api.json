@@ -1,0 +1,4 @@
+{
+    "api.args.missing": "The command requires parameters.",
+    "api.error": "The API request failed."
+}

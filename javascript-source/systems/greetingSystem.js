@@ -110,7 +110,11 @@
         return {
             sender: sender,
             rawsender: rawsender,
-            rank: rank
+            rank: rank,
+            // Viewers can be allowed to set their own greeting, so (api) and its saved secrets do not run here
+            api: function () {
+                return {result: ''};
+            }
         }
     }
 

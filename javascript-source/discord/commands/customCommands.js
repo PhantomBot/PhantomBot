@@ -135,8 +135,79 @@
             }
 
             $.inidb.del('discordCommands', action);
+            $.inidb.del('discordApiCommandSecrets', action);
             $.discord.unregisterCommand(action);
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.delcom.success', action));
+        }
+
+        /**
+         * @discordcommandpath secretcom [command] (secret) (header) - Ties a saved API secret to the command, so each (api) request of the command sends it in the header, Authorization as Bearer if left out. Without a secret, shows which one is tied
+         */
+        if ($.equalsIgnoreCase(command, 'secretcom')) {
+            if (action === undefined) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.secret.usage'));
+                return;
+            }
+
+            action = $.jsString(action).replace('!', '').toLowerCase();
+
+            if (!$.inidb.exists('discordCommands', action)) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.404'));
+                return;
+            }
+
+            if (subAction === undefined) {
+                let tie = $.optIniDbString('discordApiCommandSecrets', action);
+                if (tie.isPresent()) {
+                    tie = JSON.parse(tie.get());
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.secret.show', action, tie.secret, tie.header));
+                } else {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.secret.none', action));
+                }
+                return;
+            }
+
+            let secret = $.jsString(subAction).toLowerCase(),
+                    header = args[2] === undefined ? 'Authorization' : $.jsString(args[2]);
+
+            // Only secrets saved in the panel can be tied
+            if (!$.inidb.exists('apiSecrets', secret)) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.secret.404'));
+                return;
+            }
+
+            if (!/^[\w-]+$/.test(header)) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.secret.header'));
+                return;
+            }
+
+            $.inidb.set('discordApiCommandSecrets', action, JSON.stringify({secret: secret, header: header}));
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.secret.success', secret, action, header));
+            return;
+        }
+
+        /**
+         * @discordcommandpath delsecretcom [command] - Stops sending the API secret tied to the command
+         */
+        if ($.equalsIgnoreCase(command, 'delsecretcom')) {
+            if (action === undefined) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.delsecret.usage'));
+                return;
+            }
+
+            action = $.jsString(action).replace('!', '').toLowerCase();
+
+            if (!$.inidb.exists('discordCommands', action)) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.404'));
+                return;
+            } else if (!$.inidb.exists('discordApiCommandSecrets', action)) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.secret.none', action));
+                return;
+            }
+
+            $.inidb.del('discordApiCommandSecrets', action);
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.delsecret.success', action));
+            return;
         }
 
         /**
@@ -305,6 +376,8 @@
         $.discord.registerCommand('./discord/commands/customCommands.js', 'pricecom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'aliascom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'delalias', 1);
+        $.discord.registerCommand('./discord/commands/customCommands.js', 'secretcom', 1);
+        $.discord.registerCommand('./discord/commands/customCommands.js', 'delsecretcom', 1);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'commands', 0);
         $.discord.registerCommand('./discord/commands/customCommands.js', 'botcommands', 1);
 
