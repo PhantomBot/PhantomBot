@@ -127,7 +127,7 @@
 
         if (lastUserGreeting + greetingCooldown < now) {
             if (message.isPresent()) {
-                message = $.transformers.tags(null, message, ['twitch', ['noevent']], {localTransformers: localTransformers, customArgs: {'sender': sender}});
+                message = $.transformers.tags(null, message.get(), ['twitch', ['noevent']], {localTransformers: localTransformers, customArgs: {'sender': sender}});
 
                 greetingQueue.add(message);
 
