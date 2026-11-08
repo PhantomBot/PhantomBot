@@ -112,6 +112,95 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
+### api
+#### api
+
+Defined in script: _./javascript-source/core/transformers/api.js_
+
+**Formulas:**
+
+- `(api url:str)` - send a GET request and output the response text
+- `(api method:str url:str)` - send a request with the method GET, POST, PUT, PATCH, or DELETE and output the response text
+- `(api method:str url:str body:str)` - send a request with a body and output the response text
+- `(api method:str url:str [header:str: value:str] body:str)` - send a request with one or more headers; the body is optional
+- `(api method:str url:str body:str -> reply:str)` - send a request and output the reply; the method and body are optional
+
+**Labels:** twitch discord noevent commandevent api
+
+
+_NOTE: the url must start with `http://` or `https://`; headers must directly follow the url; the body is sent exactly as typed_
+
+_NOTE: a body starting with `{` or `[` is sent as `application/json`; any other body is sent as `application/x-www-form-urlencoded`_
+
+_NOTE: in a reply, `{field}` is replaced with that field of the JSON response, such as `{location.name}` or `{items.0.name}`; a missing field is left blank. `$status` is replaced with the HTTP status code, or `0` if there was no response_
+
+_NOTE: ` -> ` starts the reply for a success. A reply can also be given for a status code (` 404-> `), several (` 401,403-> `), a class (` 5xx-> `), no response (` 0-> `), or any other failure (` !-> `). The most specific one is used. An arrow with nothing after it outputs nothing_
+
+_NOTE: without a matching reply, a success outputs the response text and a failure outputs an error message_
+
+_NOTE: if a reply reads a field and a successful response is not JSON, the request counts as a failure_
+
+_NOTE: `$1`-`$9` are replaced with the arguments of the command, encoded for the part of the request they are placed in. If the command was not given one of them, the tag outputs an error message and no request is sent. A `$` followed by a single digit is always an argument, so write a price such as `$5` as `5 dollars`_
+
+_NOTE: `$1>`-`$9>` are replaced with all the argument text from that argument on, as typed, so a viewer does not need quotes for text with spaces. They are encoded and required in the same way as `$1`-`$9`_
+
+_NOTE: arguments are split as for every command: double quotes group words into one argument and are removed. Type `\"` for a literal double quote_
+
+_NOTE: a part of the url in square brackets that contains `$1`-`$9`, such as `[/$2]`, is only sent if every argument inside it was given. Those arguments are optional in the rest of the tag as well, and are left blank when missing_
+
+_NOTE: `$secret.name` is replaced with an API secret saved in the panel. It can be used in the url, a header, or the body. For saving secrets and keeping them safe, see https://phantombot.dev/guides/#guide=content/commands/api-secrets_
+
+_NOTE: a secret tied to the command with `!secretcom` or the panel is sent with every request of the command, in the `Authorization` header as `Bearer` and the secret, or as the secret in another header chosen when it was tied. A header typed in the tag replaces it_
+
+_NOTE: a user name and password in the url are not sent; use an `Authorization` header. The request times out after the `httpclienttimeout` bot property, 10 seconds by default_
+
+_NOTE: this tag can change data on the remote server. Anyone who can add or edit commands can use any saved API secret_
+
+_NOTE: this tag does not run in greetings, because viewers can be allowed to set their own_
+
+_NOTE: start the chat message with your own text, such as `-> Path: {path}`. A message that starts with `/` or `.` is treated as a Twitch command, which a field, an argument, or the response text could otherwise decide_
+
+_NOTE: parentheses inside the tag must be escaped as `\(` and `\)`. Other tags inside the tag run before it does, whichever reply is used, and their text is read as part of the tag: a viewer's text from `(1)` could add `$secret.name` or a header, so use `$1`-`$9` or `$1>`-`$9>` for anything typed by a viewer_
+
+
+**Example:**
+```text
+Caster: !addcom !joke (api https://not.real.com/joke)
+User: !joke
+Bot: These jokes are un-bear-able
+```
+
+**Example:**
+```text
+Caster: !addcom !weather (api https://not.real.com/weather?q=$1 -> Weather in {location.name}: {current.temp_f} F 404-> I do not know where $1 is !-> The weather service is not answering)
+User: !weather 80314
+Bot: Weather in Boulder: 75 F
+User: !weather nowhere
+Bot: I do not know where nowhere is
+```
+
+**Example:**
+```text
+Caster: !addcom !rename (api PATCH https://not.real.com/item/$1 [Authorization: Bearer $secret.shop] {"name":"$2>"} -> Renamed item $1 to {name})
+User: !rename 5 big banana
+Bot: Renamed item 5 to big banana
+```
+
+**Example:**
+```text
+Caster: !addcom !song (api https://not.real.com/playlists/$1/songs[/$2] -> Now playing {title} by {artist})
+User: !song chill
+// requests https://not.real.com/playlists/chill/songs
+User: !song chill 7
+// requests https://not.real.com/playlists/chill/songs/7
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### basic
 #### buildArgs
 
