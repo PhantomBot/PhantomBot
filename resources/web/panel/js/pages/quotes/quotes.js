@@ -204,23 +204,29 @@ $(function () {
     // Quotes settings button.
     $('#quote-settings-button').on('click', function () {
         socket.getDBValues('get_quote_settings', {
-            tables: ['settings', 'settings', 'settings'],
-            keys: ['quoteMessage', 'quoteTwitchNamesToggle', 'quoteRenumberAfterDelete']
+            tables: ['settings', 'settings', 'settings', 'settings', 'settings'],
+            keys: ['quoteMessage', 'quoteMode', 'quoteTwitchNamesToggle', 'quoteRenumberAfterDelete', 'quoteDateFormat']
         }, true, function (e) {
             helpers.getModal('quote-settings', 'Quote Settings', 'Save', $('<form/>', {
                 'role': 'form'
             })
                     // Quote input.
                     .append(helpers.getInputGroup('quote-msg', 'text', 'Quote Response', '', helpers.getDefaultIfNullOrUndefined(e['quoteMessage'], '[(id)] "(quote)", by (user) ((date))'),
-                            'Message said in chat when someone uses the quote command. Tags: (id), (quote), (user), (game) and (date)'))
+                            'Message format to return the quote when someone uses the !quote command. Tags: (id), (quote), (user), (userrank), (game), and (date)'))
+                    .append(helpers.getDropdownGroup('quote-mode-toggle', 'Quote Username Mode', (helpers.isTrue(e['quoteMode']) ? 'Creators Username' : 'Input Username'), ['Creators Username', 'Input Username'],
+                            'Determines if the !addquote command automatically uses the username of the quote creator, or if they may input a username to attribute.'))
                     .append(helpers.getDropdownGroup('quote-twitch-names-toggle', 'Force Twitch Names', (helpers.isTrue(e['quoteTwitchNamesToggle']) ? 'Yes' : 'No'), ['Yes', 'No'],
-                            'If names for quotes should be validated against Twitch usernames. If not, names can be anything.'))
+                            'If usernames for quotes should be validated against Twitch usernames that have been seen in chat. If not, usernames can be anything.'))
                     .append(helpers.getDropdownGroup('quote-renumber-after-delete-toggle', 'Renumber After Delete', (helpers.isTrue(e['quoteRenumberAfterDelete']) ? 'Yes' : 'No'), ['Yes', 'No'],
-                            'If quotes should be renumbered after one is deleted.')),
+                            'If quotes should be renumbered after one is deleted.'))
+                    .append(helpers.getInputGroup('quote-date-format', 'text', 'Quote Date Format', '', helpers.getDefaultIfNullOrUndefined(e['quoteDateFormat'], 'dd-MM-yyyy'),
+                            'The date format to use for the (date) tag in quotes.')),
                     function () {// Callback once we click the save button.
-                        let quoteMsg = $('#quote-msg'),
+                        let quoteMsg = $('#quote-msg').val(),
+                                quoteMode = $('#quote-mode-toggle').find(':selected').text() === 'Creators Username',
                                 quoteTwitchNamesToggle = $('#quote-twitch-names-toggle').find(':selected').text() === 'Yes',
-                                quoteRenumberAfterDeleteToggle = $('#quote-renumber-after-delete-toggle').find(':selected').text() === 'Yes';
+                                quoteRenumberAfterDeleteToggle = $('#quote-renumber-after-delete-toggle').find(':selected').text() === 'Yes',
+                                quoteDateFormat = $('#quote-date-format').val();
 
                         // Handle each input to make sure they have a value.
                         switch (false) {
@@ -229,9 +235,9 @@ $(function () {
                             default:
                                 // Add quote.
                                 socket.updateDBValues('get_quote_settings_update', {
-                                    tables: ['settings', 'settings', 'settings'],
-                                    keys: ['quoteMessage', "quoteTwitchNamesToggle", "quoteRenumberAfterDelete"],
-                                    values: [quoteMsg.val(), quoteTwitchNamesToggle, quoteRenumberAfterDeleteToggle]
+                                    tables: ['settings', 'settings', 'settings', 'settings', 'settings'],
+                                    keys: ['quoteMessage', 'quoteMode', 'quoteTwitchNamesToggle', 'quoteRenumberAfterDelete', 'quoteDateFormat'],
+                                    values: [quoteMsg, quoteMode, quoteTwitchNamesToggle, quoteRenumberAfterDeleteToggle, quoteDateFormat]
                                 }, function () {
                                     // Close the modal.
                                     $('#quote-settings').modal('hide');
