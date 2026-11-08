@@ -23,7 +23,7 @@
 (function() {
 
     let quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
-        isDeleting = false;
+        isRenumbering = false;
 
     /**
      * @function updateQuote
@@ -67,42 +67,49 @@
         return numA - numB;
     }
 
+    function renumberQuotes() {
+        if (isRenumbering) {
+            return;
+        }
+        isRenumbering = true;
+        let quoteKeys = $.inidb.GetKeyList('quotes', ''),
+        quotes = [],
+        i;
+
+        quoteKeys.sort(sortCompare);
+
+        for (i in quoteKeys) {
+            quotes.push($.getIniDbString('quotes', quoteKeys[i]));
+            $.inidb.del('quotes', quoteKeys[i]);
+        }
+
+        for (i in quotes) {
+            $.inidb.set('quotes', i, quotes[i]);
+        }
+
+        $.inidb.set('settings', 'quoteNextId', quotes.length);
+        isRenumbering = false;
+    }
+
     /**
      * @function deleteQuote
      * @param {Number} quoteId
      * @returns {Number}
      */
     function deleteQuote(quoteId) {
-        let quoteKeys,
-            quotes = [],
-            i;
-
-        if (isDeleting) {
+        if (isRenumbering) {
             return -1;
         }
 
         if ($.inidb.exists('quotes', quoteId)) {
-            isDeleting = true;
             $.inidb.del('quotes', quoteId);
 
             if ($.getSetIniDbBoolean('settings', 'quoteRenumberAfterDelete', true)) {
-                quoteKeys = $.inidb.GetKeyList('quotes', '');
-
-                quoteKeys.sort(sortCompare);
-
-                for (i in quoteKeys) {
-                    quotes.push($.getIniDbString('quotes', quoteKeys[i]));
-                    $.inidb.del('quotes', quoteKeys[i]);
-                }
-
-                for (i in quotes) {
-                    $.inidb.set('quotes', i, quotes[i]);
-                }
-
-                $.inidb.set('settings', 'quoteNextId', quotes.length);
+                renumberQuotes();
             }
 
-            isDeleting = false;
+            let quotes = $.inidb.GetKeyList('quotes', '');
+
             $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
             return (quotes.length ? quotes.length : 0);
         }
@@ -393,6 +400,25 @@
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.twitchnames-enabled'));
             return;
         }
+
+        /**
+         * @commandpath quoterenumberingtoggle - Toggles on and off if quotes should be renumbered after deletion
+         */
+        if ($.equalsIgnoreCase(command, 'quoterenumberingtoggle')) {
+            let renumberQuotes = $.getIniDbBoolean('settings', 'quoteRenumberAfterDelete');
+            $.getSetIniDbBoolean('settings', 'quoteRenumberAfterDelete', !renumberQuotes);
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.renumbering', $.lang.get('common.' + (!renumberQuotes ? 'enabled' : 'disabled'))));
+            return;
+        }
+
+        /**
+         * @commandpath quotedorenumbering - Renumbers all quotes to be sequential starting at 0
+         */
+        if ($.equalsIgnoreCase(command, 'quotedorenumbering')) {
+            renumberQuotes();
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.dorenumbering'));
+            return;
+        }
     });
 
     /**
@@ -410,5 +436,7 @@
         $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', $.PERMISSION.Admin);
         $.registerChatCommand('./systems/quoteSystem.js', 'quotedateformat', $.PERMISSION.Admin);
         $.registerChatCommand('./systems/quoteSystem.js', 'quotetwitchnamestoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quoterenumberingtoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotedorenumbering', $.PERMISSION.Admin);
     });
 })();
