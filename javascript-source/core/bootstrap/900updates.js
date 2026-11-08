@@ -888,7 +888,18 @@
     });
 
     addUpdate('3.24.2.0', 'installedv3.24.2.0', function () {
-        $.setIniDbInteger('settings', 'quoteNextId', $.inidb.GetKeyList('quotes', '').length);
+        let keys = $.inidb.GetKeyList('quotes', ''),
+            nextId = $.getIniDbNumber('settings', 'quoteNextId', 0);
+
+        // Ids can have gaps when renumbering is off, so start after the highest one
+        for (let i = 0; i < keys.length; i++) {
+            let id = parseInt(keys[i]);
+            if (!isNaN(id) && id >= nextId) {
+                nextId = id + 1;
+            }
+        }
+
+        $.setIniDbNumber('settings', 'quoteNextId', nextId);
     });
 
     // ------ Add updates above this line in execution order ------

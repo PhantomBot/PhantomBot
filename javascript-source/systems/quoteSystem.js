@@ -47,15 +47,16 @@
      * @returns {Number}
      */
     function saveQuote(username, quote) {
-        let newKey = $.getSetIniDbInteger('settings', 'quoteNextId', 0),
+        let newKey = $.getSetIniDbNumber('settings', 'quoteNextId', 0),
             game = (!$.javaString($.getGame($.channelName)).isBlank() ? $.getGame($.channelName) : "Some Game");
 
-        if ($.inidb.exists('quotes', newKey)) {
+        while ($.inidb.exists('quotes', newKey)) {
             newKey++;
         }
 
         quote = String(quote).replace(/"/g, '\'\'');
         $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
+        $.setIniDbNumber('settings', 'quoteNextId', newKey + 1);
         $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
         return newKey;
     }
@@ -405,8 +406,8 @@
          * @commandpath quoterenumberingtoggle - Toggles on and off if quotes should be renumbered after deletion
          */
         if ($.equalsIgnoreCase(command, 'quoterenumberingtoggle')) {
-            let renumberQuotes = $.getIniDbBoolean('settings', 'quoteRenumberAfterDelete');
-            $.getSetIniDbBoolean('settings', 'quoteRenumberAfterDelete', !renumberQuotes);
+            let renumberQuotes = $.getIniDbBoolean('settings', 'quoteRenumberAfterDelete', true);
+            $.setIniDbBoolean('settings', 'quoteRenumberAfterDelete', !renumberQuotes);
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.renumbering', $.lang.get('common.' + (!renumberQuotes ? 'enabled' : 'disabled'))));
             return;
         }
