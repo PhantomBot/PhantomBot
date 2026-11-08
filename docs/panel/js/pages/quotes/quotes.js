@@ -217,7 +217,7 @@ $(function () {
                             'Determines if the !addquote command automatically uses the username of the quote creator, or if they may input a username to attribute.'))
                     .append(helpers.getDropdownGroup('quote-twitch-names-toggle', 'Force Twitch Names', (helpers.isTrue(e['quoteTwitchNamesToggle']) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If usernames for quotes should be validated against Twitch usernames that have been seen in chat. If not, usernames can be anything.'))
-                    .append(helpers.getDropdownGroup('quote-renumber-after-delete-toggle', 'Renumber After Delete', (helpers.isTrue(e['quoteRenumberAfterDelete']) ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('quote-renumber-after-delete-toggle', 'Renumber After Delete', (helpers.isTrue(helpers.getDefaultIfNullOrUndefined(e['quoteRenumberAfterDelete'], 'true')) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If quotes should be renumbered after one is deleted.'))
                     .append(helpers.getInputGroup('quote-date-format', 'text', 'Quote Date Format', '', helpers.getDefaultIfNullOrUndefined(e['quoteDateFormat'], 'dd-MM-yyyy'),
                             'The date format to use for the (date) tag in quotes.')),
