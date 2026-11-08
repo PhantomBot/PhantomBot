@@ -22,7 +22,7 @@
  */
 (function() {
 
-    var quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
+    let quoteMode = $.getSetIniDbBoolean('settings', 'quoteMode', true),
         isDeleting = false;
 
     /**
@@ -47,7 +47,7 @@
      * @returns {Number}
      */
     function saveQuote(username, quote) {
-        var newKey = $.inidb.GetKeyList('quotes', '').length,
+        let newKey = $.inidb.GetKeyList('quotes', '').length,
             game = (!$.javaString($.getGame($.channelName)).isBlank() ? $.getGame($.channelName) : "Some Game");
 
         if ($.inidb.exists('quotes', newKey)) {
@@ -60,13 +60,20 @@
         return newKey;
     }
 
+    function sortCompare(a, b) {
+        let numA = parseInt(a),
+            numB = parseInt(b);
+
+        return numA - numB;
+    }
+
     /**
      * @function deleteQuote
      * @param {Number} quoteId
      * @returns {Number}
      */
     function deleteQuote(quoteId) {
-        var quoteKeys,
+        let quoteKeys,
             quotes = [],
             i;
 
@@ -78,6 +85,8 @@
             isDeleting = true;
             $.inidb.del('quotes', quoteId);
             quoteKeys = $.inidb.GetKeyList('quotes', '');
+
+            quoteKeys.sort(sortCompare);
 
             for (i in quoteKeys) {
                 quotes.push($.getIniDbString('quotes', quoteKeys[i]));
@@ -108,8 +117,8 @@
             quoteId = $.rand($.inidb.GetKeyList('quotes', '').length);
         } else if (isNaN(quoteId)) {
             quoteId = String(quoteId).toLowerCase();
-            var quotes = $.inidb.GetKeyValueList('quotes', '');
-            var ids = [];
+            let quotes = $.inidb.GetKeyValueList('quotes', '');
+            let ids = [];
             for (var i = 0; i < quotes.length; i++) {
                 if (String(quotes[i].getValue()).toLowerCase().indexOf(quoteId) >= 0) {
                     ids.push(quotes[i].getKey());
@@ -133,7 +142,7 @@
      * @param event
      */
     $.bind('command', function(event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
             quote,
@@ -211,15 +220,15 @@
                 return;
             }
 
-            var useTwitchNames = $.getIniDbBoolean('settings', 'quoteTwitchNamesToggle', true);
-            var target = useTwitchNames ? args[0].toLowerCase() : args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
+            let useTwitchNames = $.getIniDbBoolean('settings', 'quoteTwitchNamesToggle', true);
+            let target = useTwitchNames ? args[0].toLowerCase() : args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
             if (useTwitchNames && !$.user.isKnown(target)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
                 return;
             }
 
             quote = args.splice(1).join(' ');
-            var username = useTwitchNames ? $.viewer.getByLogin(target).name() : target;
+            let username = useTwitchNames ? $.viewer.getByLogin(target).name() : target;
             $.say($.lang.get('quotesystem.add.success', username, saveQuote(String(username), quote)));
             $.log.event(sender + ' added a quote "' + quote + '".');
             return;
@@ -250,7 +259,7 @@
                 return;
             }
 
-            var newCount;
+            let newCount;
 
             if ((newCount = deleteQuote(args[0])) >= 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.success', args[0], newCount));
@@ -344,13 +353,13 @@
                 return;
             }
 
-            var searchString = args.join(' ');
+            let searchString = args.join(' ');
             if (searchString.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.usage'));
                 return;
             }
 
-            var matchingKeys = $.inidb.searchByValue('quotes', searchString);
+            let matchingKeys = $.inidb.searchByValue('quotes', searchString);
             if (matchingKeys.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.404'));
                 return;
@@ -364,7 +373,7 @@
          * @commandpath quotetwitchnamestoggle - Toggles on and off if quote names need to have been seen in chat before
          */
         if ($.equalsIgnoreCase(command, 'quotetwitchnamestoggle')) {
-            var useTwitchNames = $.getIniDbBoolean('settings', 'quoteTwitchNamesToggle');
+            let useTwitchNames = $.getIniDbBoolean('settings', 'quoteTwitchNamesToggle');
             if (useTwitchNames) {
                 useTwitchNames = false;
                 $.inidb.set('settings', 'quoteTwitchNamesToggle', 'false');
