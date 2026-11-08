@@ -204,8 +204,8 @@ $(function () {
     // Quotes settings button.
     $('#quote-settings-button').on('click', function () {
         socket.getDBValues('get_quote_settings', {
-            tables: ['settings', 'settings'],
-            keys: ['quoteMessage', 'quoteTwitchNamesToggle']
+            tables: ['settings', 'settings', 'settings'],
+            keys: ['quoteMessage', 'quoteTwitchNamesToggle', 'quoteRenumberAfterDelete']
         }, true, function (e) {
             helpers.getModal('quote-settings', 'Quote Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -214,10 +214,13 @@ $(function () {
                     .append(helpers.getInputGroup('quote-msg', 'text', 'Quote Response', '', helpers.getDefaultIfNullOrUndefined(e['quoteMessage'], '[(id)] "(quote)", by (user) ((date))'),
                             'Message said in chat when someone uses the quote command. Tags: (id), (quote), (user), (game) and (date)'))
                     .append(helpers.getDropdownGroup('quote-twitch-names-toggle', 'Force Twitch Names', (helpers.isTrue(e['quoteTwitchNamesToggle']) ? 'Yes' : 'No'), ['Yes', 'No'],
-                            'If names for quotes should be validated against Twitch usernames. If not, names can be anything.')),
+                            'If names for quotes should be validated against Twitch usernames. If not, names can be anything.'))
+                    .append(helpers.getDropdownGroup('quote-renumber-after-delete-toggle', 'Renumber After Delete', (helpers.isTrue(e['quoteRenumberAfterDelete']) ? 'Yes' : 'No'), ['Yes', 'No'],
+                            'If quotes should be renumbered after one is deleted.')),
                     function () {// Callback once we click the save button.
                         let quoteMsg = $('#quote-msg'),
-                                quoteTwitchNamesToggle = $('#quote-twitch-names-toggle').find(':selected').text() === 'Yes';
+                                quoteTwitchNamesToggle = $('#quote-twitch-names-toggle').find(':selected').text() === 'Yes',
+                                quoteRenumberAfterDeleteToggle = $('#quote-renumber-after-delete-toggle').find(':selected').text() === 'Yes';
 
                         // Handle each input to make sure they have a value.
                         switch (false) {
@@ -226,9 +229,9 @@ $(function () {
                             default:
                                 // Add quote.
                                 socket.updateDBValues('get_quote_settings_update', {
-                                    tables: ['settings', 'settings'],
-                                    keys: ['quoteMessage', "quoteTwitchNamesToggle"],
-                                    values: [quoteMsg.val(), quoteTwitchNamesToggle]
+                                    tables: ['settings', 'settings', 'settings'],
+                                    keys: ['quoteMessage', "quoteTwitchNamesToggle", "quoteRenumberAfterDelete"],
+                                    values: [quoteMsg.val(), quoteTwitchNamesToggle, quoteRenumberAfterDeleteToggle]
                                 }, function () {
                                     // Close the modal.
                                     $('#quote-settings').modal('hide');

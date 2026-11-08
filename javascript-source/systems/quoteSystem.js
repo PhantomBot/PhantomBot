@@ -47,7 +47,7 @@
      * @returns {Number}
      */
     function saveQuote(username, quote) {
-        let newKey = $.inidb.GetKeyList('quotes', '').length,
+        let newKey = $.getSetIniDbInteger('settings', 'quoteNextId', 0),
             game = (!$.javaString($.getGame($.channelName)).isBlank() ? $.getGame($.channelName) : "Some Game");
 
         if ($.inidb.exists('quotes', newKey)) {
@@ -84,17 +84,22 @@
         if ($.inidb.exists('quotes', quoteId)) {
             isDeleting = true;
             $.inidb.del('quotes', quoteId);
-            quoteKeys = $.inidb.GetKeyList('quotes', '');
 
-            quoteKeys.sort(sortCompare);
+            if ($.getSetIniDbBoolean('settings', 'quoteRenumberAfterDelete', true)) {
+                quoteKeys = $.inidb.GetKeyList('quotes', '');
 
-            for (i in quoteKeys) {
-                quotes.push($.getIniDbString('quotes', quoteKeys[i]));
-                $.inidb.del('quotes', quoteKeys[i]);
-            }
+                quoteKeys.sort(sortCompare);
 
-            for (i in quotes) {
-                $.inidb.set('quotes', i, quotes[i]);
+                for (i in quoteKeys) {
+                    quotes.push($.getIniDbString('quotes', quoteKeys[i]));
+                    $.inidb.del('quotes', quoteKeys[i]);
+                }
+
+                for (i in quotes) {
+                    $.inidb.set('quotes', i, quotes[i]);
+                }
+
+                $.inidb.set('settings', 'quoteNextId', quotes.length);
             }
 
             isDeleting = false;
@@ -114,17 +119,19 @@
         let quote;
 
         if (!quoteId) {
-            quoteId = $.rand($.inidb.GetKeyList('quotes', '').length);
+            quoteId = $.randElement($.inidb.GetKeyList('quotes', ''));
         } else if (isNaN(quoteId)) {
             quoteId = String(quoteId).toLowerCase();
             let quotes = $.inidb.GetKeyValueList('quotes', '');
             let ids = [];
+            let searchids = [];
             for (var i = 0; i < quotes.length; i++) {
+                ids.push(quotes[i].getKey());
                 if (String(quotes[i].getValue()).toLowerCase().indexOf(quoteId) >= 0) {
-                    ids.push(quotes[i].getKey());
+                    searchids.push(quotes[i].getKey());
                 }
             }
-            quoteId = ids.length > 0 ? $.randElement(ids) : $.rand(quotes.length);
+            quoteId = searchids.length > 0 ? $.randElement(searchids) : $.randElement(ids);
         }
 
         quote = $.optIniDbString('quotes', quoteId);
