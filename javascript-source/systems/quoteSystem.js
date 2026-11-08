@@ -406,8 +406,8 @@
          * @commandpath quoterenumberingtoggle - Toggles on and off if quotes should be renumbered after deletion
          */
         if ($.equalsIgnoreCase(command, 'quoterenumberingtoggle')) {
-            let renumberQuotes = $.getIniDbBoolean('settings', 'quoteRenumberAfterDelete');
-            $.getSetIniDbBoolean('settings', 'quoteRenumberAfterDelete', !renumberQuotes);
+            let renumberQuotes = $.getIniDbBoolean('settings', 'quoteRenumberAfterDelete', true);
+            $.setIniDbBoolean('settings', 'quoteRenumberAfterDelete', !renumberQuotes);
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.renumbering', $.lang.get('common.' + (!renumberQuotes ? 'enabled' : 'disabled'))));
             return;
         }
