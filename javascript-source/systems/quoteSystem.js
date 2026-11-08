@@ -47,15 +47,16 @@
      * @returns {Number}
      */
     function saveQuote(username, quote) {
-        let newKey = $.getSetIniDbInteger('settings', 'quoteNextId', 0),
+        let newKey = $.getSetIniDbNumber('settings', 'quoteNextId', 0),
             game = (!$.javaString($.getGame($.channelName)).isBlank() ? $.getGame($.channelName) : "Some Game");
 
-        if ($.inidb.exists('quotes', newKey)) {
+        while ($.inidb.exists('quotes', newKey)) {
             newKey++;
         }
 
         quote = String(quote).replace(/"/g, '\'\'');
         $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
+        $.setIniDbNumber('settings', 'quoteNextId', newKey + 1);
         $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
         return newKey;
     }
