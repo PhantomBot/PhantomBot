@@ -199,6 +199,8 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./systems/quoteSystem.js | !quotedateformat [format] | - Sets the date format for the (date) tag in a quote |
 | ./systems/quoteSystem.js | !searchquote [string] | - Searches the quotes for a string and returns a list of IDs |
 | ./systems/quoteSystem.js | !quotetwitchnamestoggle | - Toggles on and off if quote names need to have been seen in chat before |
+| ./systems/quoteSystem.js | !quoterenumberingtoggle | - Toggles on and off if quotes should be renumbered after deletion |
+| ./systems/quoteSystem.js | !quotedorenumbering | - Renumbers all quotes to be sequential starting at 0 |
 | ./systems/auctionSystem.js | !auction | - Primary auction command |
 | ./systems/auctionSystem.js | !auction open [increments] [minimum bet] [timer] [nopoints] | - Opens an auction; timer is optional; nopoints is optional and starts an auction without affecting the users' points |
 | ./systems/auctionSystem.js | !auction close | - Closes an open auction |
