@@ -21,5 +21,7 @@
     "quotesystem.searchquote.404": "No matching quotes found.",
     "quotesystem.searchquote.found": "Quote IDs with matches: $1",
     "quotesystem.twitchnames-disabled": "Usernames for quotes won't be validated",
-    "quotesystem.twitchnames-enabled": "Usernames for quotes will validated against users who have been in chat."
+    "quotesystem.twitchnames-enabled": "Usernames for quotes will be validated against users who have been in chat.",
+    "quotesystem.renumbering": "Quotes renumbering after deletion is now $1",
+    "quotesystem.dorenumbering": "Quotes have been renumbered to be sequential starting at 0."
 }
