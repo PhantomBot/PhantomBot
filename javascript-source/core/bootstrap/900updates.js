@@ -887,6 +887,10 @@
         }
     });
 
+    addUpdate('3.24.2.0', 'installedv3.24.2.0', function () {
+        $.setIniDbInteger('settings', 'quoteNextId', $.inidb.GetKeyList('quotes', '').length);
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
