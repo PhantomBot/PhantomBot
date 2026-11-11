@@ -158,19 +158,23 @@
      *
      * @param {string} url the url of the request
      * @param {array} cmdArgs the arguments of the command; null if there is no command
-     * @returns {string} url with each optional part kept if every argument in it was given or has a default, and removed if not
+     * @returns {string} url with each optional part kept if every argument in it was given, and replaced with its
+     * fallback, or removed, if not
      */
     function fillSections(url, cmdArgs) {
         return url.replace(reSection, function (match, section) {
-            let used = section.match(reArg);
+            // Inside the brackets, | is not a default: the text after the first one is sent when an argument is missing
+            let split = section.indexOf('|'),
+                    given = split < 0 ? section : section.substring(0, split),
+                    used = given.match(reArg) || [];
 
             for (let i = 0; i < used.length; i++) {
-                if (!used[i].includes('|') && (cmdArgs === null || !cmdArgs[parseInt(used[i].charAt(1)) - 1])) {
-                    return '';
+                if (cmdArgs === null || !cmdArgs[parseInt(used[i].charAt(1)) - 1]) {
+                    return split < 0 ? '' : section.substring(split + 1);
                 }
             }
 
-            return section;
+            return given;
         });
     }
 
@@ -302,7 +306,8 @@
      * @notes `$1|default`-`$9|default` and `$1>|default`-`$9>|default` give the default when the argument was not given or is empty, encoded in the same way, so the argument is not required there. A default can contain letters, numbers, `_`, `.`, and `-`, and runs until the first other character: in `$1|all.json` the default is `all.json`, and a given argument replaces all of it
      * @notes arguments are split as for every command: double quotes group words into one argument and are removed. Type `\"` for a literal double quote
      * @notes adding or editing the command from chat with `!addcom` or `!editcom` also removes double quotes from the response, which breaks a JSON body. Type `\"` for each one, such as `{\"name\":\"$1\"}`, or add the command in the panel
-     * @notes a part of the url in square brackets that contains `$1`-`$9`, such as `[/$2]`, is only sent if every argument inside it was given or has a default. Those without a default are optional in the rest of the tag as well, and are left blank when missing
+     * @notes a part of the url in square brackets that contains `$1`-`$9`, such as `[/$2]`, is only sent if every argument inside it was given. Those arguments are optional in the rest of the tag as well, and are left blank when missing
+     * @notes inside the square brackets, `|` is not a default: the text after the first `|` is sent instead when an argument is missing. `[/users/$1/lists|/lists]` sends `/users/5/lists`, or `/lists` without an argument
      * @notes `$secret.name` is replaced with an API secret saved in the panel. It can be used in the url, a header, or the body. For saving secrets and keeping them safe, see https://phantombot.dev/guides/#guide=content/commands/api-secrets
      * @notes a secret tied to the command with `!secretcom` or the panel is sent with every request of the command, in the `Authorization` header as `Bearer` and the secret, or as the secret in another header chosen when it was tied. A header typed in the tag replaces it
      * @notes a user name and password in the url are not sent; use an `Authorization` header. The request times out after the `httpclienttimeout` bot property, 10 seconds by default
@@ -326,6 +331,11 @@
      * // requests https://not.real.com/playlists/chill/songs
      * User: !song chill 7
      * // requests https://not.real.com/playlists/chill/songs/7
+     * @example Caster: !addcom !lists (api https://not.real.com[/users/$1/lists|/lists] -> Lists: {names})
+     * User: !lists
+     * // requests https://not.real.com/lists
+     * User: !lists bob
+     * // requests https://not.real.com/users/bob/lists
      * @example Caster: !addcom !scores (api https://not.real.com/scores?count=$1|5 -> Top scores: {names})
      * User: !scores
      * // requests https://not.real.com/scores?count=5
@@ -342,7 +352,7 @@
         let cmdArgs = null,
                 used = args.args.match(reArg),
                 // Arguments in an optional part of the url are optional everywhere in the tag
-                optional = ((request.url.match(reSection) || []).join('').match(reArg) || []).filter((arg) => !arg.includes('|')).map((arg) => arg.charAt(1)),
+                optional = ((request.url.match(reSection) || []).join('').match(reArg) || []).map((arg) => arg.charAt(1)),
                 acceptJson = false;
 
         if (args.event !== undefined && args.event !== null && args.event.getArgs !== undefined) {
