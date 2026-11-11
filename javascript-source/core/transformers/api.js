@@ -20,13 +20,13 @@
     let reArrow = /\s((?:\d{3}|[1-5]xx|0)(?:,(?:\d{3}|[1-5]xx|0))*|!)?->(?=\s|$)/gi,
             reRequest = /^(?:(GET|POST|PUT|PATCH|DELETE)\s+)?(https?:\/\/\S+)\s*([\s\S]*)$/i,
             reHeader = /^\[([\w-]+):\s*([^\]]*)\]\s*/,
-            // $1-$9, but not the start of a longer number such as $10
-            reArg = /\$[1-9](?!\d)/g,
+            // $1-$9, but not the start of a longer number such as $10, with its > and default if any
+            reArg = /\$[1-9](?!\d)>?(?:\|[\w.-]+)?/g,
             // An optional part of the url: square brackets around at least one of $1-$9
             reSection = /\[([^\[\]]*\$[1-9](?!\d)[^\[\]]*)\]/g,
-            // $1-$9 with an optional > for all argument text from that argument on
-            reFill = /\$secret\.(\w+)|\$([1-9])(?!\d)(>?)/g,
-            reReply = /\{([\w.-]+)\}|\$status|\$([1-9])(?!\d)(>?)/g,
+            // $1-$9 with an optional > for all argument text from that argument on, and an optional |default
+            reFill = /\$secret\.(\w+)|\$([1-9])(?!\d)(>?)(?:\|([\w.-]+))?/g,
+            reReply = /\{([\w.-]+)\}|\$status|\$([1-9])(?!\d)(>?)(?:\|([\w.-]+))?/g,
             reField = /\{[\w.-]+\}/;
 
     /*
@@ -85,17 +85,17 @@
      * @returns {string} str with $1-$9 and $secret.name replaced
      */
     function fill(str, cmdArgs, encode) {
-        return str.replace(reFill, function (match, secret, n, rest) {
+        return str.replace(reFill, function (match, secret, n, rest, def) {
             if (secret) {
                 return encode(getSecret(secret));
             }
 
             if (cmdArgs === null) {
-                return match;
+                return def ? encode(def) : match;
             }
 
-            // Only an argument from an optional part of the url can be missing here
-            let value = getArg(cmdArgs, parseInt(n), rest === '>');
+            // Only an argument with a default or from an optional part of the url can be missing here
+            let value = getArg(cmdArgs, parseInt(n), rest === '>') || def;
             return value ? encode(value) : '';
         });
     }
@@ -158,14 +158,14 @@
      *
      * @param {string} url the url of the request
      * @param {array} cmdArgs the arguments of the command; null if there is no command
-     * @returns {string} url with each optional part kept if every argument in it was given, and removed if not
+     * @returns {string} url with each optional part kept if every argument in it was given or has a default, and removed if not
      */
     function fillSections(url, cmdArgs) {
         return url.replace(reSection, function (match, section) {
             let used = section.match(reArg);
 
             for (let i = 0; i < used.length; i++) {
-                if (cmdArgs === null || !cmdArgs[parseInt(used[i].charAt(1)) - 1]) {
+                if (!used[i].includes('|') && (cmdArgs === null || !cmdArgs[parseInt(used[i].charAt(1)) - 1])) {
                     return '';
                 }
             }
@@ -299,8 +299,9 @@
      * @notes if a reply reads a field and a successful response is not JSON, the request counts as a failure
      * @notes `$1`-`$9` are replaced with the arguments of the command, encoded for the part of the request they are placed in. If the command was not given one of them, the tag outputs an error message and no request is sent. A `$` followed by a single digit is always an argument, so write a price such as `$5` as `5 dollars`
      * @notes `$1>`-`$9>` are replaced with all the argument text from that argument on, as typed, so a viewer does not need quotes for text with spaces. They are encoded and required in the same way as `$1`-`$9`
+     * @notes `$1|default`-`$9|default` and `$1>|default`-`$9>|default` give the default when the argument was not given or is empty, encoded in the same way, so the argument is not required there. A default can contain letters, numbers, `_`, `.`, and `-`, and runs until the first other character: in `$1|all.json` the default is `all.json`, and a given argument replaces all of it
      * @notes arguments are split as for every command: double quotes group words into one argument and are removed. Type `\"` for a literal double quote
-     * @notes a part of the url in square brackets that contains `$1`-`$9`, such as `[/$2]`, is only sent if every argument inside it was given. Those arguments are optional in the rest of the tag as well, and are left blank when missing
+     * @notes a part of the url in square brackets that contains `$1`-`$9`, such as `[/$2]`, is only sent if every argument inside it was given or has a default. Those without a default are optional in the rest of the tag as well, and are left blank when missing
      * @notes `$secret.name` is replaced with an API secret saved in the panel. It can be used in the url, a header, or the body. For saving secrets and keeping them safe, see https://phantombot.dev/guides/#guide=content/commands/api-secrets
      * @notes a secret tied to the command with `!secretcom` or the panel is sent with every request of the command, in the `Authorization` header as `Bearer` and the secret, or as the secret in another header chosen when it was tied. A header typed in the tag replaces it
      * @notes a user name and password in the url are not sent; use an `Authorization` header. The request times out after the `httpclienttimeout` bot property, 10 seconds by default
@@ -324,6 +325,11 @@
      * // requests https://not.real.com/playlists/chill/songs
      * User: !song chill 7
      * // requests https://not.real.com/playlists/chill/songs/7
+     * @example Caster: !addcom !scores (api https://not.real.com/scores?count=$1|5 -> Top scores: {names})
+     * User: !scores
+     * // requests https://not.real.com/scores?count=5
+     * User: !scores 10
+     * // requests https://not.real.com/scores?count=10
      */
     function api(args) {
         let request = parseTag(args.args);
@@ -335,14 +341,15 @@
         let cmdArgs = null,
                 used = args.args.match(reArg),
                 // Arguments in an optional part of the url are optional everywhere in the tag
-                optional = (request.url.match(reSection) || []).join('').match(reArg) || [],
+                optional = ((request.url.match(reSection) || []).join('').match(reArg) || []).filter((arg) => !arg.includes('|')).map((arg) => arg.charAt(1)),
                 acceptJson = false;
 
         if (args.event !== undefined && args.event !== null && args.event.getArgs !== undefined) {
             cmdArgs = $.jsArgs(args.event.getArgs());
             cmdArgs.text = args.event.getArguments !== undefined ? $.jsString(args.event.getArguments()) : cmdArgs.join(' ');
             for (let i = 0; used !== null && i < used.length; i++) {
-                if (!cmdArgs[parseInt(used[i].charAt(1)) - 1] && !optional.includes(used[i])) {
+                // Each use counts on its own: an argument with a default is never missing
+                if (!used[i].includes('|') && !cmdArgs[parseInt(used[i].charAt(1)) - 1] && !optional.includes(used[i].charAt(1))) {
                     return {result: $.lang.get('api.args.missing')};
                 }
             }
@@ -386,11 +393,11 @@
         }
 
         return {
-            result: reply.text.replace(reReply, function (match, path, n, rest) {
+            result: reply.text.replace(reReply, function (match, path, n, rest, def) {
                 if (path) {
                     return getField(json, path);
                 } else if (n) {
-                    return cmdArgs === null ? match : (getArg(cmdArgs, parseInt(n), rest === '>') || '');
+                    return (cmdArgs === null ? def || match : getArg(cmdArgs, parseInt(n), rest === '>') || def || '');
                 }
 
                 return response.status;
