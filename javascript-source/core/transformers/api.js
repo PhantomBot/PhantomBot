@@ -306,7 +306,7 @@
      * @notes a secret tied to the command with `!secretcom` or the panel is sent with every request of the command, in the `Authorization` header as `Bearer` and the secret, or as the secret in another header chosen when it was tied. A header typed in the tag replaces it
      * @notes a user name and password in the url are not sent; use an `Authorization` header. The request times out after the `httpclienttimeout` bot property, 10 seconds by default
      * @notes this tag can change data on the remote server. Anyone who can add or edit commands can use any saved API secret
-     * @notes this tag does not run in greetings, because viewers can be allowed to set their own
+     * @notes this tag does not run in greetings, because viewers can be allowed to set their own greeting (`!greeting toggleuserselfservice`)
      * @notes start the chat message with your own text, such as `-> Path: {path}`. A message that starts with `/` or `.` is treated as a Twitch command, which a field, an argument, or the response text could otherwise decide
      * @notes parentheses inside the tag must be escaped as `\(` and `\)`. Other tags inside the tag run before it does, whichever reply is used, and their text is read as part of the tag: a viewer's text from `(1)` could add `$secret.name` or a header, so use `$1`-`$9` or `$1>`-`$9>` for anything typed by a viewer
      * @example Caster: !addcom !joke (api https://not.real.com/joke)
