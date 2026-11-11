@@ -144,9 +144,15 @@ _NOTE: `$1`-`$9` are replaced with the arguments of the command, encoded for the
 
 _NOTE: `$1>`-`$9>` are replaced with all the argument text from that argument on, as typed, so a viewer does not need quotes for text with spaces. They are encoded and required in the same way as `$1`-`$9`_
 
+_NOTE: `$1|default`-`$9|default` and `$1>|default`-`$9>|default` give the default when the argument was not given or is empty, encoded in the same way, so the argument is not required there. A default can contain letters, numbers, `_`, `.`, and `-`, and runs until the first other character: in `$1|all.json` the default is `all.json`, and a given argument replaces all of it_
+
 _NOTE: arguments are split as for every command: double quotes group words into one argument and are removed. Type `\"` for a literal double quote_
 
+_NOTE: adding or editing the command from chat with `!addcom` or `!editcom` also removes double quotes from the response, which breaks a JSON body. Type `\"` for each one, such as `{\"name\":\"$1\"}`, or add the command in the panel_
+
 _NOTE: a part of the url in square brackets that contains `$1`-`$9`, such as `[/$2]`, is only sent if every argument inside it was given. Those arguments are optional in the rest of the tag as well, and are left blank when missing_
+
+_NOTE: inside the square brackets, `|` is not a default: the text after the first `|` is sent instead when an argument is missing. `[/users/$1/lists|/lists]` sends `/users/5/lists`, or `/lists` without an argument_
 
 _NOTE: `$secret.name` is replaced with an API secret saved in the panel. It can be used in the url, a header, or the body. For saving secrets and keeping them safe, see https://phantombot.dev/guides/#guide=content/commands/api-secrets_
 
@@ -156,7 +162,7 @@ _NOTE: a user name and password in the url are not sent; use an `Authorization` 
 
 _NOTE: this tag can change data on the remote server. Anyone who can add or edit commands can use any saved API secret_
 
-_NOTE: this tag does not run in greetings, because viewers can be allowed to set their own_
+_NOTE: this tag does not run in greetings, because viewers can be allowed to set their own greeting (`!greeting toggleuserselfservice`)_
 
 _NOTE: start the chat message with your own text, such as `-> Path: {path}`. A message that starts with `/` or `.` is treated as a Twitch command, which a field, an argument, or the response text could otherwise decide_
 
@@ -193,6 +199,24 @@ User: !song chill
 // requests https://not.real.com/playlists/chill/songs
 User: !song chill 7
 // requests https://not.real.com/playlists/chill/songs/7
+```
+
+**Example:**
+```text
+Caster: !addcom !lists (api https://not.real.com[/users/$1/lists|/lists] -> Lists: {names})
+User: !lists
+// requests https://not.real.com/lists
+User: !lists bob
+// requests https://not.real.com/users/bob/lists
+```
+
+**Example:**
+```text
+Caster: !addcom !scores (api https://not.real.com/scores?count=$1|5 -> Top scores: {names})
+User: !scores
+// requests https://not.real.com/scores?count=5
+User: !scores 10
+// requests https://not.real.com/scores?count=10
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
