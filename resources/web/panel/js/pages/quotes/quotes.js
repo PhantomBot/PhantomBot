@@ -76,7 +76,8 @@ $(run = function () {
                     {'className': 'default-table', 'orderable': false, 'targets': 5},
                     {'width': '5%', 'targets': 0},
                     {'width': '10%', 'targets': 1},
-                    {'width': '45%', 'targets': 4}
+                    {'width': '45%', 'targets': 4},
+                    {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2, 3, 4]}
                 ],
                 'columns': [
                     {'title': 'Id'},

@@ -69,7 +69,8 @@ $(run = function () {
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 2},
-                    {'width': '35%', 'targets': 0}
+                    {'width': '35%', 'targets': 0},
+                    {'render': $.fn.dataTable.render.text(), 'targets': [0, 1]}
                 ],
                 'columns': [
                     {'title': 'Keyword'},

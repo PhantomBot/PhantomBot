@@ -581,6 +581,7 @@
         $.registerChatSubcommand('time', 'autolevelnotification', $.PERMISSION.Admin);
         $.registerChatSubcommand('time', 'notifyactiveonly', $.PERMISSION.Admin);
         $.registerChatSubcommand('time', 'modonlyusercheck', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'offlinetime', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

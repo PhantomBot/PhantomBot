@@ -173,7 +173,8 @@ $(function () {
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': [3, 4]},
                     {'width': '35%', 'targets': 1},
-                    {'width': '5%', 'targets': 0}
+                    {'width': '5%', 'targets': 0},
+                    {'render': $.fn.dataTable.render.text(), 'targets': [1, 2]}
                 ],
                 'columns': [
                     {'title': '<div class="pretty p-icon" style="margin-right: 0;"><input type="checkbox" id="selectAllCommands"><div class="state p-default"><i class="icon fa fa-check"></i><label></label></div></div>', 'orderable': false, 'defaultContent': ''},

@@ -35,12 +35,14 @@ $(run = function () {
 
                 tableData.push([
                     date.toLocaleDateString(),
-                    $('<a/>', {
-                        'text': url,
-                        'href': url,
-                        'target': '_blank',
-                        'rel': 'noopener noreferrer'
-                    })[0].outerHTML,
+                    /^https?:\/\//i.test(url)
+                        ? $('<a/>', {
+                            'text': url,
+                            'href': url,
+                            'target': '_blank',
+                            'rel': 'noopener noreferrer'
+                        })[0].outerHTML
+                        : helpers.escapeHtml(url),
                     comment,
                     $('<div/>', {
                         'class': 'btn-group'
@@ -78,7 +80,8 @@ $(run = function () {
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 3},
                     {'width': '7%', 'targets': 0},
-                    {'width': '25%', 'targets': 1}
+                    {'width': '25%', 'targets': 1},
+                    {'render': $.fn.dataTable.render.text(), 'targets': [0, 2]}
                 ],
                 'columns': [
                     {'title': 'Date'},
