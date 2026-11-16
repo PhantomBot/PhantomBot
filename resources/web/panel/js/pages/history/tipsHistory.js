@@ -81,7 +81,8 @@ $(function () {
             'autoWidth': false,
             'data': tips,
             'columnDefs': [
-                {'width': '30%', 'targets': 0}
+                {'width': '30%', 'targets': 0},
+                {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2, 3]}
             ],
             'columns': [
                 {'title': 'Username'},

@@ -67,7 +67,8 @@ $(run = function () {
                 {'className': 'default-table', 'orderable': false, 'targets': 5},
                 {'width': '35%', 'targets': 0},
                 {'width': '25%', 'targets': 3},
-                {'width': '25%', 'targets': 4}
+                {'width': '25%', 'targets': 4},
+                {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2, 3, 4]}
             ],
             'columns': [
                 {'title': 'Blacklist'},

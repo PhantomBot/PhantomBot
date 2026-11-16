@@ -45,7 +45,8 @@ $(function () {
             'autoWidth': false,
             'data': raids,
             'columnDefs': [
-                {'width': '20%', 'targets': 0}
+                {'width': '20%', 'targets': 0},
+                {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2, 3, 4]}
             ],
             'columns': [
                 {'title': 'Username'},
@@ -86,7 +87,8 @@ $(function () {
             'autoWidth': false,
             'data': raids,
             'columnDefs': [
-                {'width': '20%', 'targets': 0}
+                {'width': '20%', 'targets': 0},
+                {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2, 3, 4]}
             ],
             'columns': [
                 {'title': 'Username'},

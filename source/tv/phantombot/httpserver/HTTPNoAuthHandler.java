@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import com.gmt2001.PathValidator;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
@@ -136,7 +138,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
 
         if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true"))) {
-            String sameSite = "";
+            String sameSite = "; SameSite=Lax";
             String user = "";
             String pass = "";
             String kickback = "";
@@ -152,11 +154,11 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
 
             if (req.uri().contains("logout=true")) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "")
-                        + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
+                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().isSsl() ? "; Secure" : "")
+                        + sameSite + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
             } else if (req.method().equals(HttpMethod.POST)) {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes()))
-                        + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
+                        + (HTTPWSServer.instance().isSsl() ? "; Secure" : "") + sameSite + "; HttpOnly; Path=/");
             }
 
             if (kickback.isBlank()) {
@@ -228,54 +230,60 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
     }
 
+    static String renderAddonHtml(Path p, QueryStringDecoder qsd) throws NumberFormatException, IOException {
+        if (qsd.parameters().containsKey("marquee")) {
+            List<String> defWidth = new ArrayList<>();
+            defWidth.add("420");
+            List<String> defLen = new ArrayList<>();
+            defLen.add("40");
+            int width = Integer.parseInt(qsd.parameters().getOrDefault("width", defWidth).get(0));
+            int len = Math.max(0, Integer.parseInt(qsd.parameters().getOrDefault("cutoff", defLen).get(0)));
+            String data = Files.readString(p);
+            String escapedData = StringEscapeUtils.escapeHtml4(data.substring(0, Math.min(data.length(), len)));
+
+            return "<html><head><meta http-equiv=\"refresh\" content=\"5\" /><style>"
+                    + "body { margin: 5px; }"
+                    + ".marquee { "
+                    + "    height: 25px;"
+                    + "    width: " + width + "px;"
+                    + "    overflow: hidden;"
+                    + "    position: relative;"
+                    + "}"
+                    + ".marquee div {"
+                    + "    display: block;"
+                    + "    width: 200%;"
+                    + "    height: 25px;"
+                    + "    position: absolute;"
+                    + "    overflow: hidden;"
+                    + "    animation: marquee 5s linear infinite;"
+                    + "}"
+                    + ".marquee span {"
+                    + "    float: left;"
+                    + "    width: 50%;"
+                    + "}"
+                    + "@keyframes marquee {"
+                    + "    0% { left: 0; }"
+                    + "    100% { left: -100%; }"
+                    + "}"
+                    + "</style></head><body><div class=\"marquee\"><div>"
+                    + "<span>" + escapedData + "&nbsp;</span>"
+                    + "<span>" + escapedData + "&nbsp;</span>"
+                    + "</div></div></body></html>";
+        } else {
+            String escapedData = StringEscapeUtils.escapeHtml4(Files.readString(p));
+            return "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + (qsd.parameters().containsKey("span") ? "<span>" : "") + escapedData + (qsd.parameters().containsKey("span") ? "</span>" : "") + "</body></html>";
+        }
+    }
+
     private void handleAddons(ChannelHandlerContext ctx, FullHttpRequest req, Path p, QueryStringDecoder qsd) {
         try {
-            String ret;
-
-            if (qsd.parameters().containsKey("marquee")) {
-                List<String> defWidth = new ArrayList<>();
-                defWidth.add("420");
-                List<String> defLen = new ArrayList<>();
-                defLen.add("40");
-                int width = Integer.parseInt(qsd.parameters().getOrDefault("width", defWidth).get(0));
-                int len = Integer.parseInt(qsd.parameters().getOrDefault("cutoff", defLen).get(0));
-                String data = Files.readString(p);
-
-                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /><style>"
-                        + "body { margin: 5px; }"
-                        + ".marquee { "
-                        + "    height: 25px;"
-                        + "    width: " + width + "px;"
-                        + "    overflow: hidden;"
-                        + "    position: relative;"
-                        + "}"
-                        + ".marquee div {"
-                        + "    display: block;"
-                        + "    width: 200%;"
-                        + "    height: 25px;"
-                        + "    position: absolute;"
-                        + "    overflow: hidden;"
-                        + "    animation: marquee 5s linear infinite;"
-                        + "}"
-                        + ".marquee span {"
-                        + "    float: left;"
-                        + "    width: 50%;"
-                        + "}"
-                        + "@keyframes marquee {"
-                        + "    0% { left: 0; }"
-                        + "    100% { left: -100%; }"
-                        + "}"
-                        + "</style></head><body><div class=\"marquee\"><div>"
-                        + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
-                        + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
-                        + "</div></div></body></html>";
-            } else {
-                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + (qsd.parameters().containsKey("span") ? "<span>" : "") + Files.readString(p) + (qsd.parameters().containsKey("span") ? "</span>" : "") + "</body></html>";
-            }
+            String ret = renderAddonHtml(p, qsd);
 
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                     + HttpServerPageHandler.detectContentType("html") + ")");
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), "html");
+            res.headers().set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline';");
+            res.headers().set("X-Content-Type-Options", "nosniff");
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
             if (origin != null && !origin.isBlank()) {
                 res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);

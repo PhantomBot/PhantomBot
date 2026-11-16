@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +51,15 @@ public class HttpSetupHandler implements HttpRequestHandler {
 
     private HttpAuthenticationHandler authHandler;
     private static final int TOKENLEN = 20;
+    private static final Set<String> SECRET_PROPERTIES = Set.of(
+            "oauth", "apioauth", "appoauth", "apptoken",
+            "refresh", "apirefresh",
+            "webauth", "webauthro", "ytauth", "ytauthro",
+            "panelpassword", "clientsecret", "discord_token", "youtubekey",
+            "httpspassword", "mysqlpass",
+            "streamlabskey", "twitchalertskey", "streamelementsjwt", "tipeeestreamkey",
+            "bluesky_apppassword"
+    );
     private HttpAuthenticationHandler authHandlerToken;
     private String token;
 
@@ -148,13 +158,38 @@ public class HttpSetupHandler implements HttpRequestHandler {
         return this.authHandlerToken.isAuthorized(user, pass);
     }
 
+    static boolean isSecretProperty(String key) {
+        if (key == null) {
+            return false;
+        }
+        String lower = key.toLowerCase();
+        return SECRET_PROPERTIES.contains(lower)
+                || lower.endsWith("password")
+                || lower.endsWith("pass")
+                || lower.endsWith("secret")
+                || lower.endsWith("token")
+                || lower.endsWith("oauth")
+                || lower.endsWith("refresh")
+                || lower.endsWith("jwt");
+    }
+
+    static JSONStringer buildCurrentPropertiesJson() {
+        JSONStringer js = new JSONStringer();
+        js.object().key("code").value(HttpResponseStatus.OK.code()).key("status").value(HttpResponseStatus.OK.reasonPhrase()).key("error").value("");
+        js.key("currentProperties").object();
+        CaselessProperties.instance().keySet().forEach(k -> {
+            String key = (String) k;
+            if (!isSecretProperty(key)) {
+                js.key(key).value(CaselessProperties.instance().getProperty(key));
+            }
+        });
+        js.endObject().endObject();
+        return js;
+    }
+
     public void currentProperties(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.method().equals(HttpMethod.GET)) {
-            JSONStringer js = new JSONStringer();
-            js.object().key("code").value(HttpResponseStatus.OK.code()).key("status").value(HttpResponseStatus.OK.reasonPhrase()).key("error").value("");
-            js.key("currentProperties").object();
-            CaselessProperties.instance().keySet().forEach(k -> js.key((String) k).value(CaselessProperties.instance().getProperty((String) k)));
-            js.endObject().endObject();
+            JSONStringer js = buildCurrentPropertiesJson();
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": currentProperties.json");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, js.toString(), "json"));
         } else if (req.method().equals(HttpMethod.PATCH)) {

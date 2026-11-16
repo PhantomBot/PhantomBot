@@ -68,7 +68,8 @@ $(function () {
             'columnDefs': [
                 {
                     'width': '35%',
-                    'targets': 0
+                    'targets': 0,
+                    'render': $.fn.dataTable.render.text()
                 },
                 {
                     'width': '35%',

@@ -42,7 +42,8 @@ $(function () {
             'data': tableData,
             'pageLength': 15,
             'columnDefs': [
-                {'width': '15%', 'targets': 0}
+                {'width': '15%', 'targets': 0},
+                {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2]}
             ],
             'columns': [
                 {'title': 'Position'},
@@ -82,7 +83,8 @@ $(function () {
             'pageLength': 15,
             'columnDefs': [
                 {'width': '15%', 'targets': 0},
-                {'width': '25%', 'targets': 1}
+                {'width': '25%', 'targets': 1},
+                {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2, 3]}
             ],
             'columns': [
                 {'title': 'Position'},
