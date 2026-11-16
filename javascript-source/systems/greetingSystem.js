@@ -119,6 +119,8 @@
     }
 
     let localTransformers = transformers();
+    // Allowlist of global transformer labels permitted in greetings (viewers may set their own via userSelfService)
+    const ALLOWED_GREETING_LABELS = ['basic', 'time', 'math', 'points', 'channel', 'stream'];
 
     function addToQueue(sender) {
         let message = $.optIniDbString('greeting', sender),
@@ -127,7 +129,11 @@
 
         if (lastUserGreeting + greetingCooldown < now) {
             if (message.isPresent()) {
-                message = $.transformers.tags(null, message.get(), ['twitch', ['noevent']], {localTransformers: localTransformers, customArgs: {'sender': sender}});
+                message = $.transformers.tags(null, message.get(), ['twitch', ['noevent']], {
+                    localTransformers: localTransformers,
+                    globalTransformerAnyLabels: ALLOWED_GREETING_LABELS,
+                    customArgs: {'sender': sender}
+                });
 
                 greetingQueue.add(message);
 
