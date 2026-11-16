@@ -58,8 +58,8 @@ $(run = function () {
                 keys: ['winner', 'amount']
             }, true, function (e) {
                 if (e['winner'] != null) {
-                    $('#auction-top-bidder').html(e['winner']);
-                    $('#auction-points').html(e['amount']);
+                    $('#auction-top-bidder').text(e['winner']);
+                    $('#auction-points').text(e['amount']);
                 }
             });
         };

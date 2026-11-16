@@ -91,19 +91,19 @@ $(function () {
                         // Append date.
                         p.append($('<td/>', {
                             'class': 'event-date',
-                            'html': helpers.getPaddedDateString(new Date(events[i].date).toLocaleString())
+                            'text': helpers.getPaddedDateString(new Date(events[i].date).toLocaleString())
                         }));
 
                         // Append type.
                         p.append($('<td/>', {
                             'class': 'label event-type',
                             'style': helpers.getEventColor(events[i].type),
-                            'html': events[i].type
+                            'text': events[i].type
                         }));
 
                         // Append message.
                         p.append($('<td/>', {
-                            'html': helpers.getEventMessage(events[i])
+                            'text': helpers.getEventMessage(events[i])
                         }));
 
                         tb.append(p);
@@ -124,7 +124,7 @@ $(function () {
                             // Append message.
                             p.append($('<td/>', {
                                 'class': 'event-message',
-                                'html': events[i].message
+                                'text': events[i].message
                             }));
 
                             tb.append(p);
@@ -163,10 +163,10 @@ $(function () {
                 }
                 // Set uptime.
                 if (e.isLive) {
-                    $('#dashboard-uptime').html(e.uptime);
+                    $('#dashboard-uptime').text(e.uptime);
                     $('#bg-uptime').removeClass('bg-red').addClass('bg-green');
                 } else {
-                    $('#dashboard-uptime').html('Offline');
+                    $('#dashboard-uptime').text('Offline');
                     $('#bg-uptime').removeClass('bg-green').addClass('bg-red');
                 }
 
@@ -360,7 +360,7 @@ $(function () {
             // Clear the input.
             $('#user-action-user').val('');
             // Let the user know.
-            toastr.success('Successfully ran action on ' + username + '!');
+            toastr.success('Successfully ran action on ' + helpers.escapeHtml(username) + '!');
         });
     });
 
@@ -371,11 +371,12 @@ $(function () {
         const $container = $('#custom-command-run').data('select2').$container;
         const $selection = $container.find('.select2-selection');
         const $rendered = $container.find('.select2-selection__rendered');
-        $rendered.html(`
-          <input type="text" id="custom-command-input" 
-                 value="${selectedValue} " 
-                 style="border: none; outline: none; background: transparent; width: 100%; font: inherit; padding: 0;" />
-        `);
+        $rendered.empty().append($('<input/>', {
+            'type': 'text',
+            'id': 'custom-command-input',
+            'val': selectedValue + ' ',
+            'style': 'border: none; outline: none; background: transparent; width: 100%; font: inherit; padding: 0;'
+        }));
         let $clearBtn = $selection.find('.select2-selection__clear');
         if ($clearBtn.length === 0) {
           $rendered.prepend('<span class="select2-selection__clear" title="Clear selection">×</span>');
@@ -401,7 +402,7 @@ $(function () {
             }
             socket.sendCommand('send_command', val.trim(), function () {
                 // Alert user.
-                toastr.success('Successfully ran command ' + origval);
+                toastr.success('Successfully ran command ' + helpers.escapeHtml(origval));
                 // Clear input.
                 $('#custom-command-run').val('').trigger('change');
             });
@@ -544,10 +545,10 @@ $(function () {
             helpers.handlePanelSetInfo($('#dashboard-subs').data('number', helpers.parseNumber(e.subs)), 'dashboard-subs', helpers.fixNumber(e.subs));
             // Set uptime.
             if (e.isLive) {
-                $('#dashboard-uptime').html(e.uptime);
+                $('#dashboard-uptime').text(e.uptime);
                 $('#bg-uptime').removeClass('bg-red').addClass('bg-green');
             } else {
-                $('#dashboard-uptime').html('Offline');
+                $('#dashboard-uptime').text('Offline');
                 $('#bg-uptime').removeClass('bg-green').addClass('bg-red');
             }
         });
@@ -593,19 +594,19 @@ $(function () {
                         // Append date.
                         p.append($('<td/>', {
                             'class': 'event-date',
-                            'html': helpers.getPaddedDateString(new Date(events[i].date).toLocaleString())
+                            'text': helpers.getPaddedDateString(new Date(events[i].date).toLocaleString())
                         }));
 
                         // Append type.
                         p.append($('<td/>', {
                             'class': 'label event-type',
                             'style': helpers.getEventColor(events[i].type),
-                            'html': events[i].type
+                            'text': events[i].type
                         }));
 
                         // Append message.
                         p.append($('<td/>', {
-                            'html': helpers.getEventMessage(events[i])
+                            'text': helpers.getEventMessage(events[i])
                         }));
 
                         tb.append(p);
@@ -626,7 +627,7 @@ $(function () {
                             // Append message.
                             p.append($('<td/>', {
                                 'class': 'event-message',
-                                'html': events[i].message
+                                'text': events[i].message
                             }));
 
                             tb.append(p);

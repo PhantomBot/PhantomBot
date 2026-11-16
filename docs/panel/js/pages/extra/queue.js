@@ -77,19 +77,19 @@ $(run = function () {
 
                     // Add position.
                     tr.append($('<td/>', {
-                        'html': json.position
+                        'text': json.position
                     }));
 
                     // Add name.
                     tr.append($('<td/>', {
-                        'html': trim(json.username),
+                        'text': trim(json.username),
                         'data-toggle': 'tooltip',
                         'title': json.username
                     }));
 
                     // Add gamer tag.
                     tr.append($('<td/>', {
-                        'html': (json.tag.length === 0 ? 'None' : trim(json.tag)),
+                        'text': (json.tag.length === 0 ? 'None' : trim(json.tag)),
                         'data-toggle': 'tooltip',
                         'title': (json.tag.length === 0 ? 'None' : json.tag)
                     }));
