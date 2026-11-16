@@ -230,7 +230,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
     }
 
-    static String renderAddonHtml(Path p, QueryStringDecoder qsd) throws NumberFormatException, IOException {
+    static String renderAddonHtml(String data, QueryStringDecoder qsd) throws NumberFormatException {
         if (qsd.parameters().containsKey("marquee")) {
             List<String> defWidth = new ArrayList<>();
             defWidth.add("420");
@@ -238,7 +238,6 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             defLen.add("40");
             int width = Integer.parseInt(qsd.parameters().getOrDefault("width", defWidth).get(0));
             int len = Math.max(0, Integer.parseInt(qsd.parameters().getOrDefault("cutoff", defLen).get(0)));
-            String data = Files.readString(p);
             String escapedData = StringEscapeUtils.escapeHtml4(data.substring(0, Math.min(data.length(), len)));
 
             return "<html><head><meta http-equiv=\"refresh\" content=\"5\" /><style>"
@@ -270,14 +269,21 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                     + "<span>" + escapedData + "&nbsp;</span>"
                     + "</div></div></body></html>";
         } else {
-            String escapedData = StringEscapeUtils.escapeHtml4(Files.readString(p));
+            String escapedData = StringEscapeUtils.escapeHtml4(data);
             return "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + (qsd.parameters().containsKey("span") ? "<span>" : "") + escapedData + (qsd.parameters().containsKey("span") ? "</span>" : "") + "</body></html>";
         }
     }
 
     private void handleAddons(ChannelHandlerContext ctx, FullHttpRequest req, Path p, QueryStringDecoder qsd) {
         try {
-            String ret = renderAddonHtml(p, qsd);
+            Path addonsDir = Paths.get(Reflect.GetExecutionPath(), "addons").toAbsolutePath().normalize();
+            Path safePath = p.toAbsolutePath().normalize();
+            if (!safePath.startsWith(addonsDir)) {
+                com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
+                return;
+            }
+            String ret = renderAddonHtml(Files.readString(safePath), qsd);
 
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                     + HttpServerPageHandler.detectContentType("html") + ")");
