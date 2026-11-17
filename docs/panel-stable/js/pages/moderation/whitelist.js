@@ -58,7 +58,8 @@ $(run = function () {
             'autoWidth': false,
             'data': tableData,
             'columnDefs': [
-                {'className': 'default-table', 'orderable': false, 'targets': 1}
+                {'className': 'default-table', 'orderable': false, 'targets': 1},
+                {'render': $.fn.dataTable.render.text(), 'targets': 0}
             ],
             'columns': [
                 {'title': 'Whitelist'},

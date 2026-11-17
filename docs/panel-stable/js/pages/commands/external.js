@@ -58,6 +58,10 @@ $(function () {
                         'className': 'default-table',
                         'orderable': false,
                         'targets': 1
+                    },
+                    {
+                        'render': $.fn.dataTable.render.text(),
+                        'targets': 0
                     }
                 ],
                 'columns': [

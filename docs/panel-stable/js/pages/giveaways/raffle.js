@@ -82,10 +82,10 @@ $(run = function () {
                         const tr = $('<tr/>');
 
                         tr.append($('<td/>', {
-                            'html': ((i < results.length && results[i] !== undefined) ? results[i].key : '')
+                            'text': ((i < results.length && results[i] !== undefined) ? results[i].key : '')
                         }))
                                 .append($('<td/>', {
-                                    'html': ((hasDrawn && i < winners.length && winners[i] !== undefined) ? winners[i] : '')
+                                    'text': ((hasDrawn && i < winners.length && winners[i] !== undefined) ? winners[i] : '')
                                 }));
 
                         table.append(tr);

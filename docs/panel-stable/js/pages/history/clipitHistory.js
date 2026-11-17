@@ -30,13 +30,35 @@ $(function () {
                 try {
                     let json = JSON.parse(value);
 
+                    let safeEditLink = 'Expired';
+                    if (parseInt(json.timestamp) + 86400000 >= Date.now()) {
+                        if (typeof json.edit_url === 'string' && /^https?:\/\//i.test(json.edit_url)) {
+                            safeEditLink = $('<a/>', {
+                                'href': json.edit_url,
+                                'target': '_blank',
+                                'rel': 'noopener noreferrer',
+                                'text': 'Edit'
+                            })[0].outerHTML;
+                        } else {
+                            safeEditLink = '';
+                        }
+                    }
+
                     clipit.push([
-                            '<abbr title="' + (json.creator_login.replaceAll('"', '')) + ' (' + json.creator_id + ')">' + json.creator_displayname + '</abbr>',
+                            $('<abbr/>', {
+                                'title': String(json.creator_login || '') + ' (' + String(json.creator_id || '') + ')',
+                                'text': json.creator_displayname
+                            })[0].outerHTML,
                             helpers.getPaddedDateString(new Date(parseInt(json.timestamp)).toLocaleString()),
                             json.title === undefined || json.title === null ? '' : json.title,
                             json.duration === undefined || json.duration === null ? '30s' : json.duration + 's',
-                            parseInt(json.timestamp) + 86400000 >= Date.now() ? '<a href="' + json.edit_url + '" target="_blank">Edit</a>' : 'Expired',
-                            '<a href="https://clips.twitch.tv/' + id + '" target="_blank">' + id + '</a>',
+                            safeEditLink,
+                            $('<a/>', {
+                                'href': 'https://clips.twitch.tv/' + encodeURIComponent(id),
+                                'target': '_blank',
+                                'rel': 'noopener noreferrer',
+                                'text': id
+                            })[0].outerHTML,
                             parseInt(json.timestamp)
                         ]);
                 } catch (ex) {
@@ -51,6 +73,9 @@ $(function () {
             'autoWidth': false,
             'data': clipit,
             'order': [[6, 'desc']],
+            'columnDefs': [
+                {'render': $.fn.dataTable.render.text(), 'targets': [1, 2, 3]}
+            ],
             'columns': [
                 {'title': 'Username', 'width': '20%'},
                 {'title': 'Date', 'orderData': [6], 'width': '1px'},

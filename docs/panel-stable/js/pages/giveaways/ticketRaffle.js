@@ -42,13 +42,13 @@ $(run = function () {
                     const tr = $('<tr/>');
 
                     tr.append($('<td/>', {
-                        'html': results[i].key
+                        'text': results[i].key
                     }));
 
                     let ticketJSON = JSON.parse(results[i].value);
 
                     tr.append($('<td/>', {
-                        'html': (ticketJSON[0] + ' (+' + ticketJSON[1] + ')')
+                        'text': (ticketJSON[0] + ' (+' + ticketJSON[1] + ')')
                     }));
 
                     table.append(tr);
@@ -74,7 +74,7 @@ $(run = function () {
                     const tr = $('<tr/>');
 
                     tr.append($('<td/>', {
-                        'html': winners[i]
+                        'text': winners[i]
                     }));
 
                     table.append(tr);

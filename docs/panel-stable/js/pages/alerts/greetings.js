@@ -70,7 +70,8 @@ $(run = function () {
                 'columnDefs': [
                     {'className': 'default-table', 'width': '5%', 'orderable': false, 'targets': 3},
                     {'width': '5%', 'targets': 0},
-                    {'width': '10%', 'targets': 1}
+                    {'width': '10%', 'targets': 1},
+                    {'render': $.fn.dataTable.render.text(), 'targets': [0, 1, 2]}
                 ],
                 'columns': [
                     {'title': 'Id'},
