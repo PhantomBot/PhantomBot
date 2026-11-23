@@ -35,6 +35,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -505,7 +506,9 @@ public final class PanelPasskeyHandler {
         synchronized (PASSKEY_LOCK) {
             if (user.isPasswordless() && Datastore2.instance().dslContext().fetchCount(PanelPasskeyTable.instance(),
                     PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername())) <= 1) {
-                throw new IllegalArgumentException("You sign in with passkeys only. Set a password before you remove your last passkey");
+                // The main login from botlogin.txt has no Set Password, it gets a password again when panelpasswordless is off
+                throw new IllegalArgumentException("You sign in with passkeys only. " + (user.isConfigUser() ? "Turn off panelpasswordless"
+                        : "Set a password") + " before you remove your last passkey");
             }
 
             if (Datastore2.instance().dslContext().deleteFrom(PanelPasskeyTable.instance())
@@ -572,6 +575,53 @@ public final class PanelPasskeyHandler {
 
         com.gmt2001.Console.out.println(address + "/panel/login/#setup=" + token);
         com.gmt2001.Console.out.println("If the panel is opened on another address, put that address in place of " + address);
+    }
+
+    /**
+     * Prints a setup link for the main login from botlogin.txt while it has no passkey: at startup
+     * while panelpasswordless is on, since it has no other way to sign in to the panel, and next to
+     * a panel password the bot has just created, as the other way to sign in
+     *
+     * @param newPassword {@code true} if the bot has just created the panel password
+     */
+    public static void printStartupSetupLink(boolean newPassword) {
+        String username = CaselessProperties.instance().getProperty("paneluser", "panel");
+
+        if ((!newPassword && !PanelUserHandler.isConfigPasswordless()) || Datastore2.instance().dslContext().fetchExists(PanelPasskeyTable.instance(),
+                PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(username))) {
+            return;
+        }
+
+        try {
+            String token = createSetupLink(username);
+            com.gmt2001.Console.out.println();
+            if (newPassword) {
+                com.gmt2001.Console.out.println("Or open this link within 24 hours to add a passkey instead. The panel login then signs in with passkeys only "
+                        + "(panelpasswordless) and the password above is removed:");
+            } else {
+                com.gmt2001.Console.out.println("The panel login " + username + " signs in with passkeys only (panelpasswordless) and has no passkey yet");
+                com.gmt2001.Console.out.println("Open this link within 24 hours to add one. It works once, and a new one is made each time the bot starts or its settings are saved:");
+            }
+            printSetupLink(token);
+            com.gmt2001.Console.out.println("Passkeys need the panel on http://localhost with usehttps set to false, or on HTTPS with a trusted certificate");
+            com.gmt2001.Console.out.println();
+        } catch (IllegalArgumentException ex) {
+            com.gmt2001.Console.err.println("Unable to make a passkey setup link for " + username + ": " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Checks if a request carries a passkey session of the main login from botlogin.txt, which
+     * the Bot Setup and OAuth pages accept like its password
+     *
+     * @param headers the request headers
+     * @return {@code true} if the session is valid and belongs to the main login
+     */
+    public static boolean isMainLoginSession(HttpHeaders headers) {
+        PanelSessionManager.Session session = PanelSessionManager.getSession(headers);
+        PanelUser user = session == null ? null : session.getUser();
+
+        return user != null && user.isConfigUser() && canUsePasskeys(user);
     }
 
     /**
@@ -645,7 +695,8 @@ public final class PanelPasskeyHandler {
 
     /**
      * Adds the passkey of a setup link, uses up the link and starts a session. A user who never
-     * replaced their temporary password loses it, since they were given the link instead
+     * replaced their temporary password loses it, since they were given the link instead, and
+     * the main login from botlogin.txt turns panelpasswordless on
      *
      * @param req the {@link FullHttpRequest}, with a JSON body of {@code token}, the response to
      *            {@code navigator.credentials.create()}, an optional {@code name} and {@code remember}
@@ -668,7 +719,10 @@ public final class PanelPasskeyHandler {
                 deleteSetupLinks(user.getUsername());
             }
 
-            if (!user.hasSetPassword()) {
+            // The main login signs in with passkeys only from then on, as a user given a link for their temporary password
+            if (user.isConfigUser() && !PanelUserHandler.isConfigPasswordless()) {
+                PanelUserHandler.setConfigPasswordless();
+            } else if (!user.hasSetPassword()) {
                 PanelUserHandler.removePassword(user);
             }
 

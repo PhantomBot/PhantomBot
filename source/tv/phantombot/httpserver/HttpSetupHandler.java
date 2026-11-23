@@ -22,6 +22,7 @@ import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
+import com.mcawful.PanelPasskeyHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -42,6 +43,7 @@ import org.json.JSONStringer;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  *
@@ -65,7 +67,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
 
     public HttpSetupHandler() {
         this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
-                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
+                PanelUserHandler.getConfigPanelPassword(), "/panel/login/");
         this.token = PhantomBot.generateRandomString(TOKENLEN);
         this.authHandlerToken = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "Token", this.token, "/panel/login/?message=A+login+for+the+Setup+page+is+available+in+the+console");
     }
@@ -78,7 +80,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
 
     public void updateAuth() {
         this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", CaselessProperties.instance().getProperty("paneluser", "panel"),
-                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
+                PanelUserHandler.getConfigPanelPassword(), "/panel/login/");
     }
 
     @Override
@@ -92,10 +94,13 @@ public class HttpSetupHandler implements HttpRequestHandler {
      */
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
-        if ((!CaselessProperties.instance().getPropertyAsBoolean("allowpanelusertosetup", true) || !this.authHandler.isAuthorized(ctx, req))
+        // A passkey sign-in of the main login counts as its panel login
+        boolean isPanelLogin = this.authHandler.isAuthorized(ctx, req) || PanelPasskeyHandler.isMainLoginSession(req.headers());
+
+        if ((!CaselessProperties.instance().getPropertyAsBoolean("allowpanelusertosetup", true) || !isPanelLogin)
                 && !this.authHandlerToken.checkAuthorization(ctx, req)) {
             String extra = "";
-            if (this.authHandler.isAuthorized(ctx, req)) {
+            if (isPanelLogin) {
                 extra = "The+panel+login+is+disabled+for+the+Setup+page%0A";
             }
             this.token = PhantomBot.generateRandomString(TOKENLEN);

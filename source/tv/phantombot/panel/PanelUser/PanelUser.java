@@ -52,39 +52,65 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      */
     private static final String PASSWORDLESS = "!";
     /**
-     * The panel config users, defined by in botlogin.txt
+     * The stored password of the panel config users while panelpasswordless is on, random so it is never known
      */
-    private static final List<PanelUser> CONFIG_USERS = List.of(
+    private static final String CONFIG_PASSWORDLESS = PASSWORDLESS + PhantomBot.generateRandomString(30);
+    /**
+     * The panel config users, defined in botlogin.txt. Built again when the settings are reloaded
+     */
+    private static volatile List<PanelUser> CONFIG_USERS = getConfigUsers();
+    private Type userType;
+
+    /**
+     * Builds the panel config users from botlogin.txt
+     *
+     * @return the users
+     */
+    private static List<PanelUser> getConfigUsers() {
+        // While panelpasswordless is on, they get a stored password that no login matches
+        String password = PanelUserHandler.isConfigPasswordless() ? CONFIG_PASSWORDLESS
+                : Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel"));
+
+        return List.of(
         /**
          * Root User
          */
         new PanelUser(
         CaselessProperties.instance().getProperty("paneluser", "panel"),
-        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        password,
         CaselessProperties.instance().getProperty("webauth"), true, true),
         /**
          * Read Only User
          */
         new PanelUser(
         CaselessProperties.instance().getProperty("paneluser", "panel") + "_RO",
-        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        password,
         CaselessProperties.instance().getProperty("webauthro"), false, false),
         /**
          * YT Root User
          */
         new PanelUser(
         CaselessProperties.instance().getProperty("paneluser", "panel") + "_YT",
-        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        password,
         CaselessProperties.instance().getProperty("ytauth"), false, true),
         /**
          * YT Read Only User
          */
         new PanelUser(
         CaselessProperties.instance().getProperty("paneluser", "panel") + "_YT_RO",
-        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        password,
         CaselessProperties.instance().getProperty("ytauthro"), false, false)
-    );
-    private Type userType;
+        );
+    }
+
+    /**
+     * Builds the panel config users again from botlogin.txt, so a changed panelpassword or panelpasswordless applies
+     * without a restart. Connections opened before keep the old user, so the passkey actions refuse them
+     */
+    public static void reloadConfigUsers() {
+        CONFIG_USERS = getConfigUsers();
+    }
+
     /**
      * User types
      */

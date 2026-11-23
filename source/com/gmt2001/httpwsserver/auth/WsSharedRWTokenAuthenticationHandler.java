@@ -49,7 +49,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
     /**
      * The authorization token that grants read-write access
      */
-    private final String readWriteToken;
+    private volatile String readWriteToken;
     /**
      * The maximum allowed auth failure responses before the connection is shut down
      */
@@ -138,6 +138,15 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         this.maxAttempts = maxAttempts;
         this.authenticatedCallback = authenticatedCallback;
         this.allowPaneluser = allowPaneluser;
+    }
+
+    /**
+     * Replaces the authorization token that grants read-write access. Connections that are already authenticated stay open
+     *
+     * @param readWriteToken The new token
+     */
+    public void setReadWriteToken(String readWriteToken) {
+        this.readWriteToken = readWriteToken;
     }
 
     /**

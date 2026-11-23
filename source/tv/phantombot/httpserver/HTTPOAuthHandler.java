@@ -24,6 +24,7 @@ import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import com.gmt2001.security.Digest;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.mcawful.PanelPasskeyHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -38,6 +39,7 @@ import java.util.Objects;
 
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  *
@@ -52,7 +54,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
 
     public HTTPOAuthHandler() {
         this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
-                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
+                PanelUserHandler.getConfigPanelPassword(), "/panel/login/");
         String token = PhantomBot.generateRandomString(TOKENLEN);
         this.authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login/");
         this.token = Digest.sha256(token);
@@ -66,7 +68,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
 
     public void updateAuth() {
         this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
-                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
+                PanelUserHandler.getConfigPanelPassword(), "/panel/login/");
     }
 
     @Override
@@ -83,7 +85,9 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
                 return;
             }
         } else {
-            if (!PhantomBot.instance().getHTTPSetupHandler().checkTokenAuthorization(ctx, req) && !this.authHandler.checkAuthorization(ctx, req)) {
+            // A passkey sign-in of the main login counts as its panel login
+            if (!PhantomBot.instance().getHTTPSetupHandler().checkTokenAuthorization(ctx, req) && !PanelPasskeyHandler.isMainLoginSession(req.headers())
+                    && !this.authHandler.checkAuthorization(ctx, req)) {
                 return;
             }
         }

@@ -33,6 +33,8 @@ import com.mcawful.PanelPasskeyHandler;
 import com.mcawful.PanelSessionManager;
 import com.mcawful.social.SocialPlatformRegistry;
 
+import tv.phantombot.CaselessProperties;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.panel.WsPanelHandler;
 
@@ -1061,6 +1063,47 @@ public final class PanelUserHandler {
         }
 
         return PanelMessage.Success.setResponse("Password set");
+    }
+
+    /**
+     * Checks if the logins from botlogin.txt can only sign in with a passkey
+     *
+     * @return {@code true} if panelpasswordless is on
+     */
+    public static boolean isConfigPasswordless() {
+        return CaselessProperties.instance().getPropertyAsBoolean("panelpasswordless", false);
+    }
+
+    /**
+     * Turns on panelpasswordless and removes panelpassword, after the main login from botlogin.txt added a passkey with
+     * a setup link. Also replaces webauth, the websocket token that its password logins were given. Saving the settings
+     * reloads them, so this applies at once
+     */
+    public static void setConfigPasswordless() {
+        Transaction t = CaselessProperties.instance().startTransaction();
+        t.setProperty("panelpasswordless", true);
+        t.remove("panelpassword");
+        t.setProperty("webauth", PhantomBot.generateRandomString(30));
+        t.commit();
+    }
+
+    /**
+     * The password of the logins from botlogin.txt, for the pages that check it themselves
+     *
+     * @return panelpassword; a random password that nobody knows while panelpasswordless is on
+     */
+    public static String getConfigPanelPassword() {
+        return isConfigPasswordless() ? PhantomBot.generateRandomString(40) : CaselessProperties.instance().getProperty("panelpassword", "panel");
+    }
+
+    /**
+     * The console line that tells how the panel login from botlogin.txt signs in
+     *
+     * @return the current panel password; or that it signs in with passkeys only
+     */
+    public static String getConfigPasswordLine() {
+        return isConfigPasswordless() ? "The panel login signs in with passkeys only (panelpasswordless)"
+                : "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", "");
     }
 
     private static List<PanelUser> getAllUsers() {

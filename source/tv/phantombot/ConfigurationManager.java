@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.SystemUtils;
 
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
+
 public class ConfigurationManager {
 
     private static final String BOTLOGIN_TXT_LOCATION = "./config/botlogin.txt";
@@ -391,8 +393,7 @@ public class ConfigurationManager {
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println(
                 "The current panel username is: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
-        com.gmt2001.Console.out.println(
-                "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+        com.gmt2001.Console.out.println(PanelUserHandler.getConfigPasswordLine());
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println(
