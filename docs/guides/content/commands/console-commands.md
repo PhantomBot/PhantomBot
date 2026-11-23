@@ -54,3 +54,4 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | paneluser delete username | - Deletes a panel user if the userexists |
 | paneluser enable username | - Enables a panel user if the userexists |
 | paneluser enable username | - Disables a panel user if the userexists |
+| paneluser resetpassword username | - Resets a panel userspassword and removes their passkeys if the user exists andprints the new and randomly generated password |

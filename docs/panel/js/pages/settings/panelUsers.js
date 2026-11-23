@@ -51,6 +51,101 @@ $(function () {
         });
     };
 
+    // Setup links are only offered where passkeys work, with the same check as the Manage Passkeys row
+    let canOfferSetupLinks = false;
+    const passkeyCheck = helpers.isLocalPanel() && window.passkey !== undefined && window.passkey.isSupported()
+            ? $.get('/passkeycheck', function (allowed) {
+                canOfferSetupLinks = allowed === 'true';
+            }, 'text') : null;
+
+    // Makes a passkey setup link for a user, then hands the full link to the callback, or null if there is none.
+    const getSetupLink = function (username, callback) {
+        if (!canOfferSetupLinks) {
+            callback(null);
+            return;
+        }
+
+        socket.query('panelUserRO', 'passkey_setup_link', {passkey: {action: 'setupLink', username: String(username)}}, function (res) {
+            callback(res.token !== undefined ? window.location.origin + '/panel/login/#setup=' + res.token : null, res.error);
+        }, true);
+    };
+
+    // A read-only field with a setup link and a button that copies it.
+    const getSetupLinkField = function (link) {
+        return $('<div/>', {
+            'class': 'input-group'
+        }).append($('<input/>', {
+            'type': 'text',
+            'class': 'form-control',
+            'id': 'panel-user-setup-link-url',
+            'value': link,
+            'readonly': true
+        })).append($('<span/>', {
+            'class': 'input-group-btn'
+        }).append($('<button/>', {
+            'type': 'button',
+            'class': 'btn btn-primary btn-flat',
+            'text': 'Copy',
+            'click': function () {
+                $('#panel-user-setup-link-url').select();
+                document.execCommand('Copy');
+                toastr.success('Link copied');
+            }
+        })));
+    };
+
+    // Shows a new or reset user's temporary password and a setup link, so either one can be given to them.
+    const newUserModal = function (title, username, password, link) {
+        return helpers.getModal('add-panel-user-pwd', title, undefined, $('<form/>', {
+            'role': 'form'
+        })
+        .append($('<div/>', {
+            'class': 'form-group'
+        }).append($('<b/>', {
+            'text': 'Give ' + username + ' one of these two ways to sign in.'
+        })))
+        .append($('<div/>', {
+            'class': 'form-group'
+        }).append($('<label/>', {
+            'text': 'Temporary password'
+        })).append($('<p/>', {
+            'text': 'They are asked to change it the first time they sign in.'
+        })).append($('<div/>', {
+            'style': 'text-align: center',
+            'html': $('<b/>', {
+                'text': password
+            })
+        })))
+        .append($('<div/>', {
+            'class': 'form-group'
+        }).append($('<label/>', {
+            'text': 'Passkey setup link'
+        })).append($('<p/>', {
+            'text': 'It lets them add a passkey without a password. It works once, for 24 hours, and the temporary password stops working when they use it.'
+        })).append(getSetupLinkField(link))), undefined, {
+            canceltext: 'OK',
+            cancelclass: 'btn-primary',
+            blockClosing: true
+        });
+    };
+
+    // Shows a new setup link for an existing user.
+    const setupLinkModal = function (username, link) {
+        return helpers.getModal('panel-user-setup-link', 'Passkey setup link', undefined, $('<form/>', {
+            'role': 'form'
+        })
+        .append($('<div/>', {
+            'class': 'form-group'
+        }).append($('<b/>', {
+            'text': 'Give this link to ' + username + '. It lets them add a passkey without signing in. It works once, for 24 hours, '
+                    + 'and a temporary password they have not changed yet stops working when they use it.'
+        })))
+        .append(getSetupLinkField(link)), undefined, {
+            canceltext: 'Close',
+            cancelclass: 'btn-primary'
+        });
+    };
+
     const addRequiredPermissions = function (permissions, section, permission){
         if (findSectionIndex(permissions, section) === -1) {
             permissions.push({
@@ -316,6 +411,15 @@ $(function () {
                         'html': $('<i/>', {
                             'class': 'fa fa-rotate-left'
                         })
+                    })).append(!canOfferSetupLinks ? null : $('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-xs btn-info',
+                        'style': 'float: right',
+                        'title': 'Passkey setup link',
+                        'data-username': user.username,
+                        'html': $('<i/>', {
+                            'class': 'fa fa-key'
+                        })
                     })).append($('<button/>', {
                         'type': 'button',
                         'class': 'btn btn-xs btn-warning',
@@ -339,10 +443,11 @@ $(function () {
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': [6, 7]},
-                    {'width': '31%', 'targets': 0},
+                    {'width': '25%', 'targets': 0},
                     {'width': '15%', 'searchable': false, 'targets': 1},
                     {'width': '18%', 'searchable': false, 'targets': [3, 5]},
-                    {'width': '125px', 'searchable': false, 'targets': [6, 7]}
+                    {'width': '125px', 'searchable': false, 'targets': 6},
+                    {'width': '150px', 'searchable': false, 'targets': 7}
                 ],
                 'columns': [
                     {'title': 'Username'},
@@ -371,12 +476,29 @@ $(function () {
                             }
 
                             toastr.success('Successfully reset user password');
-                            newPasswordModal(res.success).modal( {
-                                keyboard: false,
-                                backdrop: 'static'
+                            // Without a link, such as when the bot refuses one, only the temporary password is shown
+                            getSetupLink(username, function (link) {
+                                (link === null ? newPasswordModal(res.success) : newUserModal('Password reset', username, res.success, link)).modal({
+                                    keyboard: false,
+                                    backdrop: 'static'
+                                });
                             });
                         });
                     }, {deleteText: 'Reset password'});
+            });
+
+            //Passkey setup link
+            table.on('click', '.btn-info', function () {
+                let username = $(this).data('username');
+
+                getSetupLink(username, function (link, error) {
+                    if (link === null) {
+                        toastr.error(error);
+                        return;
+                    }
+
+                    setupLinkModal(username, link).modal('toggle');
+                });
             });
 
             //Delete
@@ -468,7 +590,8 @@ $(function () {
         });
     };
 
-    loadPanelUsers();
+    // The table waits for the passkey check, which decides whether rows get the setup link button
+    $.when(passkeyCheck).always(loadPanelUsers);
 
     $('#panelUserAdd-button').on('click', function () {
         let permissions = [];
@@ -496,7 +619,6 @@ $(function () {
                     }
 
                     socket.addPanelUser('add_panel_user', username.val(), JSON.stringify(permissions), enabled, canRestartBot, canManageUsers, function (res) {
-
                         if (res.error !== undefined) {
                             toastr.error(res.error);
                             return;
@@ -505,9 +627,12 @@ $(function () {
                         loadPanelUsers();
                         $('#add-panel-user').modal('hide');
                         toastr.success('Successfully added new panel user!');
-                        newPasswordModal(res.success).modal({
-                            keyboard: false,
-                            backdrop: 'static'
+                        // Without a link, such as when the bot refuses one, only the temporary password is shown
+                        getSetupLink(username.val(), function (link) {
+                            (link === null ? newPasswordModal(res.success) : newUserModal('New panel user', username.val(), res.success, link)).modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
                         });
                     });
             }

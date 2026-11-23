@@ -426,6 +426,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Represents the <code>attrSentAuthReply</code> attribute</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#ATTR_SESSION" class="member-name-link">ATTR_SESSION</a> - Static variable in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Represents the <code>ATTR_SESSION</code> attribute, the passkey session that authenticated the connection, if any</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#ATTR_URI" class="member-name-link">ATTR_URI</a> - Static variable in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
 <div class="block">Represents the <code>ATTR_URI</code> attribute, which stores the URI the client has connected to</div>
@@ -1994,6 +1998,11 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Starts a session</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#createSetupLink(java.lang.String)" class="member-name-link">createSetupLink(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Creates a one-time link that lets a panel user add a passkey without signing in, replacing
+ any earlier link of the user.</div>
+</dd>
 <dt><a href="com/gmt2001/JSFileSystem.html#CreateStringList()" class="member-name-link">CreateStringList()</a> - Static method in class com.gmt2001.<a href="com/gmt2001/JSFileSystem.html" title="class in com.gmt2001">JSFileSystem</a></dt>
 <dd>
 <div class="block">Helper method to create a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a> of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a></div>
@@ -2295,7 +2304,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/mcawful/PanelPasskeyHandler.html#deletePasskeys(java.lang.String)" class="member-name-link">deletePasskeys(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
 <dd>
-<div class="block">Removes all passkeys of a panel user and ends their sessions.</div>
+<div class="block">Removes all passkeys and setup links of a panel user and ends their sessions.</div>
 </dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#deleteRole(discord4j.core.object.entity.Role)" class="member-name-link">deleteRole(Role)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>
@@ -3208,6 +3217,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/PhantomBot.html#exitOK()" class="member-name-link">exitOK()</a> - Static method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
 <div class="block">End PhantomBot with an OK state</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html#expires()" class="member-name-link">expires()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html" title="class in com.mcawful">PanelPasskeySetupTable.SetupLinkRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.html#EXPIRES" class="member-name-link">EXPIRES</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.html" title="class in com.mcawful">PanelPasskeySetupTable</a></dt>
+<dd>
+<div class="block">Timestamp of when the link stops working</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/data/TimeoutData.html#expiresAt()" class="member-name-link">expiresAt()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.data.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/data/TimeoutData.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.data">TimeoutData</a></dt>
 <dd>
@@ -4407,6 +4422,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getConfigPanelPassword()" class="member-name-link">getConfigPanelPassword()</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">The password of the logins from botlogin.txt, for the pages that check it themselves</div>
+</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getConfigPasswordLine()" class="member-name-link">getConfigPasswordLine()</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">The console line that tells how the panel login from botlogin.txt signs in</div>
+</dd>
 <dt><a href="biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html#getConnection()" class="member-name-link">getConnection()</a> - Method in class biz.source_code.miniConnectionPoolManager.<a href="biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html" title="class in biz.source_code.miniConnectionPoolManager">MiniConnectionPoolManager</a></dt>
 <dd>
 <div class="block">Retrieves a connection from the connection pool.</div>
@@ -5335,6 +5358,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The primary key constraint</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.html#getPrimaryKey()" class="member-name-link">getPrimaryKey()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.html" title="class in com.mcawful">PanelPasskeySetupTable</a></dt>
+<dd>
+<div class="block">The primary key constraint</div>
+</dd>
 <dt><a href="com/mcawful/PanelPasskeyTable.html#getPrimaryKey()" class="member-name-link">getPrimaryKey()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
 <dd>
 <div class="block">The primary key constraint</div>
@@ -5454,6 +5481,10 @@ loadScripts(document, 'script');</script>
 <div class="block">The class holding records for this table</div>
 </dd>
 <dt><a href="com/gmt2001/module/ModuleVersionTable.html#getRecordType()" class="member-name-link">getRecordType()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module">ModuleVersionTable</a></dt>
+<dd>
+<div class="block">The class holding records for this table</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.html#getRecordType()" class="member-name-link">getRecordType()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.html" title="class in com.mcawful">PanelPasskeySetupTable</a></dt>
 <dd>
 <div class="block">The class holding records for this table</div>
 </dd>
@@ -5807,7 +5838,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getUserJSONObject(java.lang.String,org.json.JSONStringer)" class="member-name-link">getUserJSONObject(String, JSONStringer)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
 <div class="block">Adds the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled,
- <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="tv/phantombot/panel/PanelUser/PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
+ <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="tv/phantombot/panel/PanelUser/PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>userType</code></a>, passwordless) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link"><code>JSONStringer</code></a> instance</div>
 </dd>
 <dt><a href="tv/phantombot/event/discord/DiscordEvent.html#getUsername()" class="member-name-link">getUsername()</a> - Method in class tv.phantombot.event.discord.<a href="tv/phantombot/event/discord/DiscordEvent.html" title="class in tv.phantombot.event.discord">DiscordEvent</a></dt>
 <dd>
@@ -6093,7 +6124,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/mcawful/PanelPasskeyHandler.html#handleHttp(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleHttp(ChannelHandlerContext, FullHttpRequest)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
 <dd>
 <div class="block">Handles a request to <code>/panel/login/passkey/</code>, which the login page uses to sign in
- with a passkey.</div>
+ with a passkey or add one with a setup link.</div>
 </dd>
 <dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#handleIsModuleEnabled(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,java.lang.String)" class="member-name-link">handleIsModuleEnabled(ChannelHandlerContext, WebSocketFrame, String)</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
 <dd>&nbsp;</dd>
@@ -6728,6 +6759,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/illusionaryone/YouTubeAPIv3.html#instance()" class="member-name-link">instance()</a> - Static method in class com.illusionaryone.<a href="com/illusionaryone/YouTubeAPIv3.html" title="class in com.illusionaryone">YouTubeAPIv3</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.html#instance()" class="member-name-link">instance()</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.html" title="class in com.mcawful">PanelPasskeySetupTable</a></dt>
+<dd>
+<div class="block">Provides an instance of <a href="com/mcawful/PanelPasskeySetupTable.html" title="class in com.mcawful"><code>PanelPasskeySetupTable</code></a></div>
+</dd>
 <dt><a href="com/mcawful/PanelPasskeyTable.html#instance()" class="member-name-link">instance()</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
 <dd>
 <div class="block">Provides an instance of <a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful"><code>PanelPasskeyTable</code></a></div>
@@ -7245,6 +7280,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns if this transaction has been committed</div>
 </dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#isConfigPasswordless()" class="member-name-link">isConfigPasswordless()</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Checks if the logins from botlogin.txt can only sign in with a passkey</div>
+</dd>
 <dt><a href="com/mcawful/social/bluesky/BlueskyPlatform.html#isConfigured()" class="member-name-link">isConfigured()</a> - Method in class com.mcawful.social.bluesky.<a href="com/mcawful/social/bluesky/BlueskyPlatform.html" title="class in com.mcawful.social.bluesky">BlueskyPlatform</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mcawful/social/SocialPlatform.html#isConfigured()" class="member-name-link">isConfigured()</a> - Method in interface com.mcawful.social.<a href="com/mcawful/social/SocialPlatform.html" title="interface in com.mcawful.social">SocialPlatform</a></dt>
@@ -7317,6 +7356,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#isMainLimit()" class="member-name-link">isMainLimit()</a> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#isMainLoginSession(io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">isMainLoginSession(HttpHeaders)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Checks if a request carries a passkey session of the main login from botlogin.txt, which
+ the Bot Setup and OAuth pages accept like its password</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html#isMatch(com.gmt2001.twitch.eventsub.EventSubSubscription)" class="member-name-link">isMatch(EventSubSubscription)</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscriptionType</a></dt>
 <dd>
 <div class="block">Returns true if the provided subscription is an instance of the current subscription type and matches the current subscription conditions</div>
@@ -7380,6 +7424,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/event/twitch/TwitchBroadcasterTypeEvent.html#isPartner()" class="member-name-link">isPartner()</a> - Method in class tv.phantombot.event.twitch.<a href="tv/phantombot/event/twitch/TwitchBroadcasterTypeEvent.html" title="class in tv.phantombot.event.twitch">TwitchBroadcasterTypeEvent</a></dt>
 <dd>
 <div class="block">Indicates if this channel is a partner</div>
+</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#isPasswordless()" class="member-name-link">isPasswordless()</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
+<dd>
+<div class="block">Checks if the user can only sign in with a passkey</div>
 </dd>
 <dt><a href="com/gmt2001/PathValidator.html#isPathUnderExecutionOrDockerWeb(java.nio.file.Path)" class="member-name-link">isPathUnderExecutionOrDockerWeb(Path)</a> - Static method in class com.gmt2001.<a href="com/gmt2001/PathValidator.html" title="class in com.gmt2001">PathValidator</a></dt>
 <dd>
@@ -8687,6 +8735,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Passkey registration, management and sign-in for <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a>.</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.html" class="type-name-link" title="class in com.mcawful">PanelPasskeySetupTable</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">Stores the one-time links that let a panel user add a passkey without signing in</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html" class="type-name-link" title="class in com.mcawful">PanelPasskeySetupTable.SetupLinkRecord</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
+<dd>
+<div class="block">A one-time passkey setup link</div>
+</dd>
 <dt><a href="com/mcawful/PanelPasskeyTable.html" class="type-name-link" title="class in com.mcawful">PanelPasskeyTable</a> - Class in <a href="com/mcawful/package-summary.html">com.mcawful</a></dt>
 <dd>
 <div class="block">Stores the passkeys that panel users have registered for signing in to the panel</div>
@@ -9162,6 +9218,10 @@ loadScripts(document, 'script');</script>
 
  Always logs the stack trace, even with debug off</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#printSetupLink(java.lang.String)" class="member-name-link">printSetupLink(String)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Prints a setup link in the console.</div>
+</dd>
 <dt><a href="com/gmt2001/Console/debug.html#printStackTrace(java.lang.Throwable)" class="member-name-link">printStackTrace(Throwable)</a> - Static method in class com.gmt2001.Console.<a href="com/gmt2001/Console/debug.html" title="class in com.gmt2001.Console">debug</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/Console/err.html#printStackTrace(java.lang.Throwable)" class="member-name-link">printStackTrace(Throwable)</a> - Static method in class com.gmt2001.Console.<a href="com/gmt2001/Console/err.html" title="class in com.gmt2001.Console">err</a></dt>
@@ -9198,6 +9258,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/Console/err.html#printStackTrace(java.lang.Throwable,java.util.Map,java.lang.String,boolean,boolean)" class="member-name-link">printStackTrace(Throwable, Map&lt;String, Object&gt;, String, boolean, boolean)</a> - Static method in class com.gmt2001.Console.<a href="com/gmt2001/Console/err.html" title="class in com.gmt2001.Console">err</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mcawful/PanelPasskeyHandler.html#printStartupSetupLink(boolean)" class="member-name-link">printStartupSetupLink(boolean)</a> - Static method in class com.mcawful.<a href="com/mcawful/PanelPasskeyHandler.html" title="class in com.mcawful">PanelPasskeyHandler</a></dt>
+<dd>
+<div class="block">Prints a setup link for the main login from botlogin.txt while it has no passkey: at startup
+ while panelpasswordless is on, since it has no other way to sign in to the panel, and next to
+ a panel password the bot has just created, as the other way to sign in</div>
+</dd>
 <dt><a href="tv/phantombot/CaselessProperties.Transaction.html#PRIORITY_HIGH" class="member-name-link">PRIORITY_HIGH</a> - Static variable in class tv.phantombot.<a href="tv/phantombot/CaselessProperties.Transaction.html" title="class in tv.phantombot">CaselessProperties.Transaction</a></dt>
 <dd>
 <div class="block">High priority</div>
@@ -9724,6 +9790,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/script/Script.html#reload(boolean)" class="member-name-link">reload(boolean)</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/Script.html" title="class in tv.phantombot.script">Script</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#reloadConfigUsers()" class="member-name-link">reloadConfigUsers()</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
+<dd>
+<div class="block">Builds the panel config users again from botlogin.txt, so a changed panelpassword or panelpasswordless applies
+ without a restart.</div>
+</dd>
 <dt><a href="tv/phantombot/PhantomBot.html#reloadProperties()" class="member-name-link">reloadProperties()</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/script/ScriptManager.html#reloadScript(java.io.File)" class="member-name-link">reloadScript(File)</a> - Static method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptManager.html" title="class in tv.phantombot.script">ScriptManager</a></dt>
@@ -9812,6 +9883,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#removePassword(tv.phantombot.panel.PanelUser.PanelUser)" class="member-name-link">removePassword(PanelUser)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Turns off signing in with a password for a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a>, who then signs in with passkeys only.</div>
+</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#removeRole(discord4j.core.object.entity.Role,discord4j.core.object.entity.User)" class="member-name-link">removeRole(Role, User)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>
 <div class="block">Method to remove a role on a user.</div>
@@ -10497,6 +10572,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Version of this record implementation</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html#serialVersionUID" class="member-name-link">serialVersionUID</a> - Static variable in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html" title="class in com.mcawful">PanelPasskeySetupTable.SetupLinkRecord</a></dt>
+<dd>
+<div class="block">Version of this record implementation</div>
+</dd>
 <dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#serialVersionUID" class="member-name-link">serialVersionUID</a> - Static variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
 <dd>
 <div class="block">Version of this record implementation</div>
@@ -10583,6 +10662,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#setCompeting(java.lang.String)" class="member-name-link">setCompeting(String)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#setConfigPasswordless()" class="member-name-link">setConfigPasswordless()</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Turns on panelpasswordless and removes panelpassword, after the main login from botlogin.txt added a passkey with
+ a setup link.</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#setCreationDate(java.lang.Long)" class="member-name-link">setCreationDate(Long)</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>
 <div class="block">Sets the account creation timestamp, in millis</div>
@@ -10659,6 +10743,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sets the password</div>
 </dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#setPassword(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)" class="member-name-link">setPassword(PanelUser, String)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Sets a password for a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> who signs in with passkeys only
+ <br/>
+ <br/>
+ No current password is asked for, so the caller must have made sure the request comes from the user, on a
+ connection that proves it</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#setPermissions(org.json.JSONArray)" class="member-name-link">setPermissions(JSONArray)</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>
 <div class="block">Sets the permissions on the record and clears the permissions map</div>
@@ -10688,6 +10780,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/CaselessProperties.Transaction.html#setProperty(java.lang.String,java.lang.String)" class="member-name-link">setProperty(String, String)</a> - Method in class tv.phantombot.<a href="tv/phantombot/CaselessProperties.Transaction.html" title="class in tv.phantombot">CaselessProperties.Transaction</a></dt>
 <dd>
 <div class="block">Sets a string value in the transaction</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#setReadWriteToken(java.lang.String)" class="member-name-link">setReadWriteToken(String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Replaces the authorization token that grants read-write access.</div>
 </dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html#setResponse(java.lang.String)" class="member-name-link">setResponse(String)</a> - Method in enum class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></dt>
 <dd>
@@ -10738,6 +10834,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/PhantomBot.html#setTwitchCacheReady(boolean)" class="member-name-link">setTwitchCacheReady(boolean)</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
 <div class="block">Set the twitch cache</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html#%3Cinit%3E()" class="member-name-link">SetupLinkRecord()</a> - Constructor for class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html" title="class in com.mcawful">PanelPasskeySetupTable.SetupLinkRecord</a></dt>
+<dd>
+<div class="block">Constructor</div>
 </dd>
 <dt><a href="tv/phantombot/ConfigurationManager.html#setupStarted()" class="member-name-link">setupStarted()</a> - Static method in class tv.phantombot.<a href="tv/phantombot/ConfigurationManager.html" title="class in tv.phantombot">ConfigurationManager</a></dt>
 <dd>&nbsp;</dd>
@@ -11521,6 +11621,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#TOKEN" class="member-name-link">TOKEN</a> - Variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
 <div class="block">WS Token</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.html#TOKENHASH" class="member-name-link">TOKENHASH</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.html" title="class in com.mcawful">PanelPasskeySetupTable</a></dt>
+<dd>
+<div class="block">SHA-256 of the token in the link as a hex-encoded string, so the database never holds a working link</div>
 </dd>
 <dt><a href="com/mcawful/social/SocialPostResult.html#TOO_LONG" class="member-name-link">TOO_LONG</a> - Static variable in record class com.mcawful.social.<a href="com/mcawful/social/SocialPostResult.html" title="class in com.mcawful.social">SocialPostResult</a></dt>
 <dd>
@@ -12420,6 +12524,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The login of the user.</div>
 </dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html#username()" class="member-name-link">username()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.SetupLinkRecord.html" title="class in com.mcawful">PanelPasskeySetupTable.SetupLinkRecord</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html#username()" class="member-name-link">username()</a> - Method in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.PasskeyRecord.html" title="class in com.mcawful">PanelPasskeyTable.PasskeyRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/automod/message/AutomodMessage.html#userName()" class="member-name-link">userName()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.automod.message.<a href="com/gmt2001/twitch/eventsub/subscriptions/automod/message/AutomodMessage.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.automod.message">AutomodMessage</a></dt>
@@ -12449,6 +12555,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/TopPredictor.html#userName()" class="member-name-link">userName()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/TopPredictor.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">TopPredictor</a></dt>
 <dd>
 <div class="block">The display name of the user.</div>
+</dd>
+<dt><a href="com/mcawful/PanelPasskeySetupTable.html#USERNAME" class="member-name-link">USERNAME</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeySetupTable.html" title="class in com.mcawful">PanelPasskeySetupTable</a></dt>
+<dd>
+<div class="block">Username of the panel user the link adds a passkey for</div>
 </dd>
 <dt><a href="com/mcawful/PanelPasskeyTable.html#USERNAME" class="member-name-link">USERNAME</a> - Variable in class com.mcawful.<a href="com/mcawful/PanelPasskeyTable.html" title="class in com.mcawful">PanelPasskeyTable</a></dt>
 <dd>

@@ -310,6 +310,16 @@ loadScripts(document, 'script');</script>
  <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, creationDate, lastLogin) as an array to an
  <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link"><code>JSONStringer</code></a> instance</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getConfigPanelPassword()" class="member-name-link">getConfigPanelPassword</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">The password of the logins from botlogin.txt, for the pages that check it themselves</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getConfigPasswordLine()" class="member-name-link">getConfigPasswordLine</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">The console line that tells how the panel login from botlogin.txt signs in</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFullAccessPermissions()" class="member-name-link">getFullAccessPermissions</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -331,18 +341,28 @@ loadScripts(document, 'script');</script>
  <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled,
- <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
+ <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>userType</code></a>, passwordless) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link"><code>JSONStringer</code></a> instance</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isUriAllowed(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)" class="member-name-link">isUriAllowed</a><wbr>(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;requestUri)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isConfigPasswordless()" class="member-name-link">isConfigPasswordless</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Checks if the logins from botlogin.txt can only sign in with a passkey</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isUriAllowed(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)" class="member-name-link">isUriAllowed</a><wbr>(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;requestUri)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to access a uri</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#recordLogin(tv.phantombot.panel.PanelUser.PanelUser)" class="member-name-link">recordLogin</a><wbr>(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#recordLogin(tv.phantombot.panel.PanelUser.PanelUser)" class="member-name-link">recordLogin</a><wbr>(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Stores the current time as the last login of a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a></div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#removePassword(tv.phantombot.panel.PanelUser.PanelUser)" class="member-name-link">removePassword</a><wbr>(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Turns off signing in with a password for a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a>, who then signs in with passkeys only.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#resetPassword(java.lang.String)" class="member-name-link">resetPassword</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
@@ -357,6 +377,22 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#sectionConvert(java.lang.String)" class="member-name-link">sectionConvert</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Checks for alternate section names and converts them to standard section names</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#setConfigPasswordless()" class="member-name-link">setConfigPasswordless</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Turns on panelpasswordless and removes panelpassword, after the main login from botlogin.txt added a passkey with
+ a setup link.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#setPassword(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)" class="member-name-link">setPassword</a><wbr>(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newPassword)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Sets a password for a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> who signs in with passkeys only
+ <br/>
+ <br/>
+ No current password is asked for, so the caller must have made sure the request comes from the user, on a
+ connection that proves it</div>
 </div>
 </div>
 </div>
@@ -872,6 +908,84 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="removePassword(tv.phantombot.panel.PanelUser.PanelUser)">
+<h3>removePassword</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></span>&nbsp;<span class="element-name">removePassword</span><wbr><span class="parameters">(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user)</span></div>
+<div class="block">Turns off signing in with a password for a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a>, who then signs in with passkeys only.
+ Their websocket token is retired, so a device that signed in with the password loses access too
+ <br/>
+ <br/>
+ The caller must have made sure the request comes from the user, on a connection signed in with a passkey</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>user</code> - The user</dd>
+<dt>Returns:</dt>
+<dd>The fitting <a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser"><code>panel message</code></a></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setPassword(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)">
+<h3>setPassword</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></span>&nbsp;<span class="element-name">setPassword</span><wbr><span class="parameters">(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newPassword)</span></div>
+<div class="block">Sets a password for a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> who signs in with passkeys only
+ <br/>
+ <br/>
+ No current password is asked for, so the caller must have made sure the request comes from the user, on a
+ connection that proves it</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>user</code> - The user</dd>
+<dd><code>newPassword</code> - The new password, as a hex-encoded SHA-256</dd>
+<dt>Returns:</dt>
+<dd>The fitting <a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser"><code>panel message</code></a></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="isConfigPasswordless()">
+<h3>isConfigPasswordless</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isConfigPasswordless</span>()</div>
+<div class="block">Checks if the logins from botlogin.txt can only sign in with a passkey</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if panelpasswordless is on</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setConfigPasswordless()">
+<h3>setConfigPasswordless</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setConfigPasswordless</span>()</div>
+<div class="block">Turns on panelpasswordless and removes panelpassword, after the main login from botlogin.txt added a passkey with
+ a setup link. Also replaces webauth, the websocket token that its password logins were given. Saving the settings
+ reloads them, so this applies at once</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getConfigPanelPassword()">
+<h3>getConfigPanelPassword</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getConfigPanelPassword</span>()</div>
+<div class="block">The password of the logins from botlogin.txt, for the pages that check it themselves</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>panelpassword; a random password that nobody knows while panelpasswordless is on</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getConfigPasswordLine()">
+<h3>getConfigPasswordLine</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getConfigPasswordLine</span>()</div>
+<div class="block">The console line that tells how the panel login from botlogin.txt signs in</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the current panel password; or that it signs in with passkeys only</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="getAllUsersJSONObject(org.json.JSONStringer)">
 <h3>getAllUsersJSONObject</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getAllUsersJSONObject</span><wbr><span class="parameters">(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</span></div>
@@ -913,7 +1027,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getUserJSONObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
  <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</span></div>
 <div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled,
- <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
+ <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>userType</code></a>, passwordless) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link"><code>JSONStringer</code></a> instance</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>username</code> - The user's name which properties should be returned</dd>
@@ -927,6 +1041,7 @@ loadScripts(document, 'script');</script>
 <li><a href="PanelUser.html#getPermission()"><code>permissions</code></a></li>
 <li><a href="PanelUser.html#hasSetPassword()"><code>hasSetPassword</code></a></li>
 <li><a href="PanelUser.html#getUserType()"><code>userType</code></a></li>
+<li><a href="PanelUser.html#isPasswordless()"><code>passwordless</code></a></li>
 </ul>
 </dd>
 </dl>

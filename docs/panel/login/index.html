@@ -105,6 +105,12 @@
                             <button type="button" id="passkey-button" class="btn btn-default btn-block btn-flat">Sign in with a passkey</button>
                         </div>
                     </div>
+
+                    <div class="row hide" id="passkey-setup-row" style="margin-top: 10px;">
+                        <div class="col-xs-12">
+                            <button type="button" id="passkey-setup-button" class="btn btn-primary btn-block btn-flat">Set up a passkey</button>
+                        </div>
+                    </div>
                 </form>
                 <!-- this could link to a how-to reset the password guide -->
                 <!-- <a href="#">Unable to login?</a><br> -->
@@ -127,6 +133,15 @@
             let allowPasskey = false;
             let hasAltPanelVersion = false;
             let authExpired = false;
+            // A setup link carries its token after the #, so it is never sent to the bot with the page
+            const setupToken = new URLSearchParams(window.location.hash.substring(1)).get('setup');
+            // A setup link opened while this page is already showing only changes the part after the #, which does not load
+            // the page again
+            window.addEventListener('hashchange', function () {
+                if (new URLSearchParams(window.location.hash.substring(1)).get('setup') !== setupToken) {
+                    window.location.reload();
+                }
+            });
 
             let sslHelp = 'Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br /><br />'
                     + 'Troubleshooting Steps:<br />'
@@ -285,9 +300,83 @@
             }
 
             /**
+             * Reads the answer to a passkey request, which has an error message when it failed
+             *
+             * @param {Response} res The response
+             * @return {Promise} The body of the response
+             */
+            function readPasskeyAnswer(res) {
+                return res.json().then(function (body) {
+                    if (!res.ok) {
+                        throw new Error(body.error !== undefined ? body.error : 'Passkey setup failed');
+                    }
+
+                    return body;
+                });
+            }
+
+            /**
+             * Asks the bot for the options of the setup link
+             *
+             * @return {Promise} The options for navigator.credentials.create()
+             */
+            function fetchSetupOptions() {
+                return fetch('/panel/login/passkey/setup/options', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({token: setupToken})
+                }).then(readPasskeyAnswer);
+            }
+
+            /**
+             * Checks the setup link as soon as the page opens, so a link that no longer works says so right away
+             */
+            function checkSetupLink() {
+                fetchSetupOptions().then(function () {
+                    $('#info-box').removeClass('hide').text('Click Set up a passkey to add a passkey with this link and sign in');
+                    $('#alert-br').removeClass('hide');
+                    $('#passkey-setup-row').removeClass('hide');
+                    $('#passkey-setup-button').on('click', passkeySetup);
+                }).catch(function (e) {
+                    $('#error-box').removeClass('hide').text(e.message);
+                    $('#alert-br').removeClass('hide');
+                });
+            }
+
+            /**
+             * Adds a passkey with a setup link, then enters the panel
+             */
+            function passkeySetup() {
+                $('#error-box').addClass('hide');
+                $('#success-box').addClass('hide');
+                $('#info-box').addClass('hide');
+                $('#alert-br').addClass('hide');
+
+                fetchSetupOptions().then(function (options) {
+                    return window.passkey.create(options);
+                }).then(function (credential) {
+                    credential.token = setupToken;
+                    credential.remember = $('#remember').val();
+
+                    return fetch('/panel/login/passkey/setup/verify', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(credential)
+                    });
+                }).then(readPasskeyAnswer).then(function (res) {
+                    finishPasskeyLogin(res.username);
+                }).catch(function (e) {
+                    $('#error-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#error-box').text(e.message);
+                });
+            }
+
+            /**
              * Enters the panel without asking again if a passkey session is still active, such as in a new tab
              *
-             * Only the panel is entered this way, the Bot Setup and OAuth pages always ask for the password
+             * Only the panel is entered this way. The Bot Setup and OAuth pages open with a session of the main login
+             * themselves, and send anyone else here
              */
             function resumePasskeySession() {
                 let kickback = new URLSearchParams(document.location.search.substring(1)).get('kickback');
@@ -572,8 +661,25 @@
                 });
 
                 Promise.all([p1, p2, p3]).then(() => {
-                    checkAlreadyLoggedIn();
-                    if (isLocalBot && allowPasskey) {
+                    let canUsePasskeys = isLocalBot && allowPasskey && window.passkey !== undefined && window.passkey.isSupported();
+
+                    // Someone opening a setup link is not sent on as the user who is already signed in, and is only
+                    // offered to set up the passkey
+                    if (setupToken !== null) {
+                        if (canUsePasskeys) {
+                            $('#username, #password').closest('.form-group').addClass('hide');
+                            $('#login-button').closest('.row').addClass('hide');
+                            checkSetupLink();
+                        } else {
+                            // The link can not be used here, but a password the user was also given still can
+                            $('#error-box').removeClass('hide').text('This browser can not use passkeys on this address. Open the link on the bot\'s own address, '
+                                    + 'with HTTPS and a trusted certificate, or on http://localhost');
+                            $('#alert-br').removeClass('hide');
+                        }
+                    } else {
+                        checkAlreadyLoggedIn();
+                    }
+                    if (isLocalBot && allowPasskey && setupToken === null) {
                         resumePasskeySession();
                         if (window.passkey !== undefined && window.passkey.isSupported()) {
                             $('#passkey-row').removeClass('hide');
