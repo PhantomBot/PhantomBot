@@ -45,6 +45,7 @@ import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
+import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import com.gmt2001.twitch.TwitchClientCredentialsFlow;
@@ -57,6 +58,7 @@ import com.gmt2001.util.concurrent.ExecutorService;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.StreamLabsAPI;
 import com.illusionaryone.YouTubeAPIv3;
+import com.mcawful.PanelPasskeyHandler;
 import com.mcawful.social.SocialPlatformRegistry;
 import com.mcawful.social.SocialPoller;
 
@@ -89,6 +91,8 @@ import tv.phantombot.httpserver.HTTPNoAuthHandler;
 import tv.phantombot.httpserver.HTTPOAuthHandler;
 import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
 import tv.phantombot.httpserver.HttpSetupHandler;
+import tv.phantombot.panel.PanelUser.PanelUser;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 import tv.phantombot.panel.WsAlertsPollsHandler;
 import tv.phantombot.panel.WsPanelHandler;
 import tv.phantombot.panel.WsPanelRemoteLoginHandler;
@@ -401,8 +405,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("The current panel username is: "
                     + CaselessProperties.instance().getProperty("paneluser", "panel"));
-            com.gmt2001.Console.warn.println(
-                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+            com.gmt2001.Console.warn.println(PanelUserHandler.getConfigPasswordLine());
             com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
                 com.gmt2001.Console.warn
@@ -423,8 +426,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("The current panel username is: "
                     + CaselessProperties.instance().getProperty("paneluser", "panel"));
-            com.gmt2001.Console.warn.println(
-                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+            com.gmt2001.Console.warn.println(PanelUserHandler.getConfigPasswordLine());
             com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
                 com.gmt2001.Console.warn
@@ -445,8 +447,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("The current panel username is: "
                     + CaselessProperties.instance().getProperty("paneluser", "panel"));
-            com.gmt2001.Console.warn.println(
-                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+            com.gmt2001.Console.warn.println(PanelUserHandler.getConfigPasswordLine());
             com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
                 com.gmt2001.Console.warn
@@ -513,6 +514,11 @@ public final class PhantomBot implements Listener {
     public void reloadProperties() {
         com.gmt2001.Console.debug.println("Check Panel Login");
         this.checkPanelLogin();
+        PanelUser.reloadConfigUsers();
+
+        if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
+            PanelPasskeyHandler.printStartupSetupLink(false);
+        }
 
         com.gmt2001.Console.debug.println("Set OAuth");
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
@@ -520,6 +526,16 @@ public final class PhantomBot implements Listener {
         if (this.httpAuthenticatedHandler != null) {
             com.gmt2001.Console.debug.println("Update Authenticated handler");
             this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
+        }
+
+        if (this.panelHandler != null) {
+            com.gmt2001.Console.debug.println("Update Panel websocket handler");
+            ((WsSharedRWTokenAuthenticationHandler) this.panelHandler.getAuthHandler()).setReadWriteToken(CaselessProperties.instance().getProperty("webauth"));
+        }
+
+        if (this.alertsPollsHandler != null) {
+            com.gmt2001.Console.debug.println("Update Alerts and Polls websocket handler");
+            ((WsSharedRWTokenAuthenticationHandler) this.alertsPollsHandler.getAuthHandler()).setReadWriteToken(CaselessProperties.instance().getProperty("webauth"));
         }
 
         if (this.oauthHandler != null) {
@@ -709,6 +725,10 @@ public final class PhantomBot implements Listener {
          * @botproperty panelpassword - The password to login to the panel. Default is a randomly generated password
          * @botpropertycatsort panelpassword 30 40 Panel Login
          */
+        /**
+         * @botproperty panelpasswordless - If `true`, the panel login (and its _RO and _YT logins) can only sign in with a passkey and panelpassword is not accepted anywhere. Turned on, and panelpassword removed, when the panel login adds a passkey with a setup link. Only turn it on where passkeys work (HTTPS with a trusted certificate, or http://localhost). While it has no passkey, a one-time setup link is printed in the console at startup. Default `false`
+         * @botpropertycatsort panelpasswordless 35 40 Panel Login
+         */
         if (CaselessProperties.instance().getProperty("paneluser", "").contains(":")) {
             com.gmt2001.Console.debug.println("Fix colon");
             Transaction t = CaselessProperties.instance().startTransaction();
@@ -719,7 +739,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println("The panel username has been changed to: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
             com.gmt2001.Console.warn.println("");
         }
-        if (CaselessProperties.instance().getProperty("panelpassword", "").isBlank()) {
+        if (!PanelUserHandler.isConfigPasswordless() && CaselessProperties.instance().getProperty("panelpassword", "").isBlank()) {
             com.gmt2001.Console.debug.println("Generate password");
             String pass = PhantomBot.generateRandomString(12);
             Transaction t = CaselessProperties.instance().startTransaction();
@@ -732,6 +752,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("You can change this on the setup page of the bots webserver");
             com.gmt2001.Console.out.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
             com.gmt2001.Console.out.println("");
+            PanelPasskeyHandler.printStartupSetupLink(true);
         }
     }
 
@@ -754,6 +775,7 @@ public final class PhantomBot implements Listener {
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             com.gmt2001.Console.debug.println("Check Panel Login");
             this.checkPanelLogin();
+            PanelPasskeyHandler.printStartupSetupLink(false);
             com.gmt2001.Console.debug.println("Init Web Server");
             HTTPWSServer.instance();
             com.gmt2001.Console.debug.println("Register NoAuth handler");

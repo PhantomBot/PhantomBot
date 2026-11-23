@@ -49,7 +49,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
     /**
      * The authorization token that grants read-write access
      */
-    private final String readWriteToken;
+    private volatile String readWriteToken;
     /**
      * The maximum allowed auth failure responses before the connection is shut down
      */
@@ -81,7 +81,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
     /**
      * Represents the {@code ATTR_SESSION} attribute, the passkey session that authenticated the connection, if any
      */
-    private static final AttributeKey<PanelSessionManager.Session> ATTR_SESSION = AttributeKey.valueOf("panelSession");
+    public static final AttributeKey<PanelSessionManager.Session> ATTR_SESSION = AttributeKey.valueOf("panelSession");
     /**
      * Represents the {@code ATTR_HANDSHAKE_AUTH} attribute, which is {@code true} if the connection was authenticated by the cookie or session
      * sent with its handshake, as opposed to a token sent in a frame
@@ -138,6 +138,15 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         this.maxAttempts = maxAttempts;
         this.authenticatedCallback = authenticatedCallback;
         this.allowPaneluser = allowPaneluser;
+    }
+
+    /**
+     * Replaces the authorization token that grants read-write access. Connections that are already authenticated stay open
+     *
+     * @param readWriteToken The new token
+     */
+    public void setReadWriteToken(String readWriteToken) {
+        this.readWriteToken = readWriteToken;
     }
 
     /**

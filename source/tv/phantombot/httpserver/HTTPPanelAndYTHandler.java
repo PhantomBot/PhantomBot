@@ -39,6 +39,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.panel.PanelUser.PanelUser;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  *
@@ -52,7 +53,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
 
     public HTTPPanelAndYTHandler() {
         this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", CaselessProperties.instance().getProperty("paneluser", "panel"),
-                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/", true);
+                PanelUserHandler.getConfigPanelPassword(), "/panel/login/", true);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
 
     public void updateAuth() {
         this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", CaselessProperties.instance().getProperty("paneluser", "panel"),
-                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/", true);
+                PanelUserHandler.getConfigPanelPassword(), "/panel/login/", true);
     }
 
     @Override

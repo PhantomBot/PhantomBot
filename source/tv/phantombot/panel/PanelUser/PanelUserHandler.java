@@ -33,6 +33,8 @@ import com.mcawful.PanelPasskeyHandler;
 import com.mcawful.PanelSessionManager;
 import com.mcawful.social.SocialPlatformRegistry;
 
+import tv.phantombot.CaselessProperties;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.panel.WsPanelHandler;
 
@@ -588,7 +590,8 @@ public final class PanelUserHandler {
             return null;
         }
 
-        if (password.equals(user.getPassword())) {
+        // A user who signs in with passkeys only has no password that can match
+        if (!user.isPasswordless() && password.equals(user.getPassword())) {
             recordLogin(user);
             return user;
         }
@@ -999,6 +1002,110 @@ public final class PanelUserHandler {
         return PanelMessage.Success.setResponse(password);
     }
 
+    /**
+     * Turns off signing in with a password for a {@link PanelUser panel user}, who then signs in with passkeys only.
+     * Their websocket token is retired, so a device that signed in with the password loses access too
+     * <br />
+     * <br />
+     * The caller must have made sure the request comes from the user, on a connection signed in with a passkey
+     *
+     * @param user The user
+     * @return The fitting {@link PanelMessage panel message}
+     */
+    public static PanelMessage removePassword(PanelUser user) {
+        if (!user.canBeEdited()) {
+            return PanelMessage.UserIsConfig;
+        }
+
+        user.removePassword();
+
+        try {
+            user.doupdate();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return PanelMessage.SaveError;
+        }
+
+        return PanelMessage.Success.setResponse("Password sign-in turned off");
+    }
+
+    /**
+     * Sets a password for a {@link PanelUser panel user} who signs in with passkeys only
+     * <br />
+     * <br />
+     * No current password is asked for, so the caller must have made sure the request comes from the user, on a
+     * connection that proves it
+     *
+     * @param user The user
+     * @param newPassword The new password, as a hex-encoded SHA-256
+     * @return The fitting {@link PanelMessage panel message}
+     */
+    public static PanelMessage setPassword(PanelUser user, String newPassword) {
+        if (!user.canBeEdited()) {
+            return PanelMessage.UserIsConfig;
+        }
+
+        if (!user.isPasswordless()) {
+            return PanelMessage.Error.setResponse("You already have a password, use Change Password instead");
+        }
+
+        if (newPassword == null || !newPassword.matches("[0-9a-f]{64}")) {
+            return PanelMessage.Error.setResponse("Invalid password!");
+        }
+
+        user.changePassword(newPassword);
+
+        try {
+            user.doupdate();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return PanelMessage.SaveError;
+        }
+
+        return PanelMessage.Success.setResponse("Password set");
+    }
+
+    /**
+     * Checks if the logins from botlogin.txt can only sign in with a passkey
+     *
+     * @return {@code true} if panelpasswordless is on
+     */
+    public static boolean isConfigPasswordless() {
+        return CaselessProperties.instance().getPropertyAsBoolean("panelpasswordless", false);
+    }
+
+    /**
+     * Turns on panelpasswordless and removes panelpassword, after the main login from botlogin.txt added a passkey with
+     * a setup link. Also replaces webauth, the websocket token that its password logins were given. Saving the settings
+     * reloads them, so this applies at once
+     */
+    public static void setConfigPasswordless() {
+        Transaction t = CaselessProperties.instance().startTransaction();
+        t.setProperty("panelpasswordless", true);
+        t.remove("panelpassword");
+        t.setProperty("webauth", PhantomBot.generateRandomString(30));
+        t.commit();
+    }
+
+    /**
+     * The password of the logins from botlogin.txt, for the pages that check it themselves
+     *
+     * @return panelpassword; a random password that nobody knows while panelpasswordless is on
+     */
+    public static String getConfigPanelPassword() {
+        return isConfigPasswordless() ? PhantomBot.generateRandomString(40) : CaselessProperties.instance().getProperty("panelpassword", "panel");
+    }
+
+    /**
+     * The console line that tells how the panel login from botlogin.txt signs in
+     *
+     * @return the current panel password; or that it signs in with passkeys only
+     */
+    public static String getConfigPasswordLine() {
+        return isConfigPasswordless() ? "The panel login signs in with passkeys only (panelpasswordless)"
+                : "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", "");
+    }
+
     private static List<PanelUser> getAllUsers() {
         return PanelUser.GetAll();
     }
@@ -1053,7 +1160,7 @@ public final class PanelUserHandler {
     /**
      * Adds the {@link PanelUser panel user's} safe properties (username, isEnabled,
      * {@link Permission permissions}, hasSetPassword, {@link PanelUser.Type
-     * userType) as an array to an {@link JSONStringer JSONStringer} instance
+     * userType}, passwordless) as an array to an {@link JSONStringer JSONStringer} instance
      *
      * @param username   The user's name which properties should be returned
      * @param jsonObject The {@link JSONStringer JSONStringer} instance to which the
@@ -1063,6 +1170,7 @@ public final class PanelUserHandler {
      * @see PanelUser#getPermission() permissions
      * @see PanelUser#hasSetPassword() hasSetPassword
      * @see PanelUser#getUserType() userType
+     * @see PanelUser#isPasswordless() passwordless
      */
     public static void getUserJSONObject(String username, JSONStringer jsonObject) {
         PanelUser user = PanelUser.LookupByUsername(username);
@@ -1078,6 +1186,7 @@ public final class PanelUserHandler {
                 .key("canRestartBot").value(user.canRestartBot())
                 .key("permission").value(user.getPermissionsToJSON(true))
                 .key("hasSetPassword").value(user.hasSetPassword())
+                .key("passwordless").value(user.isPasswordless())
                 .key("userType").value(user.getUserType().toString())
                 .endObject();
     }
