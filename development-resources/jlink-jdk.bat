@@ -20,4 +20,5 @@ REM
 setlocal enableextensions enabledelayedexpansion
 RMDIR /S /Q ..\resources\java-runtime
 %JDK%\bin\jlink.exe --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument,jdk.unsupported,jdk.zipfs,java.scripting,jdk.dynalink --output ..\resources\java-runtime
+..\resources\java-runtime\bin\java.exe --version
 endlocal
