@@ -61,7 +61,6 @@ if (( incontainer == 0 )); then
     rm -rfv ../resources/$FOLDER
     mkdir -p ../resources/$FOLDER
     docker run --rm --platform ${PLATFORM} --privileged --mount type=bind,source="$(pwd)"/../resources,target=/opt/phantombot --mount type=bind,source="$(pwd)"/jlink-jdk-docker.sh,target=/opt/jlink-jdk-docker.sh ${IMAGE} /opt/jlink-jdk-docker.sh --incontainer --jdk ${JDK} --outfolder ${FOLDER}
-    ../resources/$FOLDER/bin/java --version
 else
     mkdir /opt/build
     mount -t tmpfs tmpfs /opt/build
@@ -69,5 +68,6 @@ else
     mv ${jdk_home} /opt/build/jdk
     cd /opt/build/jdk/bin
     ./jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument,jdk.unsupported,jdk.zipfs,java.scripting,jdk.dynalink --output /opt/build/jre
+    /opt/build/jre/bin/java --version
     mv /opt/build/jre/* /opt/phantombot/${out_folder}/
 fi
