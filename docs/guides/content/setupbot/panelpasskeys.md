@@ -72,7 +72,7 @@ A user created under _Settings > Panel Users_ can turn their password off, so th
 2. Click your name in the top-right corner, then click _Manage Passkeys_
 3. Click _Turn off password sign-in_ and confirm. The _Change Password_ dialog offers the same, as _Turn off password sign-in instead_
 
-From then on, the password is not accepted. Devices that signed in with it lose access the next time they connect to the bot.
+From then on, the password is not accepted. Devices that signed in with it have to sign in with a passkey the next time they connect to the bot. Panel pages that are already open stay connected until they are reloaded.
 
 While your password is off
 
@@ -86,11 +86,12 @@ For the login from _botlogin.txt_, see **Making the Main Login Passkey-Only** in
 
 A setup link lets a panel user add a passkey without signing in. It is an alternative to the temporary password of a new user, or of a user whose password was reset.
 
-When you add a user or reset their password under _Settings > Panel Users_, the dialog that shows the temporary password also shows a setup link. Give the user one of the two. For an existing user, click the <i class="fa fa-key"></i> button of the user, then click _Copy_ and send the link to the user. The console command `paneluser setuplink username` prints one as well, also for the login from _botlogin.txt_, which then signs in with passkeys only (see **Making the Main Login Passkey-Only**).
+When you add a user or reset their password under _Settings > Panel Users_, the dialog that shows the temporary password also shows a setup link. Give the user one of the two. For an existing user, click the <i class="fa fa-key"></i> button of the user, then click _Copy_ and send the link to the user. The console command `paneluser setuplink username` prints one as well, also for the login from _botlogin.txt_. Using a link for that login makes it sign in with passkeys only (see **Making the Main Login Passkey-Only**).
 
 The user opens the link, clicks _Set up a passkey_ and follows the prompt, and is then signed in to the panel.
 
 - A link works once, for 24 hours. Making a new link for a user replaces their earlier one
+- Whoever opens the link first adds their passkey to the account and is signed in as that user, so send it to the user privately
 - A user who has not changed their temporary password yet loses it when they use the link, and signs in with passkeys only. A user who chose their own password keeps it
 - The passkey works on the address in the link. The panel uses the address it is open on. The console uses `localhost`, the bot's port and `https` unless `usehttps` is `false`, so replace that part with the address the user opens the panel on
 - A disabled user can not use their link until they are enabled again
@@ -124,7 +125,7 @@ To sign in with the password again, turn `panelpasswordless` off on the _Bot Set
 
 ## Managing Passkeys of Other Panel Users
 
-Users with permission to manage panel users can not see or add passkeys for someone else, but these actions under _Settings > Panel Users_ affect them
+Users with permission to manage panel users can not see someone else's passkeys or remove a single one. They can make a setup link for a user (see **Passkey Setup Links**), and these actions under _Settings > Panel Users_ affect the user's passkeys
 
 | Action | Effect on the user's passkeys |
 | --- | --- |
