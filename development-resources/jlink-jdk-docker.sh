@@ -61,6 +61,7 @@ if (( incontainer == 0 )); then
     rm -rfv ../resources/$FOLDER
     mkdir -p ../resources/$FOLDER
     docker run --rm --platform ${PLATFORM} --privileged --mount type=bind,source="$(pwd)"/../resources,target=/opt/phantombot --mount type=bind,source="$(pwd)"/jlink-jdk-docker.sh,target=/opt/jlink-jdk-docker.sh ${IMAGE} /opt/jlink-jdk-docker.sh --incontainer --jdk ${JDK} --outfolder ${FOLDER}
+    ../resources/$FOLDER/bin/java --version
 else
     mkdir /opt/build
     mount -t tmpfs tmpfs /opt/build
