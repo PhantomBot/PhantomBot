@@ -101,10 +101,12 @@ The user opens the link, clicks _Set up a passkey_ and follows the prompt, and i
 
 The login from _botlogin.txt_ (`paneluser`) gets its password from the `panelpassword` setting, so it is turned off with the `panelpasswordless` setting. There are two ways to turn it on
 
-- Use a setup link for the main login. When a new bot creates its panel password, it also prints a setup link in the console (with Docker, shown by `docker logs CONTAINERNAME`), and `paneluser setuplink` with the name of the main login prints one at any time. Adding a passkey with it turns `panelpasswordless` on, removes `panelpassword` from _botlogin.txt_ and replaces `webauth`, the token that earlier password sign-ins of the main login use, so those browsers and the Remote Panel lose access the next time they connect. Use either the password or the link: using the link later, even after signing in with the password, still makes the main login passkey-only
-- Set `panelpasswordless` to `true` in the _Panel Login_ section of the _Bot Setup_ page, or in _botlogin.txt_ while the bot is stopped. Add a passkey to the main login first, otherwise the bot prints a setup link for it in the console. This keeps `webauth`, so to sign out browsers that saved a password sign-in, also enter a new random value for `webauth` on the same page
+- Use a setup link for the main login. When a new bot creates its panel password, it also prints a setup link in the console (with Docker, shown by `docker logs CONTAINERNAME`), and `paneluser setuplink` with the name of the main login prints one at any time. Adding a passkey with it turns `panelpasswordless` on, removes `panelpassword` from _botlogin.txt_ and replaces `webauth`, the token that earlier password sign-ins of the main login use, so those browsers have to sign in again the next time they connect, and the Remote Panel loses access. Use either the password or the link: using the link later, even after signing in with the password, still makes the main login passkey-only
+- Set `panelpasswordless` to `true` in the _Panel Login_ section of the _Bot Setup_ page, or in _botlogin.txt_ while the bot is stopped. Add a passkey to the main login first, otherwise the bot prints a setup link for it in the console. This keeps `webauth`, so browsers that saved a password sign-in stay signed in (see below)
 
 Using a setup link or the _Bot Setup_ page applies it at once, without a restart.
+
+This does not undo everything the password allowed. Panel pages that are already open stay connected until they are reloaded, panel users and passkeys added earlier are kept, and the other tokens in _botlogin.txt_, such as `ytauth` for the Song Requests player, are not replaced. If someone else may have known the password, check _Settings > Panel Users_ and _Manage Passkeys_, then stop the bot, remove the `webauth`, `ytauth` and `ytauthro` lines from _botlogin.txt_ and start the bot, which creates new ones.
 
 While `panelpasswordless` is on
 
