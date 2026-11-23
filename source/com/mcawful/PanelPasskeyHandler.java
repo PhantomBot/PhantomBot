@@ -28,6 +28,7 @@ import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import com.gmt2001.security.Digest;
+import com.mcawful.PanelPasskeySetupTable.SetupLinkRecord;
 import com.mcawful.PanelPasskeyTable.PasskeyRecord;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -48,8 +49,9 @@ import tv.phantombot.panel.PanelUser.PanelUserTable;
  * Passkey registration, management and sign-in for {@link PanelUser panel users}.
  *
  * <p>Registration and management run over the authenticated panel websocket, so a user can
- * only ever touch their own passkeys. Sign-in runs over HTTP so the bot can set the session
- * cookie of {@link PanelSessionManager}.</p>
+ * only ever touch their own passkeys. The exception is a setup link, made by someone who can
+ * manage panel users or in the console, which adds a passkey over HTTP. Sign-in runs over HTTP
+ * so the bot can set the session cookie of {@link PanelSessionManager}.</p>
  *
  * @author mcawful
  */
@@ -83,6 +85,15 @@ public final class PanelPasskeyHandler {
      * The challenge of the registration that is in progress on a websocket
      */
     private static final AttributeKey<String> ATTR_CHALLENGE = AttributeKey.valueOf("passkeyChallenge");
+    /**
+     * How long a setup link works, in milliseconds
+     */
+    private static final long SETUP_LINK_LIFETIME_MILLIS = 86400000L;
+    /**
+     * Makes each change to passkeys and setup links one step, so a link adds only one passkey, a user who signs in
+     * with passkeys only keeps their last one, and a reset, delete or rename leaves no passkey of a link behind
+     */
+    private static final Object PASSKEY_LOCK = new Object();
 
     /**
      * Utility class (not instantiable).
@@ -128,13 +139,28 @@ public final class PanelPasskeyHandler {
                 // themselves out, and a connection opened with the password can not do this
                 PanelSessionManager.Session session = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_SESSION).get();
 
-                if (session == null || !session.isValid()) {
-                    throw new IllegalArgumentException("Sign in with a passkey before you turn off your password");
-                }
+                synchronized (PASSKEY_LOCK) {
+                    if (session == null || !session.isValid()) {
+                        throw new IllegalArgumentException("Sign in with a passkey before you turn off your password");
+                    }
 
-                result = toResult(PanelUserHandler.removePassword(current));
+                    result = toResult(PanelUserHandler.removePassword(current));
+                }
             } else if (action.equals("setPassword")) {
                 result = toResult(PanelUserHandler.setPassword(current, request.optString("password")));
+            } else if (action.equals("setupLink")) {
+                PanelUser target = PanelUser.LookupByUsername(request.optString("username"));
+
+                if (!user.canManageUsers()) {
+                    throw new IllegalArgumentException(PanelMessage.CanNotManageError.getMessage());
+                }
+
+                // The main login from botlogin.txt adds its passkeys itself, or gets a link from the console
+                if (target == null || !target.canBeEdited()) {
+                    throw new IllegalArgumentException(PanelMessage.UserNotFound.getMessage());
+                }
+
+                result.put("token", createSetupLink(target.getUsername()));
             } else {
                 result.put("error", "Unknown passkey action");
             }
@@ -147,7 +173,7 @@ public final class PanelPasskeyHandler {
 
     /**
      * Handles a request to {@code /panel/login/passkey/}, which the login page uses to sign in
-     * with a passkey. These requests are not authenticated
+     * with a passkey or add one with a setup link. These requests are not authenticated
      *
      * @param ctx the {@link ChannelHandlerContext} of the request
      * @param req the {@link FullHttpRequest}
@@ -175,6 +201,10 @@ public final class PanelPasskeyHandler {
                     .put("userVerification", "required").toString(), "json");
         } else if (path.equals(HTTP_PATH + "verify")) {
             res = login(req);
+        } else if (path.equals(HTTP_PATH + "setup/options")) {
+            res = setupOptions(req);
+        } else if (path.equals(HTTP_PATH + "setup/verify")) {
+            res = setup(req);
         } else if (path.equals(HTTP_PATH + "logout")) {
             res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT);
 
@@ -190,32 +220,39 @@ public final class PanelPasskeyHandler {
     }
 
     /**
-     * Removes all passkeys of a panel user and ends their sessions. Must be called when the
-     * user is deleted, so a later user with the same name does not inherit them, and when
-     * their password is reset, so nobody who had access keeps it
+     * Removes all passkeys and setup links of a panel user and ends their sessions. Must be
+     * called when the user is deleted, so a later user with the same name does not inherit
+     * them, and when their password is reset, so nobody who had access keeps it
      *
      * @param username the user's name
      */
     public static void deletePasskeys(String username) {
-        Datastore2.instance().dslContext().deleteFrom(PanelPasskeyTable.instance())
-                .where(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(username)).execute();
-        PanelSessionManager.revokeUser(username);
+        synchronized (PASSKEY_LOCK) {
+            Datastore2.instance().dslContext().deleteFrom(PanelPasskeyTable.instance())
+                    .where(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(username)).execute();
+            deleteSetupLinks(username);
+            PanelSessionManager.revokeUser(username);
+        }
     }
 
     /**
      * Moves all passkeys of a panel user to a new username and ends their sessions. Must be
-     * called when the user is renamed. Passkeys that were left under the new name are removed
-     * first, so the user does not inherit them
+     * called when the user is renamed. Passkeys and setup links that were left under the new
+     * name are removed first, so the user does not inherit them, and the user's setup links
+     * stop working
      *
      * @param username the user's current name
      * @param newUsername the user's new name
      */
     public static void renamePasskeys(String username, String newUsername) {
-        deletePasskeys(newUsername);
-        Datastore2.instance().dslContext().update(PanelPasskeyTable.instance())
-                .set(PanelPasskeyTable.instance().USERNAME, newUsername)
-                .where(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(username)).execute();
-        PanelSessionManager.revokeUser(username);
+        synchronized (PASSKEY_LOCK) {
+            deletePasskeys(newUsername);
+            Datastore2.instance().dslContext().update(PanelPasskeyTable.instance())
+                    .set(PanelPasskeyTable.instance().USERNAME, newUsername)
+                    .where(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(username)).execute();
+            deleteSetupLinks(username);
+            PanelSessionManager.revokeUser(username);
+        }
     }
 
     /**
@@ -227,14 +264,7 @@ public final class PanelPasskeyHandler {
      */
     private static FullHttpResponse login(FullHttpRequest req) {
         try {
-            String contentType = req.headers().get(HttpHeaderNames.CONTENT_TYPE);
-
-            // Browsers can not send JSON across sites without the bot's permission
-            if (contentType == null || !contentType.startsWith("application/json")) {
-                throw new IllegalArgumentException("Wrong content type");
-            }
-
-            JSONObject request = new JSONObject(req.content().toString(StandardCharsets.UTF_8));
+            JSONObject request = readJson(req);
             byte[] credentialId = PasskeyVerifier.decode(request.optString("id"), PasskeyVerifier.MAX_CREDENTIAL_ID);
             PasskeyRecord passkey = Datastore2.instance().dslContext().fetchOne(PanelPasskeyTable.instance(),
                     PanelPasskeyTable.instance().IDHASH.eq(hashCredentialId(credentialId)));
@@ -265,38 +295,67 @@ public final class PanelPasskeyHandler {
             }
 
             PanelUserHandler.recordLogin(user);
-
-            String remember = request.optString("remember");
-            long lifetime = SESSION_LIFETIME_MILLIS;
-            String cookie = PanelSessionManager.COOKIE + "=";
-
-            if (remember.equals("forever")) {
-                lifetime = SESSION_LIFETIME_FOREVER_MILLIS;
-            } else if (remember.matches("[0-9]{1,3}")) {
-                lifetime = Math.min(Integer.parseInt(remember) * 3600000L, SESSION_LIFETIME_FOREVER_MILLIS);
-            }
-
-            cookie += PanelSessionManager.createSession(user.getUsername(), passkey.origin(), passkey.idHash(), lifetime)
-                    + "; Path=/; HttpOnly; SameSite=Lax";
-
-            if (passkey.origin().startsWith("https:")) {
-                cookie += "; Secure";
-            }
-
-            // "Until I close the tab/browser" becomes a cookie that the browser drops by itself
-            if (!remember.equals("tab") && !remember.equals("session")) {
-                cookie += "; Max-Age=" + (lifetime / 1000L);
-            }
-
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
-                    new JSONObject().put("username", user.getUsername()).toString(), "json");
-            res.headers().add(HttpHeaderNames.SET_COOKIE, cookie);
-            return res;
+            return startSession(user, passkey.origin(), passkey.idHash(), request.optString("remember"));
         } catch (IllegalArgumentException | JSONException ex) {
             com.gmt2001.Console.debug.println("Passkey sign-in failed: " + ex.getMessage());
             return HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED,
                     new JSONObject().put("error", "Passkey sign-in failed").toString(), "json");
         }
+    }
+
+    /**
+     * Reads the JSON body of a request from the login page
+     *
+     * @param req the {@link FullHttpRequest}
+     * @return the body
+     * @throws IllegalArgumentException if the request is not JSON
+     */
+    private static JSONObject readJson(FullHttpRequest req) {
+        String contentType = req.headers().get(HttpHeaderNames.CONTENT_TYPE);
+
+        // Browsers can not send JSON across sites without the bot's permission
+        if (contentType == null || !contentType.startsWith("application/json")) {
+            throw new IllegalArgumentException("Wrong content type");
+        }
+
+        return new JSONObject(req.content().toString(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Starts a session after a passkey has proven who the user is
+     *
+     * @param user the {@link PanelUser}
+     * @param origin the origin of the passkey
+     * @param idHash the {@code id} of the passkey
+     * @param remember how long the user asked to stay signed in, as chosen on the login page
+     * @return the response, which sets the session cookie
+     */
+    private static FullHttpResponse startSession(PanelUser user, String origin, String idHash, String remember) {
+        long lifetime = SESSION_LIFETIME_MILLIS;
+        String cookie = PanelSessionManager.COOKIE + "=";
+
+        if (remember.equals("forever")) {
+            lifetime = SESSION_LIFETIME_FOREVER_MILLIS;
+        } else if (remember.matches("[0-9]{1,3}")) {
+            lifetime = Math.min(Integer.parseInt(remember) * 3600000L, SESSION_LIFETIME_FOREVER_MILLIS);
+        }
+
+        cookie += PanelSessionManager.createSession(user.getUsername(), origin, idHash, lifetime)
+                + "; Path=/; HttpOnly; SameSite=Lax";
+
+        if (origin.startsWith("https:")) {
+            cookie += "; Secure";
+        }
+
+        // "Until I close the tab/browser" becomes a cookie that the browser drops by itself
+        if (!remember.equals("tab") && !remember.equals("session")) {
+            cookie += "; Max-Age=" + (lifetime / 1000L);
+        }
+
+        FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
+                new JSONObject().put("username", user.getUsername()).toString(), "json");
+        res.headers().add(HttpHeaderNames.SET_COOKIE, cookie);
+        return res;
     }
 
     /**
@@ -307,14 +366,27 @@ public final class PanelPasskeyHandler {
      * @return the options; binary values are base64url encoded
      */
     private static JSONObject createRegistrationOptions(ChannelHandlerContext ctx, PanelUser user) {
-        String origin = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_ORIGIN).get();
+        String challenge = PasskeyVerifier.createChallenge();
+        JSONObject options = getRegistrationOptions(ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_ORIGIN).get(), user, challenge);
 
+        ctx.channel().attr(ATTR_CHALLENGE).set(challenge);
+        return options;
+    }
+
+    /**
+     * Builds the options for {@code navigator.credentials.create()}
+     *
+     * @param origin the origin of the page that registers the passkey
+     * @param user the {@link PanelUser} who gets the passkey
+     * @param challenge the challenge, as returned by {@link PasskeyVerifier#createChallenge()}
+     * @return the options; binary values are base64url encoded
+     */
+    private static JSONObject getRegistrationOptions(String origin, PanelUser user, String challenge) {
         // Refused here, before the device creates a passkey that could not be stored
         if (origin != null && origin.length() > MAX_ORIGIN_LENGTH) {
             throw new IllegalArgumentException("The address of this panel is too long to be used with passkeys");
         }
 
-        String challenge = PasskeyVerifier.createChallenge();
         // The origin is part of the user handle, because a device keeps one passkey per host and user handle and
         // would otherwise replace the passkey of another bot on the same host which has a user with the same name
         String userHandle = origin + "/" + user.getUsername().toLowerCase();
@@ -324,8 +396,6 @@ public final class PanelPasskeyHandler {
                 PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername()))) {
             excludeCredentials.put(new JSONObject().put("type", "public-key").put("id", passkey.credentialId()));
         }
-
-        ctx.channel().attr(ATTR_CHALLENGE).set(challenge);
 
         return new JSONObject()
                 .put("challenge", challenge)
@@ -360,7 +430,21 @@ public final class PanelPasskeyHandler {
         }
 
         // The passkey is tied to the origin of the page that owns this websocket
-        String origin = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_ORIGIN).get();
+        storePasskey(user, request, challenge, ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_ORIGIN).get());
+    }
+
+    /**
+     * Verifies the response to {@code navigator.credentials.create()} and stores the passkey
+     *
+     * @param user the {@link PanelUser} who gets the passkey
+     * @param request the response, with {@code id}, {@code clientDataJSON}, {@code authenticatorData},
+     *                {@code publicKey} (all base64url encoded) and an optional {@code name}
+     * @param challenge the challenge that was issued for this registration
+     * @param origin the origin of the page that registered the passkey
+     * @return the {@code id} of the new passkey
+     * @throws IllegalArgumentException if the registration is not valid
+     */
+    private static String storePasskey(PanelUser user, JSONObject request, String challenge, String origin) {
         byte[] credentialId = PasskeyVerifier.decode(request.optString("id"), PasskeyVerifier.MAX_CREDENTIAL_ID);
         byte[] publicKey = PasskeyVerifier.decode(request.optString("publicKey"), PasskeyVerifier.MAX_KEY);
         long signCount = PasskeyVerifier.verifyRegistration(
@@ -389,6 +473,7 @@ public final class PanelPasskeyHandler {
         passkey.values(idHash, PasskeyVerifier.encode(credentialId), user.getUsername(), PasskeyVerifier.encode(publicKey), origin, signCount,
                 name, System.currentTimeMillis());
         passkey.insert();
+        return idHash;
     }
 
     /**
@@ -417,18 +502,20 @@ public final class PanelPasskeyHandler {
      * @throws IllegalArgumentException if the user has no such passkey
      */
     private static void deletePasskey(PanelUser user, String idHash) {
-        if (user.isPasswordless() && Datastore2.instance().dslContext().fetchCount(PanelPasskeyTable.instance(),
-                PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername())) <= 1) {
-            throw new IllegalArgumentException("You sign in with passkeys only. Set a password before you remove your last passkey");
-        }
+        synchronized (PASSKEY_LOCK) {
+            if (user.isPasswordless() && Datastore2.instance().dslContext().fetchCount(PanelPasskeyTable.instance(),
+                    PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername())) <= 1) {
+                throw new IllegalArgumentException("You sign in with passkeys only. Set a password before you remove your last passkey");
+            }
 
-        if (Datastore2.instance().dslContext().deleteFrom(PanelPasskeyTable.instance())
-                .where(PanelPasskeyTable.instance().IDHASH.eq(idHash))
-                .and(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername())).execute() == 0) {
-            throw new IllegalArgumentException("Passkey not found");
-        }
+            if (Datastore2.instance().dslContext().deleteFrom(PanelPasskeyTable.instance())
+                    .where(PanelPasskeyTable.instance().IDHASH.eq(idHash))
+                    .and(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername())).execute() == 0) {
+                throw new IllegalArgumentException("Passkey not found");
+            }
 
-        PanelSessionManager.revokePasskey(idHash);
+            PanelSessionManager.revokePasskey(idHash);
+        }
     }
 
     /**
@@ -439,6 +526,157 @@ public final class PanelPasskeyHandler {
      */
     private static JSONObject toResult(PanelMessage message) {
         return new JSONObject().put(message.getJSONkey(), message.getMessage());
+    }
+
+    /**
+     * Creates a one-time link that lets a panel user add a passkey without signing in, replacing
+     * any earlier link of the user. The link works for {@link #SETUP_LINK_LIFETIME_MILLIS}
+     *
+     * @param username the user's name
+     * @return the token of the link, which goes after {@code /panel/login/#setup=}
+     * @throws IllegalArgumentException if the user does not exist or can not use passkeys
+     */
+    public static String createSetupLink(String username) {
+        PanelUser user = PanelUser.LookupByUsername(username);
+
+        if (user == null) {
+            throw new IllegalArgumentException(PanelMessage.UserNotFound.getMessage());
+        }
+
+        if (!canUsePasskeys(user)) {
+            throw new IllegalArgumentException("Passkeys are not available for this login");
+        }
+
+        String token = PasskeyVerifier.encode(PasskeyVerifier.randomBytes(30));
+        long expires = System.currentTimeMillis() + SETUP_LINK_LIFETIME_MILLIS;
+        SetupLinkRecord link = new SetupLinkRecord();
+
+        synchronized (PASSKEY_LOCK) {
+            deleteSetupLinks(user.getUsername());
+            link.values(Digest.sha256(token), user.getUsername(), expires);
+            link.insert();
+        }
+
+        return token;
+    }
+
+    /**
+     * Prints a setup link in the console. The console does not know the address the panel is
+     * opened on, so the link uses localhost and the bot's port
+     *
+     * @param token the token of the link
+     */
+    public static void printSetupLink(String token) {
+        String address = (CaselessProperties.instance().getPropertyAsBoolean("usehttps", true) ? "https" : "http") + "://localhost:"
+                + CaselessProperties.instance().getPropertyAsInt("baseport", 25000);
+
+        com.gmt2001.Console.out.println(address + "/panel/login/#setup=" + token);
+        com.gmt2001.Console.out.println("If the panel is opened on another address, put that address in place of " + address);
+    }
+
+    /**
+     * Removes the setup links of a panel user, along with every link that has expired
+     *
+     * @param username the user's name
+     */
+    private static void deleteSetupLinks(String username) {
+        Datastore2.instance().dslContext().deleteFrom(PanelPasskeySetupTable.instance())
+                .where(PanelPasskeySetupTable.instance().USERNAME.equalIgnoreCase(username))
+                .or(PanelPasskeySetupTable.instance().EXPIRES.lt(System.currentTimeMillis())).execute();
+    }
+
+    /**
+     * Finds the panel user a setup link was made for
+     *
+     * @param token the token of the link
+     * @param origin the {@code Origin} of the request, which the passkey is tied to
+     * @return the {@link PanelUser}
+     * @throws IllegalArgumentException if the link does not work, or the request has no {@code Origin}
+     */
+    private static PanelUser getSetupLinkUser(String token, String origin) {
+        if (origin == null) {
+            throw new IllegalArgumentException("Missing Origin");
+        }
+
+        SetupLinkRecord link = Datastore2.instance().dslContext().fetchOne(PanelPasskeySetupTable.instance(),
+                PanelPasskeySetupTable.instance().TOKENHASH.eq(Digest.sha256(token)));
+        PanelUser user = link == null ? null : PanelUser.LookupByUsername(link.username());
+
+        if (link == null || link.expires() < System.currentTimeMillis() || user == null || !canUsePasskeys(user)) {
+            throw new IllegalArgumentException("This setup link has expired or was already used. Ask for a new one");
+        }
+
+        if (!user.isEnabled()) {
+            throw new IllegalArgumentException("This panel user is disabled. Ask an admin to enable it, then open the link again");
+        }
+
+        return user;
+    }
+
+    /**
+     * Answers a setup link request that failed
+     *
+     * @param ex the reason
+     * @return {@code 400} with an {@code error}
+     */
+    private static FullHttpResponse setupError(Exception ex) {
+        com.gmt2001.Console.debug.println("Passkey setup failed: " + ex.getMessage());
+        return HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST,
+                new JSONObject().put("error", ex instanceof JSONException ? "Bad request" : ex.getMessage()).toString(), "json");
+    }
+
+    /**
+     * Starts adding a passkey from a setup link
+     *
+     * @param req the {@link FullHttpRequest}, with a JSON body of {@code token}
+     * @return the options for {@code navigator.credentials.create()}, or {@code 400} with an {@code error}
+     */
+    private static FullHttpResponse setupOptions(FullHttpRequest req) {
+        try {
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            PanelUser user = getSetupLinkUser(readJson(req).optString("token"), origin);
+
+            return HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
+                    getRegistrationOptions(origin, user, PasskeyVerifier.createChallenge()).toString(), "json");
+        } catch (IllegalArgumentException | JSONException ex) {
+            return setupError(ex);
+        }
+    }
+
+    /**
+     * Adds the passkey of a setup link, uses up the link and starts a session. A user who never
+     * replaced their temporary password loses it, since they were given the link instead
+     *
+     * @param req the {@link FullHttpRequest}, with a JSON body of {@code token}, the response to
+     *            {@code navigator.credentials.create()}, an optional {@code name} and {@code remember}
+     * @return the response, which sets the session cookie, or {@code 400} with an {@code error}
+     */
+    private static FullHttpResponse setup(FullHttpRequest req) {
+        try {
+            JSONObject request = readJson(req);
+            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
+            String idHash;
+            PanelUser user;
+
+            synchronized (PASSKEY_LOCK) {
+                user = getSetupLinkUser(request.optString("token"), origin);
+                // Any challenge the bot handed out recently will do, because the link works only once
+                String challenge = new JSONObject(new String(PasskeyVerifier.decode(request.optString("clientDataJSON"), PasskeyVerifier.MAX_CLIENT_DATA),
+                        StandardCharsets.UTF_8)).optString("challenge");
+                idHash = storePasskey(user, request, challenge, origin);
+                // A user has one link at a time, so this uses it up
+                deleteSetupLinks(user.getUsername());
+            }
+
+            if (!user.hasSetPassword()) {
+                PanelUserHandler.removePassword(user);
+            }
+
+            PanelUserHandler.recordLogin(user);
+            return startSession(user, origin, idHash, request.optString("remember"));
+        } catch (IllegalArgumentException | JSONException ex) {
+            return setupError(ex);
+        }
     }
 
     /**

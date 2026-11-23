@@ -54,6 +54,7 @@ import com.gmt2001.datastore2.MySQLStore2;
 import com.gmt2001.datastore2.SQLiteStore2;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.gmt2001.util.Reflect;
+import com.mcawful.PanelPasskeyHandler;
 import com.mcawful.social.SocialItem;
 import com.mcawful.social.SocialPlatform;
 import com.mcawful.social.SocialPlatformRegistry;
@@ -1033,7 +1034,7 @@ public final class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("paneluser")) {
             if (argument == null || argument.length < 1 || argument[0].isBlank() || argument[1].isBlank()) {
                 com.gmt2001.Console.out.println("Invalid paneluser command");
-                com.gmt2001.Console.out.println("Usage: paneluser add/delete/enable/disable/resetpassword/resetpermission username");
+                com.gmt2001.Console.out.println("Usage: paneluser add/delete/enable/disable/resetpassword/resetpermission/setuplink username");
                 return;
             }
             /**
@@ -1085,6 +1086,23 @@ public final class ConsoleEventHandler implements Listener {
                 PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(argument[1]);
                 com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
                 com.gmt2001.Console.out.println(response.getMessage());
+                return;
+            }
+            /**
+             * @consolecommand paneluser setuplink username - Prints a one-time link that lets a
+             *                 panel user, or the panel login from botlogin.txt, add a passkey
+             *                 without signing in. It works once, for 24 hours, and replaces any
+             *                 earlier link of the user. Using it removes a temporary password
+             *                 the user has not changed yet
+             */
+            else if (argument[0].equalsIgnoreCase("setuplink")) {
+                try {
+                    String token = PanelPasskeyHandler.createSetupLink(argument[1]);
+                    com.gmt2001.Console.out.println("Passkey setup link for user " + argument[1] + ", which works once within 24 hours:");
+                    PanelPasskeyHandler.printSetupLink(token);
+                } catch (IllegalArgumentException ex) {
+                    com.gmt2001.Console.out.println(ex.getMessage());
+                }
                 return;
             }
             /**
