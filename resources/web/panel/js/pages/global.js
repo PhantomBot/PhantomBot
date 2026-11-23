@@ -163,10 +163,106 @@ $(function () {
         }
     };
 
+    // Sets a password for a user who signs in with passkeys only, which needs no current password.
+    const passwordSetCallback = function () {
+        let newPassword = $('#user-set-pwd'),
+                newPassword2 = $('#user-set-pwd-2');
+
+        switch (false) {
+            case helpers.handleInputString(newPassword):
+            case helpers.handleInputString(newPassword2):
+                break;
+            default:
+                if (newPassword.val() !== newPassword2.val()) {
+                    toastr.error('New passwords do not match!');
+                    break;
+                }
+
+                socket.query('panelUserRO', 'passkey_set_password', {passkey: {action: 'setPassword', password: CryptoJS.SHA256(newPassword.val()).toString()}}, function (res) {
+                    if (res.error !== undefined) {
+                        toastr.error(res.error);
+                        return;
+                    }
+
+                    // This connection still knows the user as passkey-only, a new one is opened by reloading
+                    window.location.reload();
+                }, true);
+        }
+    };
+
     // the change password button.
     $('#user-pwd-btn').on('click', function () {
-        helpers.getModal('pwdChange-panelUser', 'Change password', 'Save', passwordChangeForm, passwordChangeCallback).modal('toggle');
+        if (helpers.currentPanelUserData.passwordless) {
+            helpers.getModal('pwdSet-panelUser', 'Set password', 'Save', $('<form/>', {
+                'role': 'form'
+            })
+            .append(helpers.getInputGroup('user-set-pwd', 'password', 'New password', '', '', 'Your new password'))
+            .append(helpers.getInputGroup('user-set-pwd-2', 'password', 'Repeat new password', '', '', 'Your new password')),
+            passwordSetCallback).modal('toggle');
+            return;
+        }
+
+        // After a passkey sign-in, where passkeys can be added, the password can be turned off from here too
+        let footerpre = [];
+
+        if ($('#user-passkey-row:not(.hide)').length > 0 && helpers.isPasskeySession()) {
+            footerpre.push($('<button/>', {
+                'type': 'button',
+                'class': 'btn btn-default pull-left',
+                'data-dismiss': 'modal',
+                'text': 'Turn off password sign-in instead',
+                'click': confirmPasswordOff
+            }));
+        }
+
+        helpers.getModal('pwdChange-panelUser', 'Change password', 'Save', passwordChangeForm, passwordChangeCallback, {footerpre: footerpre}).modal('toggle');
     });
+
+    // Asks before turning off password sign-in, which the bot only allows after signing in with a passkey.
+    const confirmPasswordOff = function () {
+        helpers.getConfirmDeleteModal('user-password-off', 'Turn off password sign-in? You will sign in with your passkeys only, '
+                + 'and devices that signed in with your password lose access.', false, '', function () {
+            socket.query('panelUserRO', 'passkey_password_off', {passkey: {action: 'passwordOff'}}, function (res) {
+                if (res.error !== undefined) {
+                    toastr.error(res.error);
+                    return;
+                }
+
+                // This connection still knows the old password, a new one is opened by reloading
+                window.location.reload();
+            }, true);
+
+            // The answer comes later, the page reloads or shows an error then
+            return {
+                message: 'Turning off password sign-in...',
+                icon: 'info'
+            };
+        }, {deleteText: 'Turn off'});
+    };
+
+    // Shows whether the user can sign in with a password, below their passkeys.
+    const loadPasswordOption = function (hasPasskeys) {
+        const option = $('#user-passkey-password').empty();
+
+        // The login from botlogin.txt is made passkey-only, and back, with panelpasswordless instead
+        if (helpers.currentPanelUserData.userType === 'CONFIG') {
+            if (helpers.currentPanelUserData.passwordless) {
+                option.text('You sign in with passkeys only. To sign in with a password again, turn off panelpasswordless and set a panelpassword on the Bot Setup page.');
+            }
+        } else if (helpers.currentPanelUserData.passwordless) {
+            option.text('You sign in with passkeys only. To sign in with a password again, use Set Password in the user menu.');
+        } else if (hasPasskeys && !helpers.isPasskeySession()) {
+            // The bot only turns the password off after a passkey sign-in, which shows the passkey works on this address
+            option.text('To turn off password sign-in, sign in with a passkey first.');
+        } else if (hasPasskeys) {
+            option.append($('<button/>', {
+                'type': 'button',
+                'class': 'btn btn-default btn-block btn-flat',
+                'text': 'Turn off password sign-in',
+                'click': confirmPasswordOff
+            }));
+        }
+    };
 
     // Loads the passkeys of the current user into the manage passkeys modal.
     const loadPasskeys = function () {
@@ -179,6 +275,8 @@ $(function () {
             }
 
             const list = $('#user-passkey-list').empty();
+
+            loadPasswordOption(res.passkeys !== undefined && res.passkeys.length > 0);
 
             if (res.passkeys === undefined || res.passkeys.length === 0) {
                 list.append($('<li/>', {
@@ -204,10 +302,18 @@ $(function () {
                                 socket.query('panelUserRO', 'passkey_delete', {passkey: {action: 'delete', id: passkey.id}}, function (res) {
                                     if (res.error !== undefined) {
                                         toastr.error(res.error);
+                                    } else {
+                                        toastr.success(res.success);
                                     }
 
                                     loadPasskeys();
                                 }, true);
+
+                                // The bot can refuse, so the result is shown once it answers
+                                return {
+                                    message: 'Removing the passkey...',
+                                    icon: 'info'
+                                };
                             });
                     }
                 })));
@@ -261,6 +367,10 @@ $(function () {
                 'class': 'list-group',
                 'id': 'user-passkey-list'
             }))
+            .append($('<div/>', {
+                'class': 'form-group',
+                'id': 'user-passkey-password'
+            }))
             .append(helpers.getInputGroup('user-passkey-name', 'text', 'New passkey name', 'My laptop', '', 'A name to recognize the new passkey by')),
             passkeyAddCallback, {canceltext: 'Close'}).on('shown.bs.modal', function () {
                 // The list only exists in the page once the modal has been shown
@@ -305,6 +415,10 @@ $(function () {
 
         $('#main-name').text(getChannelName() + ' | ' + helpers.currentPanelUserData.username);
         $('#second-name').text(helpers.currentPanelUserData.username);
+
+        if (helpers.currentPanelUserData.passwordless) {
+            $('#user-pwd-btn').text('Set Password');
+        }
 
         if (!helpers.currentPanelUserData.hasSetPassword) { //Force password change upon first login
             helpers.getModal('pwdChange-panelUser', 'Password change required', 'Save', passwordChangeForm, passwordChangeCallback, {blockClosing: true, removecancel: true})

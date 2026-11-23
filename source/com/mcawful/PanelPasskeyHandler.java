@@ -41,6 +41,7 @@ import io.netty.util.AttributeKey;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
+import tv.phantombot.panel.PanelUser.PanelUserHandler.PanelMessage;
 import tv.phantombot.panel.PanelUser.PanelUserTable;
 
 /**
@@ -122,6 +123,18 @@ public final class PanelPasskeyHandler {
             } else if (action.equals("delete")) {
                 deletePasskey(user, request.optString("id"));
                 result.put("success", "Passkey removed");
+            } else if (action.equals("passwordOff")) {
+                // A passkey session shows the user can sign in with a passkey on this address, so nobody locks
+                // themselves out, and a connection opened with the password can not do this
+                PanelSessionManager.Session session = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_SESSION).get();
+
+                if (session == null || !session.isValid()) {
+                    throw new IllegalArgumentException("Sign in with a passkey before you turn off your password");
+                }
+
+                result = toResult(PanelUserHandler.removePassword(current));
+            } else if (action.equals("setPassword")) {
+                result = toResult(PanelUserHandler.setPassword(current, request.optString("password")));
             } else {
                 result.put("error", "Unknown passkey action");
             }
@@ -404,6 +417,11 @@ public final class PanelPasskeyHandler {
      * @throws IllegalArgumentException if the user has no such passkey
      */
     private static void deletePasskey(PanelUser user, String idHash) {
+        if (user.isPasswordless() && Datastore2.instance().dslContext().fetchCount(PanelPasskeyTable.instance(),
+                PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername())) <= 1) {
+            throw new IllegalArgumentException("You sign in with passkeys only. Set a password before you remove your last passkey");
+        }
+
         if (Datastore2.instance().dslContext().deleteFrom(PanelPasskeyTable.instance())
                 .where(PanelPasskeyTable.instance().IDHASH.eq(idHash))
                 .and(PanelPasskeyTable.instance().USERNAME.equalIgnoreCase(user.getUsername())).execute() == 0) {
@@ -411,6 +429,16 @@ public final class PanelPasskeyHandler {
         }
 
         PanelSessionManager.revokePasskey(idHash);
+    }
+
+    /**
+     * Turns a {@link PanelMessage} into the result of a {@code passkey} query
+     *
+     * @param message the message
+     * @return an object with {@code success} or {@code error}
+     */
+    private static JSONObject toResult(PanelMessage message) {
+        return new JSONObject().put(message.getJSONkey(), message.getMessage());
     }
 
     /**

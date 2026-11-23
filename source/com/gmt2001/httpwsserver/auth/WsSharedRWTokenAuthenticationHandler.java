@@ -81,7 +81,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
     /**
      * Represents the {@code ATTR_SESSION} attribute, the passkey session that authenticated the connection, if any
      */
-    private static final AttributeKey<PanelSessionManager.Session> ATTR_SESSION = AttributeKey.valueOf("panelSession");
+    public static final AttributeKey<PanelSessionManager.Session> ATTR_SESSION = AttributeKey.valueOf("panelSession");
     /**
      * Represents the {@code ATTR_HANDSHAKE_AUTH} attribute, which is {@code true} if the connection was authenticated by the cookie or session
      * sent with its handshake, as opposed to a token sent in a frame

@@ -47,6 +47,11 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      */
     public static final long serialVersionUID = 1L;
     /**
+     * Starts the stored password of a user who can only sign in with a passkey. A login sends a hex-encoded SHA-256,
+     * which can never match it
+     */
+    private static final String PASSWORDLESS = "!";
+    /**
      * The panel config users, defined by in botlogin.txt
      */
     private static final List<PanelUser> CONFIG_USERS = List.of(
@@ -489,6 +494,24 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
         }
 
         this.setToken(tempToken);
+    }
+
+    /**
+     * Checks if the user can only sign in with a passkey
+     *
+     * @return {@code true} if signing in with a password is turned off
+     */
+    public boolean isPasswordless() {
+        return this.getPassword().startsWith(PASSWORDLESS);
+    }
+
+    /**
+     * Turns off signing in with a password, and retires the websocket token, which is a login of its own. The random
+     * part tells this apart from an earlier time the password was off, for connections that check it has not changed
+     */
+    void removePassword() {
+        this.changePassword(PASSWORDLESS + PhantomBot.generateRandomString(30));
+        this.setToken(null);
     }
 
     /**
