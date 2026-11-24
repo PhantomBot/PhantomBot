@@ -121,6 +121,11 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <div class="col-last odd-row-color">
 <div class="block">Represents the <code>ATTR_ORIGIN</code> attribute, the <code>Origin</code> header sent by the browser during the handshake</div>
 </div>
+<div class="col-first even-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="../../../mcawful/PanelSessionManager.Session.html" title="class in com.mcawful">PanelSessionManager.Session</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#ATTR_SESSION" class="member-name-link">ATTR_SESSION</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Represents the <code>ATTR_SESSION</code> attribute, the passkey session that authenticated the connection, if any</div>
+</div>
 </div>
 <div class="inherited-list">
 <h3 id="fields-inherited-from-class-com.gmt2001.httpwsserver.auth.WsAuthenticationHandler">Fields inherited from interface&nbsp;com.gmt2001.httpwsserver.auth.<a href="WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></h3>
@@ -206,6 +211,11 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Invalidates the authentication of the specified <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a>, if supported by the authentication handler</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setReadWriteToken(java.lang.String)" class="member-name-link">setReadWriteToken</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;readWriteToken)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Replaces the authorization token that grants read-write access.</div>
+</div>
 </div>
 </div>
 </div>
@@ -242,6 +252,13 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <h3>ATTR_ORIGIN</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">ATTR_ORIGIN</span></div>
 <div class="block">Represents the <code>ATTR_ORIGIN</code> attribute, the <code>Origin</code> header sent by the browser during the handshake</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ATTR_SESSION">
+<h3>ATTR_SESSION</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="../../../mcawful/PanelSessionManager.Session.html" title="class in com.mcawful">PanelSessionManager.Session</a>&gt;</span>&nbsp;<span class="element-name">ATTR_SESSION</span></div>
+<div class="block">Represents the <code>ATTR_SESSION</code> attribute, the passkey session that authenticated the connection, if any</div>
 </section>
 </li>
 <li>
@@ -336,6 +353,17 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="setReadWriteToken(java.lang.String)">
+<h3>setReadWriteToken</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setReadWriteToken</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;readWriteToken)</span></div>
+<div class="block">Replaces the authorization token that grants read-write access. Connections that are already authenticated stay open</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>readWriteToken</code> - The new token</dd>
+</dl>
+</section>
+</li>
 <li>
 <section class="detail" id="checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">
 <h3>checkAuthorization</h3>

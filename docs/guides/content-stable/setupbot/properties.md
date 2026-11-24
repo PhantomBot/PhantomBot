@@ -274,6 +274,14 @@ the password to login to the panel. default is a randomly generated password
 
 &nbsp;
 
+#### panelpasswordless
+
+Data Type: _Boolean_
+
+if `true`, the panel login (and its _ro and _yt logins) can only sign in with a passkey and panelpassword is not accepted anywhere. turned on, and panelpassword removed, when the panel login adds a passkey with a setup link. only turn it on where passkeys work (https with a trusted certificate, or http://localhost). while it has no passkey, a one-time setup link is printed in the console at startup. default `false`
+
+&nbsp;
+
 ### Misc
 #### rhinointerpretmode
 

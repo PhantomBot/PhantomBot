@@ -81,8 +81,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Passkey registration, management and sign-in for <a href="../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a>.
 
  <p>Registration and management run over the authenticated panel websocket, so a user can
- only ever touch their own passkeys. Sign-in runs over HTTP so the bot can set the session
- cookie of <a href="PanelSessionManager.html" title="class in com.mcawful"><code>PanelSessionManager</code></a>.</p></div>
+ only ever touch their own passkeys. The exception is a setup link, made by someone who can
+ manage panel users or in the console, which adds a passkey over HTTP. Sign-in runs over HTTP
+ so the bot can set the session cookie of <a href="PanelSessionManager.html" title="class in com.mcawful"><code>PanelSessionManager</code></a>.</p></div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>mcawful</dd>
@@ -101,25 +102,49 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#deletePasskeys(java.lang.String)" class="member-name-link">deletePasskeys</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createSetupLink(java.lang.String)" class="member-name-link">createSetupLink</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Removes all passkeys of a panel user and ends their sessions.</div>
+<div class="block">Creates a one-time link that lets a panel user add a passkey without signing in, replacing
+ any earlier link of the user.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#handleHttp(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleHttp</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
- <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link">FullHttpRequest</a>&nbsp;req)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#deletePasskeys(java.lang.String)" class="member-name-link">deletePasskeys</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Handles a request to <code>/panel/login/passkey/</code>, which the login page uses to sign in
- with a passkey.</div>
+<div class="block">Removes all passkeys and setup links of a panel user and ends their sessions.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#handleWs(io.netty.channel.ChannelHandlerContext,tv.phantombot.panel.PanelUser.PanelUser,org.json.JSONObject,org.json.JSONStringer)" class="member-name-link">handleWs</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#handleHttp(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleHttp</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link">FullHttpRequest</a>&nbsp;req)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Handles a request to <code>/panel/login/passkey/</code>, which the login page uses to sign in
+ with a passkey or add one with a setup link.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#handleWs(io.netty.channel.ChannelHandlerContext,tv.phantombot.panel.PanelUser.PanelUser,org.json.JSONObject,org.json.JSONStringer)" class="member-name-link">handleWs</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
  <a href="../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
  <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&nbsp;request,
  <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;response)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Handles a <code>passkey</code> query on the panel websocket</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isMainLoginSession(io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">isMainLoginSession</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;headers)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Checks if a request carries a passkey session of the main login from botlogin.txt, which
+ the Bot Setup and OAuth pages accept like its password</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#printSetupLink(java.lang.String)" class="member-name-link">printSetupLink</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;token)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Prints a setup link in the console.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#printStartupSetupLink(boolean)" class="member-name-link">printStartupSetupLink</a><wbr>(boolean&nbsp;newPassword)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Prints a setup link for the main login from botlogin.txt while it has no passkey: at startup
+ while panelpasswordless is on, since it has no other way to sign in to the panel, and next to
+ a panel password the bot has just created, as the other way to sign in</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#renamePasskeys(java.lang.String,java.lang.String)" class="member-name-link">renamePasskeys</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
@@ -167,7 +192,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">handleHttp</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link">FullHttpRequest</a>&nbsp;req)</span></div>
 <div class="block">Handles a request to <code>/panel/login/passkey/</code>, which the login page uses to sign in
- with a passkey. These requests are not authenticated</div>
+ with a passkey or add one with a setup link. These requests are not authenticated</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>ctx</code> - the <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> of the request</dd>
@@ -179,9 +204,9 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="deletePasskeys(java.lang.String)">
 <h3>deletePasskeys</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deletePasskeys</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</span></div>
-<div class="block">Removes all passkeys of a panel user and ends their sessions. Must be called when the
- user is deleted, so a later user with the same name does not inherit them, and when
- their password is reset, so nobody who had access keeps it</div>
+<div class="block">Removes all passkeys and setup links of a panel user and ends their sessions. Must be
+ called when the user is deleted, so a later user with the same name does not inherit
+ them, and when their password is reset, so nobody who had access keeps it</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>username</code> - the user's name</dd>
@@ -194,12 +219,68 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">renamePasskeys</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newUsername)</span></div>
 <div class="block">Moves all passkeys of a panel user to a new username and ends their sessions. Must be
- called when the user is renamed. Passkeys that were left under the new name are removed
- first, so the user does not inherit them</div>
+ called when the user is renamed. Passkeys and setup links that were left under the new
+ name are removed first, so the user does not inherit them, and the user's setup links
+ stop working</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>username</code> - the user's current name</dd>
 <dd><code>newUsername</code> - the user's new name</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createSetupLink(java.lang.String)">
+<h3>createSetupLink</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">createSetupLink</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</span></div>
+<div class="block">Creates a one-time link that lets a panel user add a passkey without signing in, replacing
+ any earlier link of the user. The link works for <code>SETUP_LINK_LIFETIME_MILLIS</code></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>username</code> - the user's name</dd>
+<dt>Returns:</dt>
+<dd>the token of the link, which goes after <code>/panel/login/#setup=</code></dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if the user does not exist or can not use passkeys</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="printSetupLink(java.lang.String)">
+<h3>printSetupLink</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">printSetupLink</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;token)</span></div>
+<div class="block">Prints a setup link in the console. The console does not know the address the panel is
+ opened on, so the link uses localhost and the bot's port</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>token</code> - the token of the link</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="printStartupSetupLink(boolean)">
+<h3>printStartupSetupLink</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">printStartupSetupLink</span><wbr><span class="parameters">(boolean&nbsp;newPassword)</span></div>
+<div class="block">Prints a setup link for the main login from botlogin.txt while it has no passkey: at startup
+ while panelpasswordless is on, since it has no other way to sign in to the panel, and next to
+ a panel password the bot has just created, as the other way to sign in</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>newPassword</code> - <code>true</code> if the bot has just created the panel password</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="isMainLoginSession(io.netty.handler.codec.http.HttpHeaders)">
+<h3>isMainLoginSession</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isMainLoginSession</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpHeaders</a>&nbsp;headers)</span></div>
+<div class="block">Checks if a request carries a passkey session of the main login from botlogin.txt, which
+ the Bot Setup and OAuth pages accept like its password</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>headers</code> - the request headers</dd>
+<dt>Returns:</dt>
+<dd><code>true</code> if the session is valid and belongs to the main login</dd>
 </dl>
 </section>
 </li>
