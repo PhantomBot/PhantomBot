@@ -224,8 +224,10 @@ def sort():
     return sorted(sorted(sorted(sorted(botproperties, key=lambda x: x["botproperty"]), key=lambda x: x["sort"]), key=lambda x: x["category"]), key=lambda x: x["category_sort"])
 
 for subdir, dirs, files in os.walk("./source"):
+    dirs.sort()
+    files.sort()
     for fname in files:
-        fpath = subdir + os.sep + fname
+        fpath = (subdir + os.sep + fname).replace('\\', '/')
         if fpath.endswith(".java"):
             with open(fpath, encoding="utf8") as java_file:
                 parse_file([line.rstrip('\n') for line in java_file])
