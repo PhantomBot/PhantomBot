@@ -333,8 +333,10 @@ def output_usestransformer(usestransformer, hlevel):
     return lines
 
 for subdir, dirs, files in os.walk("./javascript-source"):
+    dirs.sort()
+    files.sort()
     for fname in files:
-        fpath = subdir + os.sep + fname
+        fpath = (subdir + os.sep + fname).replace('\\', '/')
         if fpath.endswith(".js"):
             with open(fpath, encoding="utf8") as js_file:
                 parse_file(fpath, [line.rstrip('\n') for line in js_file])
