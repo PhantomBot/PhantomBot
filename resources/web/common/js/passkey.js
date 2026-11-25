@@ -84,6 +84,21 @@
         },
 
         /**
+         * Checks if the browser can list passkeys in the suggestions of a field with autocomplete="username webauthn"
+         *
+         * @returns {Promise<Boolean>} true if passkeys can be offered that way
+         */
+        isConditionalSupported: function () {
+            if (!window.passkey.isSupported() || typeof window.PublicKeyCredential.isConditionalMediationAvailable !== 'function') {
+                return Promise.resolve(false);
+            }
+
+            return window.PublicKeyCredential.isConditionalMediationAvailable().catch(function () {
+                return false;
+            });
+        },
+
+        /**
          * Asks the browser to create a new passkey
          *
          * @param {Object} options The registration options sent by the bot
@@ -118,12 +133,15 @@
          * Asks the browser to sign in with an existing passkey
          *
          * @param {Object} options The sign-in options sent by the bot
+         * @param {AbortSignal} signal (Optional) Instead of showing a prompt, waits until the user chooses a passkey from
+         *                             the suggestions of a field marked autocomplete="username webauthn". Aborting it
+         *                             ends the request
          * @returns {Promise<Object>} The values to send back to the bot
          */
-        get: function (options) {
+        get: function (options, signal) {
             options.challenge = decode(options.challenge);
 
-            return navigator.credentials.get({publicKey: options}).then(function (credential) {
+            return navigator.credentials.get({publicKey: options, mediation: signal ? 'conditional' : 'optional', signal: signal}).then(function (credential) {
                 return {
                     id: encode(credential.rawId),
                     clientDataJSON: encode(credential.response.clientDataJSON),
