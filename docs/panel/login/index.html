@@ -16,6 +16,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>PhantomBot | Log in</title>
         <!-- Bootstrap 3.3.7 -->
@@ -72,7 +73,7 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="text" id="username" name="username" class="form-control" autocomplete="username" placeholder="Username">
+                        <input type="text" id="username" name="username" class="form-control" autocomplete="username webauthn" placeholder="Username">
                     </div>
 
                     <div class="form-group">
@@ -133,6 +134,8 @@
             let allowPasskey = false;
             let hasAltPanelVersion = false;
             let authExpired = false;
+            // The current request of startConditionalLogin(), or null when none is running
+            let conditionalLogin = null;
             // A setup link carries its token after the #, so it is never sent to the bot with the page
             const setupToken = new URLSearchParams(window.location.hash.substring(1)).get('setup');
             // A setup link opened while this page is already showing only changes the part after the #, which does not load
@@ -265,9 +268,106 @@
             }
 
             /**
+             * Sends a passkey chosen by the user to the bot, then enters the panel
+             *
+             * @param {Object} credential The values returned by window.passkey.get()
+             * @return {Promise} Rejected if the sign-in failed or the bot could not be reached
+             */
+            function verifyPasskeyLogin(credential) {
+                credential.remember = $('#remember').val();
+
+                return fetch('/panel/login/passkey/verify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(credential)
+                }).then(function (res) {
+                    if (!res.ok) {
+                        throw new Error('Passkey sign-in failed. Try again. If it fails again, the passkey may have been removed from the panel');
+                    }
+
+                    return res.json();
+                }).then(function (res) {
+                    finishPasskeyLogin(res.username);
+                });
+            }
+
+            /**
+             * Shows why a passkey sign-in failed
+             *
+             * @param {Error} e The error
+             */
+            function showPasskeyError(e) {
+                $('#success-box').addClass('hide');
+                $('#error-box').removeClass('hide');
+                $('#alert-br').removeClass('hide');
+                $('#error-box').text(e.message);
+            }
+
+            /**
+             * Lists the passkeys of this address in the suggestions of the username field, so signing in does not need
+             * the button
+             */
+            function startConditionalLogin() {
+                let request = {controller: new AbortController(), ended: false};
+
+                stopConditionalLogin();
+                conditionalLogin = request;
+                fetch('/panel/login/passkey/options', {method: 'POST', signal: request.controller.signal}).then(function (res) {
+                    return res.json();
+                }).then(function (options) {
+                    request.asked = Date.now();
+                    // A minute before the challenge expires, as checkConditionalLogin() runs every 30 seconds
+                    request.refreshAt = request.asked + options.timeout - 60000;
+
+                    return window.passkey.get(options, request.controller.signal).then(function (credential) {
+                        return verifyPasskeyLogin(credential).catch(function (e) {
+                            showPasskeyError(e);
+                            if (conditionalLogin === request) {
+                                startConditionalLogin();
+                            }
+                        });
+                    });
+                }).catch(function () {
+                    // Aborted, ended by the browser, or the bot could not be reached. checkConditionalLogin() starts it
+                    // again, unless the browser ended it within 10 seconds, which would only cause a loop
+                    request.ended = true;
+                    request.restart = request.asked === undefined || Date.now() - request.asked >= 10000;
+                });
+            }
+
+            /**
+             * Starts the request of startConditionalLogin() again if it ended or its challenge is about to expire
+             *
+             * Browsers keep the request open without a time limit, and timers do not run while a computer sleeps, so this
+             * compares the clock every 30 seconds and when the page is shown or hidden
+             *
+             * @param {Event} e (Optional) The event it runs for; a pageshow event of a page restored from the browser's
+             *                  history always starts the request again
+             */
+            function checkConditionalLogin(e) {
+                if (conditionalLogin !== null && ((e !== undefined && e.persisted === true)
+                        || (conditionalLogin.ended ? conditionalLogin.restart : Date.now() >= conditionalLogin.refreshAt))) {
+                    startConditionalLogin();
+                }
+            }
+
+            /**
+             * Ends the request of startConditionalLogin(), as browsers allow only one passkey request at a time
+             */
+            function stopConditionalLogin() {
+                if (conditionalLogin !== null) {
+                    conditionalLogin.controller.abort();
+                    conditionalLogin = null;
+                }
+            }
+
+            /**
              * Signs in with a passkey that was added from the panel
              */
             function passkeyLogin() {
+                let restartConditional = conditionalLogin !== null && (!conditionalLogin.ended || conditionalLogin.restart);
+
+                stopConditionalLogin();
                 $('#error-box').addClass('hide');
                 $('#success-box').addClass('hide');
                 $('#alert-br').addClass('hide');
@@ -276,26 +376,11 @@
                     return res.json();
                 }).then(function (options) {
                     return window.passkey.get(options);
-                }).then(function (credential) {
-                    credential.remember = $('#remember').val();
-
-                    return fetch('/panel/login/passkey/verify', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(credential)
-                    });
-                }).then(function (res) {
-                    if (!res.ok) {
-                        throw new Error('Passkey sign-in failed. The passkey may have been removed from the panel');
+                }).then(verifyPasskeyLogin).catch(function (e) {
+                    showPasskeyError(e);
+                    if (restartConditional) {
+                        startConditionalLogin();
                     }
-
-                    return res.json();
-                }).then(function (res) {
-                    finishPasskeyLogin(res.username);
-                }).catch(function (e) {
-                    $('#error-box').removeClass('hide');
-                    $('#alert-br').removeClass('hide');
-                    $('#error-box').text(e.message);
                 });
             }
 
@@ -684,6 +769,17 @@
                         if (window.passkey !== undefined && window.passkey.isSupported()) {
                             $('#passkey-row').removeClass('hide');
                             $('#passkey-button').on('click', passkeyLogin);
+                            // A passkey.js cached from an older version does not have it
+                            if (typeof window.passkey.isConditionalSupported === 'function') {
+                                window.passkey.isConditionalSupported().then(function (supported) {
+                                    if (supported) {
+                                        startConditionalLogin();
+                                        setInterval(checkConditionalLogin, 30000);
+                                        document.addEventListener('visibilitychange', checkConditionalLogin);
+                                        window.addEventListener('pageshow', checkConditionalLogin);
+                                    }
+                                });
+                            }
                         }
                     }
                     if (authExpired) {
