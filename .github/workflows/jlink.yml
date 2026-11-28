@@ -42,6 +42,7 @@ jobs:
             os: ${{ needs.resolve-runners.outputs.arm64-os }}
             script: jlink-jdk-linux.sh
           - osname: Linux (GCC, arm32)
+            architecture: armv7
             java-version: 17
             java-distribution: 'temurin'
             folder: java-runtime-arm32
@@ -50,7 +51,7 @@ jobs:
             image: eclipse-temurin:17-jdk
             os: ubuntu-latest
             script: jlink-jdk-docker.sh
-            jdk: /opt/java/openjdk
+            jdk: /opt/jdk
           - osname: Windows
             java-version: 17
             os: windows-latest
@@ -74,13 +75,22 @@ jobs:
       uses: docker/setup-qemu-action@v4
       with:
         platforms: ${{ matrix.platform }}
-    - name: Set up JDK
+    - name: Set up JDK (Non-Docker)
       if: matrix.qemu == false
       id: setup-java
       uses: actions/setup-java@v6
       with:
         distribution: ${{ matrix.java-distribution }}
         java-version: ${{ matrix.java-version }}
+        check-latest: true
+    - name: Set up JDK (Docker)
+      if: matrix.qemu == true
+      id: setup-java-docker
+      uses: actions/setup-java@v6
+      with:
+        distribution: ${{ matrix.java-distribution }}
+        java-version: ${{ matrix.java-version }}
+        architecture: ${{ matrix.architecture }}
         check-latest: true
     - name: Run JLink (Windows)
       if: matrix.os == 'windows-latest'
@@ -109,6 +119,7 @@ jobs:
         JDK: ${{ matrix.jdk }}
         PLATFORM: ${{ matrix.platform }}
         IMAGE: ${{ matrix.image }}
+        EXTRA: --mount type=bind,source=${{ steps.setup-java-docker.outputs.path }},target=/opt/jdk
       run: |
         cd development-resources
         chmod +x $SCRIPT
