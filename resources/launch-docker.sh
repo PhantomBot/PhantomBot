@@ -78,6 +78,38 @@ hwname="$( uname -m )"
 trylinux=0
 tryarm64=0
 tryarm32=0
+myjava=0
+JAVA=""
+
+POSITIONAL_ARGS=()
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --java)
+      JAVA="$2"
+      myjava=1
+      shift
+      shift
+      ;;
+    --help)
+      echo "Usage: launch-docker.sh [options] [args]"
+      echo ""
+      echo "Options:"
+      echo "  --java </path/to/jre/bin/java>  Overrides the first Java executable attempted"
+      echo "  args                            Arguments to pass to PhantomBot.jar"
+      echo ""
+      echo "JVM flags can be passed by editing the java.opt.custom file"
+      exit 0
+    ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}"
 
 if [[ "$hwname" =~ "arm64" || "$hwname" =~ "aarch64" ]]; then
     tryarm64=1
@@ -88,8 +120,8 @@ if [[ "$hwname" =~ "x86_64" || "$MACHTYPE" =~ "x86_64" ]]; then
     trylinux=1
 fi
 
-if (( success == 0 )); then
-    JAVA="/opt/java/openjdk/bin/java"
+if (( success == 0 && myjava == 1 )); then
+    chm=$(chmod u+x $JAVA 2>/dev/null)
     jver=$($JAVA --version 2>/dev/null)
     res=$?
     jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)

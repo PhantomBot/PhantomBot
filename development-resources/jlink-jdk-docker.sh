@@ -23,6 +23,9 @@
 # PLATFORM: name of Docker/QEMU platform to run
 # JDK: Path to JAVA_HOME inside Docker container
 # IMAGE: Docker image to use, should have desired JDK already installed
+#
+# ----Optional ENV vars
+# EXTRA: Extra Docker arguments
 
 # QEMU must already be setup and registered with Docker for the same platform identifier that is passed in as PLATFORM
 
@@ -60,7 +63,7 @@ done
 if (( incontainer == 0 )); then
     rm -rfv ../resources/$FOLDER
     mkdir -p ../resources/$FOLDER
-    docker run --rm --platform ${PLATFORM} --privileged --mount type=bind,source="$(pwd)"/../resources,target=/opt/phantombot --mount type=bind,source="$(pwd)"/jlink-jdk-docker.sh,target=/opt/jlink-jdk-docker.sh ${IMAGE} /opt/jlink-jdk-docker.sh --incontainer --jdk ${JDK} --outfolder ${FOLDER}
+    docker run --rm --platform ${PLATFORM} --privileged --mount type=bind,source="$(pwd)"/../resources,target=/opt/phantombot --mount type=bind,source="$(pwd)"/jlink-jdk-docker.sh,target=/opt/jlink-jdk-docker.sh ${EXTRA} ${IMAGE} /opt/jlink-jdk-docker.sh --incontainer --jdk ${JDK} --outfolder ${FOLDER}
 else
     mkdir /opt/build
     mount -t tmpfs tmpfs /opt/build

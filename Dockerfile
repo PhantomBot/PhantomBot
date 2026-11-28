@@ -54,7 +54,7 @@ RUN set -eux; \
 
 RUN set -eux; \
     cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/"; \
-    ls | grep java-runtime | xargs --no-run-if-empty rm -rf; \
+    ls | grep java-runtime | grep -v java-runtime-$(if [ "$TARGETARCH" == "arm64" ]; then echo "arm64"; elif [ "$TARGETARCH" == "arm" ]; then echo "arm32"; else echo "linux"; fi) | xargs --no-run-if-empty rm -rf; \
     ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf; \
     ls | grep restartbot | grep -v restartbot-docker.sh | xargs --no-run-if-empty rm -rf; \
     cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/config/healthcheck/failurehooks"; \
@@ -80,7 +80,7 @@ RUN set -eux; \
     rm "./lib"
 
 # Application container
-FROM eclipse-temurin:17-jre AS publish
+FROM ubuntu:latest AS publish
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
