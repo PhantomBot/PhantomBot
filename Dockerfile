@@ -55,7 +55,8 @@ RUN set -eux; \
 
 RUN set -eux; \
     cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/"; \
-    ls | grep java-runtime | grep -v java-runtime-$(if [ "$TARGETARCH" == "arm64" ]; then echo "arm64"; elif [ "$TARGETARCH" == "arm" ]; then echo "arm32"; else echo "linux"; fi) | xargs --no-run-if-empty rm -rf; \
+    case "${TARGETARCH:-}" in arm64) jre="java-runtime-arm64";; arm) jre="java-runtime-arm32";; *) jre="java-runtime-linux";; esac; \
+    ls | grep java-runtime | grep -vx "${jre}" | xargs --no-run-if-empty rm -rf; \
     ls | grep launch | grep -v launch-docker.sh | xargs --no-run-if-empty rm -rf; \
     ls | grep restartbot | grep -v restartbot-docker.sh | xargs --no-run-if-empty rm -rf; \
     cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/config/healthcheck/failurehooks"; \
@@ -145,7 +146,9 @@ RUN set -eux; \
     ln -s "${DATADIR}/java.opt.custom" "${BASEDIR}/java.opt.custom"; \
     chmod u+x "${BASEDIR}/restartbot-docker.sh"; \
     chmod u+x "${BASEDIR}/launch-docker.sh"; \
-    chmod u+x "${BASEDIR}/docker-entrypoint.sh"
+    chmod u+x "${BASEDIR}/docker-entrypoint.sh"; \
+    chmod u+x "${BASEDIR}"/java-runtime-*/bin/*; \
+    chmod u+x "${BASEDIR}"/java-runtime-*/lib/jspawnhelper
 
 VOLUME "${DATADIR}"
 

@@ -2,7 +2,8 @@ Dockerfile
 docker-compose.yml
 .git*
 
-resources/java-runtime*
+resources/java-runtime
+resources/java-runtime-macos
 lib
 
 bin
