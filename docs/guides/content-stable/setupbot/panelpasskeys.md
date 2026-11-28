@@ -45,6 +45,8 @@ A passkey only works on the address it was added on. If you move your bot to a d
 
 You do not need to type your username. If your device holds passkeys for more than one panel user, it asks which one to use.
 
+Most current browsers also list your passkeys when you click or tap the _Username_ field (on a phone, above the keyboard). Choosing one and confirming it with your fingerprint, face or PIN signs you in without the _Sign in with a passkey_ button. If your browser does not list them, use the button.
+
 How long you stay signed in depends on the _Remember me_ option
 
 | Remember me | Signed in for |
